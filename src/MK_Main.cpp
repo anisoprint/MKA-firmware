@@ -174,8 +174,8 @@ float constexpr homing_feedrate_mm_s[] = {
 };
 static float feedrate_mm_s = MMM_TO_MMS(1500.0), saved_feedrate_mm_s;
 int feedrate_percentage = 100, saved_feedrate_percentage,
-    flow_percentage[EXTRUDERS] = ARRAY_BY_EXTRUDERS(100),
-    density_percentage[EXTRUDERS] = ARRAY_BY_EXTRUDERS(100);
+    flow_percentage[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(100),
+    density_percentage[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(100);
 
 bool axis_relative_modes[] = AXIS_RELATIVE_MODES,
      #if ENABLED(VOLUMETRIC_DEFAULT_ON)
@@ -184,8 +184,8 @@ bool axis_relative_modes[] = AXIS_RELATIVE_MODES,
        volumetric_enabled = false;
      #endif
 
-float filament_size[EXTRUDERS] = ARRAY_BY_EXTRUDERS(DEFAULT_NOMINAL_FILAMENT_DIA),
-      volumetric_multiplier[EXTRUDERS] = ARRAY_BY_EXTRUDERS(1.0);
+float filament_size[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(DEFAULT_NOMINAL_FILAMENT_DIA),
+      volumetric_multiplier[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(1.0);
 
 #if ENABLED(WORKSPACE_OFFSETS)
   // The distance that XYZ has been offset by G92. Reset by G28.
@@ -310,9 +310,9 @@ PrintCounter print_job_counter = PrintCounter();
 
 #if ENABLED(RFID_MODULE)
   bool RFID_ON = false;
-  unsigned long Spool_ID[EXTRUDERS] = ARRAY_BY_EXTRUDERS(0);
-  bool Spool_must_read[EXTRUDERS]   = ARRAY_BY_EXTRUDERS(false);
-  bool Spool_must_write[EXTRUDERS]  = ARRAY_BY_EXTRUDERS(false);
+  unsigned long Spool_ID[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(0);
+  bool Spool_must_read[DRIVER_EXTRUDERS]   = ARRAY_BY_EXTRUDERS(false);
+  bool Spool_must_write[DRIVER_EXTRUDERS]  = ARRAY_BY_EXTRUDERS(false);
 #endif
 
 #if HAS(Z_SERVO_ENDSTOP)
@@ -327,8 +327,8 @@ PrintCounter print_job_counter = PrintCounter();
 #if ENABLED(FWRETRACT)
 
   bool autoretract_enabled = false;
-  bool retracted[EXTRUDERS] = { false };
-  bool retracted_swap[EXTRUDERS] = { false };
+  bool retracted[DRIVER_EXTRUDERS] = { false };
+  bool retracted_swap[DRIVER_EXTRUDERS] = { false };
 
   float retract_length = RETRACT_LENGTH;
   float retract_length_swap = RETRACT_LENGTH_SWAP;
@@ -479,7 +479,7 @@ float cartes[XYZ] = { 0 };
 #if ENABLED(IDLE_OOZING_PREVENT)
   unsigned long axis_last_activity = 0;
   bool IDLE_OOZING_enabled = true;
-  bool IDLE_OOZING_retracted[EXTRUDERS] = ARRAY_BY_EXTRUDERS(false);
+  bool IDLE_OOZING_retracted[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(false);
 #endif
 
 #if HAS(POWER_CONSUMPTION_SENSOR)
@@ -8344,7 +8344,7 @@ inline void gcode_M200() {
     if (volumetric_enabled) {
       filament_size[TARGET_EXTRUDER] = code_value_linear_units();
       // make sure all extruders have some sane value for the filament size
-      for (int i = 0; i < EXTRUDERS; i++)
+      for (int i = 0; i < DRIVER_EXTRUDERS; i++)
         if (!filament_size[i]) filament_size[i] = DEFAULT_NOMINAL_FILAMENT_DIA;
     }
   }

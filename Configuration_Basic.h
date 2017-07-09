@@ -112,7 +112,7 @@
  * See: https://github.com/MagoKimbra/MK4duo/blob/master/Documentation/Hardware.md *
  *                                                                                       *
  *****************************************************************************************/
-#define MOTHERBOARD BOARD_RAMPS_13_HFB
+#define MOTHERBOARD BOARD_MEGATRONICS_2
 /*****************************************************************************************/
 
 
@@ -132,8 +132,8 @@
  * MAKERARM_SCARA - SCARA Makerfarm                                    *
  *                                                                     *
  ***********************************************************************/
-#define MECHANISM MECH_CARTESIAN
-//#define MECHANISM MECH_COREXY
+//#define MECHANISM MECH_CARTESIAN
+#define MECHANISM MECH_COREXY
 //#define MECHANISM MECH_COREYX
 //#define MECHANISM MECH_COREXZ
 //#define MECHANISM MECH_COREZX
@@ -172,11 +172,20 @@
  ***********************************************************************/
 // This defines the number of extruder real or virtual
 // 1,2,3,4,5,6
-#define EXTRUDERS 1
+#define EXTRUDERS 2
 
 // This defines the number of Driver extruder you have and use
 // 1,2,3,4,5,6
-#define DRIVER_EXTRUDERS 1
+#define DRIVER_EXTRUDERS 3
+
+// This defines the number of hotends you have and use
+#define HOTENDS 1
+
+// This defines which extruder corresponds to which hotend. First hotend is 0
+#define DRIVER_EXTRUDERS_HOTENDS  {0, 0, 0, 0, 0, 0}
+
+// This defines the type of extruder drivers (for plastic use 1, for fiber 0)
+#define PLASTIC_DRIVER_EXTRUDERS  {1, 1, 0, 0, 0, 0}
 /***********************************************************************/
 
 #endif

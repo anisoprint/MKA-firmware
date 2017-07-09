@@ -40,12 +40,36 @@ enum AxisEnum {
   B_AXIS  = 1,
   Z_AXIS  = 2,
   C_AXIS  = 2,
+  #if DRIVER_EXTRUDERS == 1
   E_AXIS  = 3,
   X_HEAD  = 4,
   Y_HEAD  = 5,
   Z_HEAD  = 6,
+  #elif DRIVER_EXTRUDERS == 2
+  E_AXIS  = 3,
+  U_AXIS  = 4,
+  X_HEAD  = 5,
+  Y_HEAD  = 6,
+  Z_HEAD  = 7,
+  #elif DRIVER_EXTRUDERS == 3
+  E_AXIS  = 3,
+  U_AXIS  = 4,
+  V_AXIS  = 5,
+  X_HEAD  = 6,
+  Y_HEAD  = 7,
+  Z_HEAD  = 8,
+  #elif DRIVER_EXTRUDERS == 4
+  E_AXIS  = 3,
+  U_AXIS  = 4,
+  V_AXIS  = 5,
+  W_AXIS  = 6,
+  X_HEAD  = 7,
+  Y_HEAD  = 8,
+  Z_HEAD  = 9,
+  #endif
   ALL_AXES = 100
 };
+
 
 typedef enum {
   LINEARUNIT_MM,

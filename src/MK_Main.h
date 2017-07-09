@@ -114,10 +114,10 @@ extern int feedrate_percentage;
 
 extern bool axis_relative_modes[];
 extern bool volumetric_enabled;
-extern int flow_percentage[EXTRUDERS];          // Extrusion factor for each extruder
-extern int density_percentage[EXTRUDERS];       // Extrusion density factor for each extruder
-extern float filament_size[EXTRUDERS];          // cross-sectional area of filament (in millimeters), typically around 1.75 or 2.85, 0 disables the volumetric calculations for the extruder.
-extern float volumetric_multiplier[EXTRUDERS];  // reciprocal of cross-sectional area of filament (in square millimeters), stored this way to reduce computational burden in planner
+extern int flow_percentage[DRIVER_EXTRUDERS];          // Extrusion factor for each extruder
+extern int density_percentage[DRIVER_EXTRUDERS];       // Extrusion density factor for each extruder
+extern float filament_size[DRIVER_EXTRUDERS];          // cross-sectional area of filament (in millimeters), typically around 1.75 or 2.85, 0 disables the volumetric calculations for the extruder.
+extern float volumetric_multiplier[DRIVER_EXTRUDERS];  // reciprocal of cross-sectional area of filament (in square millimeters), stored this way to reduce computational burden in planner
 extern bool axis_known_position[XYZ];           // axis[n].is_known
 extern bool axis_homed[XYZ];                    // axis[n].is_homed
 extern volatile bool wait_for_heatup;
@@ -286,7 +286,7 @@ int16_t code_value_temp_diff();
 
 #if ENABLED(FWRETRACT)
   extern bool autoretract_enabled;
-  extern bool retracted[EXTRUDERS]; // extruder[n].retracted
+  extern bool retracted[DRIVER_EXTRUDERS]; // extruder[n].retracted
   extern float retract_length, retract_length_swap, retract_feedrate, retract_zlift;
   extern float retract_recover_length, retract_recover_length_swap, retract_recover_feedrate;
 #endif

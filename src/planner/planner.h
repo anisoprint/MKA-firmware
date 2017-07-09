@@ -158,7 +158,7 @@ class Planner {
     static float  min_feedrate_mm_s,
                   min_travel_feedrate_mm_s,
                   acceleration,                     // Normal acceleration mm/s^2  DEFAULT ACCELERATION for all printing moves. M204 SXXXX
-                  retract_acceleration[EXTRUDERS],  // Retract acceleration mm/s^2 filament pull-back and push-forward while standing still in the other axes M204 TXXXX
+                  retract_acceleration[DRIVER_EXTRUDERS],  // Retract acceleration mm/s^2 filament pull-back and push-forward while standing still in the other axes M204 TXXXX
                   travel_acceleration,              // Travel acceleration mm/s^2  DEFAULT ACCELERATION for all NON printing moves. M204 MXXXX
                   max_jerk[XYZE_N];                 // The largest speed change requiring no acceleration
 
@@ -198,7 +198,7 @@ class Planner {
       /**
        * Counters to manage disabling inactive extruders
        */
-      static uint8_t g_uc_extruder_last_move[EXTRUDERS];
+      static uint8_t g_uc_extruder_last_move[DRIVER_EXTRUDERS];
     #endif // DISABLE_INACTIVE_EXTRUDER
 
     #if ENABLED(XY_FREQUENCY_LIMIT)
@@ -280,14 +280,12 @@ class Planner {
      *
      * Leveling and kinematics should be applied ahead of this.
      *
-     *  a,b,c,e   - target position in mm or degrees
+     *  destination   - target position in mm or degrees
      *  fr_mm_s   - (target) speed of the move
-     *  extruder  - target extruder
-     *  driver    - target driver
      */
-    static void _buffer_line(const float &a, const float &b, const float &c, const float &e, float fr_mm_s, const uint8_t extruder, const uint8_t driver);
+    static void _buffer_line(const float destination[XYZE], float fr_mm_s);
 
-    static void _set_position_mm(const float &a, const float &b, const float &c, const float &e);
+    static void _set_position_mm(const float position[XYZE]);
 
     /**
      * Add a new linear movement to the buffer.
@@ -297,16 +295,14 @@ class Planner {
      * Kinematic machines should call buffer_line_kinematic (for leveled moves).
      * (Cartesians may also call buffer_line_kinematic.)
      *
-     *  lx,ly,lz,e  - target position in mm or degrees
+     *  destination - target position in mm or degrees
      *  fr_mm_s     - (target) speed of the move (mm/s)
-     *  extruder    - target extruder
-     *  driver      - target driver
      */
-    static FORCE_INLINE void buffer_line(ARG_X, ARG_Y, ARG_Z, const float &e, const float &fr_mm_s, const uint8_t extruder, const uint8_t driver) {
+    static FORCE_INLINE void buffer_line(const float destination[XYZE], const float &fr_mm_s) {
       #if HAS_LEVELING && IS_CARTESIAN
-        apply_leveling(lx, ly, lz);
+        apply_leveling(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS]);
       #endif
-      _buffer_line(lx, ly, lz, e, fr_mm_s, extruder, driver);
+      _buffer_line(destination, fr_mm_s);
     }
 
     /**
@@ -316,10 +312,8 @@ class Planner {
      *
      *  ltarget  - x,y,z,e CARTESIAN target in mm
      *  fr_mm_s  - (target) speed of the move (mm/s)
-     *  extruder - target extruder
-     *  driver   - target driver
      */
-    static FORCE_INLINE void buffer_line_kinematic(const float ltarget[XYZE], const float &fr_mm_s, const uint8_t extruder, const uint8_t driver) {
+    static FORCE_INLINE void buffer_line_kinematic(const float ltarget[XYZE], const float &fr_mm_s) {
       #if HAS_LEVELING || ENABLED(ZWOBBLE) || ENABLED(HYSTERESIS)
         float lpos[XYZ]={ ltarget[X_AXIS], ltarget[Y_AXIS], ltarget[Z_AXIS] };
         #if HAS_LEVELING
@@ -343,9 +337,9 @@ class Planner {
         #else
           inverse_kinematics(lpos);
         #endif
-        _buffer_line(delta[A_AXIS], delta[B_AXIS], delta[C_AXIS], ltarget[E_AXIS], fr_mm_s, extruder, driver);
+        _buffer_line(ltarget, fr_mm_s);
       #else
-        _buffer_line(lpos[X_AXIS], lpos[Y_AXIS], lpos[Z_AXIS], ltarget[E_AXIS], fr_mm_s, extruder, driver);
+        _buffer_line(ltarget, fr_mm_s);
       #endif
     }
 
@@ -358,11 +352,11 @@ class Planner {
      *
      * Clears previous speed values.
      */
-    static FORCE_INLINE void set_position_mm(ARG_X, ARG_Y, ARG_Z, const float &e) {
+    static FORCE_INLINE void set_position_mm(const float pos[XYZE]) {
       #if HAS_LEVELING && IS_CARTESIAN
-        apply_leveling(lx, ly, lz);
+        apply_leveling(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS]);
       #endif
-      _set_position_mm(lx, ly, lz, e);
+      _set_position_mm(pos);
     }
     static void set_position_mm_kinematic(const float position[NUM_AXIS]);
     static void set_position_mm(const AxisEnum axis, const float &v);

@@ -82,7 +82,7 @@ millis_t Planner::min_segment_time;
 float Planner::min_feedrate_mm_s,
       Planner::min_travel_feedrate_mm_s,
       Planner::acceleration,                    // Normal acceleration mm/s^2  DEFAULT ACCELERATION for all printing moves. M204 SXXXX
-      Planner::retract_acceleration[EXTRUDERS], // Retract acceleration mm/s^2 filament pull-back and push-forward while standing still in the other axes M204 TXXXX
+      Planner::retract_acceleration[DRIVER_EXTRUDERS], // Retract acceleration mm/s^2 filament pull-back and push-forward while standing still in the other axes M204 TXXXX
       Planner::travel_acceleration,             // Travel acceleration mm/s^2  DEFAULT ACCELERATION for all NON printing moves. M204 MXXXX
       Planner::max_jerk[XYZE_N];                // The largest speed change requiring no acceleration
 
@@ -118,7 +118,7 @@ float Planner::previous_speed[NUM_AXIS],
 uint8_t Planner::last_extruder = 0;
 
 #if ENABLED(DISABLE_INACTIVE_EXTRUDER)
-  uint8_t Planner::g_uc_extruder_last_move[EXTRUDERS] = { 0 };
+  uint8_t Planner::g_uc_extruder_last_move[DRIVER_EXTRUDERS] = { 0 };
 #endif // DISABLE_INACTIVE_EXTRUDER
 
 #if ENABLED(XY_FREQUENCY_LIMIT)
@@ -353,12 +353,22 @@ void Planner::recalculate() {
 
     if (!autotemp_enabled) return;
     if (thermalManager.degTargetHotend(0) + 2 < autotemp_min) return; // probably temperature set to zero.
+    const int plastic_driver_extruders[] = PLASTIC_DRIVER_EXTRUDERS;
 
     float high = 0.0;
     for (uint8_t b = block_buffer_tail; b != block_buffer_head; b = next_block_index(b)) {
       block_t* block = &block_buffer[b];
       if (block->steps[X_AXIS] || block->steps[Y_AXIS] || block->steps[Z_AXIS]) {
-        float se = (float)block->steps[E_AXIS] / block->step_event_count * block->nominal_speed; // mm/sec;
+    	float se;
+    	float ee;
+    	for(int i = E_AXIS; i < NUM_AXIS; i++)
+    	{
+    		if (plastic_driver_extruders[i-E_AXIS])
+    		{
+        		ee = (float)block->steps[i] / block->step_event_count * block->nominal_speed; // mm/sec;
+        		if (ee>se) se = ee;
+    		}
+    	}
         NOLESS(high, se);
       }
     }
@@ -558,26 +568,24 @@ void Planner::check_axes_activity() {
  *  extruder    - target extruder
  *  driver      - target driver
  */
-void Planner::_buffer_line(const float &a, const float &b, const float &c, const float &e, float fr_mm_s, const uint8_t extruder, const uint8_t driver) {
+void Planner::_buffer_line(const float destination[XYZE], float fr_mm_s) {
 
   // The target position of the tool in absolute steps
   // Calculate target position in absolute steps
   // this should be done after the wait, because otherwise a M92 code within the gcode disrupts this calculation somehow
-  const long target[XYZE] = {
-    LROUND(a * axis_steps_per_mm[X_AXIS]),
-    LROUND(b * axis_steps_per_mm[Y_AXIS]),
-    LROUND(c * axis_steps_per_mm[Z_AXIS]),
-    LROUND(e * axis_steps_per_mm[E_AXIS_N])
-  };
-
+  long target[XYZE];
+  LOOP_XYZE(i)
+  {
+	  target[i] = LROUND(destination[i] * axis_steps_per_mm[i]);
+  }
   // If changing extruder have to recalculate current position based on 
   // the steps-per-mm value for the new extruder.
-  #if EXTRUDERS > 1
+  /*#if EXTRUDERS > 1
     if(last_extruder != extruder && axis_steps_per_mm[E_AXIS_N] != axis_steps_per_mm[E_AXIS + last_extruder]) {
       position[E_AXIS] = LROUND(position[E_AXIS] * axis_steps_per_mm[E_AXIS_N] * steps_to_mm[E_AXIS + last_extruder]);
       last_extruder = extruder;
     }
-  #endif
+  #endif*/
 
   #if ENABLED(LIN_ADVANCE)
     const float mm_D_float = SQRT(sq(a - position_float[X_AXIS]) + sq(b - position_float[Y_AXIS]));
@@ -589,54 +597,71 @@ void Planner::_buffer_line(const float &a, const float &b, const float &c, const
 
   // DRYRUN ignores all temperature constraints and assures that the extruder is instantly satisfied
   if (DEBUGGING(DRYRUN)) {
-    position[E_AXIS] = target[E_AXIS];
+	LOOP_EUVW(i)
+	{
+	    position[i] = target[i];
+	}
     #if ENABLED(LIN_ADVANCE)
-      position_float[E_AXIS] = e;
+	  LOOP_EUVW(i)
+	  {
+		  position_float[i] = destination[i];
+	  }
     #endif
   }
 
-  long de = target[E_AXIS] - position[E_AXIS];
+  long de[DRIVER_EXTRUDERS];
+  LOOP_EUVW(i)
+  {
+	  de[i-XYZ] = target[i] - position[i];
+  }
 
   #if ENABLED(LIN_ADVANCE)
-    float de_float = e - position_float[E_AXIS];
+	long de_float[DRIVER_EXTRUDERS];
+	LOOP_EUVW(i)
+	{
+		de_float[i-XYZ] = destination[i] - position_float[i];
+	}
   #endif
 
   #if ENABLED(PREVENT_COLD_EXTRUSION)
-    if (de) {
-      #if ENABLED(NPR2)
-        if (extruder != 1)
-      #endif
-        {
-          if (thermalManager.tooColdToExtrude(extruder)) {
-            position[E_AXIS] = target[E_AXIS]; // Behave as if the move really took place, but ignore E part
-            de = 0; // no difference
-            #if ENABLED(LIN_ADVANCE)
-              position_float[E_AXIS] = e;
-              de_float = 0;
-            #endif
-            SERIAL_LM(ER, MSG_ERR_COLD_EXTRUDE_STOP);
-          }
-        }
+	LOOP_EXTRUDERS(ie)
+	{
+		if (de[ie]) {
+		  #if ENABLED(NPR2)
+			if (extruder != 1)
+		  #endif
+			{
+			  if (thermalManager.tooColdToExtrude(ie)) {
+				position[XYZ+ie] = target[XYZ+ie]; // Behave as if the move really took place, but ignore E part
+				de[ie] = 0; // no difference
+				#if ENABLED(LIN_ADVANCE)
+				  position_float[XYZ+ie] = destination[XYZ+ie];
+				  de_float[ie] = 0;
+				#endif
+				SERIAL_LM(ER, MSG_ERR_COLD_EXTRUDE_STOP);
+			  }
+			}
 
-      #if ENABLED(PREVENT_LENGTHY_EXTRUDE)
-        if (labs(de) > (int32_t)axis_steps_per_mm[E_AXIS_N] * (EXTRUDE_MAXLENGTH)) {
-          #if ENABLED(EASY_LOAD)
-            if (!allow_lengthy_extrude_once) {
-          #endif
-          position[E_AXIS] = target[E_AXIS]; // Behave as if the move really took place, but ignore E part
-          de = 0; // no difference
-          #if ENABLED(LIN_ADVANCE)
-            position_float[E_AXIS] = e;
-            de_float = 0;
-          #endif
-          SERIAL_LM(ER, MSG_ERR_LONG_EXTRUDE_STOP);
-          #if ENABLED(EASY_LOAD)
-            }
-            allow_lengthy_extrude_once = false;
-          #endif
-        }
-      #endif // PREVENT_LENGTHY_EXTRUDE
-    }
+		  #if ENABLED(PREVENT_LENGTHY_EXTRUDE)
+			if (labs(de[ie]) > (int32_t)axis_steps_per_mm[XYZ+ie] * (EXTRUDE_MAXLENGTH)) {
+			  #if ENABLED(EASY_LOAD)
+				if (!allow_lengthy_extrude_once) {
+			  #endif
+			  position[XYZ+ie] = target[XYZ+ie]; // Behave as if the move really took place, but ignore E part
+			  de[ie] = 0; // no difference
+			  #if ENABLED(LIN_ADVANCE)
+			    position_float[XYZ+ie] = destination[XYZ+ie];
+			    de_float[ie] = 0;
+			  #endif
+			  SERIAL_LM(ER, MSG_ERR_LONG_EXTRUDE_STOP);
+			  #if ENABLED(EASY_LOAD)
+				}
+				allow_lengthy_extrude_once = false;
+			  #endif
+			}
+		  #endif // PREVENT_LENGTHY_EXTRUDE
+		}
+	}
   #endif // PREVENT_COLD_EXTRUSION
 
   #if CORE_IS_XY
@@ -675,10 +700,18 @@ void Planner::_buffer_line(const float &a, const float &b, const float &c, const
     if (dy < 0) SBI(dirb, Y_AXIS);
     if (dz < 0) SBI(dirb, Z_AXIS);
   #endif
-  if (de < 0) SBI(dirb, E_AXIS);
+  LOOP_EXTRUDERS(ie)
+  {
+	if (de[ie] < 0) SBI(dirb, XYZ + ie);
+  }
 
-  const float esteps_float = de * volumetric_multiplier[extruder] * flow_percentage[extruder] * 0.01;
-  const int32_t esteps = abs(esteps_float) + 0.5;
+  float esteps_float[DRIVER_EXTRUDERS];
+  int32_t esteps[DRIVER_EXTRUDERS];
+  LOOP_EXTRUDERS(ie)
+  {
+	  esteps_float[ie] = de[ie] * volumetric_multiplier[ie] * flow_percentage[ie] * 0.01;
+	  esteps[ie] = abs(esteps_float[ie]) + 0.5;
+  }
 
   // Calculate the buffer head after we push this byte
   const int8_t next_buffer_head = next_block_index(block_buffer_head);
