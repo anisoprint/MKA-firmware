@@ -75,7 +75,7 @@ block_t* Stepper::current_block = NULL;  // A pointer to the block currently bei
 
 // private:
 
-unsigned char Stepper::last_direction_bits = 0;        // The next stepping-bits to be output
+uint16_t Stepper::last_direction_bits = 0;        // The next stepping-bits to be output
 unsigned int Stepper::cleaning_buffer_counter = 0;
 
 #if ENABLED(Z_FOUR_ENDSTOPS)
@@ -96,6 +96,21 @@ long  Stepper::counter_X = 0,
       Stepper::counter_Y = 0,
       Stepper::counter_Z = 0,
       Stepper::counter_E = 0;
+#if DRIVER_EXTRUDERS > 1
+	long Stepper::counter_U = 0;
+#endif
+#if DRIVER_EXTRUDERS > 2
+	long Stepper::counter_V = 0;
+#endif
+#if DRIVER_EXTRUDERS > 3
+	long Stepper::counter_W = 0;
+#endif
+#if DRIVER_EXTRUDERS > 4
+	long Stepper::counter_K = 0;
+#endif
+#if DRIVER_EXTRUDERS > 5
+	long Stepper::counter_L = 0;
+#endif
 
 volatile uint32_t Stepper::step_events_completed = 0; // The number of step events executed in the current block
 
@@ -125,7 +140,23 @@ volatile uint32_t Stepper::step_events_completed = 0; // The number of step even
 long Stepper::acceleration_time, Stepper::deceleration_time;
 
 volatile long Stepper::count_position[NUM_AXIS] = { 0 };
-volatile signed char Stepper::count_direction[NUM_AXIS] = { 1, 1, 1, 1 };
+volatile signed char Stepper::count_direction[NUM_AXIS] = { 1, 1, 1, 1
+#if DRIVER_EXTRUDERS > 1
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 2
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 3
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 4
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 5
+  , 1
+#endif
+};
 
 #if ENABLED(COLOR_MIXING_EXTRUDER)
   long Stepper::counter_m[MIXING_STEPPERS];
@@ -256,6 +287,22 @@ volatile long Stepper::endstops_trigsteps[XYZ];
 
 #if DISABLED(COLOR_MIXING_EXTRUDER)
   #define E_APPLY_STEP(v,Q) E_STEP_WRITE(v)
+	#if DRIVER_EXTRUDERS > 1
+		#define U_APPLY_STEP(v,Q) U_STEP_WRITE(v)
+	#endif
+	#if DRIVER_EXTRUDERS > 2
+		#define V_APPLY_STEP(v,Q) V_STEP_WRITE(v)
+	#endif
+	#if DRIVER_EXTRUDERS > 3
+		#define W_APPLY_STEP(v,Q) W_STEP_WRITE(v)
+	#endif
+	#if DRIVER_EXTRUDERS > 4
+		#define K_APPLY_STEP(v,Q) K_STEP_WRITE(v)
+	#endif
+	#if DRIVER_EXTRUDERS > 4
+		#define K_APPLY_STEP(v,Q) K_STEP_WRITE(v)
+	#endif
+
 #endif
 
 /**
@@ -315,6 +362,7 @@ void Stepper::set_directions() {
   #endif
 
   #if DISABLED(ADVANCE) && DISABLED(LIN_ADVANCE)
+
     if (motor_direction(E_AXIS)) {
       REV_E_DIR();
       count_direction[E_AXIS] = -1;
@@ -323,6 +371,56 @@ void Stepper::set_directions() {
       NORM_E_DIR();
       count_direction[E_AXIS] = 1;
     }
+		#if DRIVER_EXTRUDERS > 1
+			if (motor_direction(U_AXIS)) {  // -direction
+	      REV_U_DIR();
+	      count_direction[U_AXIS] = -1;
+			}
+			else { // +direction
+				NORM_U_DIR();
+				count_direction[U_AXIS]=1;
+			}
+		#endif
+		#if DRIVER_EXTRUDERS > 2
+			if (motor_direction(V_AXIS)) {  // -direction
+				REV_V_DIR();
+				count_direction[V_AXIS] = -1;
+			}
+			else { // +direction
+				NORM_V_DIR();
+				count_direction[V_AXIS]=1;
+			}
+		#endif
+		#if DRIVER_EXTRUDERS > 3
+			if (motor_direction(W_AXIS)) {  // -direction
+				REV_W_DIR();
+				count_direction[W_AXIS] = -1;
+			}
+			else { // +direction
+				NORM_W_DIR();
+				count_direction[W_AXIS]=1;
+			}
+		#endif
+		#if DRIVER_EXTRUDERS > 4
+			if (motor_direction(K_AXIS)) {  // -direction
+				REV_K_DIR();
+				count_direction[K_AXIS] = -1;
+			}
+			else { // +direction
+				NORM_K_DIR();
+				count_direction[K_AXIS]=1;
+			}
+		#endif
+		#if DRIVER_EXTRUDERS > 5
+			if (motor_direction(L_AXIS)) {  // -direction
+				REV_L_DIR();
+				count_direction[L_AXIS] = -1;
+			}
+			else { // +direction
+				NORM_L_DIR();
+				count_direction[L_AXIS]=1;
+			}
+		#endif
   #endif // !ADVANCE && !LIN_ADVANCE
 }
 
@@ -449,6 +547,21 @@ void Stepper::isr() {
 
       // Initialize Bresenham counters to 1/2 the ceiling
       counter_X = counter_Y = counter_Z = counter_E = -(current_block->step_event_count >> 1);
+			#if DRIVER_EXTRUDERS > 1
+				counter_U = counter_X;
+			#endif
+			#if DRIVER_EXTRUDERS > 2
+				counter_V = counter_X;
+			#endif
+			#if DRIVER_EXTRUDERS > 3
+				counter_W = counter_X;
+			#endif
+			#if DRIVER_EXTRUDERS > 4
+				counter_K = counter_X;
+			#endif
+			#if DRIVER_EXTRUDERS > 4
+				counter_L = counter_X;
+			#endif
 
       #if ENABLED(LASERBEAM)
         #if ENABLED(CPU_32_BIT)
@@ -555,7 +668,7 @@ void Stepper::isr() {
     #define _COUNT_STEPPERS_3 _COUNT_STEPPERS_2
   #endif
   #if DISABLED(ADVANCE) && DISABLED(LIN_ADVANCE)
-    #define _COUNT_STEPPERS_4 INCREMENT(_COUNT_STEPPERS_3)
+    #define _COUNT_STEPPERS_4 _COUNT_STEPPERS_3 + DRIVER_EXTRUDERS
   #else
     #define _COUNT_STEPPERS_4 _COUNT_STEPPERS_3
   #endif
@@ -645,6 +758,21 @@ void Stepper::isr() {
         }
       #else // !COLOR_MIXING_EXTRUDER
         PULSE_START(E);
+				#if DRIVER_EXTRUDERS > 1
+        	PULSE_START(U);
+				#endif
+				#if DRIVER_EXTRUDERS > 2
+					counter_V = counter_X;
+				#endif
+				#if DRIVER_EXTRUDERS > 3
+					counter_W = counter_X;
+				#endif
+				#if DRIVER_EXTRUDERS > 4
+					counter_K = counter_X;
+				#endif
+				#if DRIVER_EXTRUDERS > 4
+					counter_L = counter_X;
+				#endif
       #endif
     #endif // !ADVANCE && !LIN_ADVANCE
 

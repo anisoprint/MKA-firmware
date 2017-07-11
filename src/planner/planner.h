@@ -68,8 +68,8 @@ typedef struct {
 
   uint8_t flag;                             // Block flags (See BlockFlag enum above)
 
-  unsigned char active_extruder;            // The extruder to move (if E move)
-  unsigned char active_driver;              // Selects the active driver for E
+  //unsigned char active_extruder;            // The extruder to move (if E move)
+  //unsigned char active_driver;              // Selects the active driver for E
 
   // Fields used by the bresenham algorithm for tracing the line
   int32_t steps[NUM_AXIS];                  // Step count along each axis
@@ -83,7 +83,7 @@ typedef struct {
           decelerate_after,                 // The index of the step event on which to start decelerating
           acceleration_rate;                // The acceleration rate used for acceleration calculation
 
-  uint8_t direction_bits;                   // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
+  uint16_t direction_bits;                   // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
 
   // Advance extrusion
   #if ENABLED(LIN_ADVANCE)
@@ -205,7 +205,7 @@ class Planner {
       // Used for the frequency limit
       #define MAX_FREQ_TIME long(1000000.0/XY_FREQUENCY_LIMIT)
       // Old direction bits. Used for speed calculations
-      static unsigned char old_direction_bits;
+      static uint16_t old_direction_bits;
       // Segment times (in µs). Used for speed calculations
       static long axis_segment_time[2][3];
     #endif
@@ -221,7 +221,7 @@ class Planner {
     /**
      * Last extruder used
      */
-    static uint8_t last_extruder;
+    //static uint8_t last_extruder;
 
   public:
 

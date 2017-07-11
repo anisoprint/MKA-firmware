@@ -918,6 +918,7 @@ void EEPROM::Postprocess() {
 /**
  * M502 - Reset Configuration
  */
+//TODO: EEPROM::Factory_Settings()
 void EEPROM::Factory_Settings() {
   const float     tmp1[] = DEFAULT_AXIS_STEPS_PER_UNIT,
                   tmp2[] = DEFAULT_MAX_FEEDRATE;

@@ -160,7 +160,7 @@
 
 #define LOOP_XY(VAR)      for (uint8_t VAR = X_AXIS; VAR <= Y_AXIS; VAR++)
 #define LOOP_XYZ(VAR)     for (uint8_t VAR = X_AXIS; VAR <= Z_AXIS; VAR++)
-#define LOOP_XYZE(VAR)    for (uint8_t VAR = X_AXIS; VAR <= XYZE; VAR++)
+#define LOOP_XYZE(VAR)    for (uint8_t VAR = X_AXIS; VAR < XYZE; VAR++)
 #define LOOP_XYZE_N(VAR)  for (uint8_t VAR = X_AXIS; VAR < XYZE_N; VAR++)
 #define LOOP_EUVW(VAR)    for (uint8_t VAR = E_AXIS; VAR < XYZE; VAR++)
 #define LOOP_EXTRUDERS(VAR)    for (uint8_t VAR = 0; VAR < DRIVER_EXTRUDERS; VAR++)
