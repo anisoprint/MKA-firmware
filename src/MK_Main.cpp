@@ -220,9 +220,11 @@ float soft_endstop_min[XYZ] = { X_MIN_POS, Y_MIN_POS, Z_MIN_POS },
   uint8_t fanKickstart = 0;
 #endif
 
+//TODO: Hotend offset -> extruder offset
 float hotend_offset[XYZ][HOTENDS];
 
 // The active extruder (tool). Set with T<extruder> command.
+//TODO: active extruder
 uint8_t active_extruder = 0;
 uint8_t previous_extruder = 0;
 uint8_t active_driver = 0;
@@ -232,6 +234,7 @@ uint8_t active_driver = 0;
   #define CNC_M6_TOOL_ID 255
 #endif
 
+//TODO: target extruder
 static uint8_t target_extruder;
 
 // Relative Mode. Enable with G91, disable with G90.
@@ -245,7 +248,23 @@ volatile bool wait_for_heatup = true;
   volatile bool wait_for_user = false;
 #endif
 
-const char axis_codes[NUM_AXIS] = {'X', 'Y', 'Z', 'E'};
+const char axis_codes[NUM_AXIS] = {'X', 'Y', 'Z', 'E'
+#if DRIVER_EXTRUDERS > 1
+  , 'U'
+#endif
+#if DRIVER_EXTRUDERS > 2
+  , 'V'
+#endif
+#if DRIVER_EXTRUDERS > 3
+  , 'W'
+#endif
+#if DRIVER_EXTRUDERS > 4
+  , 'K'
+#endif
+#if DRIVER_EXTRUDERS > 5
+  , 'L'
+#endif
+};
 
 // Number of characters read in the current line of serial input
 static int serial_count = 0;
@@ -461,6 +480,7 @@ float cartes[XYZ] = { 0 };
   static bool filament_ran_out = false;
 #endif
 
+//TODO: filament change
 #if ENABLED(FILAMENT_CHANGE_FEATURE)
   FilamentChangeMenuResponse filament_change_menu_response;
 #endif
@@ -494,6 +514,7 @@ float cartes[XYZ] = { 0 };
   static float color_step_moltiplicator = (DRIVER_MICROSTEP / MOTOR_ANGLE) * CARTER_MOLTIPLICATOR;
 #endif // NPR2
 
+//TODO: easy load
 #if ENABLED(EASY_LOAD)
   bool allow_lengthy_extrude_once; // for load/unload
 #endif
@@ -621,9 +642,9 @@ inline void sync_plan_position() {
   #if ENABLED(DEBUG_LEVELING_FEATURE)
     if (DEBUGGING(LEVELING)) DEBUG_POS("sync_plan_position", current_position);
   #endif
-  planner.set_position_mm(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS]);
+  planner.set_position_mm(current_position);
 }
-inline void sync_plan_position_e() { planner.set_e_position_mm(current_position[E_AXIS]); }
+inline void sync_plan_position_e() { LOOP_EUVW(ie) planner.set_position_mm(AxisEnum(ie), current_position[ie]); }
 
 #if IS_KINEMATIC
 
@@ -1240,6 +1261,7 @@ bool code_seen(char code) {
  *
  * Returns TRUE if the target is invalid
  */
+//TODO get_target_extruder_from_command
 bool get_target_extruder_from_command(int code) {
   if (code_seen('T')) {
     if (code_value_byte() >= EXTRUDERS) {
@@ -1260,6 +1282,7 @@ bool get_target_extruder_from_command(int code) {
  *
  * Returns TRUE if the target is invalid
  */
+//TODO get_target_hotend_from_command
 bool get_target_hotend_from_command(int code) {
   if (code_seen('H')) {
     if (code_value_byte() >= HOTENDS) {
@@ -1521,7 +1544,7 @@ inline float get_homing_bump_feedrate(AxisEnum axis) {
  * (or from wherever it has been told it is located).
  */
 inline void line_to_current_position() {
-  planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], feedrate_mm_s, active_extruder, active_driver);
+  planner.buffer_line(current_position, feedrate_mm_s);
 }
 
 /**
@@ -1535,7 +1558,7 @@ inline void line_to_current_position() {
   }
 #else
   inline void line_to_destination(float fr_mm_s) {
-    planner.buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], fr_mm_s, active_extruder, active_driver);
+    planner.buffer_line(destination, fr_mm_s);
   }
 #endif
 inline void line_to_destination() { line_to_destination(feedrate_mm_s); }
@@ -2593,7 +2616,7 @@ static void do_homing_move(AxisEnum axis, float distance, float fr_mm_s=0.0) {
     if (deploy_bltouch) set_bltouch_deployed(true);
   #endif
 
-  // Tell the planner we're at Z=0
+  // Tell the planner we're at axis=0
   current_position[axis] = 0;
 
   #if IS_SCARA
@@ -2604,7 +2627,7 @@ static void do_homing_move(AxisEnum axis, float distance, float fr_mm_s=0.0) {
   #else
     sync_plan_position();
     current_position[axis] = distance;
-    planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis], active_extruder, active_driver);
+    planner.buffer_line(current_position, fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis]);
   #endif
 
   stepper.synchronize();
@@ -13362,6 +13385,22 @@ static void report_current_position() {
   SERIAL_MV(" Y:", current_position[Y_AXIS]);
   SERIAL_MV(" Z:", current_position[Z_AXIS]);
   SERIAL_MV(" E:", current_position[E_AXIS]);
+  #if DRIVER_EXTRUDERS > 1
+  SERIAL_MV(" U:", current_position[U_AXIS]);
+  #endif
+  #if DRIVER_EXTRUDERS > 2
+  SERIAL_MV(" V:", current_position[V_AXIS]);
+  #endif
+  #if DRIVER_EXTRUDERS > 3
+  SERIAL_MV(" W:", current_position[W_AXIS]);
+  #endif
+  #if DRIVER_EXTRUDERS > 4
+  SERIAL_MV(" K:", current_position[K_AXIS]);
+  #endif
+  #if DRIVER_EXTRUDERS > 5
+  SERIAL_MV(" L:", current_position[L_AXIS]);
+  #endif
+
 
   stepper.report_positions();
 

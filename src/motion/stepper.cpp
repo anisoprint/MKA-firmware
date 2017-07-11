@@ -289,18 +289,23 @@ volatile long Stepper::endstops_trigsteps[XYZ];
   #define E_APPLY_STEP(v,Q) E_STEP_WRITE(v)
 	#if DRIVER_EXTRUDERS > 1
 		#define U_APPLY_STEP(v,Q) U_STEP_WRITE(v)
+		#define INVERT_U_STEP_PIN INVERT_E_STEP_PIN
 	#endif
 	#if DRIVER_EXTRUDERS > 2
 		#define V_APPLY_STEP(v,Q) V_STEP_WRITE(v)
+		#define INVERT_V_STEP_PIN INVERT_E_STEP_PIN
 	#endif
 	#if DRIVER_EXTRUDERS > 3
 		#define W_APPLY_STEP(v,Q) W_STEP_WRITE(v)
+		#define INVERT_W_STEP_PIN INVERT_E_STEP_PIN
 	#endif
 	#if DRIVER_EXTRUDERS > 4
 		#define K_APPLY_STEP(v,Q) K_STEP_WRITE(v)
+		#define INVERT_K_STEP_PIN INVERT_E_STEP_PIN
 	#endif
-	#if DRIVER_EXTRUDERS > 4
-		#define K_APPLY_STEP(v,Q) K_STEP_WRITE(v)
+	#if DRIVER_EXTRUDERS > 5
+		#define L_APPLY_STEP(v,Q) L_STEP_WRITE(v)
+		#define INVERT_L_STEP_PIN INVERT_E_STEP_PIN
 	#endif
 
 #endif
@@ -559,7 +564,7 @@ void Stepper::isr() {
 			#if DRIVER_EXTRUDERS > 4
 				counter_K = counter_X;
 			#endif
-			#if DRIVER_EXTRUDERS > 4
+			#if DRIVER_EXTRUDERS > 5
 				counter_L = counter_X;
 			#endif
 
@@ -758,21 +763,21 @@ void Stepper::isr() {
         }
       #else // !COLOR_MIXING_EXTRUDER
         PULSE_START(E);
-				#if DRIVER_EXTRUDERS > 1
-        	PULSE_START(U);
-				#endif
-				#if DRIVER_EXTRUDERS > 2
-					counter_V = counter_X;
-				#endif
-				#if DRIVER_EXTRUDERS > 3
-					counter_W = counter_X;
-				#endif
-				#if DRIVER_EXTRUDERS > 4
-					counter_K = counter_X;
-				#endif
-				#if DRIVER_EXTRUDERS > 4
-					counter_L = counter_X;
-				#endif
+		#if DRIVER_EXTRUDERS > 1
+			PULSE_START(U);
+		#endif
+		#if DRIVER_EXTRUDERS > 2
+			PULSE_START(V);
+		#endif
+		#if DRIVER_EXTRUDERS > 3
+			PULSE_START(W);
+		#endif
+		#if DRIVER_EXTRUDERS > 4
+			PULSE_START(K);
+		#endif
+		#if DRIVER_EXTRUDERS > 5
+			PULSE_START(L);
+		#endif
       #endif
     #endif // !ADVANCE && !LIN_ADVANCE
 
@@ -809,6 +814,21 @@ void Stepper::isr() {
         }
       #else // !COLOR_MIXING_EXTRUDER
         PULSE_STOP(E);
+		#if DRIVER_EXTRUDERS > 1
+        	PULSE_STOP(U);
+		#endif
+		#if DRIVER_EXTRUDERS > 2
+        	PULSE_STOP(V);
+		#endif
+		#if DRIVER_EXTRUDERS > 3
+        	PULSE_STOP(W);
+		#endif
+		#if DRIVER_EXTRUDERS > 4
+        	PULSE_STOP(K);
+		#endif
+		#if DRIVER_EXTRUDERS > 5
+        	PULSE_STOP(L);
+		#endif
       #endif
     #endif // !ADVANCE && !LIN_ADVANCE
 
@@ -1429,7 +1449,7 @@ void Stepper::synchronize() { while (planner.blocks_queued()) idle(); }
  * This allows get_axis_position_mm to correctly
  * derive the current XYZ position later on.
  */
-void Stepper::set_position(const long &a, const long &b, const long &c, const long &e) {
+void Stepper::set_position(const long position[XYZE]) {
 
   synchronize(); // Bad to set stepper counts in the middle of a move
 
@@ -1437,27 +1457,27 @@ void Stepper::set_position(const long &a, const long &b, const long &c, const lo
 
   #if CORE_IS_XY
     // corexy positioning
-    count_position[A_AXIS] = a + (CORE_FACTOR) * b;
-    count_position[B_AXIS] = CORESIGN(a - (CORE_FACTOR) * b);
-    count_position[Z_AXIS] = c;
+    count_position[A_AXIS] = position[X_AXIS] + (CORE_FACTOR) * position[Y_AXIS];
+    count_position[B_AXIS] = CORESIGN(position[X_AXIS] - (CORE_FACTOR) * position[Y_AXIS]);
+    count_position[Z_AXIS] = position[Z_AXIS];
   #elif CORE_IS_XZ
     // corexz planning
-    count_position[A_AXIS] = a + (CORE_FACTOR) * c;
-    count_position[Y_AXIS] = b;
-    count_position[C_AXIS] = CORESIGN(a - (CORE_FACTOR) * c);
+    count_position[A_AXIS] = position[X_AXIS] + (CORE_FACTOR) * position[Z_AXIS];
+    count_position[Y_AXIS] = position[Y_AXIS];
+    count_position[C_AXIS] = CORESIGN(position[X_AXIS] - (CORE_FACTOR) * position[Z_AXIS]);
   #elif CORE_IS_YZ
     // coreyz planning
-    count_position[X_AXIS] = a;
-    count_position[B_AXIS] = b + (CORE_FACTOR) * c;
-    count_position[C_AXIS] = CORESIGN(b - (CORE_FACTOR) * c);
+    count_position[X_AXIS] = position[X_AXIS];
+    count_position[B_AXIS] = position[Y_AXIS] + (CORE_FACTOR) * position[Z_AXIS];
+    count_position[C_AXIS] = CORESIGN(position[Y_AXIS] - (CORE_FACTOR) * position[Z_AXIS]);
   #else
     // default non-h-bot planning
-    count_position[X_AXIS] = a;
-    count_position[Y_AXIS] = b;
-    count_position[Z_AXIS] = c;
+    count_position[X_AXIS] = position[X_AXIS];
+    count_position[Y_AXIS] = position[Y_AXIS];
+    count_position[Z_AXIS] = position[Z_AXIS];
   #endif
 
-  count_position[E_AXIS] = e;
+  LOOP_EUVW(ie) count_position[ie] = position[ie];
   CRITICAL_SECTION_END;
 }
 
@@ -1467,9 +1487,9 @@ void Stepper::set_position(const AxisEnum &axis, const long &v) {
   CRITICAL_SECTION_END;
 }
 
-void Stepper::set_e_position(const long &e) {
+void Stepper::set_e_position(const long e_position[DRIVER_EXTRUDERS]) {
   CRITICAL_SECTION_START;
-  count_position[E_AXIS] = e;
+  LOOP_EUVW(ie) count_position[ie] = e_position[ie-XYZ];
   CRITICAL_SECTION_END;
 }
 
