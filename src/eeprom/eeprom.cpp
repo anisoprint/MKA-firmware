@@ -1,9 +1,10 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MKA 3D Printer Firmware
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Andrey Azarov, Anisoprint LLC
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -952,7 +953,7 @@ void EEPROM::Factory_Settings() {
     planner.max_acceleration_mm_per_s2[i] = tmp3[i < COUNT(tmp3) ? i : COUNT(tmp3) - 1];
   }
 
-  for (int8_t i = 0; i < EXTRUDERS; i++) {
+  for (int8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
     planner.retract_acceleration[i]       = tmp4[i < COUNT(tmp4) ? i : COUNT(tmp4) - 1];
     planner.max_jerk[E_AXIS + i]          = tmp5[i < COUNT(tmp5) ? i : COUNT(tmp5) - 1];
   }

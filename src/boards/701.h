@@ -105,10 +105,10 @@
   #define LCD_PINS_D6       39
   #define LCD_PINS_D7       15
 
-  #define SHIFT_CLK         43
+  /*#define SHIFT_CLK         43
   #define SHIFT_LD          35
   #define SHIFT_OUT         34
-  #define SHIFT_EN          44
+  #define SHIFT_EN          44*/
 
   //buttons are directly attached using keypad
   #define BTN_EN1           44

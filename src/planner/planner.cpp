@@ -359,7 +359,7 @@ void Planner::recalculate() {
     for (uint8_t b = block_buffer_tail; b != block_buffer_head; b = next_block_index(b)) {
       block_t* block = &block_buffer[b];
       if (block->steps[X_AXIS] || block->steps[Y_AXIS] || block->steps[Z_AXIS]) {
-    	float se;
+    	float se = 0;
     	float ee;
     	for(int i = E_AXIS; i < NUM_AXIS; i++)
     	{
@@ -574,6 +574,7 @@ void Planner::_buffer_line(const float destination[XYZE], float fr_mm_s) {
   // Calculate target position in absolute steps
   // this should be done after the wait, because otherwise a M92 code within the gcode disrupts this calculation somehow
   long target[XYZE];
+
   LOOP_XYZE(i)
   {
 	  target[i] = LROUND(destination[i] * axis_steps_per_mm[i]);
@@ -594,6 +595,10 @@ void Planner::_buffer_line(const float destination[XYZE], float fr_mm_s) {
   const long  dx = target[X_AXIS] - position[X_AXIS],
               dy = target[Y_AXIS] - position[Y_AXIS],
               dz = target[Z_AXIS] - position[Z_AXIS];
+
+
+
+
 
   // DRYRUN ignores all temperature constraints and assures that the extruder is instantly satisfied
   if (DEBUGGING(DRYRUN)) {
@@ -1222,7 +1227,7 @@ void Planner::_buffer_line(const float destination[XYZE], float fr_mm_s) {
     }while(0)
 
     // Start with print or travel acceleration
-    accel = CEIL((esteps ? acceleration : travel_acceleration) * steps_per_mm);
+    accel = CEIL((extruder_moves ? acceleration : travel_acceleration) * steps_per_mm);
 
     // Limit acceleration per axis
     if (block->step_event_count <= cutoff_long){
@@ -1468,7 +1473,11 @@ void Planner::_buffer_line(const float destination[XYZE], float fr_mm_s) {
 void Planner::_set_position_mm(const float position[XYZE]) {
   long n[XYZE];
   LOOP_XYZE(i) n[i]= LROUND(position[i] * axis_steps_per_mm[i]);
-
+	/*SERIAL_MV("n X", n[X_AXIS], 3);
+	SERIAL_MV("n Y", n[Y_AXIS], 3);
+	SERIAL_MV("n Z", n[Z_AXIS], 3);
+	SERIAL_MV("n E", n[E_AXIS], 3);
+	SERIAL_MV("n U", n[U_AXIS], 3);*/
   //last_extruder = active_extruder;
   #if ENABLED(LIN_ADVANCE)
     LOOP_XYZE(i) position_float[i]= LROUND(position[i]);

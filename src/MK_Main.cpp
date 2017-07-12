@@ -2644,7 +2644,13 @@ static void do_homing_move(AxisEnum axis, float distance, float fr_mm_s=0.0) {
     inverse_kinematics(current_position);
     planner.buffer_line(delta[A_AXIS], delta[B_AXIS], delta[C_AXIS], current_position[E_AXIS], fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis], active_extruder, active_driver);
   #else
+  	SERIAL_MV(" PX", planner.position[X_AXIS], 3);
+  	SERIAL_MV(" PY", planner.position[Y_AXIS], 3);
+  	SERIAL_MV(" PZ", planner.position[Z_AXIS], 3);
     sync_plan_position();
+  	SERIAL_MV(" PXA", planner.position[X_AXIS], 3);
+  	SERIAL_MV(" PYA", planner.position[Y_AXIS], 3);
+  	SERIAL_MV(" PZA", planner.position[Z_AXIS], 3);
     current_position[axis] = distance;
     planner.buffer_line(current_position, fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis]);
   #endif
