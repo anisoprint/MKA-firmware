@@ -1470,9 +1470,9 @@ void Planner::_buffer_line(const float destination[XYZE], float fr_mm_s) {
  *
  * On CORE machines stepper ABC will be translated from the given XYZ.
  */
-void Planner::_set_position_mm(const float position[XYZE]) {
+void Planner::_set_position_mm(const float pos[XYZE]) {
   long n[XYZE];
-  LOOP_XYZE(i) n[i]= LROUND(position[i] * axis_steps_per_mm[i]);
+  LOOP_XYZE(i) n[i]= position[i] = LROUND(pos[i] * axis_steps_per_mm[i]);
 	/*SERIAL_MV("n X", n[X_AXIS], 3);
 	SERIAL_MV("n Y", n[Y_AXIS], 3);
 	SERIAL_MV("n Z", n[Z_AXIS], 3);
@@ -1480,7 +1480,7 @@ void Planner::_set_position_mm(const float position[XYZE]) {
 	SERIAL_MV("n U", n[U_AXIS], 3);*/
   //last_extruder = active_extruder;
   #if ENABLED(LIN_ADVANCE)
-    LOOP_XYZE(i) position_float[i]= LROUND(position[i]);
+    LOOP_XYZE(i) position_float[i]= LROUND(pos[i]);
   #endif
   stepper.set_position(n);
   previous_nominal_speed = 0.0; // Resets planner junction speeds. Assumes start from rest.
