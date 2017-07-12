@@ -407,6 +407,14 @@
     #define TARGET_EXTRUDER 0
   #endif
 
+	#if DRIVER_EXTRUDERS > 1
+		#define GET_TARGET_EXTRUDER_DRIVER(CMD) if (get_target_extruder_driver_from_command(CMD)) return
+	#else
+		#define GET_TARGET_EXTRUDER_DRIVER(CMD) NOOP
+	#endif
+
+
+
 
 
   /**

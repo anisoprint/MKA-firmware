@@ -1261,12 +1261,31 @@ bool code_seen(char code) {
  *
  * Returns TRUE if the target is invalid
  */
-//TODO get_target_extruder_from_command
 bool get_target_extruder_from_command(int code) {
   if (code_seen('T')) {
     if (code_value_byte() >= EXTRUDERS) {
       SERIAL_SMV(ER, "M", code);
       SERIAL_EMV(" " MSG_INVALID_EXTRUDER, code_value_byte());
+      return true;
+    }
+    target_extruder = code_value_byte();
+  }
+  else
+    target_extruder = active_extruder;
+
+  return false;
+}
+
+/**
+ * Set target_extruder from the T parameter or the active_extruder
+ *
+ * Returns TRUE if the target is invalid
+ */
+bool get_target_extruder_driver_from_command(int code) {
+  if (code_seen('T')) {
+    if (code_value_byte() >= DRIVER_EXTRUDERS) {
+      SERIAL_SMV(ER, "M", code);
+      SERIAL_EMV(" " MSG_INVALID_EXTRUDER_DRV, code_value_byte());
       return true;
     }
     target_extruder = code_value_byte();
@@ -4129,6 +4148,7 @@ inline void gcode_G28(const bool always_home_all) {
   #endif
 
   // Always home with tool 0 active
+  //TODO: Home with tool 0
   #if HOTENDS > 1
     const uint8_t old_tool_index = active_extruder;
     tool_change(0, 0, true);
@@ -6559,7 +6579,22 @@ inline void gcode_G60() {
   SERIAL_MV("<-X:", stored_position[slot][X_AXIS]);
   SERIAL_MV(" Y:", stored_position[slot][Y_AXIS]);
   SERIAL_MV(" Z:", stored_position[slot][Z_AXIS]);
-  SERIAL_EMV(" E:", stored_position[slot][E_AXIS]);
+  SERIAL_MV(" E:", stored_position[slot][E_AXIS]);
+#if DRIVER_EXTRUDERS > 1
+  SERIAL_MV(" U:", stored_position[slot][U_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 2
+  SERIAL_MV(" V:", stored_position[slot][V_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 3
+  SERIAL_MV(" W:", stored_position[slot][W_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 4
+  SERIAL_MV(" K:", stored_position[slot][K_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 5
+  SERIAL_MV(" L:", stored_position[slot][L_AXIS]);
+#endif
 }
 
 /**
@@ -6608,7 +6643,16 @@ inline void gcode_G61() {
  */
 inline void gcode_G92() {
   bool didXYZ = false,
-       didE = code_seen('E');
+       didE = false;
+
+  LOOP_EUVW(ie)
+  {
+  	if (code_seen(axis_codes[ie]))
+  	{
+  		didE = true;
+  		break;
+  	}
+  }
 
   if (!didE) stepper.synchronize();
 
@@ -6643,6 +6687,7 @@ inline void gcode_G92() {
   report_current_position();
 }
 
+//TODO: RESUME_CONTINUE
 #if HAS(RESUME_CONTINUE)
 
   /**
@@ -7627,16 +7672,17 @@ inline void gcode_M81() {
 /**
  * M82: Set E codes absolute (default)
  */
-inline void gcode_M82() { axis_relative_modes[E_AXIS] = false; }
+inline void gcode_M82() { LOOP_EUVW(ie) axis_relative_modes[ie] = false; }
 
 /**
  * M83: Set E codes relative while in Absolute Coordinates (G90) mode
  */
-inline void gcode_M83() { axis_relative_modes[E_AXIS] = true; }
+inline void gcode_M83() { LOOP_EUVW(ie) axis_relative_modes[ie] = true; }
 
 /**
  * M18, M84: Disable stepper motors
  */
+// TODO: M18 disables all extruders on E code
 inline void gcode_M18_M84() {
   if (code_seen('S')) {
     stepper_inactive_time = code_value_millis_from_seconds();
@@ -7673,6 +7719,7 @@ inline void gcode_M85() {
  *
  *      With multiple extruders use T to specify which one.
  */
+// TODO: M92 shuld be fixed for multiextruder
 inline void gcode_M92() {
 
   GET_TARGET_EXTRUDER(92);
@@ -8355,6 +8402,7 @@ inline void gcode_M122() {
  *    T<extruder> - Optional extruder number. Current extruder if omitted.
  *    D<linear> - Diameter of the filament. Use "D0" to switch back to linear units on the E axis.
  */
+//TODO: M200, M201, M203, M204, M205 - not working correctly with multiextruder
 inline void gcode_M200() {
 
   GET_TARGET_EXTRUDER(200);
@@ -8583,8 +8631,7 @@ inline void gcode_M220() {
  * M221: Set extrusion percentage (M221 T0 S95)
  */
 inline void gcode_M221() {
-
-  GET_TARGET_EXTRUDER(221);
+	GET_TARGET_EXTRUDER_DRIVER(221);
   if (code_seen('S')) flow_percentage[TARGET_EXTRUDER] = code_value_int();
 }
 
@@ -8593,7 +8640,7 @@ inline void gcode_M221() {
  */
 inline void gcode_M222() {
 
-  GET_TARGET_EXTRUDER(222);
+	GET_TARGET_EXTRUDER_DRIVER(222);
 
   if (code_seen('S')) {
     density_percentage[TARGET_EXTRUDER] = code_value_int();
@@ -9783,6 +9830,7 @@ inline void gcode_M532() {
   }
 #endif // HEATER_USES_AD595
 
+//TODO: FILAMENT_CHANGE_FEATURE
 #if ENABLED(FILAMENT_CHANGE_FEATURE)
 
   millis_t next_buzz = 0;
@@ -10782,6 +10830,7 @@ inline void gcode_M999() {
  * For CNC no other parameters are expected
  *
  */
+//TODO: Tool switch
 inline void gcode_T(uint8_t tool_id) {
 
   #if ENABLED(DEBUG_LEVELING_FEATURE)
@@ -13352,16 +13401,19 @@ void prepare_move_to_destination() {
 
   #if ENABLED(PREVENT_COLD_EXTRUSION)
     if (!DEBUGGING(DRYRUN)) {
-      if (destination[E_AXIS] != current_position[E_AXIS]) {
-        if (thermalManager.tooColdToExtrude(active_extruder))
-          current_position[E_AXIS] = destination[E_AXIS]; // Behave as if the move really took place, but ignore E part
-        #if ENABLED(PREVENT_LENGTHY_EXTRUDE)
-          if (labs(destination[E_AXIS] - current_position[E_AXIS]) > EXTRUDE_MAXLENGTH) {
-            current_position[E_AXIS] = destination[E_AXIS]; // Behave as if the move really took place, but ignore E part
-            SERIAL_LM(ER, MSG_ERR_LONG_EXTRUDE_STOP);
-          }
-        #endif
-      }
+    	LOOP_EUVW(ie)
+    		{
+					if (destination[ie] != current_position[ie]) {
+						if (thermalManager.tooColdToExtrude(ie-XYZ))
+							current_position[ie] = destination[ie]; // Behave as if the move really took place, but ignore E part
+						#if ENABLED(PREVENT_LENGTHY_EXTRUDE)
+							if (labs(destination[ie] - current_position[ie]) > EXTRUDE_MAXLENGTH) {
+								current_position[ie] = destination[ie]; // Behave as if the move really took place, but ignore E part
+								SERIAL_LM(ER, MSG_ERR_LONG_EXTRUDE_STOP);
+							}
+						#endif
+					}
+    		}
     }
   #endif
 
@@ -13710,7 +13762,7 @@ float calculate_volumetric_multiplier(float diameter) {
 }
 
 void calculate_volumetric_multipliers() {
-  for (uint8_t e = 0; e < EXTRUDERS; e++)
+  for (uint8_t e = 0; e < DRIVER_EXTRUDERS; e++)
     volumetric_multiplier[e] = calculate_volumetric_multiplier(filament_size[e]);
 }
 
