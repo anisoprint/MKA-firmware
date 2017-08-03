@@ -6643,7 +6643,17 @@ inline void gcode_G61() {
  */
 inline void gcode_G92() {
   bool didXYZ = false,
-       didE = false;
+       didE = false,
+  		 doAll = false;
+
+  LOOP_XYZ(i)
+  {
+  	if (code_seen(axis_codes[i]))
+  	{
+  		didXYZ = true;
+  		break;
+  	}
+  }
 
   LOOP_EUVW(ie)
   {
@@ -6654,10 +6664,12 @@ inline void gcode_G92() {
   	}
   }
 
-  if (!didE) stepper.synchronize();
+  doAll = !(didXYZ || didE);
+
+  if (didXYZ) stepper.synchronize();
 
   LOOP_XYZE(i) {
-    if (code_seen(axis_codes[i])) {
+    if (code_seen(axis_codes[i]) || doAll) {
       #if IS_SCARA
         current_position[i] = code_value_axis_units((AxisEnum)i);
         if (i != E_AXIS) didXYZ = true;
@@ -6665,21 +6677,19 @@ inline void gcode_G92() {
         #if ENABLED(WORKSPACE_OFFSETS)
           const float p = current_position[i];
         #endif
-        float v = code_value_axis_units((AxisEnum)i);
-
+        float v = 0;
+        if (!doAll) v = code_value_axis_units((AxisEnum)i);
         current_position[i] = v;
-
+				#if ENABLED(WORKSPACE_OFFSETS)
         if (i != E_AXIS) {
-          didXYZ = true;
-          #if ENABLED(WORKSPACE_OFFSETS)
             position_shift[i] += v - p; // Offset the coordinate space
             update_software_endstops((AxisEnum)i);
-          #endif
         }
+			#endif
       #endif
     }
   }
-  if (didXYZ)
+  if (didXYZ || doAll)
     SYNC_PLAN_POSITION_KINEMATIC();
   else if (didE)
     sync_plan_position_e();

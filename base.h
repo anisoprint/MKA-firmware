@@ -43,12 +43,12 @@
 #include "Boards.h"
 #include "src/mechanics.h"
 
-#include "Configuration_Overall.h"
+#include "Configuration.h"
 #include "Configuration_Version.h"
 
 #ifndef CONFIGURATION_OVERALL
   #include "Configuration_Basic.h"
-  #include "Configuration_Overall.h"
+  #include "Configuration.h"
 
   #if MECH(CARTESIAN)
     #include "Configuration_Cartesian.h"
@@ -64,7 +64,13 @@
 
   #include "Configuration_Temperature.h"
   #include "Configuration_Feature.h"
-  #include "Configuration_Overall.h"
+  #include "Configuration.h"
+#else
+	#ifdef PRINTER_TYPE
+		#define AS_QUOTEDSTRING(S) #S
+		#define INCLUDE_BY_PRINTER(P,H)    AS_QUOTEDSTRING(M/H)
+		#include INCLUDE_BY_PRINTER(PRINTER_TYPE, Config.h)
+	#endif
 #endif
 
 #if ENABLED(LASERBEAM)
