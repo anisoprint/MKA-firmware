@@ -110,7 +110,7 @@
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
-#define TEMP_SENSOR_BED 1
+#define TEMP_SENSOR_BED 0
 #define TEMP_SENSOR_CHAMBER 0
 #define TEMP_SENSOR_COOLER 0
 
@@ -190,15 +190,15 @@
 //Preheat Constants
 #define PREHEAT_1_TEMP_HOTEND 190
 #define PREHEAT_1_TEMP_BED     60
-#define PREHEAT_1_FAN_SPEED   255   // Insert Value between 0 and 255
+#define PREHEAT_1_FAN_SPEED   128   // Insert Value between 0 and 255
 
 #define PREHEAT_2_TEMP_HOTEND 240
 #define PREHEAT_2_TEMP_BED    100
-#define PREHEAT_2_FAN_SPEED   255   // Insert Value between 0 and 255
+#define PREHEAT_2_FAN_SPEED   128   // Insert Value between 0 and 255
 
 #define PREHEAT_3_TEMP_HOTEND 230
 #define PREHEAT_3_TEMP_BED     60
-#define PREHEAT_3_FAN_SPEED   255   // Insert Value between 0 and 255
+#define PREHEAT_3_FAN_SPEED   128   // Insert Value between 0 and 255
 /*****************************************************************************************/
 
 
@@ -304,9 +304,9 @@
 #define LPQ_MAX_LEN 50
 
 //           HotEnd{HE0,HE1,HE2,HE3}
-#define DEFAULT_Kp {40, 40, 40, 40}     // Kp for H0, H1, H2, H3
-#define DEFAULT_Ki {07, 07, 07, 07}     // Ki for H0, H1, H2, H3
-#define DEFAULT_Kd {60, 60, 60, 60}     // Kd for H0, H1, H2, H3
+#define DEFAULT_Kp {28.89, 40, 40, 40}     // Kp for H0, H1, H2, H3
+#define DEFAULT_Ki {1.23, 07, 07, 07}     // Ki for H0, H1, H2, H3
+#define DEFAULT_Kd {169.92, 60, 60, 60}     // Kd for H0, H1, H2, H3
 #define DEFAULT_Kc {100, 100, 100, 100} // heating power = Kc * (e_speed)
 /***********************************************************************/
 

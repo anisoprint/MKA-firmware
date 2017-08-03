@@ -251,7 +251,7 @@
 #endif
 
 #if ENABLED(HOTEND_AUTO_FAN)
-  #define H0_AUTO_FAN_PIN -1
+  #define H0_AUTO_FAN_PIN ORIG_FAN_PIN
   #define H1_AUTO_FAN_PIN -1
   #define H2_AUTO_FAN_PIN -1
   #define H3_AUTO_FAN_PIN -1

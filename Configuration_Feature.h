@@ -153,9 +153,9 @@
 // Multiple hotends can be assigned to the same pin in which case
 // the fan will turn on when any selected hotend is above the threshold.
 // You need to set HOTEND AUTO FAN PIN in Configuration_pins.h
-//#define HOTEND_AUTO_FAN
-#define HOTEND_AUTO_FAN_TEMPERATURE  50
-#define HOTEND_AUTO_FAN_SPEED       255  // 255 = full speed
+#define HOTEND_AUTO_FAN
+#define HOTEND_AUTO_FAN_TEMPERATURE  100
+#define HOTEND_AUTO_FAN_SPEED       128  // 255 = full speed
 #define HOTEND_AUTO_FAN_MIN_SPEED     0
 /**************************************************************************/
 
@@ -626,12 +626,12 @@
 /**************************************************************************
  ****************************** R/C Servo *********************************
  **************************************************************************/
-//#define ENABLE_SERVOS
+#define ENABLE_SERVOS
 // Number of servos
 // If you select a configuration below, this will receive a default value and does not need to be set manually
 // set it manually if you have more servos than extruders and wish to manually control some
 // leaving it defining as 0 will disable the servo subsystem
-#define NUM_SERVOS 0
+#define NUM_SERVOS 1
 // Servo index starts with 0 for M280 command
 //
 // Servo deactivation
@@ -1330,7 +1330,7 @@
 //
 // Note: Usually sold with a white PCB.
 //
-#define REPRAP_DISCOUNT_SMART_CONTROLLER
+//#define REPRAP_DISCOUNT_SMART_CONTROLLER
 
 // GADGETS3D G3D LCD/SD Controller
 // http://reprap.org/wiki/RAMPS_1.3/1.4_GADGETS3D_Shield_with_Panel
@@ -1342,7 +1342,7 @@
 // RepRapDiscount FULL GRAPHIC Smart Controller
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
-//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
 // MakerLab Mini Panel with graphic
 // controller and SD support - http://reprap.org/wiki/Mini_panel

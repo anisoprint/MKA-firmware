@@ -133,8 +133,8 @@
  * MAKERARM_SCARA - SCARA Makerfarm                                    *
  *                                                                     *
  ***********************************************************************/
-#define MECHANISM MECH_CARTESIAN
-//#define MECHANISM MECH_COREXY
+//#define MECHANISM MECH_CARTESIAN
+#define MECHANISM MECH_COREXY
 //#define MECHANISM MECH_COREYX
 //#define MECHANISM MECH_COREXZ
 //#define MECHANISM MECH_COREZX
