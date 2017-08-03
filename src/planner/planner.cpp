@@ -1197,6 +1197,8 @@ void Planner::_buffer_line(const float destination[XYZE], float fr_mm_s) {
     block->nominal_rate *= speed_factor;
   }
 
+
+
   // Compute and limit the acceleration rate for the trapezoid generator.
   const float steps_per_mm = block->step_event_count * inverse_millimeters;
   uint32_t accel;

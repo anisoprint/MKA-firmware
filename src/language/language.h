@@ -53,7 +53,7 @@
 #elif MB(SAV_MKI)
   #define MACHINE_NAME "SAV MkI"
 #elif DISABLED(MACHINE_NAME)
-  #define MACHINE_NAME "3D Printer"
+  #define MACHINE_NAME "Composer A2 alpha"
 #endif
 
 #if ENABLED(CUSTOM_MACHINE_NAME)
@@ -113,7 +113,7 @@
 #define MSG_INVALID_HOTEND                  "Invalid hotend"
 #define MSG_INVALID_SOLENOID                "Invalid solenoid"
 #define MSG_ERR_NO_THERMISTORS              "No thermistors - no temperature"
-#define MSG_M115_REPORT                     "FIRMWARE_NAME:MK4duo " SHORT_BUILD_VERSION " FIRMWARE_URL:" FIRMWARE_URL " PROTOCOL_VERSION:" PROTOCOL_VERSION " MACHINE_TYPE:" MACHINE_TYPE " EXTRUDER_COUNT:" STRINGIFY(EXTRUDERS) " UUID:" MACHINE_UUID "\n"
+#define MSG_M115_REPORT                     "FIRMWARE_NAME:MKA " SHORT_BUILD_VERSION " FIRMWARE_URL:" FIRMWARE_URL " PROTOCOL_VERSION:" PROTOCOL_VERSION " MACHINE_TYPE:" MACHINE_TYPE " EXTRUDER_COUNT:" STRINGIFY(EXTRUDERS) " UUID:" MACHINE_UUID "\n"
 #define MSG_COUNT_X                         " Count X:"
 #define MSG_COUNT_A                         " Count A:"
 #define MSG_COUNT_ALPHA                     " Count Alpha:"
