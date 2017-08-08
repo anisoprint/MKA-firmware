@@ -64,12 +64,25 @@
 
   #include "Configuration_Temperature.h"
   #include "Configuration_Feature.h"
-  #include "Configuration.h"
 #else
 	#ifdef PRINTER_TYPE
 		#define AS_QUOTEDSTRING(S) #S
-		#define INCLUDE_BY_PRINTER(P,H)    AS_QUOTEDSTRING(M/H)
-		#include INCLUDE_BY_PRINTER(PRINTER_TYPE, Config.h)
+		#define INCLUDE_BY_PRINTER(P,H)    AS_QUOTEDSTRING(config/P/H)
+		#include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Basic.h)
+	    #if MECH(CARTESIAN)
+		  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Cartesian.h)
+	    #elif IS_CORE
+		  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Core.h)
+	    #elif MECH(DELTA)
+		  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Delta.h)
+	    #elif IS_SCARA
+	   	  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Scara.h)
+	    #elif MECH(MUVE3D)
+		  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Muve3D.h)
+	    #endif
+
+	    #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Temperature.h)
+	    #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Feature.h)
 	#endif
 #endif
 

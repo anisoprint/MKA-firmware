@@ -31,7 +31,7 @@
  *
  */
 
-#define PRINTER_TYPE SPUTNIX
+#define PRINTER_TYPE PRUSAI3
 
 #define CONFIGURATION_OVERALL
 
