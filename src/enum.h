@@ -1,9 +1,10 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MKA 3D Printer Firmware
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Andrey Azarov, Anisoprint LLC
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,12 +41,55 @@ enum AxisEnum {
   B_AXIS  = 1,
   Z_AXIS  = 2,
   C_AXIS  = 2,
+  #if DRIVER_EXTRUDERS == 1
   E_AXIS  = 3,
   X_HEAD  = 4,
   Y_HEAD  = 5,
   Z_HEAD  = 6,
+  #elif DRIVER_EXTRUDERS == 2
+  E_AXIS  = 3,
+  U_AXIS  = 4,
+  X_HEAD  = 5,
+  Y_HEAD  = 6,
+  Z_HEAD  = 7,
+  #elif DRIVER_EXTRUDERS == 3
+  E_AXIS  = 3,
+  U_AXIS  = 4,
+  V_AXIS  = 5,
+  X_HEAD  = 6,
+  Y_HEAD  = 7,
+  Z_HEAD  = 8,
+  #elif DRIVER_EXTRUDERS == 4
+  E_AXIS  = 3,
+  U_AXIS  = 4,
+  V_AXIS  = 5,
+  W_AXIS  = 6,
+  X_HEAD  = 7,
+  Y_HEAD  = 8,
+  Z_HEAD  = 9,
+  #elif DRIVER_EXTRUDERS == 5
+  E_AXIS  = 3,
+  U_AXIS  = 4,
+  V_AXIS  = 5,
+  W_AXIS  = 6,
+  K_AXIS  = 7,
+  X_HEAD  = 8,
+  Y_HEAD  = 9,
+  Z_HEAD  = 10,
+  #elif DRIVER_EXTRUDERS == 6
+  E_AXIS  = 3,
+  U_AXIS  = 4,
+  V_AXIS  = 5,
+  W_AXIS  = 6,
+  K_AXIS  = 7,
+  L_AXIS  = 8,
+  X_HEAD  = 9,
+  Y_HEAD  = 10,
+  Z_HEAD  = 11,
+  #endif
   ALL_AXES = 100
 };
+
 
 typedef enum {
   LINEARUNIT_MM,

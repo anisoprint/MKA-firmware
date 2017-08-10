@@ -1,1 +1,8 @@
 /Release/
+.settings/
+*.o
+applet/
+*~
+*.orig
+*.rej
+*.bak

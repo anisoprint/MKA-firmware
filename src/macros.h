@@ -24,9 +24,6 @@
 #define MACROS_H
 
 // The axis order in all axis related arrays is X, Y, Z, E
-#define NUM_AXIS  4
-#define XYZE      4
-#define ABCE      4
 #define ABC       3
 #define XYZ       3
 
@@ -104,8 +101,8 @@
 #define ARRAY_BY_N_N(N, ...) ARRAY_N(N, __VA_ARGS__)
 #define ARRAY_BY_N(N, v1) ARRAY_BY_N_N(N, v1, v1, v1, v1, v1, v1, v1, v1, v1)
 
-// ARRAY_BY_EXTRUDERS based on EXTRUDERS
-#define ARRAY_BY_EXTRUDERS_N(...) ARRAY_N(EXTRUDERS, __VA_ARGS__)
+// ARRAY_BY_EXTRUDERS based on DRIVER_EXTRUDERS
+#define ARRAY_BY_EXTRUDERS_N(...) ARRAY_N(DRIVER_EXTRUDERS, __VA_ARGS__)
 #define ARRAY_BY_EXTRUDERS(v1) ARRAY_BY_EXTRUDERS_N(v1, v1, v1, v1, v1, v1)
 
 // ARRAY_BY_HOTENDS based on HOTENDS
@@ -163,8 +160,10 @@
 
 #define LOOP_XY(VAR)      for (uint8_t VAR = X_AXIS; VAR <= Y_AXIS; VAR++)
 #define LOOP_XYZ(VAR)     for (uint8_t VAR = X_AXIS; VAR <= Z_AXIS; VAR++)
-#define LOOP_XYZE(VAR)    for (uint8_t VAR = X_AXIS; VAR <= E_AXIS; VAR++)
+#define LOOP_XYZE(VAR)    for (uint8_t VAR = X_AXIS; VAR < XYZE; VAR++)
 #define LOOP_XYZE_N(VAR)  for (uint8_t VAR = X_AXIS; VAR < XYZE_N; VAR++)
+#define LOOP_EUVW(VAR)    for (uint8_t VAR = E_AXIS; VAR < XYZE; VAR++)
+#define LOOP_EXTRUDERS(VAR)    for (uint8_t VAR = 0; VAR < DRIVER_EXTRUDERS; VAR++)
 
 // Feedrate scaling and conversion
 #define MMM_TO_MMS(MM_M) ((MM_M) / 60.0)

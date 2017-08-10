@@ -128,11 +128,11 @@ class Temperature {
     #if ENABLED(PREVENT_COLD_EXTRUSION)
       static bool allow_cold_extrude;
       static uint16_t extrude_min_temp;
-      static bool tooColdToExtrude(uint8_t h) {
+      static bool tooColdToExtrude(uint8_t e) {
         #if HOTENDS <= 1
-          UNUSED(h);
+          UNUSED(e);
         #endif
-        return allow_cold_extrude ? false : degHotend(HOTEND_INDEX) < extrude_min_temp;
+        return allow_cold_extrude ? false : degHotend(extruder_to_hotend(e)) < extrude_min_temp;
       }
     #else
       static bool tooColdToExtrude(uint8_t h) { UNUSED(h); return false; }
@@ -246,6 +246,8 @@ class Temperature {
     #if HAS(AUTO_FAN)
       static millis_t next_auto_fan_check_ms;
     #endif
+
+      static uint8_t extruder_to_hotend(uint8_t extruder);
 
   public:
 

@@ -153,9 +153,9 @@
 // Multiple hotends can be assigned to the same pin in which case
 // the fan will turn on when any selected hotend is above the threshold.
 // You need to set HOTEND AUTO FAN PIN in Configuration_pins.h
-#define HOTEND_AUTO_FAN
+//#define HOTEND_AUTO_FAN
 #define HOTEND_AUTO_FAN_TEMPERATURE  100
-#define HOTEND_AUTO_FAN_SPEED       128  // 255 = full speed
+#define HOTEND_AUTO_FAN_SPEED       255  // 255 = full speed
 #define HOTEND_AUTO_FAN_MIN_SPEED     0
 /**************************************************************************/
 
@@ -1342,7 +1342,7 @@
 // RepRapDiscount FULL GRAPHIC Smart Controller
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
-#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
 // MakerLab Mini Panel with graphic
 // controller and SD support - http://reprap.org/wiki/Mini_panel

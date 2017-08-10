@@ -22,27 +22,17 @@
  */
 
 /**
- * Description:
+ * Configuration.h
  *
- * Supports platforms:
- *    ARDUINO_ARCH_SAM : For Arduino Due and other boards based on Atmel SAM3X8E
- *    ARDUINO_ARCH_AVR : For all Atmel AVR boards
+ * This configuration file contains link to the printer settings
+ *
+ * SPUTNIX - CoreXY printer with 400õ600x200 zone, MKS-GEN, ReprapDiscount graphics LCD, EG-3 extruder
+ * PRUSAI3 - Cartesian printer with 200õ200x200 zone, RAMPS 1.4, ReprapDiscount text LCD, EG-3 extruder
+ *
  */
 
-#ifndef _HAL_H
-#define _HAL_H
+#define PRINTER_TYPE PRUSAI3
 
-#include <stdint.h>
+#define CONFIGURATION_OVERALL
 
-#if ENABLED(ARDUINO_ARCH_SAM)
-  #define CPU_32_BIT
-  #include "HAL_DUE/HAL_Due.h"
-  #include "HAL_DUE/communication.h"
-#elif ENABLED(ARDUINO_ARCH_AVR)
-  #include "HAL_AVR/HAL_AVR.h"
-  #include "HAL_AVR/communication.h"
-#else
-  #error "Unsupported Platform!"
-#endif
 
-#endif // _HAL_H

@@ -61,8 +61,8 @@
       void      calcSteps();
       float     m_hysteresis_mm[NUM_AXIS];
       long      m_hysteresis_steps[NUM_AXIS];
-      uint8_t   m_prev_direction_bits;
-      uint8_t   m_hysteresis_bits;
+      uint16_t   m_prev_direction_bits;
+      uint16_t   m_hysteresis_bits;
     };
 
     //===========================================================================

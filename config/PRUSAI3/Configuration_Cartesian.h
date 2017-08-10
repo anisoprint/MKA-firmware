@@ -523,11 +523,7 @@
  *                                                                                       *
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
-<<<<<<< HEAD
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 400, 102, 52.44, 102, 102}
-=======
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 4000, 102, 102, 102, 102}
->>>>>>> refs/heads/multiextruder
 /*****************************************************************************************/
 
 
@@ -535,11 +531,7 @@
  ********************************** Axis feedrate ****************************************
  *****************************************************************************************/
 //                                       X,   Y, Z,  E0...(per extruder). (mm/sec)
-<<<<<<< HEAD
-#define DEFAULT_MAX_FEEDRATE          {300, 300, 4, 100, 100, 100, 100}
-=======
 #define DEFAULT_MAX_FEEDRATE          {150, 150, 1.7, 100, 100, 100, 100}
->>>>>>> refs/heads/multiextruder
 // Feedrates for manual moves along        X,     Y,     Z,  E from panel
 #define MANUAL_FEEDRATE               {50*60, 50*60, 4*60, 10*60}
 // Minimum feedrate

@@ -68,8 +68,8 @@ typedef struct {
 
   uint8_t flag;                             // Block flags (See BlockFlag enum above)
 
-  unsigned char active_extruder;            // The extruder to move (if E move)
-  unsigned char active_driver;              // Selects the active driver for E
+  //unsigned char active_extruder;            // The extruder to move (if E move)
+  //unsigned char active_driver;              // Selects the active driver for E
 
   // Fields used by the bresenham algorithm for tracing the line
   int32_t steps[NUM_AXIS];                  // Step count along each axis
@@ -83,7 +83,7 @@ typedef struct {
           decelerate_after,                 // The index of the step event on which to start decelerating
           acceleration_rate;                // The acceleration rate used for acceleration calculation
 
-  uint8_t direction_bits;                   // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
+  uint16_t direction_bits;                   // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
 
   // Advance extrusion
   #if ENABLED(LIN_ADVANCE)
@@ -158,7 +158,7 @@ class Planner {
     static float  min_feedrate_mm_s,
                   min_travel_feedrate_mm_s,
                   acceleration,                     // Normal acceleration mm/s^2  DEFAULT ACCELERATION for all printing moves. M204 SXXXX
-                  retract_acceleration[EXTRUDERS],  // Retract acceleration mm/s^2 filament pull-back and push-forward while standing still in the other axes M204 TXXXX
+                  retract_acceleration[DRIVER_EXTRUDERS],  // Retract acceleration mm/s^2 filament pull-back and push-forward while standing still in the other axes M204 TXXXX
                   travel_acceleration,              // Travel acceleration mm/s^2  DEFAULT ACCELERATION for all NON printing moves. M204 MXXXX
                   max_jerk[XYZE_N];                 // The largest speed change requiring no acceleration
 
@@ -198,14 +198,14 @@ class Planner {
       /**
        * Counters to manage disabling inactive extruders
        */
-      static uint8_t g_uc_extruder_last_move[EXTRUDERS];
+      static uint8_t g_uc_extruder_last_move[DRIVER_EXTRUDERS];
     #endif // DISABLE_INACTIVE_EXTRUDER
 
     #if ENABLED(XY_FREQUENCY_LIMIT)
       // Used for the frequency limit
       #define MAX_FREQ_TIME long(1000000.0/XY_FREQUENCY_LIMIT)
       // Old direction bits. Used for speed calculations
-      static unsigned char old_direction_bits;
+      static uint16_t old_direction_bits;
       // Segment times (in µs). Used for speed calculations
       static long axis_segment_time[2][3];
     #endif
@@ -221,7 +221,7 @@ class Planner {
     /**
      * Last extruder used
      */
-    static uint8_t last_extruder;
+    //static uint8_t last_extruder;
 
   public:
 
@@ -280,14 +280,12 @@ class Planner {
      *
      * Leveling and kinematics should be applied ahead of this.
      *
-     *  a,b,c,e   - target position in mm or degrees
+     *  destination   - target position in mm or degrees
      *  fr_mm_s   - (target) speed of the move
-     *  extruder  - target extruder
-     *  driver    - target driver
      */
-    static void _buffer_line(const float &a, const float &b, const float &c, const float &e, float fr_mm_s, const uint8_t extruder, const uint8_t driver);
+    static void _buffer_line(const float destination[XYZE], float fr_mm_s);
 
-    static void _set_position_mm(const float &a, const float &b, const float &c, const float &e);
+    static void _set_position_mm(const float position[XYZE]);
 
     /**
      * Add a new linear movement to the buffer.
@@ -297,16 +295,14 @@ class Planner {
      * Kinematic machines should call buffer_line_kinematic (for leveled moves).
      * (Cartesians may also call buffer_line_kinematic.)
      *
-     *  lx,ly,lz,e  - target position in mm or degrees
+     *  destination - target position in mm or degrees
      *  fr_mm_s     - (target) speed of the move (mm/s)
-     *  extruder    - target extruder
-     *  driver      - target driver
      */
-    static FORCE_INLINE void buffer_line(ARG_X, ARG_Y, ARG_Z, const float &e, const float &fr_mm_s, const uint8_t extruder, const uint8_t driver) {
+    static FORCE_INLINE void buffer_line(const float destination[XYZE], const float &fr_mm_s) {
       #if HAS_LEVELING && IS_CARTESIAN
-        apply_leveling(lx, ly, lz);
+        apply_leveling(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS]);
       #endif
-      _buffer_line(lx, ly, lz, e, fr_mm_s, extruder, driver);
+      _buffer_line(destination, fr_mm_s);
     }
 
     /**
@@ -316,10 +312,8 @@ class Planner {
      *
      *  ltarget  - x,y,z,e CARTESIAN target in mm
      *  fr_mm_s  - (target) speed of the move (mm/s)
-     *  extruder - target extruder
-     *  driver   - target driver
      */
-    static FORCE_INLINE void buffer_line_kinematic(const float ltarget[XYZE], const float &fr_mm_s, const uint8_t extruder, const uint8_t driver) {
+    static FORCE_INLINE void buffer_line_kinematic(const float ltarget[XYZE], const float &fr_mm_s) {
       #if HAS_LEVELING || ENABLED(ZWOBBLE) || ENABLED(HYSTERESIS)
         float lpos[XYZ]={ ltarget[X_AXIS], ltarget[Y_AXIS], ltarget[Z_AXIS] };
         #if HAS_LEVELING
@@ -343,9 +337,9 @@ class Planner {
         #else
           inverse_kinematics(lpos);
         #endif
-        _buffer_line(delta[A_AXIS], delta[B_AXIS], delta[C_AXIS], ltarget[E_AXIS], fr_mm_s, extruder, driver);
+        _buffer_line(ltarget, fr_mm_s);
       #else
-        _buffer_line(lpos[X_AXIS], lpos[Y_AXIS], lpos[Z_AXIS], ltarget[E_AXIS], fr_mm_s, extruder, driver);
+        _buffer_line(ltarget, fr_mm_s);
       #endif
     }
 
@@ -358,16 +352,16 @@ class Planner {
      *
      * Clears previous speed values.
      */
-    static FORCE_INLINE void set_position_mm(ARG_X, ARG_Y, ARG_Z, const float &e) {
+    static FORCE_INLINE void set_position_mm(const float pos[XYZE]) {
       #if HAS_LEVELING && IS_CARTESIAN
-        apply_leveling(lx, ly, lz);
+        apply_leveling(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS]);
       #endif
-      _set_position_mm(lx, ly, lz, e);
+      _set_position_mm(pos);
     }
     static void set_position_mm_kinematic(const float position[NUM_AXIS]);
     static void set_position_mm(const AxisEnum axis, const float &v);
     static FORCE_INLINE void set_z_position_mm(const float &z) { set_position_mm(Z_AXIS, z); }
-    static FORCE_INLINE void set_e_position_mm(const float &e) { set_position_mm(AxisEnum(E_AXIS), e); }
+    static FORCE_INLINE void set_e_position_mm(const float e_position[DRIVER_EXTRUDERS]) { LOOP_EUVW(ie) set_position_mm(AxisEnum(ie), e_position[ie-XYZ]); }
 
     /**
      * Sync from the stepper positions. (e.g., after an interrupted move)

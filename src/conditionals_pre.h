@@ -1,9 +1,10 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MKA 3D Printer Firmware
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Andrey Azarov, Anisoprint LLC
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -381,26 +382,41 @@
     #define HOTEND_OFFSET_Y   { 0 }
     #define HOTEND_OFFSET_Z   { 0 }
   #else
-    #undef HOTENDS
-    #define HOTENDS           EXTRUDERS
+    // #undef HOTENDS
+    // #define HOTENDS           EXTRUDERS
   #endif
 
   /**
    * Multi-extruders support
    */
+
+  #define NUM_AXIS  3 + DRIVER_EXTRUDERS
+  #define XYZE      3 + DRIVER_EXTRUDERS
+  #define ABCE      3 + DRIVER_EXTRUDERS
+
+  #define XYZE_N    XYZE
+
   #if EXTRUDERS > 1
-    #define XYZE_N    3 + EXTRUDERS
-    #define E_AXIS_N  (E_AXIS + extruder)
-    #define E_INDEX   (E_AXIS + active_extruder)
+    //#define E_AXIS_N  (E_AXIS + extruder)
+    //#define E_INDEX   (E_AXIS + active_extruder)
     #define GET_TARGET_EXTRUDER(CMD) if (get_target_extruder_from_command(CMD)) return
     #define TARGET_EXTRUDER target_extruder
   #else
-    #define XYZE_N    XYZE
-    #define E_AXIS_N  E_AXIS
-    #define E_INDEX   E_AXIS
+    //#define E_AXIS_N  E_AXIS
+    //#define E_INDEX   E_AXIS
     #define GET_TARGET_EXTRUDER(CMD) NOOP
     #define TARGET_EXTRUDER 0
   #endif
+
+	#if DRIVER_EXTRUDERS > 1
+		#define GET_TARGET_EXTRUDER_DRIVER(CMD) if (get_target_extruder_driver_from_command(CMD)) return
+	#else
+		#define GET_TARGET_EXTRUDER_DRIVER(CMD) NOOP
+	#endif
+
+
+
+
 
   /**
    * Multi-hotends support

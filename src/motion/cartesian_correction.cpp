@@ -103,8 +103,8 @@
 
   //===========================================================================
   // direction 0: positive, 1: negative
-  uint8_t calc_direction_bits(const long* current_position, const long* destination) {
-    unsigned char direction_bits = 0;
+  uint16_t calc_direction_bits(const long* current_position, const long* destination) {
+  	uint16_t direction_bits = 0;
 
     if (destination[X_AXIS] < current_position[X_AXIS])
       direction_bits |= (1 << X_AXIS);
@@ -119,8 +119,8 @@
   }
 
   //===========================================================================
-  uint8_t calc_move_bits(const long* current_position, const long* destination) {
-    uint8_t move_bits = 0;
+  uint16_t calc_move_bits(const long* current_position, const long* destination) {
+  	uint16_t move_bits = 0;
 
     if (destination[X_AXIS] != current_position[X_AXIS])
       move_bits |= (1 << X_AXIS);
@@ -138,11 +138,11 @@
   // insert a planner.buffer_line if required to handle any hysteresis
   void Hysteresis::InsertCorrection(const float x, const float y, const float z, const float e) {
     long destination[NUM_AXIS] = {x * planner.axis_steps_per_mm[X_AXIS], y * planner.axis_steps_per_mm[Y_AXIS], z * planner.axis_steps_per_mm[Z_AXIS], e * planner.axis_steps_per_mm[E_AXIS + active_extruder]};
-    uint8_t direction_bits = calc_direction_bits(planner.position, destination);
-    uint8_t move_bits = calc_move_bits(planner.position, destination);
+    uint16_t direction_bits = calc_direction_bits(planner.position, destination);
+    uint16_t move_bits = calc_move_bits(planner.position, destination);
 
     // if the direction has changed in any of the axis that need hysteresis corrections...
-    uint8_t direction_change_bits = (direction_bits ^ m_prev_direction_bits) & move_bits;
+    uint16_t direction_change_bits = (direction_bits ^ m_prev_direction_bits) & move_bits;
 
     if( (direction_change_bits & m_hysteresis_bits) != 0 ) {
       // calculate the position to move to that will fix the hysteresis

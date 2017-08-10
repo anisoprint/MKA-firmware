@@ -57,7 +57,7 @@
 #define ORIG_PS_ON_PIN          12
 
 #define ORIG_HEATER_0_PIN       10  // HOTEND 1
-#define ORIG_HEATER_1_PIN       -1
+#define ORIG_HEATER_1_PIN       7
 #define ORIG_HEATER_2_PIN       -1
 #define ORIG_HEATER_3_PIN       -1
 
@@ -70,7 +70,7 @@
 #define ORIG_TEMP_BED_PIN       14  // ANALOG NUMBERING
 
 #if NUM_SERVOS > 0
-  #define SERVO0_PIN            11
+  #define SERVO0_PIN            44
   #if NUM_SERVOS > 1
     #define SERVO1_PIN           6
     #if NUM_SERVOS > 2
