@@ -1,18 +1,8 @@
-<<<<<<< HEAD
 /Release/
-.settings/
+/.settings/
 *.o
 applet/
 *~
 *.orig
 *.rej
-=======
-/Release/
-.settings/
-*.o
-applet/
-*~
-*.orig
-*.rej
->>>>>>> branch 'dev' of https://github.com/manfret/MKA
 *.bak
