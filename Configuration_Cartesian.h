@@ -524,10 +524,14 @@
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 400, 102, 52.44, 102, 102}
 =======
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 4000, 102, 102, 102, 102}
 >>>>>>> refs/heads/multiextruder
+=======
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 4000, 102, 102, 102, 102}
+>>>>>>> branch 'dev' of https://github.com/manfret/MKA
 /*****************************************************************************************/
 
 
