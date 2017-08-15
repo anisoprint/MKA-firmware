@@ -31,7 +31,23 @@ class Endstops {
 
   public:
 
-    static bool enabled, enabled_globally;
+    static float  soft_endstop_min[XYZ],
+                  soft_endstop_max[XYZ];
+
+    static bool enabled, enabled_globally,
+                soft_endstops_enabled;
+
+    #if ENABLED(Z_FOUR_ENDSTOPS)
+      static float  z2_endstop_adj,
+                    z3_endstop_adj,
+                    z4_endstop_adj;
+    #elif ENABLED(Z_THREE_ENDSTOPS)
+      static float  z2_endstop_adj,
+                    z3_endstop_adj;
+    #elif ENABLED(Z_TWO_ENDSTOPS)
+      static float  z2_endstop_adj;
+    #endif
+
     static volatile char endstop_hit_bits; // use X_MIN, Y_MIN, Z_MIN and Z_PROBE as BIT value
 
     #if ENABLED(Z_TWO_ENDSTOPS) || ENABLED(Z_THREE_ENDSTOPS) || ENABLED(Z_FOUR_ENDSTOPS) || ENABLED(NPR2)
@@ -75,10 +91,11 @@ class Endstops {
     // Clear endstops (i.e., they were hit intentionally) to suppress the report
     static void hit_on_purpose() { endstop_hit_bits = 0; }
 
-    // Enable / disable endstop z-probe checking
-    #if HAS_BED_PROBE
-      static volatile bool z_probe_enabled;
-      static void enable_z_probe(bool onoff = true) { z_probe_enabled = onoff; }
+    // Constrain the given coordinates to the software endstops.
+    void clamp_to_software_endstops(float target[XYZ]);
+
+    #if ENABLED(WORKSPACE_OFFSETS) || ENABLED(DUAL_X_CARRIAGE)
+      void update_software_endstops(const AxisEnum axis);
     #endif
 
     #if ENABLED(PINS_DEBUGGING)
@@ -99,7 +116,7 @@ class Endstops {
 extern Endstops endstops;
 
 #if HAS_BED_PROBE
-  #define ENDSTOPS_ENABLED  (endstops.enabled || endstops.z_probe_enabled)
+  #define ENDSTOPS_ENABLED  (endstops.enabled || probe.enabled)
 #else
   #define ENDSTOPS_ENABLED  endstops.enabled
 #endif

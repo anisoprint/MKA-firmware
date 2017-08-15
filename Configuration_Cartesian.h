@@ -55,8 +55,8 @@
  * Pins-settings can be found in "Configuration_Pins.h"
  */
 
-#ifndef CONFIGURATION_MECHANISM
-#define CONFIGURATION_MECHANISM
+#ifndef _CONFIGURATION_CARTESIAN_H_
+#define _CONFIGURATION_CARTESIAN_H_
 
 #define KNOWN_MECH
 
@@ -180,7 +180,7 @@
 // its trigger-point if hardware endstops are active.
 //#define Z_PROBE_FIX_MOUNTED
 
-// The BLTouch probe emulates a servo probe.
+// The BLTouch probe uses a Hall effect sensor and emulates a servo.
 // The default connector is SERVO 0.
 //#define BLTOUCH
 //#define BLTOUCH_DELAY 375 // (ms) Enable and increase if needed
@@ -214,8 +214,8 @@
 #define Z_PROBE_SPEED_FAST 120
 // Speed for the "accurate" probe of each point
 #define Z_PROBE_SPEED_SLOW 60
-// Use double touch for probing
-//#define PROBE_DOUBLE_TOUCH
+// Z Probe repetitions, median for best result
+#define Z_PROBE_REPETITIONS 1
 
 // Enable Z Probe Repeatability test to see how accurate your probe is
 //#define Z_MIN_PROBE_REPEATABILITY_TEST
@@ -227,6 +227,14 @@
 // For M666 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -50
 #define Z_PROBE_OFFSET_RANGE_MAX  50
+
+// Enable if probing seems unreliable. Heaters and/or fans - consistent with the
+// options selected below - will be disabled during probing so as to minimize
+// potential EM interference by quieting/silencing the source of the 'noise' (the change
+// in current flowing through the wires).  This is likely most useful to users of the
+// BLTouch probe, but may also help those with inductive or other probe types.
+//#define PROBING_HEATERS_OFF       // Turn heaters off when probing
+//#define PROBING_FANS_OFF          // Turn fans off when probing
 
 // Use the LCD controller for bed leveling
 // Requires MESH BED LEVELING or PROBE MANUALLY
@@ -493,7 +501,6 @@
 //#define BED_CENTER_AT_0_0
 
 // Manually set the home position. Leave these undefined for automatic settings.
-// For DELTA this is the top-center of the Cartesian print volume.
 //#define MANUAL_X_HOME_POS 0
 //#define MANUAL_Y_HOME_POS 0
 //#define MANUAL_Z_HOME_POS 0
@@ -637,8 +644,11 @@
 //#define HYSTERESIS
 //#define ZWOBBLE
 
-#define DEFAULT_HYSTERESIS_MM   0, 0, 0, 0  // X, Y, Z, E hysteresis in mm.
-#define DEFAULT_ZWOBBLE         0, 0, 0     // A, W, P
+ // X, Y, Z, E hysteresis in mm.
+#define DEFAULT_HYSTERESIS_MM { 0, 0, 0, 0 }
+
+// A, W, P
+#define DEFAULT_ZWOBBLE       { 0, 0, 0 }
 /*****************************************************************************************/
 
-#endif
+#endif /* _CONFIGURATION_CARTESIAN_H_ */

@@ -20,7 +20,8 @@
  *
  */
 
-#include "../../base.h"
+#ifndef _MESH_BED_LEVELING_
+#define _MESH_BED_LEVELING_
 
 #if ENABLED(MESH_BED_LEVELING)
 
@@ -39,8 +40,8 @@
     MBL_STATUS_ACTIVE_BIT = 1
   };
 
-  #define MESH_X_DIST ((MESH_MAX_X - (MESH_MIN_X))/(GRID_MAX_POINTS_X - 1))
-  #define MESH_Y_DIST ((MESH_MAX_Y - (MESH_MIN_Y))/(GRID_MAX_POINTS_Y - 1))
+  #define MESH_X_DIST ((MESH_MAX_X - (MESH_MIN_X)) / (GRID_MAX_POINTS_X - 1))
+  #define MESH_Y_DIST ((MESH_MAX_Y - (MESH_MIN_Y)) / (GRID_MAX_POINTS_Y - 1))
 
   class mesh_bed_leveling {
 
@@ -95,8 +96,8 @@
       }
 
       static float calc_z0(const float &a0, const float &a1, const float &z1, const float &a2, const float &z2) {
-        const float delta_z = (z2 - z1) / (a2 - a1);
-        const float delta_a = a0 - a1;
+        const float delta_z = (z2 - z1) / (a2 - a1),
+                    delta_a = a0 - a1;
         return z1 + delta_a * delta_z;
       }
 
@@ -121,3 +122,5 @@
   extern mesh_bed_leveling mbl;
 
 #endif  // MESH_BED_LEVELING
+
+#endif /* _MESH_BED_LEVELING_ */

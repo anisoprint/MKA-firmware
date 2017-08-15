@@ -22,7 +22,7 @@
 
 #include "../../base.h"
 
-#if ENABLED(M100_FREE_MEMORY_WATCHER)
+#if ENABLED(M100_FREE_MEMORY_WATCHER) || ENABLED(DEBUG_GCODE_PARSER)
 
 static char _hex[7] = "0x0000";
 
@@ -41,13 +41,13 @@ char* hex_word(const uint16_t w) {
 }
 
 char* hex_address(const void * const w) {
-  (void)hex_word((uint16_t)w);
+  (void)hex_word((int)w);
   return _hex;
 }
 
-void print_hex_nybble(const uint8_t n)        { SERIAL_C(hex_nybble(n));  }
-void print_hex_byte(const uint8_t b)          { SERIAL_V(hex_byte(b));    }
-void print_hex_word(const uint16_t w)         { SERIAL_V(hex_word(w));    }
-void print_hex_address(const void * const w)  { SERIAL_V(hex_address(w)); }
+void print_hex_nybble(const uint8_t n)        { SERIAL_CHR(hex_nybble(n));  }
+void print_hex_byte(const uint8_t b)          { SERIAL_VAL(hex_byte(b));    }
+void print_hex_word(const uint16_t w)         { SERIAL_VAL(hex_word(w));    }
+void print_hex_address(const void * const w)  { SERIAL_VAL(hex_address(w)); }
 
 #endif // M100_FREE_MEMORY_WATCHER

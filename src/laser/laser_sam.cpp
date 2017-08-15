@@ -40,18 +40,24 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "../../../base.h"
+#include "../../base.h"
 
-#if ENABLED(LASERBEAM) && ENABLED(ARDUINO_ARCH_SAM)
+#if ENABLED(LASER) && ENABLED(ARDUINO_ARCH_SAM)
 
-  laser_t laser;
+  Laser laser;
 
-  void laser_init() {
+  void Laser::Init() {
 
     #if LASER_CONTROL == 1
-      HAL_laser_init_pwm(LASER_PWR_PIN, LASER_PWM);
+      if (!HAL::analogWrite(LASER_PWR_PIN, 0, LASER_PWM)) {
+        SERIAL_LM(ER, "LASER_PWR_PIN not PWM or TC pin, please select another pin!");
+        return;
+      }
     #elif LASER_CONTROL == 2
-      HAL_laser_init_pwm(LASER_TTL_PIN, LASER_PWM);
+      if (!HAL::analogWrite(LASER_PWM_PIN, 0, LASER_PWM)) {
+        SERIAL_LM(ER, "LASER_PWM_PIN not PWM or TC pin, please select another pin!");
+        return;
+      }
     #endif
 
     #if ENABLED(LASER_PERIPHERALS)
@@ -64,11 +70,11 @@
     #endif
 
     // initialize state to some sane defaults
-    laser.intensity = 50.0;
+    laser.intensity = 100.0;
     laser.ppm = 0.0;
     laser.duration = 0;
     laser.status = LASER_OFF;
-    laser.firing = LASER_OFF;
+    laser.firing = LASER_ON;
     laser.mode = CONTINUOUS;
     laser.last_firing = 0;
     laser.diagnostics = false;
@@ -81,51 +87,52 @@
     #endif // LASER_RASTER
     
     #if DISABLED(LASER_PULSE_METHOD)
-      laser_extinguish();
+      laser.extinguish();
     #endif
   }
 
-  void laser_fire(float intensity = 100.0) { // Fire with range 0-100
-    laser.firing = LASER_ON;
-    laser.last_firing = micros(); // microseconds of last laser firing
-    if (intensity > 100.0) intensity = 100.0; // restrict intensity between 0 and 100
-    if (intensity < 0) intensity = 0;
+  void Laser::fire(float intensity/*=100.0*/) {
 
-    HAL_laser_intensity(LASER_PWM_MAX_DUTY_CYCLE * intensity / 100.0); // Range 0-255
-
-    #if LASER_CONTROL == 2
-      digitalWrite(LASER_PWR_PIN, LASER_ARM);
-    #endif
-
-    if (laser.diagnostics)
-      SERIAL_EM("Laser fired");
-  }
-
-  void laser_fire_byte(uint8_t intensity) { // Fire with byte-range 0-255
     laser.firing = LASER_ON;
     laser.last_firing = micros(); // microseconds of last laser firing
 
-    HAL_laser_intensity(LASER_PWM_MAX_DUTY_CYCLE * intensity / 255.0); // Range 0-255
+    // restrict intensity between 0 and 100
+    NOMORE(intensity, 100.0);
+    NOLESS(intensity, 0.0);
 
-    #if LASER_CONTROL == 2
-      digitalWrite(LASER_PWR_PIN, LASER_ARM);
+    #if ENABLED(LASER_PWM_INVERT)
+      intensity = 100 - intensity;
     #endif
 
-    if (laser.diagnostics)
-      SERIAL_EM("Laser_byte fired");
+    #if LASER_CONTROL == 1
+      HAL::analogWrite(LASER_PWR_PIN, (255 * intensity * 0.01), LASER_PWM); // Range 0-255
+    #elif LASER_CONTROL == 2
+      HAL::analogWrite(LASER_PWM_PIN, (255 * intensity * 0.01), LASER_PWM); // Range 0-255
+      WRITE(LASER_PWR_PIN, LASER_ARM);
+    #endif
+
+    if (laser.diagnostics) SERIAL_EM("Laser fired");
   }
 
-  void laser_extinguish() {
+  void Laser::extinguish() {
     if (laser.firing == LASER_ON) {
       laser.firing = LASER_OFF;
 
-      if (laser.diagnostics)
-        SERIAL_EM("Laser being extinguished");
+      if (laser.diagnostics) SERIAL_EM("Laser being extinguished");
 
-      HAL_laser_intensity(0);
-
-      #if LASER_CONTROL == 2
-        digitalWrite(LASER_PWR_PIN, LASER_UNARM);
+      #if LASER_CONTROL == 1
+        #if ENABLED(LASER_PWM_INVERT)
+          HAL::analogWrite(LASER_PWR_PIN, 255, LASER_PWM);
+        #else
+          HAL::analogWrite(LASER_PWR_PIN, 0, LASER_PWM);
+        #endif
+      #elif LASER_CONTROL == 2
+        #if ENABLED(LASER_PWM_INVERT)
+          HAL::analogWrite(LASER_PWM_PIN, 255, LASER_PWM);
+        #else
+          HAL::analogWrite(LASER_PWM_PIN, 0, LASER_PWM);
+        #endif
+        WRITE(LASER_PWR_PIN, LASER_UNARM);
       #endif
 
       laser.time += millis() - (laser.last_firing / 1000);
@@ -135,7 +142,7 @@
     }
   }
 
-  void laser_set_mode(int mode) {
+  void Laser::set_mode(uint8_t mode) {
     switch(mode) {
       case 0:
         laser.mode = CONTINUOUS;
@@ -149,42 +156,29 @@
     }
   }
 
-  void laser_diagnose() {
-    if (!laser.diagnostics)
-      return;
-
-    SERIAL_LMV(CFG, "Intensity ", laser.intensity);
-    SERIAL_LMV(CFG, "Duration  ", laser.duration);
-    SERIAL_LMV(CFG, "Ppm       ", laser.ppm);
-    SERIAL_LMV(CFG, "Mode      ", laser.mode);
-    SERIAL_LMV(CFG, "Status    ", laser.status);
-    SERIAL_LMV(CFG, "Fired     ", laser.fired);
-    HAL::serialFlush();
-  }
-
   #if ENABLED(LASER_PERIPHERALS)
-    bool laser_peripherals_ok() { return !digitalRead(LASER_PERIPHERALS_STATUS_PIN); }
+    bool Laser::peripherals_ok() { return !READ(LASER_PERIPHERALS_STATUS_PIN); }
 
-    void laser_peripherals_on() {
-      digitalWrite(LASER_PERIPHERALS_PIN, LOW);
+    void Laser::peripherals_on() {
+      WRITE(LASER_PERIPHERALS_PIN, LOW);
       if (laser.diagnostics)
         SERIAL_EM("Laser Peripherals Enabled");
     }
 
-    void laser_peripherals_off() {
-      if (!digitalRead(LASER_PERIPHERALS_STATUS_PIN)) {
-        digitalWrite(LASER_PERIPHERALS_PIN, HIGH);
+    void Laser::peripherals_off() {
+      if (!READ(LASER_PERIPHERALS_STATUS_PIN)) {
+        WRITE(LASER_PERIPHERALS_PIN, HIGH);
         if (laser.diagnostics)
           SERIAL_EM("Laser Peripherals Disabled");
       }
     }
 
-    void laser_wait_for_peripherals() {
+    void Laser::wait_for_peripherals() {
       unsigned long timeout = millis() + LASER_PERIPHERALS_TIMEOUT;
       if (laser.diagnostics)
         SERIAL_EM("Waiting for peripheral control board signal...");
 
-      while(!laser_peripherals_ok()) {
+      while(!peripherals_ok()) {
         if (millis() > timeout) {
           if (laser.diagnostics)
             SERIAL_LM(ER, "Peripheral control board failed to respond");
@@ -196,4 +190,4 @@
     }
   #endif // LASER_PERIPHERALS
 
-#endif // LASERBEAM
+#endif // ENABLED(LASER) && ENABLED(ARDUINO_ARCH_SAM)

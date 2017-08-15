@@ -56,9 +56,19 @@
 // --------------------------------------------------------------------------
 // Includes
 // --------------------------------------------------------------------------
-
 #include <stdint.h>
 #include <Arduino.h>
+
+// --------------------------------------------------------------------------
+// Types
+// --------------------------------------------------------------------------
+typedef uint32_t  HAL_TIMER_TYPE;
+typedef uint32_t  millis_t;
+typedef int8_t    Pin;
+
+// --------------------------------------------------------------------------
+// Includes
+// --------------------------------------------------------------------------
 #include "fastio_Due.h"
 #include "watchdog_Due.h"
 #include "HAL_timers_Due.h"
@@ -112,7 +122,7 @@
   #define MKSERIAL Serial3
 #endif
 
-#if defined(BLUETOOTH) && BLUETOOTH_PORT > 0
+#if ENABLED(BLUETOOTH) && BLUETOOTH_PORT > 0
   #undef MKSERIAL
   #if BLUETOOTH_PORT == 1
     #define MKSERIAL Serial1
@@ -174,9 +184,7 @@
 #undef HIGH
 #define HIGH        1
 
-// intRes = intIn1 * intIn2 >> 16
 #define MultiU16X8toH16(intRes, charIn1, intIn2)   intRes = ((charIn1) * (intIn2)) >> 16
-// intRes = longIn1 * longIn2 >> 24
 #define MultiU32X32toH32(intRes, longIn1, longIn2) intRes = ((uint64_t)longIn1 * longIn2 + 0x80000000) >> 32
 // Macros for stepper.cpp
 #define HAL_MULTI_ACC(intRes, longIn1, longIn2) MultiU32X32toH32(intRes, longIn1, longIn2)
@@ -185,7 +193,7 @@
 
 // TEMPERATURE
 #undef analogInputToDigitalPin
-#define analogInputToDigitalPin(p) ((p < 12u) ? (p) + 54u : -1)
+#define analogInputToDigitalPin(p) ((p < 12) ? (p) + 54 : -1)
 // Bits of the ADC converter
 #define ANALOG_INPUT_BITS 12
 #define ANALOG_REDUCE_BITS 0
@@ -196,12 +204,6 @@
 #define MEDIAN_COUNT 10 // MEDIAN COUNT for Smoother temperature
 #define NUM_ADC_SAMPLES (2 + (1 << OVERSAMPLENR))
 #define ADC_TEMPERATURE_SENSOR 15
-
-// --------------------------------------------------------------------------
-// Types
-// --------------------------------------------------------------------------
-
-typedef uint32_t millis_t;
 
 // --------------------------------------------------------------------------
 // Public Variables
@@ -222,7 +224,10 @@ class HAL {
 
     virtual ~HAL();
 
-    static volatile int16_t AnalogInputValues[ANALOG_INPUTS];
+    #if ANALOG_INPUTS > 0
+      static volatile int16_t AnalogInputValues[ANALOG_INPUTS];
+    #endif
+
     static bool execute_100ms;
 
     static void hwSetup(void);
@@ -257,13 +262,15 @@ class HAL {
       static void spiSendBlock(uint8_t token, const uint8_t* buf);
     #endif
 
-    static inline void digitalWrite(uint8_t pin, uint8_t value) {
+    static bool analogWrite(const Pin pin, const uint8_t value, const uint16_t freq=50);
+
+    static inline void digitalWrite(const Pin pin, const uint8_t value) {
       WRITE_VAR(pin, value);
     }
-    static inline uint8_t digitalRead(uint8_t pin) {
+    static inline uint8_t digitalRead(const Pin pin) {
       return READ_VAR(pin);
     }
-    static inline void pinMode(uint8_t pin, uint8_t mode) {
+    static inline void pinMode(const Pin pin, const uint8_t mode) {
       if (mode == INPUT) {
         SET_INPUT(pin);
       }
@@ -279,8 +286,8 @@ class HAL {
         : "+r" (n) :
       );
     }
-    static inline void delayMilliseconds(unsigned int delayMs) {
-      unsigned int del;
+    static inline void delayMilliseconds(uint16_t delayMs) {
+      uint16_t del;
       while (delayMs > 0) {
         del = delayMs > 100 ? 100 : delayMs;
         delay(del);
@@ -342,11 +349,5 @@ uint8_t eeprom_read_byte(uint8_t* pos);
 void eeprom_read_block(void* pos, const void* eeprom_address, size_t n);
 void eeprom_write_byte(uint8_t* pos, uint8_t value);
 void eeprom_update_block(const void* pos, void* eeprom_address, size_t n);
-
-#if ENABLED(LASERBEAM)
-  #define LASER_PWM_MAX_DUTY 255
-  void HAL_laser_init_pwm(uint8_t pin, uint16_t freq);
-  void HAL_laser_intensity(uint8_t intensity); // Range: 0 - LASER_PWM_MAX_DUTY
-#endif
 
 #endif // HAL_SAM_H

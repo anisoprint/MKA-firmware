@@ -22,13 +22,13 @@
 
 bool endstop_monitor_flag = false;
 
-#define  NAME_FORMAT "%-28s"   // one place to specify the format of all the sources of names
-                               // "-" left justify, "28" minimum width of name, pad with blanks
+#define NAME_FORMAT "%-35s" // one place to specify the format of all the sources of names
+                            // "-" left justify, "28" minimum width of name, pad with blanks
 
-#define _PIN_SAY(NAME) { sprintf(buffer, NAME_FORMAT, NAME); SERIAL_T(buffer); return true; }
+#define _PIN_SAY(NAME) { sprintf(buffer, NAME_FORMAT, NAME); SERIAL_TXT(buffer); return true; }
 #define PIN_SAY(NAME) if (pin == NAME) _PIN_SAY(#NAME);
 
-#define _ANALOG_PIN_SAY(NAME) { sprintf(buffer, NAME_FORMAT, NAME); SERIAL_T(buffer); pin_is_analog = true; return true; }
+#define _ANALOG_PIN_SAY(NAME) { sprintf(buffer, NAME_FORMAT, NAME); SERIAL_TXT(buffer); pin_is_analog = true; return true; }
 #define ANALOG_PIN_SAY(NAME) if (pin == analogInputToDigitalPin(NAME)) _ANALOG_PIN_SAY(#NAME);
 
 #if ENABLED(ARDUINO_ARCH_SAM)
@@ -38,12 +38,14 @@ bool endstop_monitor_flag = false;
 #endif
 
 #if ENABLED(ARDUINO_ARCH_SAM)
+  #define LAST_PIN                        PINS_COUNT // Arduino Due's NUM_DIGITAL_PINS only includes the digital only pins
   #define PIN_TO_BASEREG(pin)             (&(digitalPinToPort(pin)->PIO_PER))
   #define PIN_TO_BITMASK(pin)             (digitalPinToBitMask(pin))
   #define IO_REG_TYPE uint32_t
   #define DIRECT_READ(base, mask)         (((*((base)+15)) & (mask)) ? 1 : 0)
   #define digitalPinToTimer(pin)          digitalPinHasPWM(pin)
 #else
+  #define LAST_PIN                        NUM_DIGITAL_PINS
   #define PIN_TO_BASEREG(pin)             (portInputRegister(digitalPinToPort(pin)))
   #define PIN_TO_BITMASK(pin)             (digitalPinToBitMask(pin))
   #define IO_REG_TYPE uint8_t
@@ -54,9 +56,9 @@ IO_REG_TYPE rBit;   // receive pin's ports and bitmask
 volatile IO_REG_TYPE *rReg;
 
 int digitalRead_mod(int8_t pin) { // same as digitalRead except the PWM stop section has been removed
-  rBit = PIN_TO_BITMASK(pin);			// get receive pin's ports and bitmask
-	rReg = PIN_TO_BASEREG(pin);
-	return DIRECT_READ(rReg, rBit);
+  rBit = PIN_TO_BITMASK(pin);     // get receive pin's ports and bitmask
+  rReg = PIN_TO_BASEREG(pin);
+  return DIRECT_READ(rReg, rBit);
 }
 
 // Report pin name for a given fastio digital pin index
@@ -67,16 +69,16 @@ static bool report_pin_name(int8_t pin, bool &pin_is_analog) {
 
   if (IS_ANALOG(pin)) {
     sprintf(buffer, "(A%2d)  ", int(pin - analogInputToDigitalPin(0)));
-    SERIAL_T(buffer);
+    SERIAL_TXT(buffer);
   }
-  else SERIAL_M("       ");
+  else SERIAL_MSG("       ");
 
   #if ENABLED(RXD) && RXD >= 0
-    if (pin == 0) { sprintf(buffer, NAME_FORMAT, "RXD"); SERIAL_T(buffer); return true; }
+    if (pin == 0) { sprintf(buffer, NAME_FORMAT, "RXD"); SERIAL_TXT(buffer); return true; }
   #endif
 
   #if ENABLED(TXD) && TXD >= 0
-    if (pin == 1) { sprintf(buffer, NAME_FORMAT, "TXD"); SERIAL_T(buffer); return true; }
+    if (pin == 1) { sprintf(buffer, NAME_FORMAT, "TXD"); SERIAL_TXT(buffer); return true; }
   #endif
 
   // Pin list updated from 7 OCT RCBugfix branch
@@ -673,12 +675,12 @@ static bool report_pin_name(int8_t pin, bool &pin_is_analog) {
   #endif
 
   sprintf(buffer, NAME_FORMAT, "<unused> ");
-  SERIAL_T(buffer);
+  SERIAL_TXT(buffer);
 
   return false;
 } // report_pin_name
 
-#define PWM_PRINT(V) do{ sprintf(buffer, "PWM:  %4d", V); SERIAL_T(buffer); }while(0)
+#define PWM_PRINT(V) do{ sprintf(buffer, "PWM:  %4d", V); SERIAL_TXT(buffer); }while(0)
 #define PWM_CASE(N) \
   case TIMER##N: \
     if (TCCR##N & (_BV(COM## N ##1) | _BV(COM## N ##0))) { \
@@ -733,7 +735,7 @@ static bool pwm_status(uint8_t pin) {
     default:
       return false;
   }
-  SERIAL_M("  ");
+  SERIAL_MSG("  ");
 } // pwm_status
 
 #if DISABLED(ARDUINO_ARCH_SAM)
@@ -742,8 +744,8 @@ static bool pwm_status(uint8_t pin) {
   #define WGM_MAKE4(N) (WGM_MAKE3(N) | (TEST(TCCR##N##B, WGM##N##3) >> 1))
   #define TIMER_PREFIX(T,L,N) do{ \
       WGM = WGM_MAKE##N(T); \
-      SERIAL_M("    TIMER"); \
-      SERIAL_M(STRINGIFY(T) STRINGIFY(L)); \
+      SERIAL_MSG("    TIMER"); \
+      SERIAL_MSG(STRINGIFY(T) STRINGIFY(L)); \
       SERIAL_MV("    WGM: ", WGM); \
       SERIAL_MV("    TIMSK" STRINGIFY(T) ": ", TIMSK##T); \
     }while(0)
@@ -761,7 +763,7 @@ static bool pwm_status(uint8_t pin) {
     SERIAL_EM("   Probably can't be used as a PWM because counter/timer is being used as an interrupt");
   }
   static void can_be_used() {
-    SERIAL_M("   can be used as PWM   ");
+    SERIAL_MSG("   can be used as PWM   ");
   }
 
   static void pwm_details(uint8_t pin) {
@@ -903,30 +905,30 @@ static bool pwm_status(uint8_t pin) {
       case NOT_ON_TIMER: break;
 
     }
-    SERIAL_M("  ");
+    SERIAL_MSG("  ");
   }  // pwm_details
 
 #endif
 
 inline void report_pin_state(int8_t pin) {
-  SERIAL_V((int)pin);
-  SERIAL_C(' ');
+  SERIAL_VAL((int)pin);
+  SERIAL_CHR(' ');
   bool dummy;
   if (report_pin_name(pin, dummy)) {
     if (pin_is_protected(pin))
-      SERIAL_M(" (protected)");
+      SERIAL_MSG(" (protected)");
     else {
-      SERIAL_M(" = ");
+      SERIAL_MSG(" = ");
       pinMode(pin, INPUT_PULLUP);
-      SERIAL_V(digitalRead(pin));
+      SERIAL_VAL(digitalRead(pin));
       if (IS_ANALOG(pin)) {
-        SERIAL_C(' '); SERIAL_C('(');
-        SERIAL_V(analogRead(pin - analogInputToDigitalPin(0)));
-        SERIAL_C(')');
+        SERIAL_CHR(' '); SERIAL_CHR('(');
+        SERIAL_VAL(analogRead(pin - analogInputToDigitalPin(0)));
+        SERIAL_CHR(')');
       }
     }
   }
-  SERIAL_E;
+  SERIAL_EOL();
 }
 
 bool get_pinMode(uint8_t pin) {
@@ -940,13 +942,13 @@ bool get_pinMode(uint8_t pin) {
 }
 
 // pretty report with PWM info
-inline void report_pin_state_extended(int8_t pin, bool ignore) {
+inline void report_pin_state_extended(Pin pin, bool ignore) {
 
   char buffer[30];   // for the sprintf statements
 
   // report pin number
   sprintf(buffer, "PIN:% 3d ", pin);
-  SERIAL_T(buffer);
+  SERIAL_TXT(buffer);
 
   // report pin name
   bool analog_pin;
@@ -954,12 +956,12 @@ inline void report_pin_state_extended(int8_t pin, bool ignore) {
 
   // report pin state
   if (pin_is_protected(pin) && !ignore)
-    SERIAL_M("protected ");
+    SERIAL_MSG("protected ");
   else {
     if (analog_pin) {
       #if DISABLED(ARDUINO_ARCH_SAM)
         sprintf(buffer, "Analog in =% 5d", analogRead(pin - analogInputToDigitalPin(0)));
-        SERIAL_T(buffer);
+        SERIAL_TXT(buffer);
       #endif
     }
     else {
@@ -979,5 +981,5 @@ inline void report_pin_state_extended(int8_t pin, bool ignore) {
     pwm_details(pin);
   #endif
 
-  SERIAL_E;
+  SERIAL_EOL();
 }

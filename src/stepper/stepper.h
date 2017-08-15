@@ -40,8 +40,8 @@
  * along with Grbl. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STEPPER_H
-#define STEPPER_H
+#ifndef _STEPPER_H_
+#define _STEPPER_H_
 
 #if ENABLED(ARDUINO_ARCH_AVR)
   #include "speed_lookuptable.h"
@@ -123,7 +123,7 @@ class Stepper {
     //
     // Positions of stepper motors, in step units
     //
-    static volatile long count_position[NUM_AXIS];
+    static volatile long machine_position[NUM_AXIS];
 
     //
     // Current direction of stepper motors (+1 or -1)
@@ -137,12 +137,12 @@ class Stepper {
           if (current_block->mix_event_count[VAR])
     #endif
 
-    #if ENABLED(LASERBEAM)
+    #if ENABLED(LASER)
       static long counter_L;
       #if ENABLED(LASER_RASTER)
         static int counter_raster;
       #endif // LASER_RASTER
-    #endif // LASERBEAM
+    #endif // LASER
 
   public:
 
@@ -194,11 +194,6 @@ class Stepper {
     static void report_positions();
 
     //
-    // Get the position (mm) of an axis based on stepper position(s)
-    //
-    static float get_axis_position_mm(AxisEnum axis);
-
-    //
     // SCARA AB axes are in degrees, not mm
     //
     #if IS_SCARA
@@ -230,12 +225,12 @@ class Stepper {
     static void disable_e_steppers();
     static void disable_all_steppers();
 
-    #if HAS(DIGIPOTSS) || HAS(MOTOR_CURRENT_PWM)
+    #if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
       static void digitalPotWrite(int address, int value);
       static void digipot_current(uint8_t driver, int current);
     #endif
 
-    #if HAS(MICROSTEPS)
+    #if HAS_MICROSTEPS
       static void microstep_ms(uint8_t driver, int8_t ms1, int8_t ms2);
       static void microstep_mode(uint8_t driver, uint8_t stepping);
       static void microstep_readings();
@@ -275,7 +270,7 @@ class Stepper {
     // Triggered position of an axis in mm (not core-savvy)
     //
     static FORCE_INLINE float triggered_position_mm(AxisEnum axis) {
-      return endstops_trigsteps[axis] * planner.steps_to_mm[axis];
+      return endstops_trigsteps[axis] * mechanics.steps_to_mm[axis];
     }
 
     #if ENABLED(LIN_ADVANCE)
@@ -398,4 +393,4 @@ class Stepper {
 
 };
 
-#endif // STEPPER_H
+#endif /* _STEPPER_H_ */

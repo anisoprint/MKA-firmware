@@ -41,8 +41,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STEPPER_INDIRECTION_H
-#define STEPPER_INDIRECTION_H
+#ifndef _STEPPER_INDIRECTION_H_
+#define _STEPPER_INDIRECTION_H_
 
 // TMC26X drivers have STEP/DIR on normal pins, but ENABLE via SPI
 #if ENABLED(HAVE_TMCDRIVER)
@@ -342,9 +342,15 @@
   #define E0_DIR_WRITE(STATE) WRITE(E0_DIR_PIN,STATE)
   #define E0_DIR_READ READ(E0_DIR_PIN)
 #endif
-#define E0_STEP_INIT SET_OUTPUT(E0_STEP_PIN)
-#define E0_STEP_WRITE(STATE) WRITE(E0_STEP_PIN,STATE)
-#define E0_STEP_READ READ(E0_STEP_PIN)
+#if HAS_DAV_SYSTEM
+  #define E0_STEP_INIT SET_OUTPUT(E0_STEP_PIN); SET_OUTPUT(FIL_RUNOUT_DAV_PIN)
+  #define E0_STEP_WRITE(STATE) WRITE(E0_STEP_PIN,STATE); WRITE(FIL_RUNOUT_DAV_PIN,STATE)
+  #define E0_STEP_READ READ(E0_STEP_PIN)
+#else
+  #define E0_STEP_INIT SET_OUTPUT(E0_STEP_PIN)
+  #define E0_STEP_WRITE(STATE) WRITE(E0_STEP_PIN,STATE)
+  #define E0_STEP_READ READ(E0_STEP_PIN)
+#endif
 
 // E1 Stepper
 #if ENABLED(HAVE_L6470DRIVER) && ENABLED(E1_IS_L6470)
@@ -545,15 +551,15 @@
   #define REV_E_DIR()     { switch(TOOL_DE_INDEX) { case 2: E2_DIR_WRITE( INVERT_E2_DIR); break; case 1: E1_DIR_WRITE( INVERT_E1_DIR); break; case 0: E0_DIR_WRITE( INVERT_E0_DIR); break; } }
 #elif DRIVER_EXTRUDERS > 1
   #if ENABLED(DUAL_X_CARRIAGE)
-    #define E_STEP_WRITE(v) { if(hotend_duplication_enabled) { E0_STEP_WRITE(v); E1_STEP_WRITE(v); } else if(TOOL_DE_INDEX == 0) { E0_STEP_WRITE(v); } else { E1_STEP_WRITE(v); }}
-    #define NORM_E_DIR()    { if(hotend_duplication_enabled) { E0_DIR_WRITE(!INVERT_E0_DIR); E1_DIR_WRITE(!INVERT_E1_DIR); } else if(TOOL_DE_INDEX == 0) { E0_DIR_WRITE(!INVERT_E0_DIR); } else { E1_DIR_WRITE(!INVERT_E1_DIR); }}
-    #define REV_E_DIR()     { if(hotend_duplication_enabled) { E0_DIR_WRITE( INVERT_E0_DIR); E1_DIR_WRITE( INVERT_E1_DIR); } else if(TOOL_DE_INDEX == 0) { E0_DIR_WRITE( INVERT_E0_DIR); } else { E1_DIR_WRITE( INVERT_E1_DIR); }}
+    #define E_STEP_WRITE(v) { if(mechanics.hotend_duplication_enabled) { E0_STEP_WRITE(v); E1_STEP_WRITE(v); } else if(TOOL_DE_INDEX == 0) { E0_STEP_WRITE(v); } else { E1_STEP_WRITE(v); }}
+    #define NORM_E_DIR()    { if(mechanics.hotend_duplication_enabled) { E0_DIR_WRITE(!INVERT_E0_DIR); E1_DIR_WRITE(!INVERT_E1_DIR); } else if(TOOL_DE_INDEX == 0) { E0_DIR_WRITE(!INVERT_E0_DIR); } else { E1_DIR_WRITE(!INVERT_E1_DIR); }}
+    #define REV_E_DIR()     { if(mechanics.hotend_duplication_enabled) { E0_DIR_WRITE( INVERT_E0_DIR); E1_DIR_WRITE( INVERT_E1_DIR); } else if(TOOL_DE_INDEX == 0) { E0_DIR_WRITE( INVERT_E0_DIR); } else { E1_DIR_WRITE( INVERT_E1_DIR); }}
   #else
     #define E_STEP_WRITE(v) { switch(TOOL_DE_INDEX) { case 0: E0_STEP_WRITE(v); break;              case 1: E1_STEP_WRITE(v); break; }}
     #define NORM_E_DIR()    { switch(TOOL_DE_INDEX) { case 0: E0_DIR_WRITE(!INVERT_E0_DIR); break;  case 1: E1_DIR_WRITE(!INVERT_E1_DIR); break; }}
     #define REV_E_DIR()     { switch(TOOL_DE_INDEX) { case 0: E0_DIR_WRITE( INVERT_E0_DIR); break;  case 1: E1_DIR_WRITE( INVERT_E1_DIR); break; }}
   #endif
-#else
+#elif DRIVER_EXTRUDERS > 0
   #if ENABLED(DONDOLO_SINGLE_MOTOR)
     #define E_STEP_WRITE(v) E0_STEP_WRITE(v)
     #define NORM_E_DIR() E0_DIR_WRITE(current_block->active_extruder ?  INVERT_E0_DIR : !INVERT_E0_DIR)
@@ -565,23 +571,23 @@
   #endif
 #endif // DRIVER_EXTRUDERS
 
-#if HAS(X2_ENABLE)
+#if HAS_X2_ENABLE
   #define  enable_X() do{ X_ENABLE_WRITE( X_ENABLE_ON); X2_ENABLE_WRITE( X_ENABLE_ON); }while(0)
-  #define disable_X() do{ X_ENABLE_WRITE(!X_ENABLE_ON); X2_ENABLE_WRITE(!X_ENABLE_ON); axis_known_position[X_AXIS] = false; }while(0)
-#elif HAS(X_ENABLE)
+  #define disable_X() do{ X_ENABLE_WRITE(!X_ENABLE_ON); X2_ENABLE_WRITE(!X_ENABLE_ON); mechanics.axis_known_position[X_AXIS] = false; }while(0)
+#elif HAS_X_ENABLE
   #define  enable_X() X_ENABLE_WRITE( X_ENABLE_ON)
-  #define disable_X() do{ X_ENABLE_WRITE(!X_ENABLE_ON); axis_known_position[X_AXIS] = false; }while(0)
+  #define disable_X() do{ X_ENABLE_WRITE(!X_ENABLE_ON); mechanics.axis_known_position[X_AXIS] = false; }while(0)
 #else
   #define  enable_X() NOOP
   #define disable_X() NOOP
 #endif
 
-#if HAS(Y2_ENABLE)
+#if HAS_Y2_ENABLE
   #define  enable_Y() do{ Y_ENABLE_WRITE( Y_ENABLE_ON); Y2_ENABLE_WRITE(Y_ENABLE_ON); }while(0)
-  #define disable_Y() do{ Y_ENABLE_WRITE(!Y_ENABLE_ON); Y2_ENABLE_WRITE(!Y_ENABLE_ON); axis_known_position[Y_AXIS] = false; }while(0)
-#elif HAS(Y_ENABLE)
+  #define disable_Y() do{ Y_ENABLE_WRITE(!Y_ENABLE_ON); Y2_ENABLE_WRITE(!Y_ENABLE_ON); mechanics.axis_known_position[Y_AXIS] = false; }while(0)
+#elif HAS_Y_ENABLE
   #define  enable_Y() Y_ENABLE_WRITE( Y_ENABLE_ON)
-  #define disable_Y() do{ Y_ENABLE_WRITE(!Y_ENABLE_ON); axis_known_position[Y_AXIS] = false; }while(0)
+  #define disable_Y() do{ Y_ENABLE_WRITE(!Y_ENABLE_ON); mechanics.axis_known_position[Y_AXIS] = false; }while(0)
 #else
   #define  enable_Y() NOOP
   #define disable_Y() NOOP
@@ -589,16 +595,16 @@
 
 #if HAS(Z4_ENABLE)
   #define  enable_Z() do{ Z_ENABLE_WRITE( Z_ENABLE_ON); Z2_ENABLE_WRITE(Z_ENABLE_ON);   Z3_ENABLE_WRITE(Z_ENABLE_ON);   Z4_ENABLE_WRITE(Z_ENABLE_ON);}while(0)
-  #define disable_Z() do{ Z_ENABLE_WRITE(!Z_ENABLE_ON); Z2_ENABLE_WRITE(!Z_ENABLE_ON);  Z3_ENABLE_WRITE(!Z_ENABLE_ON);  Z4_ENABLE_WRITE(!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }while(0)
+  #define disable_Z() do{ Z_ENABLE_WRITE(!Z_ENABLE_ON); Z2_ENABLE_WRITE(!Z_ENABLE_ON);  Z3_ENABLE_WRITE(!Z_ENABLE_ON);  Z4_ENABLE_WRITE(!Z_ENABLE_ON); mechanics.axis_known_position[Z_AXIS] = false; }while(0)
 #elif HAS(Z3_ENABLE)
   #define  enable_Z() do{ Z_ENABLE_WRITE( Z_ENABLE_ON); Z2_ENABLE_WRITE(Z_ENABLE_ON);   Z3_ENABLE_WRITE(Z_ENABLE_ON); }while(0)
-  #define disable_Z() do{ Z_ENABLE_WRITE(!Z_ENABLE_ON); Z2_ENABLE_WRITE(!Z_ENABLE_ON);  Z3_ENABLE_WRITE(!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }while(0)
-#elif HAS(Z2_ENABLE)
+  #define disable_Z() do{ Z_ENABLE_WRITE(!Z_ENABLE_ON); Z2_ENABLE_WRITE(!Z_ENABLE_ON);  Z3_ENABLE_WRITE(!Z_ENABLE_ON); mechanics.axis_known_position[Z_AXIS] = false; }while(0)
+#elif HAS_Z2_ENABLE
   #define  enable_Z() do{ Z_ENABLE_WRITE( Z_ENABLE_ON); Z2_ENABLE_WRITE(Z_ENABLE_ON); }while(0)
-  #define disable_Z() do{ Z_ENABLE_WRITE(!Z_ENABLE_ON); Z2_ENABLE_WRITE(!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }while(0)
-#elif HAS(Z_ENABLE)
+  #define disable_Z() do{ Z_ENABLE_WRITE(!Z_ENABLE_ON); Z2_ENABLE_WRITE(!Z_ENABLE_ON); mechanics.axis_known_position[Z_AXIS] = false; }while(0)
+#elif HAS_Z_ENABLE
   #define  enable_Z() Z_ENABLE_WRITE( Z_ENABLE_ON)
-  #define disable_Z() do{ Z_ENABLE_WRITE(!Z_ENABLE_ON); axis_known_position[Z_AXIS] = false; }while(0)
+  #define disable_Z() do{ Z_ENABLE_WRITE(!Z_ENABLE_ON); mechanics.axis_known_position[Z_AXIS] = false; }while(0)
 #else
   #define  enable_Z() NOOP
   #define disable_Z() NOOP
@@ -636,7 +642,7 @@
 
 #else // !COLOR_MIXING_EXTRUDER
 
-  #if HAS(E0_ENABLE)
+  #if (DRIVER_EXTRUDERS > 0) && HAS_E0_ENABLE
     #define  enable_E0() E0_ENABLE_WRITE( E_ENABLE_ON)
     #define disable_E0() E0_ENABLE_WRITE(!E_ENABLE_ON)
   #else
@@ -644,7 +650,7 @@
     #define disable_E0() NOOP
   #endif
 
-  #if (DRIVER_EXTRUDERS > 1) && HAS(E1_ENABLE)
+  #if (DRIVER_EXTRUDERS > 1) && HAS_E1_ENABLE
     #define  enable_E1() E1_ENABLE_WRITE( E_ENABLE_ON)
     #define disable_E1() E1_ENABLE_WRITE(!E_ENABLE_ON)
   #else
@@ -652,7 +658,7 @@
     #define disable_E1() NOOP
   #endif
 
-  #if (DRIVER_EXTRUDERS > 2) && HAS(E2_ENABLE)
+  #if (DRIVER_EXTRUDERS > 2) && HAS_E2_ENABLE
     #define  enable_E2() E2_ENABLE_WRITE( E_ENABLE_ON)
     #define disable_E2() E2_ENABLE_WRITE(!E_ENABLE_ON)
   #else
@@ -660,7 +666,7 @@
     #define disable_E2() NOOP
   #endif
 
-  #if (DRIVER_EXTRUDERS > 3) && HAS(E3_ENABLE)
+  #if (DRIVER_EXTRUDERS > 3) && HAS_E3_ENABLE
     #define  enable_E3() E3_ENABLE_WRITE( E_ENABLE_ON)
     #define disable_E3() E3_ENABLE_WRITE(!E_ENABLE_ON)
   #else
@@ -668,7 +674,7 @@
     #define disable_E3() NOOP
   #endif
 
-  #if (DRIVER_EXTRUDERS > 4) && HAS(E4_ENABLE)
+  #if (DRIVER_EXTRUDERS > 4) && HAS_E4_ENABLE
     #define  enable_E4() E4_ENABLE_WRITE( E_ENABLE_ON)
     #define disable_E4() E4_ENABLE_WRITE(!E_ENABLE_ON)
   #else
@@ -676,7 +682,7 @@
     #define disable_E4() NOOP
   #endif
 
-  #if (DRIVER_EXTRUDERS > 5) && HAS(E5_ENABLE)
+  #if (DRIVER_EXTRUDERS > 5) && HAS_E5_ENABLE
     #define  enable_E5() E5_ENABLE_WRITE( E_ENABLE_ON)
     #define disable_E5() E5_ENABLE_WRITE(!E_ENABLE_ON)
   #else
@@ -686,4 +692,4 @@
 
 #endif
 
-#endif // STEPPER_INDIRECTION_H
+#endif /* _STEPPER_INDIRECTION_H_ */

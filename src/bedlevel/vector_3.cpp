@@ -41,10 +41,9 @@
 
 #include "../../base.h"
 
-#if HAS(ABL)
+#if HAS_ABL
 
 #include <math.h>
-#include "vector_3.h"
 
 vector_3::vector_3() : x(0), y(0), z(0) { }
 
@@ -84,13 +83,13 @@ void vector_3::apply_rotation(matrix_3x3 matrix) {
 }
 
 void vector_3::debug(const char title[]) {
-  SERIAL_V(title);
+  SERIAL_VAL(title);
   SERIAL_MV(" x: ", x, 6);
   SERIAL_MV(" y: ", y, 6);
   SERIAL_EMV(" z: ", z, 6);
 }
 
-void apply_rotation_xyz(matrix_3x3 matrix, float& x, float& y, float& z) {
+void apply_rotation_xyz(matrix_3x3 matrix, float &x, float &y, float &z) {
   vector_3 vector = vector_3(x, y, z);
   vector.apply_rotation(matrix);
   x = vector.x;
@@ -141,16 +140,16 @@ matrix_3x3 matrix_3x3::transpose(matrix_3x3 original) {
 }
 
 void matrix_3x3::debug(const char title[]) {
-  SERIAL_T(title);
+  SERIAL_TXT(title);
   int count = 0;
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
-      if (matrix[count] >= 0.0) SERIAL_C('+');
-      SERIAL_V(matrix[count], 6);
-      SERIAL_C(' ');
+      if (matrix[count] >= 0.0) SERIAL_CHR('+');
+      SERIAL_VAL(matrix[count], 6);
+      SERIAL_CHR(' ');
       count++;
     }
-    SERIAL_E;
+    SERIAL_EOL();
   }
 }
 

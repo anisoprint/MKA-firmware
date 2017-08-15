@@ -30,6 +30,7 @@
 #ifndef LANGUAGE_IT_H
 #define LANGUAGE_IT_H
 
+#define MAPPER_C2C3
 #define DISPLAY_CHARSET_ISO10646_1
 
 #define WELCOME_MSG                         MACHINE_NAME _UxGT(" pronta.")
@@ -50,29 +51,27 @@
 #define MSG_LEVEL_BED_WAITING               _UxGT("Premi per iniziare")
 #define MSG_LEVEL_BED_NEXT_POINT            _UxGT("Punto successivo")
 #define MSG_LEVEL_BED_DONE                  _UxGT("Livel. terminato!")
-#define MSG_LEVEL_BED_CANCEL                _UxGT("Annulla")
 #define MSG_SET_HOME_OFFSETS                _UxGT("Imp. offset home")
 #define MSG_HOME_OFFSETS_APPLIED            _UxGT("Offset applicato")
 #define MSG_SET_ORIGIN                      _UxGT("Imposta Origine")
 #define MSG_PREHEAT_1                       _UxGT("Preriscalda PLA")
 #define MSG_PREHEAT_1_N                     MSG_PREHEAT_1 _UxGT(" ")
 #define MSG_PREHEAT_1_ALL                   MSG_PREHEAT_1 _UxGT(" Tutto")
-#define MSG_PREHEAT_1_END                   MSG_PREHEAT_1 _UxGT(" Fine")
+#define MSG_PREHEAT_1_END                   MSG_PREHEAT_1 _UxGT(" Ugello")
 #define MSG_PREHEAT_1_BEDONLY               MSG_PREHEAT_1 _UxGT(" Piatto")
 #define MSG_PREHEAT_1_SETTINGS              MSG_PREHEAT_1 _UxGT(" conf")
 #define MSG_PREHEAT_2                       _UxGT("Preriscalda ABS")
 #define MSG_PREHEAT_2_N                     MSG_PREHEAT_2 _UxGT(" ")
 #define MSG_PREHEAT_2_ALL                   MSG_PREHEAT_2 _UxGT(" Tutto")
-#define MSG_PREHEAT_2_END                   MSG_PREHEAT_2 _UxGT(" Fine")
+#define MSG_PREHEAT_2_END                   MSG_PREHEAT_2 _UxGT(" Ugello")
 #define MSG_PREHEAT_2_BEDONLY               MSG_PREHEAT_2 _UxGT(" Piatto")
 #define MSG_PREHEAT_2_SETTINGS              MSG_PREHEAT_2 _UxGT(" conf")
 #define MSG_PREHEAT_3                       _UxGT("Preriscalda GUM")
 #define MSG_PREHEAT_3_N                     MSG_PREHEAT_3 _UxGT(" ")
 #define MSG_PREHEAT_3_ALL                   MSG_PREHEAT_3 _UxGT(" Tutto")
-#define MSG_PREHEAT_3_END                   MSG_PREHEAT_3 _UxGT(" Fine")
+#define MSG_PREHEAT_3_END                   MSG_PREHEAT_3 _UxGT(" Ugello")
 #define MSG_PREHEAT_3_BEDONLY               MSG_PREHEAT_3 _UxGT(" Piatto")
 #define MSG_PREHEAT_3_SETTINGS              MSG_PREHEAT_3 _UxGT(" conf")
-#define MSG_TOO_COLD_FOR_FILAMENTCHANGE     _UxGT("Hotend troppo freddo per il cambio filo")
 #define MSG_COOLDOWN                        _UxGT("Raffredda")
 #define MSG_SWITCH_PS_ON                    _UxGT("Accendi aliment.")
 #define MSG_SWITCH_PS_OFF                   _UxGT("Spegni aliment.")
@@ -81,6 +80,7 @@
 #define MSG_PURGE                           _UxGT("Purge")
 #define MSG_MOVE_AXIS                       _UxGT("Muovi Asse")
 #define MSG_LEVEL_BED                       _UxGT("Livella piano")
+#define MSG_USER_MENU                       _UxGT("Comandi Utente")
 #define MSG_MOVING                          _UxGT("In movimento...")
 #define MSG_FREE_XY                         _UxGT("XY liberi")
 #define MSG_MOVE_X                          _UxGT("Muovi X")
@@ -90,21 +90,13 @@
 #define MSG_MOVE_01MM                       _UxGT("Muovi di 0.1mm")
 #define MSG_MOVE_1MM                        _UxGT("Muovi di   1mm")
 #define MSG_MOVE_10MM                       _UxGT("Muovi di  10mm")
-#if ENABLED(DOGLCD)
-  #define MSG_SPEED                         _UxGT("Velocità")
-#else
-  #define MSG_SPEED                         _UxGT("Velocita")
-#endif
+#define MSG_SPEED                           _UxGT("Velocità")
 #define MSG_BED_Z                           _UxGT("piatto Z")
 #define MSG_NOZZLE                          _UxGT("Ugello")
 #define MSG_BED                             _UxGT("Piatto")
 #define MSG_CHAMBER                         _UxGT("Camera")
 #define MSG_COOLER                          _UxGT("Raffreddamento")
-#if ENABLED(DOGLCD)
-  #define MSG_FAN_SPEED                     _UxGT("Velocità ventola")
-#else
-  #define MSG_FAN_SPEED                     _UxGT("Velocita ventola")
-#endif
+#define MSG_FAN_SPEED                       _UxGT("Velocità ventola")
 #define MSG_FLOW                            _UxGT("Flusso")
 #define MSG_CONTROL                         _UxGT("Controllo")
 #define MSG_FIX_LOSE_STEPS                  _UxGT("Fix axis steps")
@@ -121,16 +113,20 @@
 #define MSG_PID_C                           _UxGT("PID-C")
 #define MSG_SELECT                          _UxGT("Seleziona")
 #define MSG_ACC                             _UxGT("Accel")
+#define MSG_JERK                            _UxGT("Jerk")
 #define MSG_VX_JERK                         _UxGT("Vx-jerk")
 #define MSG_VY_JERK                         _UxGT("Vy-jerk")
 #define MSG_VZ_JERK                         _UxGT("Vz-jerk")
 #define MSG_VE_JERK                         _UxGT("Ve-jerk")
+#define MSG_VELOCITY                        _UxGT("Velocità")
 #define MSG_VMAX                            _UxGT("Vmax ")
 #define MSG_VMIN                            _UxGT("Vmin")
 #define MSG_VTRAV_MIN                       _UxGT("VTrav min")
 #define MSG_AMAX                            _UxGT("Amax ")
+#define MSG_ACCELERATION                    _UxGT("Accelerazione")
 #define MSG_A_RETRACT                       _UxGT("A-retract")
 #define MSG_A_TRAVEL                        _UxGT("A-Spostamento")
+#define MSG_STEPS_PER_MM                    _UxGT("Passi/mm")
 #define MSG_XSTEPS                          _UxGT("Xpassi/mm")
 #define MSG_YSTEPS                          _UxGT("Ypassi/mm")
 #define MSG_ZSTEPS                          _UxGT("Zpassi/mm")
@@ -162,7 +158,8 @@
 #define MSG_CARD_MENU                       _UxGT("Stampa da SD")
 #define MSG_NO_CARD                         _UxGT("SD non presente")
 #define MSG_DWELL                           _UxGT("Sospensione...")
-#define MSG_USERWAIT                        _UxGT("Clicca per cont...")
+#define MSG_USERWAIT                        _UxGT("Premi tasto..")
+#define MSG_PRINT_PAUSED                    _UxGT("Stampa in pausa")
 #define MSG_RESUMING                        _UxGT("Riprendi Stampa")
 #define MSG_PRINT_ABORTED                   _UxGT("Stampa annullata")
 #define MSG_NO_MOVE                         _UxGT("Nessun Movimento")
@@ -206,9 +203,9 @@
 #define MSG_ERR_Z_HOMING                    _UxGT("G28 Z Vietato")
 #define MSG_HALTED                          _UxGT("STAMPANTE FERMATA")
 #define MSG_PLEASE_RESET                    _UxGT("Riavviare prego")
-#define MSG_END_DAY                         _UxGT("giorni")
-#define MSG_END_HOUR                        _UxGT("ore")
-#define MSG_END_MINUTE                      _UxGT("minuti")
+#define MSG_LONG_DAY                         _UxGT("giorni")
+#define MSG_LONG_HOUR                        _UxGT("ore")
+#define MSG_LONG_MINUTE                      _UxGT("minuti")
 #define MSG_PRINT_TIME                      _UxGT("Print time ")
 
 // Calibrate Delta
@@ -235,8 +232,7 @@
 #define MSG_INFO_COOLER                     _UxGT("Raffreddamento")
 #define MSG_INFO_BAUDRATE                   _UxGT("Baud")
 #define MSG_INFO_PROTOCOL                   _UxGT("Protocollo")
-#define MSG_LIGHTS_ON                       _UxGT("Luci Case on")
-#define MSG_LIGHTS_OFF                      _UxGT("Luci Case off")
+
 #define MSG_INFO_COMPLETED_PRINTS           _UxGT("Completata")
 #define MSG_INFO_TOTAL_PRINTS               _UxGT("Stampe totali")
 #define MSG_INFO_FINISHED_PRINTS            _UxGT("Stampe complete")
@@ -248,19 +244,19 @@
 #define MSG_INFO_MAX_TEMP                   _UxGT("Temp max")
 #define MSG_INFO_PSU                        _UxGT("Alimentatore")
 
+// CASE LIGHT
+#define MSG_CASE_LIGHT                      _UxGT("Luci Case")
+#define MSG_CASE_LIGHT_BRIGHTNESS           _UxGT("Luminosità Luci")
+
 #define MSG_DRIVE_STRENGTH                  _UxGT("Potenza Drive")
 #define MSG_DAC_PERCENT                     _UxGT("Driver %")
 #define MSG_DAC_EEPROM_WRITE                _UxGT("Scrivi DAC EEPROM")
 
-#define MSG_FILAMENT_CHANGE_HEADER          _UxGT("CAMBIA FILAMENTO")
-#define MSG_FILAMENT_CHANGE_OPTION_HEADER   _UxGT("CAMBIA OPZIONI:")
-#define MSG_FILAMENT_CHANGE_OPTION_EXTRUDE  _UxGT("Estrusione")
+#define MSG_FILAMENT_CHANGE_HEADER          _UxGT("STAMPA IN PAUSA")
+#define MSG_FILAMENT_CHANGE_OPTION_HEADER   _UxGT("OPZIONI:")
+#define MSG_FILAMENT_CHANGE_OPTION_EXTRUDE  _UxGT("Estrudi ancora")
 #define MSG_FILAMENT_CHANGE_OPTION_RESUME   _UxGT("Riprendi stampa")
-#if ENABLED(DOGLCD)
-  #define MSG_FILAMENT_CHANGE_MINTEMP         _UxGT("Temp minima è ")
-#else
-  #define MSG_FILAMENT_CHANGE_MINTEMP         _UxGT("Temp minima e ")
-#endif
+#define MSG_FILAMENT_CHANGE_MINTEMP         _UxGT("Temp minima è ")
 #define MSG_FILAMENT_CHANGE_NOZZLE          _UxGT("  Ugello: ")
 
 #if LCD_HEIGHT >= 4
@@ -270,13 +266,13 @@
   #define MSG_FILAMENT_CHANGE_INIT_3          _UxGT("di filamento")
   #define MSG_FILAMENT_CHANGE_COOL_1          _UxGT("Attendere")
   #define MSG_FILAMENT_CHANGE_COOL_2          _UxGT("Raffreddamento")
-  #define MSG_FILAMENT_CHANGE_COOL_3          _UxGT("Nozzle")
+  #define MSG_FILAMENT_CHANGE_COOL_3          _UxGT("Ugello")
   #define MSG_FILAMENT_CHANGE_UNLOAD_1        _UxGT("Attendere")
   #define MSG_FILAMENT_CHANGE_UNLOAD_2        _UxGT("l'espulsione")
   #define MSG_FILAMENT_CHANGE_UNLOAD_3        _UxGT("del filamento")
   #define MSG_FILAMENT_CHANGE_INSERT_1        _UxGT("Inserisci il")
   #define MSG_FILAMENT_CHANGE_INSERT_2        _UxGT("filamento e")
-  #define MSG_FILAMENT_CHANGE_INSERT_3        _UxGT("premi per cont")
+  #define MSG_FILAMENT_CHANGE_INSERT_3        _UxGT("premi per continuare")
   #define MSG_FILAMENT_CHANGE_HEAT_1          _UxGT("Premi per")
   #define MSG_FILAMENT_CHANGE_HEAT_2          _UxGT("riscald ugello.")
   #define MSG_FILAMENT_CHANGE_ZZZ_1           _UxGT(" z   z   z")
@@ -336,11 +332,7 @@
 #define MSG_RFID_TEMP_BED                   _UxGT("Temperatura Bed: ")
 #define MSG_RFID_TEMP_USER_HOTEND           _UxGT("Temperatura utente Hotend: ")
 #define MSG_RFID_TEMP_USER_BED              _UxGT("Temperatura utente Bed: ")
-#if ENABLED(DOGLCD)
-  #define MSG_RFID_DENSITY                  _UxGT("Densità: ")
-#else
-  #define MSG_RFID_DENSITY                  _UxGT("Densita: ")
-#endif
+#define MSG_RFID_DENSITY                    _UxGT("Densità: ")
 #define MSG_RFID_SPOOL_LENGHT               _UxGT("Lunghezza bobina: ")
 
 #endif // LANGUAGE_IT_H
