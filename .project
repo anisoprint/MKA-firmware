@@ -34,12 +34,7 @@
 		<link>
 			<name>core/core</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.18/cores/arduino</locationURI>
-		</link>
-		<link>
-			<name>core/variant</name>
-			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.18/variants/mega</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.18/cores</locationURI>
 		</link>
 		<link>
 			<name>libraries/LiquidCrystal</name>
