@@ -1,9 +1,10 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MKA 3D Printer Firmware
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Andrey Azarov, Anisoprint LLC
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,20 +111,20 @@
  * uses "false" here (most common setup).                                                *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define Z2_MIN_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
-#define Z3_MIN_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
-#define Z4_MIN_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
-#define X_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define Z_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define Z2_MAX_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
-#define Z3_MAX_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
-#define Z4_MAX_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
-#define Z_PROBE_ENDSTOP_LOGIC false   // set to true to invert the logic of the probe.
-#define E_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define X_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define Z2_MIN_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
+#define Z3_MIN_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
+#define Z4_MIN_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
+#define X_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define Z_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define Z2_MAX_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
+#define Z3_MAX_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
+#define Z4_MAX_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
+#define Z_PROBE_ENDSTOP_LOGIC true   // set to true to invert the logic of the probe.
+#define E_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
 /*****************************************************************************************/
 
 
@@ -349,7 +350,7 @@
 /*****************************************************************************************
  ********************************** Axis relative mode ***********************************
  *****************************************************************************************/
-#define AXIS_RELATIVE_MODES {false, false, false, false}
+#define AXIS_RELATIVE_MODES {false, false, false, false, false, false}
 /*****************************************************************************************/
 
 
@@ -522,7 +523,15 @@
  *                                                                                       *
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 80, 3200, 625, 625, 625, 625}
+<<<<<<< HEAD
+<<<<<<< HEAD
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 400, 102, 52.44, 102, 102}
+=======
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 4000, 102, 102, 102, 102}
+>>>>>>> refs/heads/multiextruder
+=======
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 4000, 102, 102, 102, 102}
+>>>>>>> branch 'dev' of https://github.com/manfret/MKA
 /*****************************************************************************************/
 
 
@@ -530,7 +539,11 @@
  ********************************** Axis feedrate ****************************************
  *****************************************************************************************/
 //                                       X,   Y, Z,  E0...(per extruder). (mm/sec)
-#define DEFAULT_MAX_FEEDRATE          {300, 300, 2, 100, 100, 100, 100}
+<<<<<<< HEAD
+#define DEFAULT_MAX_FEEDRATE          {300, 300, 4, 100, 100, 100, 100}
+=======
+#define DEFAULT_MAX_FEEDRATE          {150, 150, 1.7, 100, 100, 100, 100}
+>>>>>>> refs/heads/multiextruder
 // Feedrates for manual moves along        X,     Y,     Z,  E from panel
 #define MANUAL_FEEDRATE               {50*60, 50*60, 4*60, 10*60}
 // Minimum feedrate

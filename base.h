@@ -1,9 +1,10 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MKA 3D Printer Firmware
  *
- * Based on Marlin, Sprinter and grbl
+ * Based on MK4duo, Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2017 Andrey Azarov, Anisoprint LLC
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,12 +43,12 @@
 #include "Boards.h"
 #include "src/mechanics.h"
 
-#include "Configuration_Overall.h"
+#include "Configuration.h"
 #include "Configuration_Version.h"
 
 #ifndef CONFIGURATION_OVERALL
   #include "Configuration_Basic.h"
-  #include "Configuration_Overall.h"
+  #include "Configuration.h"
 
   #if MECH(CARTESIAN)
     #include "Configuration_Cartesian.h"
@@ -63,7 +64,26 @@
 
   #include "Configuration_Temperature.h"
   #include "Configuration_Feature.h"
-  #include "Configuration_Overall.h"
+#else
+	#ifdef PRINTER_TYPE
+		#define AS_QUOTEDSTRING(S) #S
+		#define INCLUDE_BY_PRINTER(P,H)    AS_QUOTEDSTRING(config/P/H)
+		#include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Basic.h)
+	    #if MECH(CARTESIAN)
+		  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Cartesian.h)
+	    #elif IS_CORE
+		  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Core.h)
+	    #elif MECH(DELTA)
+		  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Delta.h)
+	    #elif IS_SCARA
+	   	  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Scara.h)
+	    #elif MECH(MUVE3D)
+		  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Muve3D.h)
+	    #endif
+
+	    #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Temperature.h)
+	    #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Feature.h)
+	#endif
 #endif
 
 #if ENABLED(LASERBEAM)

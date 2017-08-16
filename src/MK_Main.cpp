@@ -174,8 +174,8 @@ float constexpr homing_feedrate_mm_s[] = {
 };
 static float feedrate_mm_s = MMM_TO_MMS(1500.0), saved_feedrate_mm_s;
 int feedrate_percentage = 100, saved_feedrate_percentage,
-    flow_percentage[EXTRUDERS] = ARRAY_BY_EXTRUDERS(100),
-    density_percentage[EXTRUDERS] = ARRAY_BY_EXTRUDERS(100);
+    flow_percentage[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(100),
+    density_percentage[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(100);
 
 bool axis_relative_modes[] = AXIS_RELATIVE_MODES,
      #if ENABLED(VOLUMETRIC_DEFAULT_ON)
@@ -184,8 +184,8 @@ bool axis_relative_modes[] = AXIS_RELATIVE_MODES,
        volumetric_enabled = false;
      #endif
 
-float filament_size[EXTRUDERS] = ARRAY_BY_EXTRUDERS(DEFAULT_NOMINAL_FILAMENT_DIA),
-      volumetric_multiplier[EXTRUDERS] = ARRAY_BY_EXTRUDERS(1.0);
+float filament_size[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(DEFAULT_NOMINAL_FILAMENT_DIA),
+      volumetric_multiplier[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(1.0);
 
 #if ENABLED(WORKSPACE_OFFSETS)
   // The distance that XYZ has been offset by G92. Reset by G28.
@@ -220,9 +220,11 @@ float soft_endstop_min[XYZ] = { X_MIN_POS, Y_MIN_POS, Z_MIN_POS },
   uint8_t fanKickstart = 0;
 #endif
 
+//TODO: Hotend offset -> extruder offset
 float hotend_offset[XYZ][HOTENDS];
 
 // The active extruder (tool). Set with T<extruder> command.
+//TODO: active extruder
 uint8_t active_extruder = 0;
 uint8_t previous_extruder = 0;
 uint8_t active_driver = 0;
@@ -232,6 +234,7 @@ uint8_t active_driver = 0;
   #define CNC_M6_TOOL_ID 255
 #endif
 
+//TODO: target extruder
 static uint8_t target_extruder;
 
 // Relative Mode. Enable with G91, disable with G90.
@@ -245,7 +248,23 @@ volatile bool wait_for_heatup = true;
   volatile bool wait_for_user = false;
 #endif
 
-const char axis_codes[NUM_AXIS] = {'X', 'Y', 'Z', 'E'};
+const char axis_codes[NUM_AXIS] = {'X', 'Y', 'Z', 'E'
+#if DRIVER_EXTRUDERS > 1
+  , 'U'
+#endif
+#if DRIVER_EXTRUDERS > 2
+  , 'V'
+#endif
+#if DRIVER_EXTRUDERS > 3
+  , 'W'
+#endif
+#if DRIVER_EXTRUDERS > 4
+  , 'K'
+#endif
+#if DRIVER_EXTRUDERS > 5
+  , 'L'
+#endif
+};
 
 // Number of characters read in the current line of serial input
 static int serial_count = 0;
@@ -310,9 +329,9 @@ PrintCounter print_job_counter = PrintCounter();
 
 #if ENABLED(RFID_MODULE)
   bool RFID_ON = false;
-  unsigned long Spool_ID[EXTRUDERS] = ARRAY_BY_EXTRUDERS(0);
-  bool Spool_must_read[EXTRUDERS]   = ARRAY_BY_EXTRUDERS(false);
-  bool Spool_must_write[EXTRUDERS]  = ARRAY_BY_EXTRUDERS(false);
+  unsigned long Spool_ID[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(0);
+  bool Spool_must_read[DRIVER_EXTRUDERS]   = ARRAY_BY_EXTRUDERS(false);
+  bool Spool_must_write[DRIVER_EXTRUDERS]  = ARRAY_BY_EXTRUDERS(false);
 #endif
 
 #if HAS(Z_SERVO_ENDSTOP)
@@ -327,8 +346,8 @@ PrintCounter print_job_counter = PrintCounter();
 #if ENABLED(FWRETRACT)
 
   bool autoretract_enabled = false;
-  bool retracted[EXTRUDERS] = { false };
-  bool retracted_swap[EXTRUDERS] = { false };
+  bool retracted[DRIVER_EXTRUDERS] = { false };
+  bool retracted_swap[DRIVER_EXTRUDERS] = { false };
 
   float retract_length = RETRACT_LENGTH;
   float retract_length_swap = RETRACT_LENGTH_SWAP;
@@ -461,6 +480,7 @@ float cartes[XYZ] = { 0 };
   static bool filament_ran_out = false;
 #endif
 
+//TODO: filament change
 #if ENABLED(FILAMENT_CHANGE_FEATURE)
   FilamentChangeMenuResponse filament_change_menu_response;
 #endif
@@ -479,7 +499,7 @@ float cartes[XYZ] = { 0 };
 #if ENABLED(IDLE_OOZING_PREVENT)
   unsigned long axis_last_activity = 0;
   bool IDLE_OOZING_enabled = true;
-  bool IDLE_OOZING_retracted[EXTRUDERS] = ARRAY_BY_EXTRUDERS(false);
+  bool IDLE_OOZING_retracted[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(false);
 #endif
 
 #if HAS(POWER_CONSUMPTION_SENSOR)
@@ -494,6 +514,7 @@ float cartes[XYZ] = { 0 };
   static float color_step_moltiplicator = (DRIVER_MICROSTEP / MOTOR_ANGLE) * CARTER_MOLTIPLICATOR;
 #endif // NPR2
 
+//TODO: easy load
 #if ENABLED(EASY_LOAD)
   bool allow_lengthy_extrude_once; // for load/unload
 #endif
@@ -621,9 +642,9 @@ inline void sync_plan_position() {
   #if ENABLED(DEBUG_LEVELING_FEATURE)
     if (DEBUGGING(LEVELING)) DEBUG_POS("sync_plan_position", current_position);
   #endif
-  planner.set_position_mm(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS]);
+  planner.set_position_mm(current_position);
 }
-inline void sync_plan_position_e() { planner.set_e_position_mm(current_position[E_AXIS]); }
+inline void sync_plan_position_e() { LOOP_EUVW(ie) planner.set_position_mm(AxisEnum(ie), current_position[ie]); }
 
 #if IS_KINEMATIC
 
@@ -1256,10 +1277,31 @@ bool get_target_extruder_from_command(int code) {
 }
 
 /**
+ * Set target_extruder from the T parameter or the active_extruder
+ *
+ * Returns TRUE if the target is invalid
+ */
+bool get_target_extruder_driver_from_command(int code) {
+  if (code_seen('T')) {
+    if (code_value_byte() >= DRIVER_EXTRUDERS) {
+      SERIAL_SMV(ER, "M", code);
+      SERIAL_EMV(" " MSG_INVALID_EXTRUDER_DRV, code_value_byte());
+      return true;
+    }
+    target_extruder = code_value_byte();
+  }
+  else
+    target_extruder = active_extruder;
+
+  return false;
+}
+
+/**
  * Set target_Hotend from the T parameter or the active_extruder
  *
  * Returns TRUE if the target is invalid
  */
+//TODO get_target_hotend_from_command
 bool get_target_hotend_from_command(int code) {
   if (code_seen('H')) {
     if (code_value_byte() >= HOTENDS) {
@@ -1521,7 +1563,7 @@ inline float get_homing_bump_feedrate(AxisEnum axis) {
  * (or from wherever it has been told it is located).
  */
 inline void line_to_current_position() {
-  planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], feedrate_mm_s, active_extruder, active_driver);
+  planner.buffer_line(current_position, feedrate_mm_s);
 }
 
 /**
@@ -1535,7 +1577,7 @@ inline void line_to_current_position() {
   }
 #else
   inline void line_to_destination(float fr_mm_s) {
-    planner.buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], fr_mm_s, active_extruder, active_driver);
+    planner.buffer_line(destination, fr_mm_s);
   }
 #endif
 inline void line_to_destination() { line_to_destination(feedrate_mm_s); }
@@ -2593,7 +2635,7 @@ static void do_homing_move(AxisEnum axis, float distance, float fr_mm_s=0.0) {
     if (deploy_bltouch) set_bltouch_deployed(true);
   #endif
 
-  // Tell the planner we're at Z=0
+  // Tell the planner we're at axis=0
   current_position[axis] = 0;
 
   #if IS_SCARA
@@ -2602,9 +2644,13 @@ static void do_homing_move(AxisEnum axis, float distance, float fr_mm_s=0.0) {
     inverse_kinematics(current_position);
     planner.buffer_line(delta[A_AXIS], delta[B_AXIS], delta[C_AXIS], current_position[E_AXIS], fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis], active_extruder, active_driver);
   #else
+  	//SERIAL_MV(" PX", planner.position[X_AXIS], 3);
+  	//SERIAL_MV(" PY", planner.position[Y_AXIS], 3);
+  	//SERIAL_MV(" PZ", planner.position[Z_AXIS], 3);
     sync_plan_position();
+
     current_position[axis] = distance;
-    planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis], active_extruder, active_driver);
+    planner.buffer_line(current_position, fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis]);
   #endif
 
   stepper.synchronize();
@@ -4106,6 +4152,7 @@ inline void gcode_G28(const bool always_home_all) {
   #endif
 
   // Always home with tool 0 active
+  //TODO: Home with tool 0
   #if HOTENDS > 1
     const uint8_t old_tool_index = active_extruder;
     tool_change(0, 0, true);
@@ -6536,7 +6583,22 @@ inline void gcode_G60() {
   SERIAL_MV("<-X:", stored_position[slot][X_AXIS]);
   SERIAL_MV(" Y:", stored_position[slot][Y_AXIS]);
   SERIAL_MV(" Z:", stored_position[slot][Z_AXIS]);
-  SERIAL_EMV(" E:", stored_position[slot][E_AXIS]);
+  SERIAL_MV(" E:", stored_position[slot][E_AXIS]);
+#if DRIVER_EXTRUDERS > 1
+  SERIAL_MV(" U:", stored_position[slot][U_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 2
+  SERIAL_MV(" V:", stored_position[slot][V_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 3
+  SERIAL_MV(" W:", stored_position[slot][W_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 4
+  SERIAL_MV(" K:", stored_position[slot][K_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 5
+  SERIAL_MV(" L:", stored_position[slot][L_AXIS]);
+#endif
 }
 
 /**
@@ -6585,12 +6647,33 @@ inline void gcode_G61() {
  */
 inline void gcode_G92() {
   bool didXYZ = false,
-       didE = code_seen('E');
+       didE = false,
+  		 doAll = false;
 
-  if (!didE) stepper.synchronize();
+  LOOP_XYZ(i)
+  {
+  	if (code_seen(axis_codes[i]))
+  	{
+  		didXYZ = true;
+  		break;
+  	}
+  }
+
+  LOOP_EUVW(ie)
+  {
+  	if (code_seen(axis_codes[ie]))
+  	{
+  		didE = true;
+  		break;
+  	}
+  }
+
+  doAll = !(didXYZ || didE);
+
+  if (didXYZ) stepper.synchronize();
 
   LOOP_XYZE(i) {
-    if (code_seen(axis_codes[i])) {
+    if (code_seen(axis_codes[i]) || doAll) {
       #if IS_SCARA
         current_position[i] = code_value_axis_units((AxisEnum)i);
         if (i != E_AXIS) didXYZ = true;
@@ -6598,21 +6681,19 @@ inline void gcode_G92() {
         #if ENABLED(WORKSPACE_OFFSETS)
           const float p = current_position[i];
         #endif
-        float v = code_value_axis_units((AxisEnum)i);
-
+        float v = 0;
+        if (!doAll) v = code_value_axis_units((AxisEnum)i);
         current_position[i] = v;
-
+				#if ENABLED(WORKSPACE_OFFSETS)
         if (i != E_AXIS) {
-          didXYZ = true;
-          #if ENABLED(WORKSPACE_OFFSETS)
             position_shift[i] += v - p; // Offset the coordinate space
             update_software_endstops((AxisEnum)i);
-          #endif
         }
+			#endif
       #endif
     }
   }
-  if (didXYZ)
+  if (didXYZ || doAll)
     SYNC_PLAN_POSITION_KINEMATIC();
   else if (didE)
     sync_plan_position_e();
@@ -6620,6 +6701,7 @@ inline void gcode_G92() {
   report_current_position();
 }
 
+//TODO: RESUME_CONTINUE
 #if HAS(RESUME_CONTINUE)
 
   /**
@@ -7604,16 +7686,17 @@ inline void gcode_M81() {
 /**
  * M82: Set E codes absolute (default)
  */
-inline void gcode_M82() { axis_relative_modes[E_AXIS] = false; }
+inline void gcode_M82() { LOOP_EUVW(ie) axis_relative_modes[ie] = false; }
 
 /**
  * M83: Set E codes relative while in Absolute Coordinates (G90) mode
  */
-inline void gcode_M83() { axis_relative_modes[E_AXIS] = true; }
+inline void gcode_M83() { LOOP_EUVW(ie) axis_relative_modes[ie] = true; }
 
 /**
  * M18, M84: Disable stepper motors
  */
+// TODO: M18 disables all extruders on E code
 inline void gcode_M18_M84() {
   if (code_seen('S')) {
     stepper_inactive_time = code_value_millis_from_seconds();
@@ -7650,6 +7733,7 @@ inline void gcode_M85() {
  *
  *      With multiple extruders use T to specify which one.
  */
+// TODO: M92 shuld be fixed for multiextruder
 inline void gcode_M92() {
 
   GET_TARGET_EXTRUDER(92);
@@ -8332,6 +8416,7 @@ inline void gcode_M122() {
  *    T<extruder> - Optional extruder number. Current extruder if omitted.
  *    D<linear> - Diameter of the filament. Use "D0" to switch back to linear units on the E axis.
  */
+//TODO: M200, M201, M203, M204, M205 - not working correctly with multiextruder
 inline void gcode_M200() {
 
   GET_TARGET_EXTRUDER(200);
@@ -8344,7 +8429,7 @@ inline void gcode_M200() {
     if (volumetric_enabled) {
       filament_size[TARGET_EXTRUDER] = code_value_linear_units();
       // make sure all extruders have some sane value for the filament size
-      for (int i = 0; i < EXTRUDERS; i++)
+      for (int i = 0; i < DRIVER_EXTRUDERS; i++)
         if (!filament_size[i]) filament_size[i] = DEFAULT_NOMINAL_FILAMENT_DIA;
     }
   }
@@ -8560,8 +8645,7 @@ inline void gcode_M220() {
  * M221: Set extrusion percentage (M221 T0 S95)
  */
 inline void gcode_M221() {
-
-  GET_TARGET_EXTRUDER(221);
+	GET_TARGET_EXTRUDER_DRIVER(221);
   if (code_seen('S')) flow_percentage[TARGET_EXTRUDER] = code_value_int();
 }
 
@@ -8570,7 +8654,7 @@ inline void gcode_M221() {
  */
 inline void gcode_M222() {
 
-  GET_TARGET_EXTRUDER(222);
+	GET_TARGET_EXTRUDER_DRIVER(222);
 
   if (code_seen('S')) {
     density_percentage[TARGET_EXTRUDER] = code_value_int();
@@ -9760,6 +9844,7 @@ inline void gcode_M532() {
   }
 #endif // HEATER_USES_AD595
 
+//TODO: FILAMENT_CHANGE_FEATURE
 #if ENABLED(FILAMENT_CHANGE_FEATURE)
 
   millis_t next_buzz = 0;
@@ -10759,6 +10844,7 @@ inline void gcode_M999() {
  * For CNC no other parameters are expected
  *
  */
+//TODO: Tool switch
 inline void gcode_T(uint8_t tool_id) {
 
   #if ENABLED(DEBUG_LEVELING_FEATURE)
@@ -13329,16 +13415,19 @@ void prepare_move_to_destination() {
 
   #if ENABLED(PREVENT_COLD_EXTRUSION)
     if (!DEBUGGING(DRYRUN)) {
-      if (destination[E_AXIS] != current_position[E_AXIS]) {
-        if (thermalManager.tooColdToExtrude(active_extruder))
-          current_position[E_AXIS] = destination[E_AXIS]; // Behave as if the move really took place, but ignore E part
-        #if ENABLED(PREVENT_LENGTHY_EXTRUDE)
-          if (labs(destination[E_AXIS] - current_position[E_AXIS]) > EXTRUDE_MAXLENGTH) {
-            current_position[E_AXIS] = destination[E_AXIS]; // Behave as if the move really took place, but ignore E part
-            SERIAL_LM(ER, MSG_ERR_LONG_EXTRUDE_STOP);
-          }
-        #endif
-      }
+    	LOOP_EUVW(ie)
+    		{
+					if (destination[ie] != current_position[ie]) {
+						if (thermalManager.tooColdToExtrude(ie-XYZ))
+							current_position[ie] = destination[ie]; // Behave as if the move really took place, but ignore E part
+						#if ENABLED(PREVENT_LENGTHY_EXTRUDE)
+							if (labs(destination[ie] - current_position[ie]) > EXTRUDE_MAXLENGTH) {
+								current_position[ie] = destination[ie]; // Behave as if the move really took place, but ignore E part
+								SERIAL_LM(ER, MSG_ERR_LONG_EXTRUDE_STOP);
+							}
+						#endif
+					}
+    		}
     }
   #endif
 
@@ -13362,6 +13451,22 @@ static void report_current_position() {
   SERIAL_MV(" Y:", current_position[Y_AXIS]);
   SERIAL_MV(" Z:", current_position[Z_AXIS]);
   SERIAL_MV(" E:", current_position[E_AXIS]);
+  #if DRIVER_EXTRUDERS > 1
+  SERIAL_MV(" U:", current_position[U_AXIS]);
+  #endif
+  #if DRIVER_EXTRUDERS > 2
+  SERIAL_MV(" V:", current_position[V_AXIS]);
+  #endif
+  #if DRIVER_EXTRUDERS > 3
+  SERIAL_MV(" W:", current_position[W_AXIS]);
+  #endif
+  #if DRIVER_EXTRUDERS > 4
+  SERIAL_MV(" K:", current_position[K_AXIS]);
+  #endif
+  #if DRIVER_EXTRUDERS > 5
+  SERIAL_MV(" L:", current_position[L_AXIS]);
+  #endif
+
 
   stepper.report_positions();
 
@@ -13671,7 +13776,7 @@ float calculate_volumetric_multiplier(float diameter) {
 }
 
 void calculate_volumetric_multipliers() {
-  for (uint8_t e = 0; e < EXTRUDERS; e++)
+  for (uint8_t e = 0; e < DRIVER_EXTRUDERS; e++)
     volumetric_multiplier[e] = calculate_volumetric_multiplier(filament_size[e]);
 }
 

@@ -634,7 +634,7 @@ void kill_screen(const char* lcd_msg) {
   }
 
   inline void line_to_current(AxisEnum axis) {
-    planner.buffer_line_kinematic(current_position, MMM_TO_MMS(manual_feedrate_mm_m[axis]), active_extruder, active_driver);
+    planner.buffer_line_kinematic(current_position, MMM_TO_MMS(manual_feedrate_mm_m[axis]));
   }
 
   #if ENABLED(SDSUPPORT)
@@ -1827,7 +1827,7 @@ void kill_screen(const char* lcd_msg) {
    */
   inline void manage_manual_move() {
     if (manual_move_axis != (int8_t)NO_AXIS && ELAPSED(millis(), manual_move_start_time) && !planner.is_full()) {
-      planner.buffer_line_kinematic(current_position, MMM_TO_MMS(manual_feedrate_mm_m[manual_move_axis]), active_extruder, active_driver);
+      planner.buffer_line_kinematic(current_position, MMM_TO_MMS(manual_feedrate_mm_m[manual_move_axis]));
       manual_move_axis = (int8_t)NO_AXIS;
     }
   }

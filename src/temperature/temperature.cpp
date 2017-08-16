@@ -1953,3 +1953,12 @@ void Temperature::set_current_temp_raw() {
       _temp_error(-3, PSTR(MSG_T_MINTEMP), PSTR(MSG_ERR_MINTEMP_COOLER));
   #endif
 }
+
+uint8_t Temperature::extruder_to_hotend(uint8_t extruder) {
+	const uint8_t hotends[] = DRIVER_EXTRUDERS_HOTENDS;
+	if (extruder<DRIVER_EXTRUDERS)
+	{
+		return hotends[extruder];
+	}
+	return 0;
+}
