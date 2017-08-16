@@ -1,3 +1,6 @@
+=\=\=\=\=\=\=
+<<<<<<<=HEAD
+>>>>>>>=refs/heads/multiextruder
 eclipse.preferences.version=1
 environment/project/io.sloeber.core.toolChain.release.918675551/A.ALT_SIZE_COMMAND/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.ALT_SIZE_COMMAND/operation=replace
@@ -166,18 +169,10 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.DTS
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.DTS/value=0
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.LOCAL/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.LOCAL/operation=replace
-<<<<<<< HEAD
-environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.LOCAL/value=1499892697
-=======
-environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.LOCAL/value=1501782733
->>>>>>> refs/heads/multiextruder
+environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.LOCAL/value=1502893427
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.UTC/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.UTC/operation=replace
-<<<<<<< HEAD
-environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.UTC/value=1499881897
-=======
-environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.UTC/value=1501771933
->>>>>>> refs/heads/multiextruder
+environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.UTC/value=1502882627
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.ZONE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.ZONE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.ZONE/value=10800
@@ -504,11 +499,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARD_NAM
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARD_NAME/value=Arduino/Genuino Mega or Mega 2560
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/operation=replace
-<<<<<<< HEAD
-environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/value=COM6
-=======
-environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/value=COM7
->>>>>>> refs/heads/multiextruder
+environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/value=COM9
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.ECLIPSE_LOCATION/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.ECLIPSE_LOCATION/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.ECLIPSE_LOCATION/value=D\:\\Programs\\sloeber4.1\\

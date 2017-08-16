@@ -69,7 +69,7 @@
  * Displayed in the LCD "Ready" message.                                                 *
  *                                                                                       *
  *****************************************************************************************/
-#define CUSTOM_MACHINE_NAME "Prusa I3"
+#define CUSTOM_MACHINE_NAME "Composer Bizon"
 /*****************************************************************************************/
 
 
@@ -244,7 +244,7 @@
  * Sets direction of endstop when homing; 1=MAX, -1=MIN                                  *
  *                                                                                       *
  *****************************************************************************************/
-#define X_HOME_DIR  1
+#define X_HOME_DIR -1
 #define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
 #define E_HOME_DIR -1
@@ -337,11 +337,11 @@
  * Travel limits after homing (units are in mm)                                          *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MAX_POS 200
+#define X_MAX_POS 300
 #define X_MIN_POS 0
-#define Y_MAX_POS 200
+#define Y_MAX_POS 300
 #define Y_MIN_POS 0
-#define Z_MAX_POS 200
+#define Z_MAX_POS 300
 #define Z_MIN_POS 0
 #define E_MIN_POS 0
 /*****************************************************************************************/
@@ -524,7 +524,7 @@
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 4000, 102, 102, 102, 102} //New 3D-diy extruder
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 4000, 162, 102, 102, 102}   //Old 3D-diy extruder
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 4000, 162, 97.15, 102, 102}   // номинальное значение U = 97.15
 /*****************************************************************************************/
 
 
@@ -532,7 +532,7 @@
  ********************************** Axis feedrate ****************************************
  *****************************************************************************************/
 //                                       X,   Y, Z,  E0...(per extruder). (mm/sec)
-#define DEFAULT_MAX_FEEDRATE          {150, 150, 1.7, 100, 100, 100, 100}
+#define DEFAULT_MAX_FEEDRATE          {200, 200, 2, 200, 100, 100, 100}
 // Feedrates for manual moves along        X,     Y,     Z,  E from panel
 #define MANUAL_FEEDRATE               {50*60, 50*60, 4*60, 10*60}
 // Minimum feedrate
@@ -549,11 +549,11 @@
  ******************************** Axis accelleration *************************************
  *****************************************************************************************/
 //  Maximum start speed for accelerated moves.    X,    Y,  Z,   E0...(per extruder)
-#define DEFAULT_MAX_ACCELERATION              {3000, 3000, 50, 1000, 1000, 1000, 1000}
+#define DEFAULT_MAX_ACCELERATION              {20, 20, 20, 20, 20, 1000, 1000}
 //  Maximum acceleration in mm/s^2 for retracts   E0... (per extruder)
 #define DEFAULT_RETRACT_ACCELERATION          {10000, 10000, 10000, 10000}
 //  X, Y, Z and E* maximum acceleration in mm/s^2 for printing moves
-#define DEFAULT_ACCELERATION          3000
+#define DEFAULT_ACCELERATION          20
 //  X, Y, Z acceleration in mm/s^2 for travel (non printing) moves
 #define DEFAULT_TRAVEL_ACCELERATION   3000
 /*****************************************************************************************/

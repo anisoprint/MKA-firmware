@@ -34,7 +34,12 @@
 		<link>
 			<name>core/core</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.19/cores</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.19/cores/arduino</locationURI>
+		</link>
+		<link>
+			<name>core/variant</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.19/variants/mega</locationURI>
 		</link>
 		<link>
 			<name>libraries/LiquidCrystal</name>
@@ -44,7 +49,7 @@
 		<link>
 			<name>libraries/SPI</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.18/libraries/SPI</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.19/libraries/SPI</locationURI>
 		</link>
 		<link>
 			<name>libraries/U8glib</name>
@@ -54,7 +59,7 @@
 		<link>
 			<name>libraries/Wire</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.18/libraries/Wire</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.19/libraries/Wire</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
