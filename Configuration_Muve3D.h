@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,21 +84,19 @@
  * disable the endstop pullup resistors                                                  *
  *                                                                                       *
  *****************************************************************************************/
-#define ENDSTOPPULLUPS
-
-#if DISABLED(ENDSTOPPULLUPS)
-// fine endstop settings: Individual pullups. will be ignored if ENDSTOPPULLUPS is defined
-//#define ENDSTOPPULLUP_XMIN
-//#define ENDSTOPPULLUP_YMIN
-//#define ENDSTOPPULLUP_ZMIN
-//#define ENDSTOPPULLUP_Z2MIN
-//#define ENDSTOPPULLUP_XMAX
-//#define ENDSTOPPULLUP_YMAX
-//#define ENDSTOPPULLUP_ZMAX
-//#define ENDSTOPPULLUP_Z2MAX
-//#define ENDSTOPPULLUP_ZPROBE
-//#define ENDSTOPPULLUP_EMIN
-#endif
+#define ENDSTOPPULLUP_XMIN    false
+#define ENDSTOPPULLUP_YMIN    false
+#define ENDSTOPPULLUP_ZMIN    false
+#define ENDSTOPPULLUP_Z2MIN   false
+#define ENDSTOPPULLUP_Z3MIN   false
+#define ENDSTOPPULLUP_Z4MIN   false
+#define ENDSTOPPULLUP_XMAX    false
+#define ENDSTOPPULLUP_YMAX    false
+#define ENDSTOPPULLUP_ZMAX    false
+#define ENDSTOPPULLUP_Z2MAX   false
+#define ENDSTOPPULLUP_Z3MAX   false
+#define ENDSTOPPULLUP_Z4MAX   false
+#define ENDSTOPPULLUP_ZPROBE  false
 /*****************************************************************************************/
 
 
@@ -119,7 +117,6 @@
 #define Z_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
 #define Z2_MAX_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
 #define Z_PROBE_ENDSTOP_LOGIC false   // set to true to invert the logic of the probe.
-#define E_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
 /*****************************************************************************************/
 
 
@@ -145,7 +142,6 @@
 #define X_HOME_DIR -1
 #define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
-#define E_HOME_DIR -1
 /*****************************************************************************************/
 
 
@@ -157,7 +153,7 @@
  * Be sure you have this distance over your Z MAX POS in case.                           *
  *                                                                                       *
  *****************************************************************************************/
-#define MIN_Z_HEIGHT_FOR_HOMING   0
+#define MIN_Z_HEIGHT_FOR_HOMING 0
 /*****************************************************************************************/
 
 

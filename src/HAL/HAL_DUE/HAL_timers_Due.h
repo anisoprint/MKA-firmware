@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,8 +50,8 @@
  * ARDUINO_ARCH_SAM
  */
 
-#ifndef _HAL_TIMERS_DUE_H
-#define _HAL_TIMERS_DUE_H
+#ifndef _HAL_TIMERS_DUE_H_
+#define _HAL_TIMERS_DUE_H_
 
 // --------------------------------------------------------------------------
 // Includes
@@ -76,63 +76,37 @@ typedef struct {
 
 #define NUM_HARDWARE_TIMERS 9
 
-#define DELAY_TIMER             TC1
-#define DELAY_TIMER_CHANNEL     1
-#define DELAY_TIMER_IRQ         ID_TC4  // IRQ not really used, needed for pmc id
-#define DELAY_TIMER_CLOCK       TC_CMR_TCCLKS_TIMER_CLOCK2
-#define DELAY_TIMER_PRESCALE    8
+#define NvicPriorityUart    1
+#define NvicPrioritySystick 2
 
-#define STEPPER_TIMER 2
-#define STEPPER_TIMER_PRESCALE  2.0
-#define HAL_STEPPER_TIMER_RATE      ((F_CPU) / STEPPER_TIMER_PRESCALE)  // 42 MHz
-#define STEPPER_TIMER_TICKS_PER_US  (HAL_STEPPER_TIMER_RATE / 1000000)  // 42
-
-#define TEMP_TIMER 3
-#define TEMP_TIMER_FREQUENCY 3906
-
-#define BEEPER_TIMER 4
-#define BEEPER_TIMER_COUNTER TC1
-#define BEEPER_TIMER_CHANNEL 1
-
-#define AD_PRESCALE_FACTOR      84  // 500 kHz ADC clock 
-#define AD_TRACKING_CYCLES      4   // 0 - 15     + 1 adc clock cycles
-#define AD_TRANSFER_CYCLES      1   // 0 - 3      * 2 + 3 adc clock cycles
-
-#define ADC_ISR_EOC(channel)    (0x1u << channel)
-
-#define HAL_STEPPER_TIMER_START()           HAL_timer_start(STEPPER_TIMER, 122)
-#define HAL_TEMP_TIMER_START()              HAL_timer_start(TEMP_TIMER, TEMP_TIMER_FREQUENCY)
-
-#define ENABLE_STEPPER_INTERRUPT()          HAL_timer_enable_interrupt (STEPPER_TIMER)
-#define DISABLE_STEPPER_INTERRUPT()         HAL_timer_disable_interrupt (STEPPER_TIMER)
-
-#define ENABLE_TEMP_INTERRUPT()             HAL_timer_enable_interrupt (TEMP_TIMER)
-#define DISABLE_TEMP_INTERRUPT()            HAL_timer_disable_interrupt (TEMP_TIMER)
-
-#define HAL_TIMER_SET_STEPPER_COUNT(count)  HAL_timer_set_count(STEPPER_TIMER, count);
-#define HAL_TIMER_SET_TEMP_COUNT(count)     HAL_timer_set_count(TEMP_TIMER, count);
-
-#define HAL_STEP_TIMER_ISR    void TC2_Handler()
-#define HAL_TEMP_TIMER_ISR    void TC3_Handler()
-#define HAL_BEEPER_TIMER_ISR  void TC4_Handler()
-
-#define _ENABLE_ISRs() \
-        do { \
-          ENABLE_TEMP_INTERRUPT(); \
-          ENABLE_STEPPER_INTERRUPT(); \
-        } while(0)
-
-#define _DISABLE_ISRs() \
-        do { \
-          DISABLE_TEMP_INTERRUPT(); \
-          DISABLE_STEPPER_INTERRUPT(); \
-          sei(); \
-        } while(0)
+constexpr uint32_t  HAL_TIMER_RATE        = ((VARIANT_MCK) / 2); // 42 MHz
+constexpr float     HAL_ACCELERATION_RATE = (4096.0 * 4096.0 * 256.0 / (HAL_TIMER_RATE));
 
 // Clock speed factor
-#define CYCLES_PER_US ((F_CPU) / 1000000) // 84
-// Stepper pulse duration, in cycles
-#define STEP_PULSE_CYCLES ((MINIMUM_STEPPER_PULSE) * CYCLES_PER_US)
+#define CYCLES_PER_US               ((VARIANT_MCK) / 1000000L) // 84
+
+#define STEPPER_TIMER               4
+#define STEPPER_TIMER_PRESCALE      2.0
+#define STEPPER_TIMER_TICKS_PER_US  ((HAL_TIMER_RATE) / 1000000)              // 42 - stepper timer ticks per µs
+#define STEPPER_TIMER_MIN_INTERVAL  2                                         // minimum time in µs between stepper interrupts
+#define STEPPER_PULSE_CYCLES        ((MINIMUM_STEPPER_PULSE) * CYCLES_PER_US) // Stepper pulse duration, in cycles
+#define STEPPER_TIMER_ISR           void TC4_Handler()
+
+#define PULSE_TIMER_PRESCALE        STEPPER_TIMER_PRESCALE
+
+#define AD_PRESCALE_FACTOR          84  // 500 kHz ADC clock 
+#define AD_TRACKING_CYCLES          4   // 0 - 15     + 1 adc clock cycles
+#define AD_TRANSFER_CYCLES          1   // 0 - 3      * 2 + 3 adc clock cycles
+
+#define ADC_ISR_EOC(channel)        (0x1u << channel)
+
+#define HAL_STEPPER_TIMER_START()   HAL_timer_start(STEPPER_TIMER)
+#define ENABLE_STEPPER_INTERRUPT()  HAL_timer_enable_interrupt(STEPPER_TIMER)
+#define DISABLE_STEPPER_INTERRUPT() HAL_timer_disable_interrupt(STEPPER_TIMER)
+#define STEPPER_ISR_ENABLED()       HAL_timer_interrupt_is_enabled(STEPPER_TIMER)
+
+#define HAL_ENABLE_ISRs()           ENABLE_STEPPER_INTERRUPT()
+#define HAL_DISABLE_ISRs()          DISABLE_STEPPER_INTERRUPT()
 
 // Highly granular delays for step pulses, etc.
 #define DELAY_0_NOP   NOOP
@@ -180,57 +154,56 @@ typedef struct {
 // --------------------------------------------------------------------------
 
 static constexpr tTimerConfig TimerConfig [NUM_HARDWARE_TIMERS] = {
-  { TC0, 0, TC0_IRQn, 0 },  // 0 - [servo timer5]
-  { TC0, 1, TC1_IRQn, 0 },  // 1
-  { TC0, 2, TC2_IRQn, 1 },  // 2 - stepper
-  { TC1, 0, TC3_IRQn, 15},  // 3 - temperature
-  { TC1, 1, TC4_IRQn, 0 },  // 4 - beeper
-  { TC1, 2, TC5_IRQn, 0 },  // 5 - [servo timer3]
-  { TC2, 0, TC6_IRQn, 0 },  // 6
-  { TC2, 1, TC7_IRQn, 0 },  // 7
-  { TC2, 2, TC8_IRQn, 0 },  // 8
+  { TC0, 0, TC0_IRQn, 0 },  // 0 - Pin TC 2 - 13
+  { TC0, 1, TC1_IRQn, 0 },  // 1 - Pin TC 60 - 61
+  { TC0, 2, TC2_IRQn, 0 },  // 2 - Pin TC 58 - 92
+  { TC1, 0, TC3_IRQn, 0 },  // 3 - [NEOPIXEL]
+  { TC1, 1, TC4_IRQn, 2 },  // 4 - Stepper
+  { TC1, 2, TC5_IRQn, 0 },  // 5 - [servo timer5]
+  { TC2, 0, TC6_IRQn, 0 },  // 6 - Pin TC 4 - 5
+  { TC2, 1, TC7_IRQn, 0 },  // 7 - Pin TC 3 - 10
+  { TC2, 2, TC8_IRQn, 0 },  // 8 - Pin TC 11 - 12
 };
 
 // --------------------------------------------------------------------------
 // Public functions
 // --------------------------------------------------------------------------
 
-void HAL_timer_start(const uint8_t timer_num, const uint32_t frequency);
+void HAL_timer_start(const uint8_t timer_num);
+void HAL_timer_enable_interrupt(const uint8_t timer_num);
+void HAL_timer_disable_interrupt(const uint8_t timer_num);
+bool HAL_timer_interrupt_is_enabled(const uint8_t timer_num);
 
-static FORCE_INLINE void HAL_timer_set_count (uint8_t timer_num, uint32_t count) {
-  const tTimerConfig *pConfig = &TimerConfig[timer_num];
-
-  pConfig->pTimerRegs->TC_CHANNEL[pConfig->channel].TC_RC = count;
-}
-
-static FORCE_INLINE HAL_TIMER_TYPE HAL_timer_get_count (uint8_t timer_num) {
-  const tTimerConfig *pConfig = &TimerConfig[timer_num];
-
+FORCE_INLINE static hal_timer_t HAL_timer_get_count(const uint8_t timer_num) {
+  const tTimerConfig * const pConfig = &TimerConfig[timer_num];
   return pConfig->pTimerRegs->TC_CHANNEL[pConfig->channel].TC_RC;
 }
 
-static FORCE_INLINE uint32_t HAL_timer_get_current_count(uint8_t timer_num) {
-  const tTimerConfig *pConfig = &TimerConfig[timer_num];
+FORCE_INLINE static void HAL_timer_set_count(const uint8_t timer_num, const hal_timer_t count) {
+  const tTimerConfig * const pConfig = &TimerConfig[timer_num];
+  pConfig->pTimerRegs->TC_CHANNEL[pConfig->channel].TC_RC = count;
 
+  #if ENABLED(MOVE_DEBUG)
+		++numInterruptsScheduled;
+		nextInterruptTime = count;
+		nextInterruptScheduledAt = HAL_timer_get_count(STEPPER_TIMER);
+  #endif
+}
+
+FORCE_INLINE static hal_timer_t HAL_timer_get_current_count(const uint8_t timer_num) {
+  const tTimerConfig * const pConfig = &TimerConfig[timer_num];
   return pConfig->pTimerRegs->TC_CHANNEL[pConfig->channel].TC_CV;
 }
 
-void HAL_timer_enable_interrupt(const uint8_t timer_num);
-void HAL_timer_disable_interrupt(const uint8_t timer_num);
+FORCE_INLINE static void HAL_timer_restricts(const uint8_t timer_num, const uint16_t interval_ticks) {
+  const hal_timer_t mincmp = HAL_timer_get_current_count(timer_num) + interval_ticks;
+  if (HAL_timer_get_count(timer_num) < mincmp) HAL_timer_set_count(timer_num, mincmp);
+}
 
-static FORCE_INLINE void HAL_timer_isr_prologue(uint8_t timer_num) {
-  const tTimerConfig *pConfig = &TimerConfig[timer_num];
-
+FORCE_INLINE static void HAL_timer_isr_prologue(uint8_t timer_num) {
+  const tTimerConfig * const pConfig = &TimerConfig[timer_num];
   // Reading the status register clears the interrupt flag
   pConfig->pTimerRegs->TC_CHANNEL[pConfig->channel].TC_SR;
 }
 
-// Tone
-inline void HAL_timer_isr_status(Tc* tc, uint32_t channel) {
-  tc->TC_CHANNEL[channel].TC_SR; // clear status register
-}
-
-void tone(uint8_t pin, int frequency, unsigned long duration);
-void noTone(uint8_t pin);
-
-#endif // _HAL_TIMERS_DUE_H
+#endif /* _HAL_TIMERS_DUE_H_ */

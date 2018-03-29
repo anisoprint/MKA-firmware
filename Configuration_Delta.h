@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,6 @@
  * - Stepper step logic
  * - Stepper direction
  * - Disables axis
- * - Manual home positions
- * - Travel limits
  * - Axis relative mode
  * - Auto Bed Leveling (ABL)
  * - Auto Calibration
@@ -122,31 +120,31 @@
 // Horizontal offset of the universal joints on the carriages.
 #define DELTA_CARRIAGE_OFFSET 20.0          // mm
 
-// height from z=0.00 to home position
+// Delta Height: Distance between nozzle (when in maximal/home position) and print surface (z = 0.00 mm).
 #define DELTA_HEIGHT 200                    // mm
 
 // Delta Printable radius
 #define DELTA_PRINTABLE_RADIUS 75.0         // mm
 
 // Endstop Offset Adjustment - All values are in mm and must be negative (to move down away from endstop switches) 
-#define TOWER_A_ENDSTOP_ADJ 0   // Front Left Tower
-#define TOWER_B_ENDSTOP_ADJ 0   // Front Right Tower
-#define TOWER_C_ENDSTOP_ADJ 0   // Rear Tower
+#define TOWER_A_ENDSTOP_ADJ  0.00  // Front Left Tower
+#define TOWER_B_ENDSTOP_ADJ  0.00  // Front Right Tower
+#define TOWER_C_ENDSTOP_ADJ  0.00  // Rear Tower
 
-// Tower Radius Adjustment - Adj x Degrees around delta radius (- move clockwise / + move anticlockwise)
-#define TOWER_A_RADIUS_ADJ 0    // Front Left Tower
-#define TOWER_B_RADIUS_ADJ 0    // Front Right Tower
-#define TOWER_C_RADIUS_ADJ 0    // Rear Tower
+// Tower Angular Adjustment - Adj x Degrees around delta radius (- move clockwise / + move anticlockwise)
+#define TOWER_A_ANGLE_ADJ    0.00  // Front Left Tower
+#define TOWER_B_ANGLE_ADJ    0.00  // Front Right Tower
+#define TOWER_C_ANGLE_ADJ    0.00  // Rear Tower
 
-// Tower Position Adjustment - Adj x mm in/out from centre of printer (- move in / + move out)
-#define TOWER_A_POSITION_ADJ 0  // Front Left Tower
-#define TOWER_B_POSITION_ADJ 0  // Front Right Tower
-#define TOWER_C_POSITION_ADJ 0  // Rear Tower
+// Tower Radius Adjustment - Adj x mm in/out from centre of printer (- move in / + move out)
+#define TOWER_A_RADIUS_ADJ   0.00  // Front Left Tower
+#define TOWER_B_RADIUS_ADJ   0.00  // Front Right Tower
+#define TOWER_C_RADIUS_ADJ   0.00  // Rear Tower
 
 // Diagonal Rod Adjustment - Adj diag rod for Tower by x mm from DELTA_DIAGONAL_ROD value
-#define TOWER_A_DIAGROD_ADJ 0   // Front Left Tower
-#define TOWER_B_DIAGROD_ADJ 0   // Front Right Tower
-#define TOWER_C_DIAGROD_ADJ 0   // Rear Tower
+#define TOWER_A_DIAGROD_ADJ  0.00  // Front Left Tower
+#define TOWER_B_DIAGROD_ADJ  0.00  // Front Right Tower
+#define TOWER_C_DIAGROD_ADJ  0.00  // Rear Tower
 /*****************************************************************************************/
 
 
@@ -166,20 +164,13 @@
  ************************* Endstop pullup resistors **************************************
  *****************************************************************************************
  *                                                                                       *
- * Comment this out (using // at the start of the line) to                               *
- * disable the endstop pullup resistors                                                  *
+ * Put true for enable or put false for disable the endstop pullup resistors             *
  *                                                                                       *
  *****************************************************************************************/
-#define ENDSTOPPULLUPS
-
-#if DISABLED(ENDSTOPPULLUPS)
-// fine endstop settings: Individual pullups. will be ignored if ENDSTOPPULLUPS is defined
-//#define ENDSTOPPULLUP_XMAX
-//#define ENDSTOPPULLUP_YMAX
-//#define ENDSTOPPULLUP_ZMAX
-//#define ENDSTOPPULLUP_ZPROBE
-//#define ENDSTOPPULLUP_EMIN
-#endif
+#define ENDSTOPPULLUP_XMAX    false
+#define ENDSTOPPULLUP_YMAX    false
+#define ENDSTOPPULLUP_ZMAX    false
+#define ENDSTOPPULLUP_ZPROBE  false
 /*****************************************************************************************/
 
 
@@ -195,7 +186,6 @@
 #define Y_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
 #define Z_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
 #define Z_PROBE_ENDSTOP_LOGIC false   // set to true to invert the logic of the probe.
-#define E_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
 /*****************************************************************************************/
 
 
@@ -230,7 +220,7 @@
  * To use a separte Z PROBE endstop, you must have a Z PROBE PIN                         *
  * defined in the Configuration_Pins.h file for your control board.                      *
  *                                                                                       *
- * Use M666 P to set the Z probe vertical offset from the nozzle. Store with M500.       *
+ * Use M851 X Y Z to set the probe offset from the nozzle. Store with M500.              *
  * WARNING: Setting the wrong pin may have unexpected and potentially                    *
  * disastrous outcomes. Use with caution and do your homework.                           *
  *                                                                                       *
@@ -262,10 +252,10 @@
 //#define Z_PROBE_ALLEN_KEY
 
 // Start and end location values are used to deploy/retract the probe (will move from start to end and back again)
-#define Z_PROBE_DEPLOY_START_LOCATION {0, 0, 30}   // X, Y, Z, E start location for z-probe deployment sequence
-#define Z_PROBE_DEPLOY_END_LOCATION {0, 0, 30}     // X, Y, Z, E end location for z-probe deployment sequence
-#define Z_PROBE_RETRACT_START_LOCATION {0, 0, 30}  // X, Y, Z, E start location for z-probe retract sequence
-#define Z_PROBE_RETRACT_END_LOCATION {0, 0, 30}    // X, Y, Z, E end location for z-probe retract sequence
+#define Z_PROBE_DEPLOY_START_LOCATION   {0, 0, 30}  // X, Y, Z, start location for z-probe deployment sequence
+#define Z_PROBE_DEPLOY_END_LOCATION     {0, 0, 30}  // X, Y, Z, end location for z-probe deployment sequence
+#define Z_PROBE_RETRACT_START_LOCATION  {0, 0, 30}  // X, Y, Z, start location for z-probe retract sequence
+#define Z_PROBE_RETRACT_END_LOCATION    {0, 0, 30}  // X, Y, Z, end location for z-probe retract sequence
 
 // Offsets to the probe relative to the nozzle tip (Nozzle - Probe)
 // X and Y offsets MUST be INTEGERS
@@ -296,10 +286,11 @@
 //#define Z_MIN_PROBE_REPEATABILITY_TEST
 
 // Probe Raise options provide clearance for the probe to deploy, stow, and travel.
-#define Z_PROBE_DEPLOY_HEIGHT  30  // Z position for the probe to deploy/stow
-#define Z_PROBE_BETWEEN_HEIGHT 10  // Z position for travel between points
+#define Z_PROBE_DEPLOY_HEIGHT 15  // Z position for the probe to deploy/stow
+#define Z_PROBE_BETWEEN_HEIGHT 5  // Z position for travel between points
+#define Z_PROBE_AFTER_PROBING  0  // Z position after probing is done
 
-// For M666 give a range for adjusting the Z probe offset
+// For M851 give a range for adjusting the Probe Z Offset
 #define Z_PROBE_OFFSET_RANGE_MIN -50
 #define Z_PROBE_OFFSET_RANGE_MAX  50
 
@@ -315,7 +306,7 @@
 // Requires MESH BED LEVELING or PROBE MANUALLY
 //#define LCD_BED_LEVELING
 #define LCD_Z_STEP 0.025    // Step size while manually probing Z axis.
-#define LCD_PROBE_Z_RANGE 4 // Z Range centered on Z_MIN_POS for LCD Z adjustment
+#define LCD_PROBE_Z_RANGE 4 // Z Range centered on Z MIN POS for LCD Z adjustment
 /*****************************************************************************************/
 
 
@@ -329,7 +320,6 @@
 #define X_HOME_DIR 1 // DELTA MUST HAVE MAX ENDSTOP
 #define Y_HOME_DIR 1 // DELTA MUST HAVE MAX ENDSTOP
 #define Z_HOME_DIR 1 // DELTA MUST HAVE MAX ENDSTOP
-#define E_HOME_DIR -1
 /*****************************************************************************************/
 
 
@@ -401,37 +391,6 @@
 
 
 /*****************************************************************************************
- ******************************** Manual home positions **********************************
- *****************************************************************************************/
-// The center of the bed is at (X=0, Y=0)
-//#define BED_CENTER_AT_0_0
-
-// Manually set the home position. Leave these undefined for automatic settings.
-// For DELTA this is the top-center of the Cartesian print volume.
-#define MANUAL_X_HOME_POS 0
-#define MANUAL_Y_HOME_POS 0
-#define MANUAL_Z_HOME_POS DELTA_HEIGHT
-/*****************************************************************************************/
-
-
-/*****************************************************************************************
- ************************************ Travel limits **************************************
- *****************************************************************************************
- *                                                                                       *
- * Travel limits after homing (units are in mm)                                          *
- *                                                                                       *
- *****************************************************************************************/
-#define X_MAX_POS DELTA_PRINTABLE_RADIUS
-#define X_MIN_POS -DELTA_PRINTABLE_RADIUS
-#define Y_MAX_POS DELTA_PRINTABLE_RADIUS
-#define Y_MIN_POS -DELTA_PRINTABLE_RADIUS
-#define Z_MAX_POS DELTA_HEIGHT
-#define Z_MIN_POS 0
-#define E_MIN_POS 0
-/*****************************************************************************************/
-
-
-/*****************************************************************************************
  ********************************** Axis relative mode ***********************************
  *****************************************************************************************/
 #define AXIS_RELATIVE_MODES {false, false, false, false}
@@ -442,21 +401,56 @@
  ******************************* Auto Bed Leveling (ABL) *********************************
  *****************************************************************************************
  *                                                                                       *
- * If you enabled Auto Bed Leveling (ABL) this add the support for auto bed level        *
- * To use ABL you must have a PROBE, please define you type probe.                       *
+ * - UBL (Unified Bed Leveling)                                                          *
+ *   A comprehensive bed leveling system combining the features and benefits             *
+ *   of other systems. UBL also includes integrated Mesh Generation, Mesh                *
+ *   Validation and Mesh Editing systems.                                                *
+ *                                                                                       * 
+ * - BILINEAR                                                                            *
+ *   Probe several points in a grid.                                                     *
+ *   You specify the rectangle and the density of sample points.                         *
+ *   The result is a mesh, best for large or uneven beds.                                *
  *                                                                                       *
  *****************************************************************************************/
-//#define AUTO_BED_LEVELING_FEATURE
+//#define AUTO_BED_LEVELING_UBL
+//#define AUTO_BED_LEVELING_BILINEAR
 
 // Enable detailed logging of G28, G29, G30, M48, etc.
 // Turn on with the command 'M111 S32'.
 // NOTE: Requires a lot of PROGMEM!
 //#define DEBUG_LEVELING_FEATURE
 
+// enable a graphics overly while editing the mesh from auto-level
+//#define MESH_EDIT_GFX_OVERLAY
+
+// Mesh inset margin on print area
+#define MESH_INSET 10
+
+// Enable the G26 Mesh Validation Pattern tool.
+//#define G26_MESH_VALIDATION
+#define MESH_TEST_NOZZLE_SIZE    0.4  // (mm) Diameter of primary nozzle.
+#define MESH_TEST_LAYER_HEIGHT   0.2  // (mm) Default layer height for the G26 Mesh Validation Tool.
+#define MESH_TEST_HOTEND_TEMP  200.0  // (c)  Default nozzle temperature for the G26 Mesh Validation Tool.
+#define MESH_TEST_BED_TEMP      60.0  // (c)  Default bed temperature for the G26 Mesh Validation Tool.
+
+/** START Unified Bed Leveling */
+// Sophisticated users prefer no movement of nozzle
+#define UBL_MESH_EDIT_MOVES_Z
+
+// Save the currently active mesh in the current slot on M500
+#define UBL_SAVE_ACTIVE_ON_M500
+
+// When the nozzle is off the mesh, this value is used as the Z-Height correction value.
+//#define UBL_Z_RAISE_WHEN_OFF_MESH 2.5
+/** END Unified Bed Leveling */
+
 // Set the number of grid points per dimension
 // Works best with 5 or more points in each dimension.
 #define GRID_MAX_POINTS_X 7
 #define GRID_MAX_POINTS_Y 7
+
+// The Z probe minimum outer margin (to validate G29 parameters).
+#define MIN_PROBE_EDGE 10
 
 // Probe along the Y axis, advancing X after each column
 //#define PROBE_Y_FIRST
@@ -480,18 +474,15 @@
  * Auto Calibration Delta system  G33 command                                            *
  * Three type of the calibration DELTA                                                   *
  *  1) Algorithm of Minor Squares based on DC42 RepRapFirmware 7 points           ~3.2Kb *
- *  2) Algorithm based on Thinkyhead Marlin   4 points + iteration                ~4.5Kb *
- *  3) Algorithm based on Rich Cattell Marlin 4 points + iteration                ~8.0Kb *
+ *  2) Algorithm based on LVD-AC(Luc Van Daele) 1 - 7 points + iteration          ~4.5Kb *
  *                                                                                       *
  * To use one of this you must have a PROBE, please define you type probe.               *
  *                                                                                       *
  *****************************************************************************************/
 //#define DELTA_AUTO_CALIBRATION_1
 //#define DELTA_AUTO_CALIBRATION_2
-//#define DELTA_AUTO_CALIBRATION_3
 
-// Precision for G33 Delta Auto Calibration function
-#define AUTOCALIBRATION_PRECISION 0.1 // mm
+#define DELTA_AUTO_CALIBRATION_2_DEFAULT_POINTS 4
 /*****************************************************************************************/
 
 
@@ -590,7 +581,7 @@
 #define DEFAULT_YJERK 20.0
 #define DEFAULT_ZJERK 20.0
 // E0... (mm/sec) per extruder
-#define DEFAULT_EJERK                   {5.0, 5.0, 5.0, 5.0}
+#define DEFAULT_EJERK {5.0, 5.0, 5.0, 5.0}
 /*****************************************************************************************/
 
 

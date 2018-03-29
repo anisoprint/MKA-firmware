@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
  *
  */
 
-#include "../../../base.h"
+#include "../../../MK4duo.h"
 
 #if ENABLED(ARDUINO_ARCH_SAM)
 
@@ -41,15 +41,14 @@ FSTRINGVALUE(Com::tINF,"INF")
 FSTRINGVALUE(Com::tPauseCommunication,"// action:pause")
 FSTRINGVALUE(Com::tContinueCommunication,"// action:resume")
 FSTRINGVALUE(Com::tDisconnectCommunication,"// action:disconnect")
-FSTRINGVALUE(Com::tRequestPauseCommunication,"RequestPause:")
 
 void Com::printInfoLN(FSTRINGPARAM(text)) {
-  PS_PGM(tInfo);
-  PS_PGM(text);
+  serialprintPGM(tInfo);
+  serialprintPGM(text);
   println();
 }
 
-void Com::PS_PGM(FSTRINGPARAM(ptr)) {
+void Com::serialprintPGM(FSTRINGPARAM(ptr)) {
   char c;
   while ((c = HAL::readFlashByte(ptr++)) != 0)
     HAL::serialWriteByte(c);
@@ -70,11 +69,11 @@ void Com::printNumber(uint32_t n) {
 
 void Com::printFloat(float number, uint8_t digits) {
   if (isnan(number)) {
-    PS_PGM(TNAN);
+    serialprintPGM(TNAN);
     return;
   }
   if (isinf(number)) {
-    PS_PGM(TINF);
+    serialprintPGM(TINF);
     return;
   }
   // Handle negative numbers
@@ -120,5 +119,31 @@ void Com::print(long value) {
   }
   printNumber(value);
 }
+
+#if ENABLED(DEBUG_LEVELING_FEATURE)
+
+  void print_xyz(const char* prefix, const char* suffix, const float x, const float y, const float z) {
+    SERIAL_PS(prefix);
+    SERIAL_CHR('(');
+    SERIAL_VAL(x);
+    SERIAL_MV(", ", y);
+    SERIAL_MV(", ", z);
+    SERIAL_CHR(")");
+
+    if (suffix) SERIAL_PS(suffix);
+    else SERIAL_EOL();
+  }
+
+  void print_xyz(const char* prefix, const char* suffix, const float xyz[]) {
+    print_xyz(prefix, suffix, xyz[X_AXIS], xyz[Y_AXIS], xyz[Z_AXIS]);
+  }
+
+  #if HAS_PLANAR
+    void print_xyz(const char* prefix, const char* suffix, const vector_3 &xyz) {
+      print_xyz(prefix, suffix, xyz.x, xyz.y, xyz.z);
+    }
+  #endif
+
+#endif // ENABLED(DEBUG_LEVELING_FEATURE)
 
 #endif // ARDUINO_ARCH_SAM

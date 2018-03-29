@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,28 @@
 
 #if HAS_SDSUPPORT
 
-  #define SD_MAX_FOLDER_DEPTH 10     // Maximum folder depth
-  #define MAX_VFAT_ENTRIES (2)
+  /**
+   * SD Settings
+   */
+  enum cfgSD_ENUM {   // This need to be in the same order as cfgSD_KEY
+    SD_CFG_CPR,
+    SD_CFG_FIL,
+    SD_CFG_NPR,
+  #if HAS_POWER_CONSUMPTION_SENSOR
+    SD_CFG_PWR,
+  #endif
+    SD_CFG_TME,
+    SD_CFG_TPR,
+    SD_CFG_END // Leave this always as the last
+  };
+
+  #define SD_MAX_FOLDER_DEPTH 5     // Maximum folder depth
+  // Number of VFAT entries used. Each entry has 13 UTF-16 characters
+  #if ENABLED(SCROLL_LONG_FILENAMES)
+    #define MAX_VFAT_ENTRIES (5)
+  #else
+    #define MAX_VFAT_ENTRIES (2)
+  #endif
   #define FILENAME_LENGTH 13
   /** Total size of the buffer used to store the long filenames */
   #define LONG_FILENAME_LENGTH (FILENAME_LENGTH * MAX_VFAT_ENTRIES + 1)
@@ -38,96 +58,196 @@
   #include "SDFat.h"
 
   class CardReader {
-  public:
-    SdFat fat;
-    SdFile file;
-    SdFile fileRestart;
-    CardReader();
 
-    void initsd();
-    void mount();
-    void unmount();
-    void ls();
-    void getfilename(uint16_t nr, const char* const match = NULL);
-    void startFileprint();
-    void openAndPrintFile(const char *name);
-    void stopSDPrint(const bool store_location = false);
-    void write_command(char* buf);
-    bool write_data(const uint8_t value);
-    uint8_t read_data();
-    bool selectFile(const char *filename, const bool silent=false);
-    void printStatus();
-    void startWrite(char* filename, const bool silent=false);
-    void deleteFile(char* filename);
-    void finishWrite();
-    void makeDirectory(char* filename);
-    void closeFile(const bool store_location = false);
-    char *createFilename(char *buffer, const dir_t &p);
-    void printingHasFinished();
-    void chdir(const char* relpath);
-    void updir();
-    void setroot(bool temporary = false);
-    void setlast();
+    public: /** Constructor */
 
-    void ResetDefault();
-    void PrintSettings();
-    #if ENABLED(SD_SETTINGS)
-      #define CFG_SD_MAX_KEY_LEN    3+1         // icrease this if you add key name longer than the actual value.
-      #define CFG_SD_MAX_VALUE_LEN  10+1        // this should be enought for int, long and float if you need to retrive strings increase this carefully
-      //(11 = strlen("4294967295")+1) (4294967295 = (2^32)-1) (32 = the num of bits of the bigger basic data scructor used)
-      //If yuou need to save string increase this to strlen("YOUR LONGER STRING")+1
-      void StoreSettings();
-      void RetrieveSettings(bool addValue = false);
-      void parseKeyLine(char* key, char* value, int &len_k, int &len_v);
-      void unparseKeyLine(const char* key, char* value);
-      int  KeyIndex(char *key);
-    #else
-      inline void RetrieveSettings() { ResetDefault(); }
-    #endif
+      CardReader();
 
-    uint16_t getnrfilenames();
+    public: /** Public Parameters */
 
-    FORCE_INLINE void pauseSDPrint() { sdprinting = false; }
-    FORCE_INLINE void setIndex(uint32_t newpos) { sdpos = newpos; file.seekSet(sdpos); }
-    FORCE_INLINE bool isFileOpen() { return file.isOpen(); }
-    FORCE_INLINE bool eof() { return sdpos >= fileSize; }
-    FORCE_INLINE int16_t get() { sdpos = file.curPosition(); return (int16_t)file.read(); }
-    FORCE_INLINE uint8_t percentDone() { return (isFileOpen() && fileSize) ? sdpos / ((fileSize + 99) / 100) : 0; }
-    FORCE_INLINE char* getWorkDirName() { workDir.getFilename(fileName); return fileName; }
+      SdFat fat;
+      SdFile gcode_file;
+      SdBaseFile  root,
+                 *curDir,
+                  workDir,
+                  lastDir,
+                  workDirParents[SD_MAX_FOLDER_DEPTH];
 
-    //files init.g on the sd card are performed in a row
-    //this is to delay autostart and hence the initialisaiton of the sd card to some seconds after the normal init, so the device is available quick after a reset
-    void checkautostart(bool x);
+      #if ENABLED(SD_SETTINGS)
+        SdFile  settings_file;
+      #endif
 
-    bool saving, sdprinting, cardOK, filenameIsDir;
-    uint32_t fileSize, sdpos;
-    float objectHeight, firstlayerHeight, layerHeight, filamentNeeded;
-    char fileName[LONG_FILENAME_LENGTH * SD_MAX_FOLDER_DEPTH + SD_MAX_FOLDER_DEPTH + 1];
-    char tempLongFilename[LONG_FILENAME_LENGTH + 1];
-    char generatedBy[GENBY_SIZE];
+      bool  saving,
+            sdprinting,
+            cardOK,
+            filenameIsDir;
 
-    static void printEscapeChars(const char* s);
+      uint32_t  fileSize,
+                sdpos;
 
-  private:
-    SdBaseFile root, *curDir, workDir, lastDir, workDirParents[SD_MAX_FOLDER_DEPTH];
-    Sd2Card card;
-    uint16_t workDirDepth;
-    millis_t next_autostart_ms;
-    uint16_t nrFiles; // counter for the files in the current directory and recycled as position counter for getting the nrFiles'th name in the directory.
-    LsAction lsAction; //stored for recursion.
-    bool autostart_stilltocheck; //the sd start is delayed, because otherwise the serial cannot answer fast enought to make contact with the hostsoftware.
-    void lsDive(SdBaseFile parent, const char* const match = NULL);
-    void parsejson(SdBaseFile &file);
-    bool findGeneratedBy(char* buf, char* genBy);
-    bool findFirstLayerHeight(char* buf, float &firstlayerHeight);
-    bool findLayerHeight(char* buf, float &layerHeight);
-    bool findFilamentNeed(char* buf, float &filament);
-    bool findTotalHeight(char* buf, float &objectHeight);
+      float objectHeight,
+            firstlayerHeight,
+            layerHeight,
+            filamentNeeded;
+
+      char  fileName[LONG_FILENAME_LENGTH * SD_MAX_FOLDER_DEPTH + SD_MAX_FOLDER_DEPTH + 1],
+            tempLongFilename[LONG_FILENAME_LENGTH + 1],
+            generatedBy[GENBY_SIZE];
+
+    private: /** Private Parameters */
+
+      Sd2Card card;
+
+      uint16_t  workDirDepth;
+      millis_t  next_autostart_ms;
+      uint16_t  nrFiles;             // counter for the files in the current directory and recycled as position counter for getting the nrFiles'th name in the directory.
+      LsAction  lsAction;            // stored for recursion.
+      bool  autostart_stilltocheck;  // the sd start is delayed, because otherwise the serial cannot answer fast enought to make contact with the hostsoftware.
+
+      // Sort files and folders alphabetically.
+      #if ENABLED(SDCARD_SORT_ALPHA)
+        uint16_t sort_count;        // Count of sorted items in the current directory
+        #if ENABLED(SDSORT_GCODE)
+          bool sort_alpha;          // Flag to enable / disable the feature
+          int sort_folders;         // Flag to enable / disable folder sorting
+          //bool sort_reverse;      // Flag to enable / disable reverse sorting
+        #endif
+
+        // By default the sort index is static
+        #if ENABLED(SDSORT_DYNAMIC_RAM)
+          uint8_t *sort_order;
+        #else
+          uint8_t sort_order[SDSORT_LIMIT];
+        #endif
+
+        #if ENABLED(SDSORT_USES_RAM) && ENABLED(SDSORT_CACHE_NAMES) && DISABLED(SDSORT_DYNAMIC_RAM)
+          #define SORTED_LONGNAME_MAXLEN ((SDSORT_CACHE_VFATS) * (FILENAME_LENGTH) + 1)
+        #else
+          #define SORTED_LONGNAME_MAXLEN LONG_FILENAME_LENGTH
+        #endif
+
+        // Cache filenames to speed up SD menus.
+        #if ENABLED(SDSORT_USES_RAM)
+
+          // If using dynamic ram for names, allocate on the heap.
+          #if ENABLED(SDSORT_CACHE_NAMES)
+            #if ENABLED(SDSORT_DYNAMIC_RAM)
+              char **sortshort, **sortnames;
+            #else
+              char sortnames[SDSORT_LIMIT][SORTED_LONGNAME_MAXLEN];
+            #endif
+          #elif DISABLED(SDSORT_USES_STACK)
+            char sortnames[SDSORT_LIMIT][SORTED_LONGNAME_MAXLEN];
+          #endif
+
+          // Folder sorting uses an isDir array when caching items.
+          #if HAS_FOLDER_SORTING
+            #if ENABLED(SDSORT_DYNAMIC_RAM)
+              uint8_t *isDir;
+            #elif ENABLED(SDSORT_CACHE_NAMES) || DISABLED(SDSORT_USES_STACK)
+              uint8_t isDir[(SDSORT_LIMIT + 7)>>3];
+            #endif
+          #endif
+
+        #endif // SDSORT_USES_RAM
+
+      #endif // SDCARD_SORT_ALPHA
+
+    public: /** Public Function */
+
+      void mount();
+      void unmount();
+      void ls();
+      void getfilename(uint16_t nr, const char* const match=NULL);
+      void startFileprint();
+      void openAndPrintFile(const char* name);
+      void stopSDPrint();
+      void write_command(char* buf);
+      bool selectFile(const char* filename);
+      void printStatus();
+      void startWrite(char* filename, const bool silent=false);
+      void deleteFile(char* filename);
+      void finishWrite();
+      void makeDirectory(char* filename);
+      void closeFile(const bool store_position=false);
+      void printingHasFinished();
+      void chdir(const char* relpath);
+      void setroot();
+      void setlast();
+
+      int8_t updir();
+      uint16_t get_num_Files();
+
+      #if HAS_EEPROM_SD
+        bool write_data(SdFile* currentfile, const uint8_t value);
+        uint8_t read_data(SdFile* currentfile);
+      #endif
+
+      void ResetDefault();
+      void PrintSettings();
+
+      #if ENABLED(SD_SETTINGS)
+        #define CFG_SD_MAX_KEY_LEN    3+1         // increase this if you add key name longer than the actual value.
+        #define CFG_SD_MAX_VALUE_LEN  10+1        // this should be enough for int, long and float: if you need to retrieve strings increase this carefully
+        //(11 = strlen("4294967295")+1) (4294967295 = (2^32)-1) (32 = the num of bits of the bigger basic data structure used)
+        //If you need to save string increase this to strlen("YOUR LONGER STRING")+1
+        void StoreSettings();
+        void RetrieveSettings(bool addValue = false);
+        void parseKeyLine(char* key, char* value, int &len_k, int &len_v);
+        void unparseKeyLine(const char* key, char* value);
+        int  KeyIndex(char* key);
+      #else
+        inline void RetrieveSettings() { ResetDefault(); }
+      #endif
+
+      uint16_t getnrfilenames();
+
+      #if ENABLED(SDCARD_SORT_ALPHA)
+        void presort();
+        void getfilename_sorted(const uint16_t nr);
+        #if ENABLED(SDSORT_GCODE)
+          FORCE_INLINE void setSortOn(bool b) { sort_alpha = b; presort(); }
+          FORCE_INLINE void setSortFolders(int i) { sort_folders = i; presort(); }
+          //FORCE_INLINE void setSortReverse(bool b) { sort_reverse = b; }
+        #endif
+      #endif
+
+      FORCE_INLINE void pauseSDPrint() { sdprinting = false; }
+      FORCE_INLINE void setIndex(uint32_t newpos) { sdpos = newpos; gcode_file.seekSet(sdpos); }
+      FORCE_INLINE bool isFileOpen() { return gcode_file.isOpen(); }
+      FORCE_INLINE bool eof() { return sdpos >= fileSize; }
+      FORCE_INLINE int16_t get() { sdpos = gcode_file.curPosition(); return (int16_t)gcode_file.read(); }
+      FORCE_INLINE uint8_t percentDone() { return (isFileOpen() && fileSize) ? sdpos / ((fileSize + 99) / 100) : 0; }
+      FORCE_INLINE char* getWorkDirName() { workDir.getFilename(fileName); return fileName; }
+
+      //files init.g on the sd card are performed in a row
+      //this is to delay autostart and hence the initialization of the sd card to some seconds after the normal init, so the device is available quickly after a reset
+      void checkautostart(bool x);
+
+      static void printEscapeChars(const char* s);
+
+      Sd2Card& getSd2Card() { return card; }
+
+    private: /** Private Function */
+
+      void lsDive(SdBaseFile parent, const char* const match = NULL);
+      void parsejson(SdBaseFile &parser_file);
+      bool findGeneratedBy(char* buf, char* genBy);
+      bool findFirstLayerHeight(char* buf, float &firstlayerHeight);
+      bool findLayerHeight(char* buf, float &layerHeight);
+      bool findFilamentNeed(char* buf, float &filament);
+      bool findTotalHeight(char* buf, float &objectHeight);
+
+      #if ENABLED(SDCARD_SORT_ALPHA)
+        void flush_presort();
+      #endif
+
   };
 
   extern CardReader card;
 
   #define IS_SD_PRINTING (card.sdprinting)
+  #define IS_SD_FILE_OPEN (card.isFileOpen())
 
   #if PIN_EXISTS(SD_DETECT)
     #if ENABLED(SD_DETECT_INVERTED)
@@ -143,6 +263,7 @@
 #else
 
   #define IS_SD_PRINTING (false)
+  #define IS_SD_FILE_OPEN (false)
 
 #endif //SDSUPPORT
 

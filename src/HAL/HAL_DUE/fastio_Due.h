@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ typedef struct {
  * pins
  */
 
-static constexpr Fastio_Param Fastio[111] = {
+static constexpr Fastio_Param Fastio[] = {
   // D0 to D9
   { PIOA,  8 }, { PIOA,  9 }, { PIOB, 25 }, { PIOC, 28 }, { PIOC, 26 }, { PIOC, 25 }, { PIOC, 24 }, { PIOC, 23 }, { PIOC, 22 }, { PIOC, 21 },
 
@@ -91,14 +91,41 @@ static constexpr Fastio_Param Fastio[111] = {
   // D80 to D89
   { PIOB, 12 }, { PIOA,  8 }, { PIOA, 11 }, { PIOA, 13 }, { PIOD,  4 }, { PIOB, 11 }, { PIOB, 21 }, { PIOA, 29 }, { PIOB, 15 }, { PIOB, 14 },
 
-  // D90 to D99
-  { PIOA,  1 }, { PIOB, 15 }, { PIOA,  5 }, { PIOB, 12 }, { PIOB, 22 }, { PIOB, 23 }, { PIOB, 24 }, { PIOC, 20 }, { PIOC, 27 }, { PIOC, 10 },
-
-  // D100 to D109
-  { PIOC, 11 }, { PIOB, 0 }, { PIOB, 1 }, { PIOB, 2 }, { PIOB, 3 }, { PIOB, 4 }, { PIOB, 5 }, { PIOB, 6 }, { PIOB, 7 }, { PIOB, 8 },
+  // D90 to D91
+  { PIOA,  1 }, { PIOB, 15 },
   
-  // D110
-  { PIOB, 11 }
+  #if ENABLED(ARDUINO_SAM_ARCHIM)
+
+    // D92 to D99
+    { PIOC,  11 }, { PIOB, 2 }, { PIOB, 1 }, { PIOB, 0 }, { PIOC, 10 }, { PIOB, 24 }, { PIOB, 7 }, { PIOB, 6 },
+
+    // D100 to D107
+    { PIOB, 8 }, { PIOB, 5 }, { PIOB, 4 }, { PIOB, 3 }, { PIOC, 20 }, { PIOB, 22 }, { PIOC, 27 }, { PIOB, 10 },
+
+    // D108 to D110
+    { PIOB, 7 }, { PIOB, 8 }, { PIOB, 11 }
+
+  #elif MB(ALLIGATOR)
+
+    // D92 to D99
+    { PIOA,  5 }, { PIOB, 12 }, { PIOB, 22 }, { PIOB, 23 }, { PIOB, 24 }, { PIOC, 20 }, { PIOC, 27 }, { PIOC, 10 },
+
+    // D100 to D107
+    { PIOC, 11 }
+
+  #elif MB(ALLIGATOR_V3)
+
+    // D92 to D99
+    { PIOA,  5 }, { PIOB, 12 }, { PIOB, 22 }, { PIOB, 23 }, { PIOB, 24 }, { PIOC, 20 }, { PIOC, 27 }, { PIOC, 10 },
+
+    // D100 to D107
+    { PIOC, 11 }, { PIOB, 4 }, { PIOB, 5 }, { PIOB, 6 }, { PIOB, 7 }, { PIOB, 8 }, { PIOB, 9 }, { PIOB, 10 },
+
+    // D108 to D111
+    { PIOB, 0 }, { PIOB, 1 }, { PIOB, 2 }, { PIOB, 3 }
+
+  #endif
+
 };
 
 /**
@@ -109,88 +136,88 @@ static constexpr Fastio_Param Fastio[111] = {
   #define MASK(PIN) (1 << PIN)
 #endif
 
+#define OUTPUT_LOW  0x3
+#define OUTPUT_HIGH 0x4
+
 /**
  * magic I/O routines
  * now you can simply SET_OUTPUT(STEP); WRITE(STEP, 1); WRITE(STEP, 0);
  */
 
+// NOT CHANGE uint8_t in Pin, ALLIGATOR board crashed!!!
 // Read a pin
-static FORCE_INLINE bool READ(const uint8_t pin) {
-  return (bool)(Fastio[pin].base_address -> PIO_PDSR & (MASK(Fastio[pin].shift_count)));
+FORCE_INLINE static bool READ(const uint8_t pin) {
+  return (bool)(Fastio[pin].base_address->PIO_PDSR & (MASK(Fastio[pin].shift_count)));
 }
-
-static FORCE_INLINE bool READ_VAR(const uint8_t pin) {
-  return g_APinDescription[pin].pPort->PIO_PDSR & g_APinDescription[pin].ulPin ? true : false;
+FORCE_INLINE static bool READ_VAR(const uint8_t pin) {
+  const PinDescription& pinDesc = g_APinDescription[pin];
+	if (pinDesc.ulPinType != PIO_NOT_A_PIN) {
+    if (pinDesc.pPort->PIO_PDSR & pinDesc.ulPin)
+      return true;
+  }
+  return false;
 }
 
 // write to a pin
 // On some boards pins > 0x100 are used. These are not converted to atomic actions. An critical section is needed.
-static FORCE_INLINE void WRITE(const uint8_t pin, uint8_t flag) {
-   flag ? Fastio[pin].base_address -> PIO_SODR = MASK(Fastio[pin].shift_count) : Fastio[pin].base_address -> PIO_CODR = MASK(Fastio[pin].shift_count);
+FORCE_INLINE static void WRITE(const uint8_t pin, const bool flag) {
+  if (flag)
+    Fastio[pin].base_address->PIO_SODR = MASK(Fastio[pin].shift_count);
+  else
+    Fastio[pin].base_address->PIO_CODR = MASK(Fastio[pin].shift_count);
 }
-
-static FORCE_INLINE void WRITE_VAR(const uint8_t pin, uint8_t flag) {
-  flag ? g_APinDescription[pin].pPort->PIO_SODR = g_APinDescription[pin].ulPin : g_APinDescription[pin].pPort->PIO_CODR = g_APinDescription[pin].ulPin;
+FORCE_INLINE static void WRITE_VAR(const uint8_t pin, const bool flag) {
+  const PinDescription& pinDesc = g_APinDescription[pin];
+  if (pinDesc.ulPinType != PIO_NOT_A_PIN) {
+    if (flag)
+      pinDesc.pPort->PIO_SODR = pinDesc.ulPin;
+    else
+      pinDesc.pPort->PIO_CODR = pinDesc.ulPin;
+  }
 }
-
-// toggle a pin
-static FORCE_INLINE void TOGGLE(const uint8_t pin) {
-  WRITE(pin, !READ(pin));
-}
-
-/*
-// check if pin is an input
-#define _GET_INPUT(IO)
-
-// check if pin is an output
-#define _GET_OUTPUT(IO)
-
-// check if pin is an timer
-#define _GET_TIMER(IO)
-*/
 
 // set pin as input
-static FORCE_INLINE void SET_INPUT(const Pin pin) {
-  pmc_enable_periph_clk(g_APinDescription[pin].ulPeripheralId);
-  PIO_Configure(g_APinDescription[pin].pPort, PIO_INPUT, g_APinDescription[pin].ulPin, 0);
+FORCE_INLINE static void SET_INPUT(const pin_t pin) {
+  const PinDescription& pinDesc = g_APinDescription[pin];
+  if (pinDesc.ulPinType != PIO_NOT_A_PIN) {
+    pmc_enable_periph_clk(pinDesc.ulPeripheralId);
+    PIO_Configure(pinDesc.pPort, PIO_INPUT, pinDesc.ulPin, 0);
+  }
 }
 
 // set pin as output
-static FORCE_INLINE void _SET_OUTPUT(const Pin pin) {
-  PIO_Configure(g_APinDescription[pin].pPort, PIO_OUTPUT_1, g_APinDescription[pin].ulPin, g_APinDescription[pin].ulPinConfiguration);
+FORCE_INLINE static void SET_OUTPUT(const pin_t pin) {
+  const PinDescription& pinDesc = g_APinDescription[pin];
+  if (pinDesc.ulPinType != PIO_NOT_A_PIN)
+    PIO_Configure(pinDesc.pPort, PIO_OUTPUT_0, pinDesc.ulPin, pinDesc.ulPinConfiguration);
+}
+FORCE_INLINE static void SET_OUTPUT_HIGH(const pin_t pin) {
+  const PinDescription& pinDesc = g_APinDescription[pin];
+  if (pinDesc.ulPinType != PIO_NOT_A_PIN)
+    PIO_Configure(pinDesc.pPort, PIO_OUTPUT_1, pinDesc.ulPin, pinDesc.ulPinConfiguration);
 }
 
-// Write doesn't work for pullups
-static FORCE_INLINE void PULLUP(const Pin pin) {
-  pinMode(pin, INPUT_PULLUP);
-}
-
-/*
-// check if pin is an input wrapper
-#define GET_INPUT(IO) _GET_INPUT(IO)
-
-// check if pin is an output wrapper
-#define GET_OUTPUT(IO) _GET_OUTPUT(IO)
-
-// check if pin is an timer wrapper
-#define GET_TIMER(IO) _GET_TIMER(IO)
-*/
-
-// set pin as input with pullup wrapper
-static FORCE_INLINE void SET_INPUT_PULLUP(const Pin pin) {
-  SET_INPUT(pin);
-  PULLUP(pin);
+// set pin as input with pullup
+FORCE_INLINE static void SET_INPUT_PULLUP(const pin_t pin) {
+  const PinDescription& pinDesc = g_APinDescription[pin];
+  if (pinDesc.ulPinType != PIO_NOT_A_PIN) {
+    pmc_enable_periph_clk(pinDesc.ulPeripheralId);
+    PIO_Configure(pinDesc.pPort, PIO_INPUT, pinDesc.ulPin, PIO_PULLUP);
+  }
 }
 
 // Shorthand
-static FORCE_INLINE void OUT_WRITE(const Pin pin, const uint8_t flag) {
-  _SET_OUTPUT(pin);
+FORCE_INLINE static void OUT_WRITE(const pin_t pin, const uint8_t flag) {
+  SET_OUTPUT(pin);
   WRITE(pin, flag);
 }
 
-// set pin as output wrapper
-static FORCE_INLINE void SET_OUTPUT(const Pin pin) {
-  OUT_WRITE(pin, LOW);
+FORCE_INLINE static bool USEABLE_HARDWARE_PWM(const pin_t pin) {
+  const uint32_t attr = g_APinDescription[pin].ulPinAttribute;
+  if ((attr & PIN_ATTR_PWM) != 0 || (attr & PIN_ATTR_TIMER) != 0)
+    return true;
+  else
+    return false;
 }
 
 #endif  // _HAL_FASTIO_DUE_H

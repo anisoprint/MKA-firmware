@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 /**
  * HardwareSerial.h - Hardware serial library for Wiring
- * Copyright (c) 2006 Nicholas Zambetti.  All right reserved.
+ * Copyright (c) 2006 Nicholas Zambetti. All right reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,10 +36,12 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  *
- * Modified 28 September 2010 by Mark Sproul
- * Modified  3 March 2015 by MagoKimbra
+ * Modified 28 September  2010 by Mark Sproul
+ * Modified  3 March      2015 by MagoKimbra
+ * Modified 14 February   2016 by Andreas Hardtung (added tx buffer)
+ * Modified 01 October    2017 by Eduardo José Tagle (added XON/XOFF)
  */
 
 #ifndef HardwareSerial_H
@@ -65,21 +67,21 @@
 
 // Registers used by MarlinSerial class (these are expanded
 // depending on selected serial port
-#define M_UCSRxA SERIAL_REGNAME(UCSR,SERIAL_PORT,A) // defines M_UCSRxA to be UCSRnA where n is the serial port number
-#define M_UCSRxB SERIAL_REGNAME(UCSR,SERIAL_PORT,B)
-#define M_RXENx SERIAL_REGNAME(RXEN,SERIAL_PORT,)
-#define M_TXENx SERIAL_REGNAME(TXEN,SERIAL_PORT,)
-#define M_TXCx SERIAL_REGNAME(TXC,SERIAL_PORT,)
-#define M_RXCIEx SERIAL_REGNAME(RXCIE,SERIAL_PORT,)
-#define M_UDREx SERIAL_REGNAME(UDRE,SERIAL_PORT,)
-#define M_UDRIEx SERIAL_REGNAME(UDRIE,SERIAL_PORT,)
-#define M_UDRx SERIAL_REGNAME(UDR,SERIAL_PORT,)
-#define M_UBRRxH SERIAL_REGNAME(UBRR,SERIAL_PORT,H)
-#define M_UBRRxL SERIAL_REGNAME(UBRR,SERIAL_PORT,L)
-#define M_RXCx SERIAL_REGNAME(RXC,SERIAL_PORT,)
-#define M_USARTx_RX_vect SERIAL_REGNAME(USART,SERIAL_PORT,_RX_vect)
-#define M_U2Xx SERIAL_REGNAME(U2X,SERIAL_PORT,)
-#define M_USARTx_UDRE_vect SERIAL_REGNAME(USART,SERIAL_PORT,_UDRE_vect)
+#define M_UCSRxA            SERIAL_REGNAME(UCSR,SERIAL_PORT,A) // defines M_UCSRxA to be UCSRnA where n is the serial port number
+#define M_UCSRxB            SERIAL_REGNAME(UCSR,SERIAL_PORT,B)
+#define M_RXENx             SERIAL_REGNAME(RXEN,SERIAL_PORT,)
+#define M_TXENx             SERIAL_REGNAME(TXEN,SERIAL_PORT,)
+#define M_TXCx              SERIAL_REGNAME(TXC,SERIAL_PORT,)
+#define M_RXCIEx            SERIAL_REGNAME(RXCIE,SERIAL_PORT,)
+#define M_UDREx             SERIAL_REGNAME(UDRE,SERIAL_PORT,)
+#define M_UDRIEx            SERIAL_REGNAME(UDRIE,SERIAL_PORT,)
+#define M_UDRx              SERIAL_REGNAME(UDR,SERIAL_PORT,)
+#define M_UBRRxH            SERIAL_REGNAME(UBRR,SERIAL_PORT,H)
+#define M_UBRRxL            SERIAL_REGNAME(UBRR,SERIAL_PORT,L)
+#define M_RXCx              SERIAL_REGNAME(RXC,SERIAL_PORT,)
+#define M_USARTx_RX_vect    SERIAL_REGNAME(USART,SERIAL_PORT,_RX_vect)
+#define M_U2Xx              SERIAL_REGNAME(U2X,SERIAL_PORT,)
+#define M_USARTx_UDRE_vect  SERIAL_REGNAME(USART,SERIAL_PORT,_UDRE_vect)
 
 #define DEC 10
 #define HEX 16
@@ -87,7 +89,6 @@
 #define BIN 2
 #define BYTE 0
 
-#ifndef USBCON
 // Define constants and variables for buffering incoming serial data.  We're
 // using a ring buffer (I think), in which rx_buffer_head is the index of the
 // location to which to write the next incoming character and rx_buffer_tail
@@ -99,64 +100,67 @@
 #ifndef TX_BUFFER_SIZE
   #define TX_BUFFER_SIZE 32
 #endif
-#if !((RX_BUFFER_SIZE == 256) ||(RX_BUFFER_SIZE == 128) ||(RX_BUFFER_SIZE == 64) ||(RX_BUFFER_SIZE == 32) ||(RX_BUFFER_SIZE == 16) ||(RX_BUFFER_SIZE == 8) ||(RX_BUFFER_SIZE == 4) ||(RX_BUFFER_SIZE == 2))
-  #error "RX_BUFFER_SIZE has to be a power of 2 and >= 2"
-#endif
-#if !((TX_BUFFER_SIZE == 256) ||(TX_BUFFER_SIZE == 128) ||(TX_BUFFER_SIZE == 64) ||(TX_BUFFER_SIZE == 32) ||(TX_BUFFER_SIZE == 16) ||(TX_BUFFER_SIZE == 8) ||(TX_BUFFER_SIZE == 4) ||(TX_BUFFER_SIZE == 2) ||(TX_BUFFER_SIZE == 0))
-  #error TX_BUFFER_SIZE has to be a power of 2 or 0
+
+#if ENABLED(SERIAL_XON_XOFF) && RX_BUFFER_SIZE < 1024
+  #error "XON/XOFF requires RX_BUFFER_SIZE >= 1024 for reliable transfers without drops."
 #endif
 
-struct ring_buffer_r {
-  unsigned char buffer[RX_BUFFER_SIZE];
-  volatile uint8_t head;
-  volatile uint8_t tail;
-};
-
-#if TX_BUFFER_SIZE > 0
-  struct ring_buffer_t {
-    unsigned char buffer[TX_BUFFER_SIZE];
-    volatile uint8_t head;
-    volatile uint8_t tail;
-  };
+#if !IS_POWER_OF_2(RX_BUFFER_SIZE) || RX_BUFFER_SIZE < 2
+  #error "RX_BUFFER_SIZE must be a power of 2 greater than 1."
 #endif
 
-#if UART_PRESENT(SERIAL_PORT)
-  extern ring_buffer_r rx_buffer;
-  #if TX_BUFFER_SIZE > 0
-    extern ring_buffer_t tx_buffer;
-  #endif
+#if TX_BUFFER_SIZE && (TX_BUFFER_SIZE < 2 || TX_BUFFER_SIZE > 256 || !IS_POWER_OF_2(TX_BUFFER_SIZE))
+  #error "TX_BUFFER_SIZE must be 0 or a power of 2 greater than 1."
 #endif
 
-#if ENABLED(EMERGENCY_PARSER)
-  void emergency_parser(const unsigned char c);
+#if RX_BUFFER_SIZE > 256
+  typedef uint16_t ring_buffer_pos_t;
+#else
+  typedef uint8_t ring_buffer_pos_t;
+#endif
+
+#if ENABLED(SERIAL_STATS_DROPPED_RX)
+  extern uint8_t rx_dropped_bytes;
+#endif
+
+#if ENABLED(SERIAL_STATS_MAX_RX_QUEUED)
+  extern ring_buffer_pos_t rx_max_enqueued;
 #endif
 
 class MKHardwareSerial { //: public Stream
 
-  public:
-    MKHardwareSerial() {};
+  public: /** Constructor */
+
+    MKHardwareSerial() {}
+
+  public: /** Public Function */
+
     static void begin(const long);
     static void end();
     static int peek(void);
     static int read(void);
     static void flush(void);
-    static uint8_t available(void);
+    static ring_buffer_pos_t available(void);
     static void checkRx(void);
     static void write(const uint8_t c);
     #if TX_BUFFER_SIZE > 0
       static uint8_t availableForWrite(void);
       static void flushTX(void);
     #endif
+    static void writeNoHandshake(const uint8_t c);
 
-  private:
-    static void printNumber(unsigned long, const uint8_t);
-    static void printFloat(double, uint8_t);
+    #if ENABLED(SERIAL_STATS_DROPPED_RX)
+      FORCE_INLINE static uint32_t dropped() { return rx_dropped_bytes; }
+    #endif
 
-  public:
-    static FORCE_INLINE void write(const char* str) { while (*str) write(*str++); }
-    static FORCE_INLINE void write(const uint8_t* buffer, size_t size) { while (size--) write(*buffer++); }
-    static FORCE_INLINE void print(const String& s) { for (int i = 0; i < (int)s.length(); i++) write(s[i]); }
-    static FORCE_INLINE void print(const char* str) { write(str); }
+    #if ENABLED(SERIAL_STATS_MAX_RX_QUEUED)
+      FORCE_INLINE static ring_buffer_pos_t rxMaxEnqueued() { return rx_max_enqueued; }
+    #endif
+
+    FORCE_INLINE static void write(const char* str) { while (*str) write(*str++); }
+    FORCE_INLINE static void write(const uint8_t* buffer, size_t size) { while (size--) write(*buffer++); }
+    FORCE_INLINE static void print(const String& s) { for (int i = 0; i < (int)s.length(); i++) write(s[i]); }
+    FORCE_INLINE static void print(const char* str) { write(str); }
 
     static void print(char, int = BYTE);
     static void print(unsigned char, int = BYTE);
@@ -176,9 +180,14 @@ class MKHardwareSerial { //: public Stream
     static void println(unsigned long, int = DEC);
     static void println(double, int = 2);
     static void println(void);
+
+  private: /** Private Function */
+
+    static void printNumber(unsigned long, const uint8_t);
+    static void printFloat(double, uint8_t);
+
 };
 
 extern MKHardwareSerial MKSerial;
-#endif // !USBCON
 
 #endif // HardwareSerial_H

@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,21 +54,20 @@
 // Includes
 // --------------------------------------------------------------------------
 
-#include "../../../base.h"
+#include "../../../MK4duo.h"
 
-#if ENABLED(ARDUINO_ARCH_AVR)
+#if ENABLED(__AVR__)
 
 #if ANALOG_INPUTS > 0
   int32_t AnalogInputRead[ANALOG_INPUTS];
   uint8_t adcCounter[ANALOG_INPUTS],
           adcSamplePos = 0;
-  bool    Analog_is_ready = false;
 
-  int16_t HAL::AnalogInputValues[ANALOG_INPUTS] = { 0 };
+  int16_t HAL::AnalogInputValues[NUM_ANALOG_INPUTS] = { 0 };
+  bool    HAL::Analog_is_ready = false;
 #endif
 
 const uint8_t AnalogInputChannels[] PROGMEM = ANALOG_INPUT_CHANNELS;
-static unsigned int cycle_100ms = 0;
 
 HAL::HAL() {
   // ctor
@@ -102,11 +101,8 @@ void HAL_stepper_timer_start() {
 }
 
 void HAL_temp_timer_start() {
-  TCCR0A      =  0; // set entire TCCR2A register to 0
-  TEMP_TCCR   =  0; // set entire TEMP_TCCR register to 0
-  TEMP_TIMER  = 64; // Set divisor for 64 3906 Hz
-  // Set CS01 and CS00 bits for 64 prescaler
-  TEMP_TCCR |= (1 << CS01) | (1 << CS00);
+  TEMP_TCCR =  0; // set entire TEMP_TCCR register to 0
+  TEMP_OCR  = 64; // Set divisor for 64 3906 Hz
 }
 
 bool HAL::execute_100ms = false;
@@ -141,9 +137,15 @@ void HAL::showStartReason() {
   MCUSR = 0;
 }
 
-void HAL::analogStart() {
+#if ANALOG_INPUTS > 0
 
-  #if ANALOG_INPUTS > 0
+  void HAL::analogStart() {
+
+    #if MB(RUMBA) && ((TEMP_SENSOR_0==-1) || (TEMP_SENSOR_1==-1) || (TEMP_SENSOR_2==-1) || (TEMP_SENSOR_BED==-1) || (TEMP_SENSOR_CHAMBER==-1) || (TEMP_SENSOR_COOLER==-1))
+      // disable RUMBA JTAG in case the thermocouple extension is plugged on top of JTAG connector
+      MCUCR = _BV(JTD);
+      MCUCR = _BV(JTD);
+    #endif
 
     ADMUX = ANALOG_REF; // refernce voltage
     for (uint8_t i = 0; i < ANALOG_INPUTS; i++) {
@@ -151,11 +153,16 @@ void HAL::analogStart() {
       AnalogInputRead[i] = 0;
     }
 
-    ADCSRA = _BV(ADEN)|_BV(ADSC)|ANALOG_PRESCALER;
+    ADCSRA = _BV(ADEN) | _BV(ADSC) | ANALOG_PRESCALER;
+
+    DIDR0 = 0;
+    #ifdef DIDR2
+      DIDR2 = 0;
+    #endif
 
     while (ADCSRA & _BV(ADSC) ) {} // wait for conversion
 
-    uint8_t channel = pgm_read_byte(&AnalogInputChannels[adcSamplePos]);
+    const uint8_t channel = pgm_read_byte(&AnalogInputChannels[adcSamplePos]);
 
     #if ENABLED(ADCSRB) && ENABLED(MUX5)
       if (channel & 8)  // Reading channel 0-7 or 8-15?
@@ -167,10 +174,23 @@ void HAL::analogStart() {
     ADMUX = (ADMUX & ~(0x1F)) | (channel & 7);
     ADCSRA |= _BV(ADSC); // start conversion without interrupt!
 
-  #endif
-}
+    // Use timer for temperature measurement
+    // Interleave temperature interrupt with millies interrupt
+    HAL_TEMP_TIMER_START();
+    ENABLE_TEMP_INTERRUPT();
 
-void HAL::setPwmFrequency(uint8_t pin, uint8_t val) {
+  }
+
+  void HAL::AdcChangePin(const pin_t old_pin, const pin_t new_pin) {
+    UNUSED(old_pin);
+    UNUSED(new_pin);
+  }
+
+#endif
+
+void HAL::hwSetup() { /*nope*/ }
+
+void HAL::setPwmFrequency(const pin_t pin, uint8_t val) {
   val &= 0x07;
   switch(digitalPinToTimer(pin)) {
 
@@ -245,158 +265,65 @@ void HAL::setPwmFrequency(uint8_t pin, uint8_t val) {
  *  - For PINS_DEBUGGING, monitor and report endstop pins
  *  - For ENDSTOP_INTERRUPTS_FEATURE check endstops if flagged
  */
-HAL_TEMP_TIMER_ISR {
+TEMP_TIMER_ISR {
+
+  TEMP_OCR += 64;
+
+  if (!printer.isRunning()) return;
 
   // Allow UART ISRs
-  _DISABLE_ISRs();
+  HAL_DISABLE_ISRs();
 
-  TEMP_TIMER += 64;
+  static uint16_t cycle_100ms       = 0;
 
-  static uint8_t  pwm_count_heater        = 0,
-                  pwm_count_fan           = 0;
-
-  #if HAS_TEMP_HOTEND
-    static uint8_t  pwm_heater_pos[HOTENDS] = { 0 };
-  #endif
-  #if HAS_HEATER_BED
-    static uint8_t  pwm_bed_pos = 0;
-  #endif
-  #if HAS_HEATER_CHAMBER
-    static uint8_t  pwm_chamber_pos = 0;
-  #endif
-  #if HAS_COOLER
-    static uint8_t  pwm_cooler_pos = 0;
-  #endif
-  #if FAN_COUNT > 0
-    static uint8_t  pwm_fan_pos[FAN_COUNT]  = { 0 };
-  #endif
-  #if HAS_CONTROLLERFAN
-    uint8_t         pwm_controller_pos = 0;
-  #endif
-
-  #if ENABLED(FILAMENT_SENSOR)
-    static unsigned long raw_filwidth_value = 0;
-  #endif
+  static uint8_t  pwm_count_heater  = 0,
+                  pwm_count_fan     = 0,
+                  channel           = 0;
 
   /**
    * Standard PWM modulation
    */
   if (pwm_count_heater == 0) {
-    #if HOTENDS > 0
-      if ((pwm_heater_pos[0] = (thermalManager.soft_pwm[0] & HEATER_PWM_MASK)) > 0)
-        WRITE_HEATER_0(HIGH);
-      #if HOTENDS > 1
-        if ((pwm_heater_pos[1] = (thermalManager.soft_pwm[1] & HEATER_PWM_MASK)) > 0)
-          WRITE_HEATER_1(HIGH);
-        #if HOTENDS > 2
-          if ((pwm_heater_pos[2] = (thermalManager.soft_pwm[2] & HEATER_PWM_MASK)) > 0)
-            WRITE_HEATER_2(HIGH);
-          #if HOTENDS > 3
-            if ((pwm_heater_pos[3] = (thermalManager.soft_pwm[3] & HEATER_PWM_MASK)) > 0)
-              WRITE_HEATER_0(HIGH);
-          #endif
-        #endif
-      #endif
+    #if HEATER_COUNT > 0
+      LOOP_HEATER() {
+        if (heaters[h].pin > -1 && ((heaters[h].pwm_pos = (heaters[h].soft_pwm & HEATER_PWM_MASK)) > 0))
+          HAL::digitalWrite(heaters[h].pin, heaters[h].isHWInverted() ? LOW : HIGH);
+      }
     #endif
-
-    #if HAS_HEATER_BED && HAS_TEMP_BED
-      if ((pwm_bed_pos = (thermalManager.soft_pwm_bed & HEATER_PWM_MASK)) > 0)
-        WRITE_HEATER_BED(HIGH);
-    #endif
-
-    #if HAS_HEATER_CHAMBER && HAS_TEMP_CHAMBER
-      if ((pwm_chamber_pos = (thermalManager.soft_pwm_chamber & HEATER_PWM_MASK)) > 0)
-        WRITE_HEATER_CHAMBER(HIGH);
-    #endif
-
-    #if HAS_COOLER && HAS_TEMP_COOLER
-      if ((pwm_cooler_pos = (thermalManager.soft_pwm_cooler & HEATER_PWM_MASK)) > 0)
-        WRITE_COOLER(HIGH);
-    #endif
-
   }
 
   if (pwm_count_fan == 0) {
-    #if HAS_FAN0
-      if ((pwm_fan_pos[0] = (fanSpeeds[0] & FAN_PWM_MASK)) > 0)
-        WRITE_FAN(HIGH);
-    #endif
-    #if HAS_FAN1
-      if ((pwm_fan_pos[1] = (fanSpeeds[1] & FAN_PWM_MASK)) > 0)
-        WRITE_FAN1(HIGH);
-    #endif
-    #if HAS_FAN2
-      if ((pwm_fan_pos[2] = (fanSpeeds[2] & FAN_PWM_MASK)) > 0)
-        WRITE_FAN2(HIGH);
-    #endif
-    #if HAS_FAN3
-      if ((pwm_fan_pos[3] = (fanSpeeds[3] & FAN_PWM_MASK)) > 0)
-        WRITE_FAN3(HIGH);
-    #endif
-    #if HAS_CONTROLLERFAN
-      if ((pwm_controller_pos = (controller_fanSpeeds & FAN_PWM_MASK)) > 0)
-        WRITE(CONTROLLERFAN_PIN, HIGH);
+    #if FAN_COUNT >0
+      LOOP_FAN() {
+        if ((fans[f].pwm_pos = (fans[f].Speed & FAN_PWM_MASK)) > 0)
+          HAL::digitalWrite(fans[f].pin, fans[f].isHWInverted() ? LOW : HIGH);
+      }
     #endif
   }
 
-  #if HOTENDS > 0
-    if (pwm_heater_pos[0] == pwm_count_heater && pwm_heater_pos[0] != HEATER_PWM_MASK) WRITE_HEATER_0(LOW);
-    #if HOTENDS > 1
-      if (pwm_heater_pos[1] == pwm_count_heater && pwm_heater_pos[1] != HEATER_PWM_MASK) WRITE_HEATER_1(LOW);
-      #if HOTENDS > 2
-        if (pwm_heater_pos[2] == pwm_count_heater && pwm_heater_pos[2] != HEATER_PWM_MASK) WRITE_HEATER_2(LOW);
-        #if HOTENDS > 3
-          if (pwm_heater_pos[3] == pwm_count_heater && pwm_heater_pos[3] != HEATER_PWM_MASK) WRITE_HEATER_3(LOW);
-        #endif
-      #endif
-    #endif
+  #if HEATER_COUNT > 0
+    LOOP_HEATER() {
+      if (heaters[h].pin > -1 && heaters[h].pwm_pos == pwm_count_heater && heaters[h].pwm_pos != HEATER_PWM_MASK)
+        HAL::digitalWrite(heaters[h].pin, heaters[h].isHWInverted() ? HIGH : LOW);
+    }
   #endif
 
-  #if HAS_HEATER_BED
-    if (pwm_bed_pos == pwm_count_heater && pwm_bed_pos != HEATER_PWM_MASK) WRITE_HEATER_BED(LOW);
+  #if FAN_COUNT > 0
+    LOOP_FAN() {
+      if (fans[f].Kickstart == 0 && fans[f].pwm_pos == pwm_count_fan && fans[f].pwm_pos != FAN_PWM_MASK)
+        HAL::digitalWrite(fans[f].pin, fans[f].isHWInverted() ? HIGH : LOW);
+    }
   #endif
-
-  #if HAS_HEATER_CHAMBER && HAS_TEMP_CHAMBER
-    if (pwm_chamber_pos == pwm_count_heater && pwm_chamber_pos != HEATER_PWM_MASK) WRITE_HEATER_CHAMBER(LOW);
-  #endif
-
-  #if HAS_COOLER && HAS_TEMP_COOLER
-    if (pwm_cooler_pos == pwm_count_heater && pwm_cooler_pos != HEATER_PWM_MASK) WRITE_COOLER(LOW);
-  #endif
-
-  #if ENABLED(FAN_KICKSTART_TIME)
-    if (fanKickstart == 0)
-  #endif
-  {
-    #if HAS_FAN0
-      if (pwm_fan_pos[0] == pwm_count_fan && pwm_fan_pos[0] != FAN_PWM_MASK)
-        WRITE_FAN(LOW);
-    #endif
-    #if HAS_FAN1
-      if (pwm_fan_pos[1] == pwm_count_fan && pwm_fan_pos[1] != FAN_PWM_MASK)
-        WRITE_FAN1(LOW);
-    #endif
-    #if HAS_FAN2
-      if (pwm_fan_pos[2] == pwm_count_fan && pwm_fan_pos[2] != FAN_PWM_MASK)
-        WRITE_FAN2(LOW);
-    #endif
-    #if HAS_FAN3
-      if (pwm_fan_pos[3] == pwm_count_fan && pwm_fan_pos[3] != FAN_PWM_MASK)
-        WRITE_FAN3(LOW);
-    #endif
-    #if HAS_CONTROLLERFAN
-      if (pwm_controller_pos == pwm_count_fan && controller_fanSpeeds != FAN_PWM_MASK)
-        WRITE(CONTROLLERFAN_PIN, LOW);
-    #endif
-  }
 
   // Calculation cycle approximate a 100ms
   cycle_100ms++;
-  if (cycle_100ms >= 390) {
+  if (cycle_100ms >= (F_CPU / 40960)) {
     cycle_100ms = 0;
     HAL::execute_100ms = true;
-    #if ENABLED(FAN_KICKSTART_TIME)
-      if (fanKickstart) fanKickstart--;
+    #if ENABLED(FAN_KICKSTART_TIME) && FAN_COUNT > 0
+      LOOP_FAN() {
+        if (fans[f].Kickstart) fans[f].Kickstart--;
+      }
     #endif
   }
 
@@ -404,18 +331,23 @@ HAL_TEMP_TIMER_ISR {
   #if ANALOG_INPUTS > 0
 
     if ((ADCSRA & _BV(ADSC)) == 0) {  // Conversion finished?
+      channel = pgm_read_byte(&AnalogInputChannels[adcSamplePos]);
       AnalogInputRead[adcSamplePos] += ADCW;
-      if (++adcCounter[adcSamplePos] >= _BV(OVERSAMPLENR)) {
-        HAL::AnalogInputValues[adcSamplePos] =
-          AnalogInputRead[adcSamplePos] >> (OVERSAMPLENR);
+      if (++adcCounter[adcSamplePos] >= (OVERSAMPLENR)) {
+
+        // update temperatures only when values have been read
+        if (!HAL::execute_100ms || adcSamplePos >= ANALOG_INPUTS)
+          HAL::AnalogInputValues[channel] = AnalogInputRead[adcSamplePos] / (OVERSAMPLENR);
+
         AnalogInputRead[adcSamplePos] = 0;
         adcCounter[adcSamplePos] = 0;
+
         // Start next conversion
         if (++adcSamplePos >= ANALOG_INPUTS) {
           adcSamplePos = 0;
-          Analog_is_ready = true;
+          HAL::Analog_is_ready = true;
         }
-        uint8_t channel = pgm_read_byte(&AnalogInputChannels[adcSamplePos]);
+        channel = pgm_read_byte(&AnalogInputChannels[adcSamplePos]);
         #if ENABLED(ADCSRB) && ENABLED(MUX5)
           if (channel & 8)  // Reading channel 0-7 or 8-15?
             ADCSRB |= _BV(MUX5);
@@ -428,7 +360,7 @@ HAL_TEMP_TIMER_ISR {
     }
 
     // Update the raw values if they've been read. Else we could be updating them during reading.
-    if (Analog_is_ready) thermalManager.set_current_temp_raw();
+    if (HAL::Analog_is_ready) thermalManager.set_current_temp_raw();
 
   #endif
 
@@ -437,15 +369,12 @@ HAL_TEMP_TIMER_ISR {
 
   #if ENABLED(BABYSTEPPING)
     LOOP_XYZ(axis) {
-      int curTodo = thermalManager.babystepsTodo[axis]; //get rid of volatile for performance
+      int curTodo = mechanics.babystepsTodo[axis]; // get rid of volatile for performance
 
-      if (curTodo > 0) {
-        stepper.babystep((AxisEnum)axis,/*fwd*/true);
-        thermalManager.babystepsTodo[axis]--; //fewer to do next time
-      }
-      else if (curTodo < 0) {
-        stepper.babystep((AxisEnum)axis,/*fwd*/false);
-        thermalManager.babystepsTodo[axis]++; //fewer to do next time
+      if (curTodo) {
+        stepper.babystep((AxisEnum)axis, curTodo > 0);
+        if (curTodo > 0) mechanics.babystepsTodo[axis]--;
+                    else mechanics.babystepsTodo[axis]++;
       }
     }
   #endif //BABYSTEPPING
@@ -462,16 +391,13 @@ HAL_TEMP_TIMER_ISR {
   #endif
 
   #if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
-
-    extern volatile uint8_t e_hit;
-
-    if (e_hit && ENDSTOPS_ENABLED) {
+    if (endstops.e_hit && ENDSTOPS_ENABLED) {
       endstops.update();  // call endstop update routine
-      e_hit--;
+      endstops.e_hit--;
     }
   #endif
 
-  _ENABLE_ISRs(); // re-enable ISRs
+  HAL_ENABLE_ISRs(); // re-enable ISRs
 }
 
-#endif // ARDUINO_ARCH_AVR
+#endif // __AVR__

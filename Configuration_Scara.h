@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,7 +99,11 @@
 #define THETA_HOMING_OFFSET 0  
 #define PSI_HOMING_OFFSET   0
 
-#define MIDDLE_DEAD_ZONE_R  140       // For arm mounted to a central tower
+// Radius around the center where the arm cannot reach
+#define MIDDLE_DEAD_ZONE_R 140 // mm
+
+// Enable this if your SCARA uses 180° of total area
+//#define EXTRAPOLATE_FROM_EDGE
 
 /*****************************************************************************************/
 
@@ -108,25 +112,22 @@
  ************************* Endstop pullup resistors **************************************
  *****************************************************************************************
  *                                                                                       *
- * Comment this out (using // at the start of the line) to                               *
- * disable the endstop pullup resistors                                                  *
+ * Put true for enable or put false for disable the endstop pullup resistors             *
  *                                                                                       *
  *****************************************************************************************/
-#define ENDSTOPPULLUPS
-
-#if DISABLED(ENDSTOPPULLUPS)
-// fine endstop settings: Individual pullups. will be ignored if ENDSTOPPULLUPS is defined
-//#define ENDSTOPPULLUP_XMIN
-//#define ENDSTOPPULLUP_YMIN
-//#define ENDSTOPPULLUP_ZMIN
-//#define ENDSTOPPULLUP_Z2MIN
-//#define ENDSTOPPULLUP_XMAX
-//#define ENDSTOPPULLUP_YMAX
-//#define ENDSTOPPULLUP_ZMAX
-//#define ENDSTOPPULLUP_Z2MAX
-//#define ENDSTOPPULLUP_ZPROBE
-//#define ENDSTOPPULLUP_EMIN
-#endif
+#define ENDSTOPPULLUP_XMIN    false
+#define ENDSTOPPULLUP_YMIN    false
+#define ENDSTOPPULLUP_ZMIN    false
+#define ENDSTOPPULLUP_Z2MIN   false
+#define ENDSTOPPULLUP_Z3MIN   false
+#define ENDSTOPPULLUP_Z4MIN   false
+#define ENDSTOPPULLUP_XMAX    false
+#define ENDSTOPPULLUP_YMAX    false
+#define ENDSTOPPULLUP_ZMAX    false
+#define ENDSTOPPULLUP_Z2MAX   false
+#define ENDSTOPPULLUP_Z3MAX   false
+#define ENDSTOPPULLUP_Z4MAX   false
+#define ENDSTOPPULLUP_ZPROBE  false
 /*****************************************************************************************/
 
 
@@ -147,7 +148,6 @@
 #define Z_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
 #define Z2_MAX_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
 #define Z_PROBE_ENDSTOP_LOGIC false   // set to true to invert the logic of the probe.
-#define E_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
 /*****************************************************************************************/
 
 
@@ -170,7 +170,7 @@
  * To use a separte Z PROBE endstop, you must have a Z PROBE PIN                         *
  * defined in the Configuration_Pins.h file for your control board.                      *
  *                                                                                       *
- * Use M666 P to set the Z probe vertical offset from the nozzle. Store with M500.       *
+ * Use M851 X Y Z to set the probe offset from the nozzle. Store with M500.              *
  * WARNING: Setting the wrong pin may have unexpected and potentially                    *
  * disastrous outcomes. Use with caution and do your homework.                           *
  *                                                                                       *
@@ -229,7 +229,7 @@
 #define Z_PROBE_DEPLOY_HEIGHT 15  // Z position for the probe to deploy/stow
 #define Z_PROBE_BETWEEN_HEIGHT 5  // Z position for travel between points
 
-// For M666 give a range for adjusting the Z probe offset
+// For M851 give a range for adjusting the Probe Z Offset
 #define Z_PROBE_OFFSET_RANGE_MIN -50
 #define Z_PROBE_OFFSET_RANGE_MAX  50
 /*****************************************************************************************/
@@ -245,7 +245,6 @@
 #define X_HOME_DIR -1
 #define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
-#define E_HOME_DIR -1
 /*****************************************************************************************/
 
 
@@ -257,7 +256,7 @@
  * Be sure you have this distance over your Z MAX POS in case.                           *
  *                                                                                       *
  *****************************************************************************************/
-#define MIN_Z_HEIGHT_FOR_HOMING   0
+#define MIN_Z_HEIGHT_FOR_HOMING 0
 /*****************************************************************************************/
 
 
@@ -453,12 +452,12 @@
 /** START AUTO_BED_LEVELING_3POINT **/
 // 3 arbitrary points to probe.
 // A simple cross-product is used to estimate the plane of the bed.
-#define ABL_PROBE_PT_1_X 15
-#define ABL_PROBE_PT_1_Y 180
-#define ABL_PROBE_PT_2_X 15
-#define ABL_PROBE_PT_2_Y 15
-#define ABL_PROBE_PT_3_X 180
-#define ABL_PROBE_PT_3_Y 15
+#define PROBE_PT_1_X 15
+#define PROBE_PT_1_Y 180
+#define PROBE_PT_2_X 15
+#define PROBE_PT_2_Y 15
+#define PROBE_PT_3_X 180
+#define PROBE_PT_3_Y 15
 /** END AUTO_BED_LEVELING_3POINT **/
 
 // Commands to execute at the end of G29 probing.

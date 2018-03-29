@@ -1,5 +1,5 @@
 /**
- * MK4duo 3D Printer Firmware and Laser
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
@@ -45,6 +45,7 @@
  * G19  - Select Plane YZ (Requires CNC_WORKSPACE_PLANES)
  * G20  - Set input units to inches
  * G21  - Set input units to millimeters
+ * G26  - Mesh Validation Pattern (Requires G26_MESH_VALIDATION) 
  * G27  - Park Nozzle (Requires NOZZLE_PARK_FEATURE)
  * G28  - X Y Z Home all Axis. M for bed manual setting with LCD. B return to back point
  * G29  - Detailed Z-Probe, probes the bed at 3 or more points. Will fail if you haven't homed yet.
@@ -55,17 +56,17 @@
  *          Y = Probe Y position (default=current probe position)
  *          S = <bool> Stows the probe if 1 (default=1)
  *          Z = <bool> with a non-zero value will apply the result to current delta_height (ONLY DELTA)
- *          P = <bool> with a non-zero value will apply the result to current probe.z_offset (ONLY DELTA)
+ *          P = <bool> with a non-zero value will apply the result to current probe_offset_Z (ONLY DELTA)
  * G31  - Dock sled (Z_PROBE_SLED only)
  * G32  - Undock sled (Z_PROBE_SLED only)
  * G33  - Delta geometry Autocalibration (Requires DELTA_AUTO_CALIBRATION_?)
  *          F<nfactor> p<npoint> Q<debugging> (Requires DELTA_AUTO_CALIBRATION_1)
- *          P<points> <A> <O> <T> V<verbose> (Requires DELTA_AUTO_CALIBRATION_2)
- *          A<precision> E<precision> R<precision> I D T S (Requires DELTA_AUTO_CALIBRATION_3)
+ *          P<points> <F> <O> <T> V<verbose> (Requires DELTA_AUTO_CALIBRATION_2)
  * G38  - Probe target - similar to G28 except it uses the Z_MIN endstop for all three axes
+ * G42  - Coordinated move to a mesh point. (Requires MESH_BED_LEVELING or AUTO_BED_LEVELING_BILINEAR)
  * G60  - Save current position coordinates (all axes, for active extruder).
  *          S<SLOT> - specifies memory slot # (0-based) to save into (default 0).
- * G61  - Apply/restore saved coordinates to the active extruder.
+ * G61  - Apply/restore saved coordinates.
  *          X Y Z E - Value to add at stored coordinates.
  *          F<speed> - Set Feedrate.
  *          S<SLOT> - specifies memory slot # (0-based) to restore from (default 0).
@@ -91,18 +92,45 @@
  * M24  - Start/resume SD print. (Requires SDSUPPORT)
  * M25  - Pause SD print. (Requires SDSUPPORT)
  * M26  - Set SD position in bytes (M26 S12345). (Requires SDSUPPORT)
- * M27  - Report SD print status. (Requires SDSUPPORT)
+ * M27  - Report SD print status. With 'S<bool>' set the SD status auto-report. (Requires SDSUPPORT) 
  * M28  - Start SD write (M28 filename.g). (Requires SDSUPPORT)
  * M29  - Stop SD write. (Requires SDSUPPORT)
  * M30  - Delete file from SD (M30 filename.g). (Requires SDSUPPORT)
  * M31  - Output time since last M109 or SD card start to serial
- * M32  - Make directory
+ * M32  - Open file and start print
  * M33  - Stop printing, close file and save restart.gcode
- * M34  - Open file and start print
+ * M34  - Set SD Card Sorting Options
  * M35  - Upload Firmware to Nextion from SD
  * M42  - Change pin status via gcode Use M42 Px Sy to set pin x to value y, when omitting Px the onboard led will be used.
  * M43  - Display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
+ *
+ * M43         - report name and state of pin(s)
+ *                 P<pin>  Pin to read or watch. If omitted, reads all pins.
+ *                 I       Flag to ignore Marlin's pin protection.
+ *
+ * M43 W       - Watch pins -reporting changes- until reset, click, or M108.
+ *                 P<pin>  Pin to read or watch. If omitted, read/watch all pins.
+ *                 I       Flag to ignore Marlin's pin protection.
+ *
+ * M43 E<bool> - Enable / disable background endstop monitoring
+ *                 - Machine continues to operate
+ *                 - Reports changes to endstops
+ *                 - Toggles LED when an endstop changes
+ *                 - Can not reliably catch the 5mS pulse from BLTouch type probes
+ *
+ * M43 T       - Toggle pin(s) and report which pin is being toggled
+ *                 S<pin>  - Start Pin number.   If not given, will default to 0
+ *                 L<pin>  - End Pin number.   If not given, will default to last pin defined for this board
+ *                 I       - Flag to ignore Marlin's pin protection.   Use with caution!!!!
+ *                 R       - Repeat pulses on each pin this number of times before continueing to next pin
+ *                 W       - Wait time (in miliseconds) between pulses.  If not given will default to 500
+ *
+ * M43 S       - Servo probe test
+ *                 P<index> - Probe index (optional - defaults to 0
+ * M44  - Codes debug - report codes available (and how many of them there are)
+ *          I G-code list, J M-code list
  * M48  - Measure Z_Probe repeatability. M48 [P # of points] [X position] [Y position] [V_erboseness #] [E_ngage Probe] [L # of legs of travel]
+ * M49  - Turn on or off G26 debug flag for verbose output (Requires G26_MESH_VALIDATION)
  * M70  - Power consumption sensor calibration
  * M75  - Start the print job timer
  * M76  - Pause the print job timer
@@ -123,8 +151,9 @@
  * M100 - Watch Free Memory (For Debugging Only)
  * M104 - Set hotend target temp
  * M105 - Read current temp
- * M106 - S<speed> P<fan> Fan on
+ * M106 - P<fan> S<speed> F<frequency> U<pin> L<min speed> I<inverted logic> H<int> Set Auto mode - H=7 for controller - H-1 for disabled
  * M107 - P<fan> Fan off
+ * M108 - Break out of heating loops (M109, M190, M303). With no controller, breaks out of M0/M1. (Requires EMERGENCY_PARSER)
  * M109 - Sxxx Wait for hotend current temp to reach target temp. Waits only when heating
  *        Rxxx Wait for hotend current temp to reach target temp. Waits when heating and cooling
  *        IF AUTOTEMP is enabled, S<mintemp> B<maxtemp> F<factor>. Exit autotemp by any M109 without F
@@ -134,10 +163,13 @@
  * M114 - Output current position to serial port
  * M115 - Report capabilities. (Extended capabilities requires EXTENDED_CAPABILITIES_REPORT)
  * M117 - Display a message on the controller screen
+ * M118 - Display a message in the host console.
  * M119 - Output Endstop status to serial port
  * M120 - Enable endstop detection
  * M121 - Disable endstop detection
  * M122 - S<1=true|0=false> Enable or disable check software endstop. (Requires MIN_SOFTWARE_ENDSTOPS or MAX_SOFTWARE_ENDSTOPS)
+ * M123 - Set Endstop Logic X<bool> Y<bool> Z<bool> I<X2 bool> J<Y2 bool> K<Z2 bool> P<Probe bool> D<Door bool> F<Filrunout bool> W<Power Check bool>
+ * M124 - Set Endstop Pullup X<bool> Y<bool> Z<bool> I<X2 bool> J<Y2 bool> K<Z2 bool> P<Probe bool> D<Door bool> F<Filrunout bool> W<Power Check bool>
  * M125 - Save current position and move to pause park position. (Requires PARK_HEAD_ON_PAUSE)
  * M126 - Solenoid Air Valve Open (BariCUDA support by jmil)
  * M127 - Solenoid Air Valve Closed (BariCUDA vent to atmospheric pressure by jmil)
@@ -149,7 +181,7 @@
  * M145 - Set the heatup state H<hotend> B<bed> F<fan speed> for S<material> (0=PLA, 1=ABS)
  * M149 - Set temperature units
  * M150 - Set Status LED Color as R<red> U<green> B<blue>. Values 0-255. (Requires BLINKM, RGB_LED, RGBW_LED, or PCA9632)
- * M155 - Auto-report temperatures with interval of S<seconds>. (Requires AUTO_REPORT_TEMPERATURES)
+ * M155 - S<1/0> Enable/disable auto report temperatures.
  * M163 - Set a single proportion for a mixing extruder. (Requires MIXING_EXTRUDER)
  * M164 - Save the mix as a virtual extruder. (Requires MIXING_EXTRUDER and MIXING_VIRTUAL_TOOLS)
  * M165 - Set the proportions for a mixing extruder. Use parameters ABCDHI to set the mixing factors. (Requires MIXING_EXTRUDER)
@@ -177,17 +209,22 @@
  * M240 - Trigger a camera to take a photograph
  * M250 - Set LCD contrast C<contrast value> (value 0..63)
  * M280 - Set servo position absolute. P: servo index, S: angle or microseconds
+ * M290 - Babystepping (Requires BABYSTEPPING)
  * M300 - Play beep sound S<frequency Hz> P<duration ms>
- * M301 - Set PID parameters P I D and C
+ * M301 - Set PID parameters P I D and C. H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER,
+ *          P[float] Kp term, I[float] Ki term, D[float] Kd term
+ *          With PID_ADD_EXTRUSION_RATE: C[float] Kc term, L[float] LPQ length
  * M302 - Allow cold extrudes, or set the minimum extrude S<temperature>.
- * M303 - PID relay autotune S<temperature> sets the target temperature (default target temperature = 150C). H<hotend> C<cycles> U<Apply result>
- * M304 - Set hot bed PID parameters P I and D
- * M305 - Set hot chamber PID parameters P I and D
- * M306 - Set cooler PID parameters P I and D
- * M320 - Enable/Disable S1=enable S0=disable, V[bool] Print the leveling grid, Z<height> for leveling fade height (Requires ENABLE_LEVELING_FADE_HEIGHT)
- * M321 - Set a single Auto Bed Leveling Z coordinate - X<gridx> Y<gridy> Z<level val> S<level add>
- * M322 - Reset Auto Bed Leveling matrix
- * M323 - Set Level bilinear manual - X<gridx> Y<gridy> Z<level val> S<level add>
+ * M303 - PID relay autotune: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER,
+ *        S<temperature> sets the target temperature (default target temperature = 150C), C<cycles>, U<Apply result>,
+ *        R<Method> 0 = Classic Pid, 1 = Some overshoot, 2 = No Overshoot, 3 = Pessen Pid
+ * M305 - Set thermistor and ADC parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER,
+ *          A[float] Thermistor resistance at 25°C, B[float] BetaK, C[float] Steinhart-Hart C coefficien, R[float] Pullup resistor value,
+ *          L[int] ADC low offset correction, O[int] ADC high offset correction, P[int] Sensor Pin
+ *        Set DHT sensor parameter: D0 P[int] Sensor Pin, S[int] Sensor Type (11, 21, 22).
+ * M306 - Set Heaters parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER,
+ *          A[int] Pid Drive Min, B[int] Pid Drive Max, C[int] Pid Max,
+ *          L[int] Min temperature, O[int] Max temperature, U[bool] Use Pid/bang bang, I[bool] Hardware Inverted, P[int] Pin
  * M350 - Set microstepping mode. (Requires digital microstepping pins.)
  * M351 - Toggle MS1 MS2 pins directly. (Requires digital microstepping pins.)
  * M355 - Turn case lights on/off
@@ -202,9 +239,9 @@
  * M407 - Display measured filament diameter
  * M408 - Report JSON-style response
  * M410 - Quickstop. Abort all the planned moves
- * M420 - Enable/Disable Mesh Bed Leveling (with current values) S1=enable S0=disable (Requires MESH_BED_LEVELING)
+ * M420 - Enable/Disable Leveling (with current values) S1=enable S0=disable (Requires MBL, UBL or ABL)
  *        Z<height> for leveling fade height (Requires ENABLE_LEVELING_FADE_HEIGHT)
- * M421 - Set a single Mesh Bed Leveling Z coordinate. M421 X<mm> Y<mm> Z<mm>' or 'M421 I<xindex> J<yindex> Z<mm>
+ * M421 - Set a single Z coordinate in the Mesh Leveling grid. M421 X<mm> Y<mm> Z<mm>' or 'M421 I<xindex> J<yindex> Z<mm> (Requires MBL, UBL or ABL BILINEAR)
  * M428 - Set the home_offset logically based on the current_position
  * M450 - Report Printer Mode
  * M451 - Select FFF Printer Mode
@@ -214,17 +251,25 @@
  * M501 - Read parameters from EEPROM (if you need reset them after you changed them temporarily).
  * M502 - Revert to the default "factory settings". You still need to store them in EEPROM afterwards if you want to.
  * M503 - Print the current settings (from memory not from EEPROM). Use S0 to leave off headings.
+ * M512 - Print Extruder Encoder status Pin. (Requires Extruder Encoder)
  * M522 - Read or Write on card. M522 T<extruders> R<read> or W<write> L<list>
  * M530 - Enables explicit printing mode (S1) or disables it (S0). L can set layer count
  * M531 - filename - Define filename being printed
  * M532 - X<percent> L<curLayer> - update current print state progress (X=0..100) and layer L
  * M540 - Use S[0|1] to enable or disable the stop print on endstop hit (requires ABORT_ON_ENDSTOP_HIT_FEATURE_ENABLED)
  * M595 - Set hotend AD595 O<offset> and S<gain>
- * M600 - Pause for filament change X[pos] Y[pos] Z[relative lift] E[initial retract] L[later retract distance for removal]
+ * M600 - Pause for filament change T[toolhead] X[pos] Y[pos] Z[relative lift]
+ *        E[initial retract] U[Retract distance] L[Extrude distance] S[new temp] B[Number of beep]
+ * M603 - Set filament change T[toolhead] U[Retract distance] L[Extrude distance]
+ * M604 - Set data Extruder Encoder S[Error steps] (requires EXTRUDER ENCODER)
  * M605 - Set dual x-carriage movement mode: S<mode> [ X<duplication x-offset> R<duplication temp offset> ]
  * M649 - Set laser options. S<intensity> L<duration> P<ppm> B<set mode> R<raster mm per pulse> F<feedrate>
- * M666 - Set z probe offset or Endstop and delta geometry adjustment
- * M900 - Get and/or Set advance K factor and WH/D ratio. (Requires LIN_ADVANCE)
+ * M666 - Delta geometry adjustment
+ * M666 - Set Two Endstops offsets for X, Y, and/or Z (requires TWO ENDSTOPS)
+ * M701 - Load Filament T[toolhead] Z[distance] L[Extrude distance]
+ * M702 - Unload Filament T[toolhead] Z[distance] U[Retract distance]
+ * M851 - Set X Y Z Probe Offset in current units. (Requires Probe)
+ * M900 - Set Linear Advance K-factor. (Requires LIN_ADVANCE)
  * M906 - Set motor currents XYZ T0-4 E (Requires ALLIGATOR)
  *        Set or get motor current in milliamps using axis codes X, Y, Z, E. Report values if no axis codes given. (Requires HAVE_TMC2130)
  * M907 - Set digital trimpot motor current using axis codes. (Requires a board with digital trimpots)
@@ -245,7 +290,6 @@
  * M928 - Start SD logging (M928 filename.g) - ended by M29
  * M995 - X Y Z Set origin for graphic in NEXTION
  * M996 - S<scale> Set scale for graphic in NEXTION
- * M997 - NPR2 Color rotate
  * M999 - Restart after being stopped by error
  *
  * "T" Codes
@@ -254,4 +298,12 @@
  *
  */
 
-#include "base.h"
+#include "MK4duo.h"
+
+void setup() {
+  printer.setup();
+}
+
+void loop() {
+  printer.loop();
+}

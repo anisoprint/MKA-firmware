@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,23 +25,25 @@
  *
  * Supports platforms:
  *    ARDUINO_ARCH_SAM : For Arduino Due and other boards based on Atmel SAM3X8E
- *    ARDUINO_ARCH_AVR : For all Atmel AVR boards
+ *    __AVR__ : For all Atmel AVR boards
  */
 
-#ifndef _HAL_H
-#define _HAL_H
+#ifndef _HAL_H_
+#define _HAL_H_
 
 #include <stdint.h>
 
 #if ENABLED(ARDUINO_ARCH_SAM)
   #define CPU_32_BIT
+  #include "HAL_DUE/spi_pins_Due.h"
   #include "HAL_DUE/HAL_Due.h"
   #include "HAL_DUE/communication.h"
-#elif ENABLED(ARDUINO_ARCH_AVR)
+#elif ENABLED(__AVR__)
+  #include "HAL_AVR/spi_pins_AVR.h"
   #include "HAL_AVR/HAL_AVR.h"
   #include "HAL_AVR/communication.h"
 #else
   #error "Unsupported Platform!"
 #endif
 
-#endif // _HAL_H
+#endif /* _HAL_H_ */

@@ -3,7 +3,7 @@
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,34 +23,28 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
-#define START           "start"               // start for host
-#define OK              "ok"                  // ok answer for host
-#define OKSPACE         "ok "                 // ok plus space 
-#define ER              "Error:"              // error for host
-#define WT              "wait"                // wait for host
-#define ECHO            "Echo:"               // message for user
-#define CFG             "Config:"             // config for host
-#define CAP             "Cap:"                // capabilities for host
-#define INFO            "Info:"               // info for host
-#define BUSY            "busy:"               // buys for host
-#define RESEND          "Resend:"             // resend for host
-#define WARNING         "Warning:"            // warning for host
-#define TNAN            "NAN"                 // NAN for host
-#define TINF            "INF"                 // INF for host
-#define PAUSE           "//action:pause"      // command for host that support action
-#define RESUME          "//action:resume"     // command for host that support action
-#define DISCONNECT      "//action:disconnect" // command for host that support action
-#define REQUEST_PAUSE   "RequestPause:"       // command for host that support action
+#define START       "start"                 // start for host
+#define OK          "ok"                    // ok answer for host
+#define OKSPACE     "ok "                   // ok plus space 
+#define ER          "Error:"                // error for host
+#define WT          "wait"                  // wait for host
+#define ECHO        "Echo:"                 // message for user
+#define CFG         "Config:"               // config for host
+#define CAP         "Cap:"                  // capabilities for host
+#define INFO        "Info:"                 // info for host
+#define BUSY        "busy:"                 // buys for host
+#define RESEND      "Resend:"               // resend for host
+#define WARNING     "Warning:"              // warning for host
+#define TNAN        "NAN"                   // NAN for host
+#define TINF        "INF"                   // INF for host
+#define PAUSE       "// action:pause"       // command for host that support action
+#define RESUME      "// action:resume"      // command for host that support action
+#define DISCONNECT  "// action:disconnect"  // command for host that support action
 
 #define SERIAL_INIT(baud)                   do{ MKSERIAL.begin(baud); HAL::delayMilliseconds(1); }while(0)
 
-// Things to write to serial from Program memory. Saves 400 to 2k of RAM.
-FORCE_INLINE void serialprintPGM(const char* str) {
-  while (char ch = pgm_read_byte(str++)) MKSERIAL.write(ch);
-}
-FORCE_INLINE void serial_spaces(uint8_t count) {
-  while (count--) MKSERIAL.write(' ');
-}
+// Functions for serial printing from PROGMEM. (Saves loads of SRAM.)
+void serialprintPGM(const char* str);
 
 #define SERIAL_PS(message)                  (serialprintPGM(message))
 #define SERIAL_PGM(message)                 (serialprintPGM(PSTR(message)))
@@ -59,8 +53,8 @@ FORCE_INLINE void serial_spaces(uint8_t count) {
 #define SERIAL_MSG(msg)                     SERIAL_PGM(msg)
 #define SERIAL_TXT(txt)                     (serial_print(txt))
 #define SERIAL_VAL(val, ...)                (serial_print(val, ## __VA_ARGS__))
-#define SERIAL_CHR(c)                       (MKSERIAL.write(c))
-#define SERIAL_EOL()                        (MKSERIAL.write('\n'))
+#define SERIAL_CHR(c)                       ((void)MKSERIAL.write(c))
+#define SERIAL_EOL()                        ((void)MKSERIAL.write('\n'))
 
 #define SERIAL_SP(C)                        serial_spaces(C)
 
@@ -96,18 +90,30 @@ FORCE_INLINE void serial_print(uint8_t v)       { MKSERIAL.print((int)v); }
 FORCE_INLINE void serial_print(uint16_t v)      { MKSERIAL.print((int)v); }
 FORCE_INLINE void serial_print(uint32_t v)      { MKSERIAL.print((long)v); }
 FORCE_INLINE void serial_print(bool v)          { MKSERIAL.print((int)v); }
-FORCE_INLINE void serial_print(void *v)         { MKSERIAL.print((int)v); }
+FORCE_INLINE void serial_print(void *v)         { MKSERIAL.print((long)v); }
 
-FORCE_INLINE void serial_print_pair(const char* msg, const char *v)   { serialprintPGM(msg); MKSERIAL.print(v); }
-FORCE_INLINE void serial_print_pair(const char* msg, char v)          { serialprintPGM(msg); MKSERIAL.print(v); }
-FORCE_INLINE void serial_print_pair(const char* msg, int v)           { serialprintPGM(msg); MKSERIAL.print(v); }
-FORCE_INLINE void serial_print_pair(const char* msg, long v)          { serialprintPGM(msg); MKSERIAL.print(v); }
-FORCE_INLINE void serial_print_pair(const char* msg, float v, int n)  { serialprintPGM(msg); MKSERIAL.print(v, n); }
-FORCE_INLINE void serial_print_pair(const char* msg, double v)        { serialprintPGM(msg); MKSERIAL.print(v); }
-FORCE_INLINE void serial_print_pair(const char* msg, uint8_t v)       { serial_print_pair(msg, (int)v); }
-FORCE_INLINE void serial_print_pair(const char* msg, uint16_t v)      { serial_print_pair(msg, (int)v); }
-FORCE_INLINE void serial_print_pair(const char* msg, uint32_t v)      { serial_print_pair(msg, (long)v); }
-FORCE_INLINE void serial_print_pair(const char* msg, bool v)          { serial_print_pair(msg, (int)v); }
-FORCE_INLINE void serial_print_pair(const char* msg, void *v)         { serial_print_pair(msg, (int)v); }
+void serial_print_pair(const char* msg, const char *v);
+void serial_print_pair(const char* msg, char v);
+void serial_print_pair(const char* msg, int v);
+void serial_print_pair(const char* msg, long v);
+void serial_print_pair(const char* msg, float v, int n);
+void serial_print_pair(const char* msg, double v);
+void serial_print_pair(const char* msg, uint8_t v);
+void serial_print_pair(const char* msg, uint16_t v);
+void serial_print_pair(const char* msg, uint32_t v);
+void serial_print_pair(const char* msg, bool v);
+void serial_print_pair(const char* msg, void *v);
 
+void serial_spaces(uint8_t count);
+
+#if ENABLED(DEBUG_LEVELING_FEATURE)
+  void print_xyz(const char* prefix, const char* suffix, const float x, const float y, const float z);
+  void print_xyz(const char* prefix, const char* suffix, const float xyz[]);
+  #if HAS_PLANAR
+    void print_xyz(const char* prefix, const char* suffix, const vector_3 &xyz);
+  #endif
+  #define DEBUG_POS(SUFFIX,VAR)       do{ \
+    print_xyz(PSTR("  " STRINGIFY(VAR) "="), PSTR(" : " SUFFIX "\n"), VAR); }while(0)
 #endif
+
+#endif /* COMMUNICATION_H */

@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,13 +23,13 @@
 #ifndef HEX_PRINT_ROUTINES_H
 #define HEX_PRINT_ROUTINES_H
 
-#if ENABLED(M100_FREE_MEMORY_WATCHER) || ENABLED(DEBUG_GCODE_PARSER)
+#if ENABLED(AUTO_BED_LEVELING_UBL) || ENABLED(M100_FREE_MEMORY_WATCHER) || ENABLED(DEBUG_GCODE_PARSER)
 
 //
 // Utility functions to create and print hex strings as nybble, byte, and word.
 //
 
-inline char hex_nybble(const uint8_t n) {
+FORCE_INLINE char hex_nybble(const uint8_t n) {
   return (n & 0xF) + ((n & 0xF) < 10 ? '0' : 'A' - 10);
 }
 char* hex_byte(const uint8_t b);

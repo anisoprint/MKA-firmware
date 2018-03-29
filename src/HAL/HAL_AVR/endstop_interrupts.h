@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@
 #endif
 
 // Install Pin change interrupt for a pin. Can be called multiple times.
-void pciSetup(byte pin) {
+void pciSetup(const pin_t pin) {
   *digitalPinToPCMSK(pin) |= bit (digitalPinToPCMSKbit(pin));  // enable pin
   PCIFR  |= bit (digitalPinToPCICRbit(pin)); // clear any outstanding interrupt
   PCICR  |= bit (digitalPinToPCICRbit(pin)); // enable interrupt for the group
@@ -96,7 +96,7 @@ void pciSetup(byte pin) {
   ISR(PCINT3_vect) { endstop_ISR_worker(); }
 #endif
 
-void setup_endstop_interrupts( void ) {
+void Endstops::setup_endstop_interrupts(void) {
 
   #if HAS_X_MAX
     #if (digitalPinToInterrupt(X_MAX_PIN) != NOT_AN_INTERRUPT) // if pin has an external interrupt
@@ -191,4 +191,4 @@ void setup_endstop_interrupts( void ) {
   // If we arrive here without raising an assertion, each pin has either an EXT-interrupt or a PCI.
 }
 
-#endif //_ENDSTOP_INTERRUPTS_H_
+#endif /* _ENDSTOP_INTERRUPTS_H_ */

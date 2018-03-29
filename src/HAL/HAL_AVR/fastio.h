@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,18 @@
 
 #include <avr/io.h>
 
+#define AVR_AT90USB1286_FAMILY (defined(__AVR_AT90USB1287__) || defined(__AVR_AT90USB1286__) || defined(__AVR_AT90USB1286P__) || defined(__AVR_AT90USB646__) || defined(__AVR_AT90USB646P__)  || defined(__AVR_AT90USB647__))
+#define AVR_ATmega1284_FAMILY (defined(__AVR_ATmega644__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega644PA__) || defined(__AVR_ATmega1284P__))
+#define AVR_ATmega2560_FAMILY (defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__))
+#define AVR_ATmega2561_FAMILY (defined(__AVR_ATmega1281__) || defined(__AVR_ATmega2561__))
+#define AVR_ATmega328_FAMILY (defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328p__))
+
 #ifndef _BV
   #define _BV(PIN) (1 << PIN)
 #endif
+
+#define OUTPUT_LOW  0x3
+#define OUTPUT_HIGH 0x4
 
 /**
  * Magic I/O routines
@@ -51,17 +60,17 @@
 #define _WRITE_NC(IO, v)  do { if (v) {DIO ##  IO ## _WPORT |= _BV(DIO ## IO ## _PIN); } else {DIO ##  IO ## _WPORT &= ~_BV(DIO ## IO ## _PIN); }; } while (0)
 
 #define _WRITE_C(IO, v)   do { if (v) { \
-                                         CRITICAL_SECTION_START; \
-                                         {DIO ##  IO ## _WPORT |= _BV(DIO ## IO ## _PIN); } \
-                                         CRITICAL_SECTION_END; \
-                                       } \
-                                       else { \
-                                         CRITICAL_SECTION_START; \
-                                         {DIO ##  IO ## _WPORT &= ~_BV(DIO ## IO ## _PIN); } \
-                                         CRITICAL_SECTION_END; \
-                                       } \
-                                     } \
-                                     while (0)
+                                        CRITICAL_SECTION_START \
+                                          {DIO ##  IO ## _WPORT |= _BV(DIO ## IO ## _PIN); } \
+                                        CRITICAL_SECTION_END \
+                                      } \
+                                      else { \
+                                        CRITICAL_SECTION_START \
+                                          {DIO ##  IO ## _WPORT &= ~_BV(DIO ## IO ## _PIN); } \
+                                        CRITICAL_SECTION_END \
+                                      } \
+                                    } \
+                                    while (0)
 
 #define _WRITE(IO, v)   do { if (&(DIO ## IO ## _RPORT) >= (uint8_t *)0x100) {_WRITE_C(IO, v); } else {_WRITE_NC(IO, v); }; } while (0)
 
@@ -69,29 +78,31 @@
 #define _TOGGLE(IO)     do {DIO ## IO ## _RPORT ^= _BV(DIO ## IO ## _PIN); } while (0)
 
 #define _SET_INPUT(IO)  do {DIO ## IO ## _DDR &= ~_BV(DIO ## IO ## _PIN); } while (0)
-#define _SET_OUTPUT(IO) do {DIO ## IO ## _DDR |= _BV(DIO ## IO ## _PIN); } while (0)
+#define _SET_OUTPUT(IO) do {DIO ## IO ## _DDR |=  _BV(DIO ## IO ## _PIN); } while (0)
 
 #define _GET_INPUT(IO)  ((DIO ## IO ## _DDR & _BV(DIO ## IO ## _PIN)) == 0)
 #define _GET_OUTPUT(IO) ((DIO ## IO ## _DDR & _BV(DIO ## IO ## _PIN)) != 0)
 #define _GET_TIMER(IO)  (DIO ## IO ## _PWM)
 
-#define READ(IO)    _READ(IO)
-#define WRITE(IO,V) _WRITE(IO,V)
-#define TOGGLE(IO)  _TOGGLE(IO)
+#define READ(IO)        _READ(IO)
+#define WRITE(IO,V)     _WRITE(IO,V)
+#define TOGGLE(IO)      _TOGGLE(IO)
 
 #define SET_INPUT(IO)   _SET_INPUT(IO)
-#define SET_INPUT_PULLUP(IO) do{ _SET_INPUT(IO); _WRITE(IO, HIGH); }while(0)
 #define SET_OUTPUT(IO)  _SET_OUTPUT(IO)
 
 #define GET_INPUT(IO)   _GET_INPUT(IO)
 #define GET_OUTPUT(IO)  _GET_OUTPUT(IO)
 #define GET_TIMER(IO)   _GET_TIMER(IO)
 
-#define OUT_WRITE(IO, v) do{ SET_OUTPUT(IO); WRITE(IO, v); }while(0)
+#define OUT_WRITE(IO, v)  do{ SET_OUTPUT(IO); WRITE(IO, v); }while(0)
 
 // Pullup
 #define PULLUP(IO)      _WRITE(IO, HIGH)
 #define SET_INPUT_PULLUP(IO) do{ _SET_INPUT(IO); _WRITE(IO, HIGH); }while(0)
+
+// define which hardware PWMs are available for the current CPU
+#define USEABLE_HARDWARE_PWM(p) digitalPinHasPWM(p)
 
 /**
  * Ports and Functions

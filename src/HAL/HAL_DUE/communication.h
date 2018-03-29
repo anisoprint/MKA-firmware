@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,20 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
+#if ENABLED(DEBUG_LEVELING_FEATURE)
+  void print_xyz(const char* prefix, const char* suffix, const float x, const float y, const float z);
+  void print_xyz(const char* prefix, const char* suffix, const float xyz[]);
+  #if HAS_PLANAR
+    void print_xyz(const char* prefix, const char* suffix, const vector_3 &xyz);
+  #endif
+  #define DEBUG_POS(SUFFIX,VAR)       do{ \
+    print_xyz(PSTR("  " STRINGIFY(VAR) "="), PSTR(" : " SUFFIX "\n"), VAR); }while(0)
+#endif
+
 class Com {
+
   public:
+
     FSTRINGVAR(tStart)                    // start for host
     FSTRINGVAR(tOk)                       // ok answer for host
     FSTRINGVAR(tOkSpace)                  // ok space answer for host
@@ -45,7 +57,7 @@ class Com {
     FSTRINGVAR(tRequestPauseCommunication)// command for host that support action
 
     static void printInfoLN(FSTRINGPARAM(text));
-    static void PS_PGM(FSTRINGPARAM(text));
+    static void serialprintPGM(FSTRINGPARAM(text));
     static void printNumber(uint32_t n);
     static void printFloat(float number, uint8_t digits);
     static void print(const char* text);
@@ -59,10 +71,8 @@ class Com {
     static inline void print(double number) { printFloat(number, 6); }
     static inline void print(double number, uint8_t digits) { printFloat(number, digits); }
     static inline void println() { HAL::serialWriteByte('\r'); HAL::serialWriteByte('\n'); }
-    static inline void print_spaces(uint8_t count) { while (count--) HAL::serialWriteByte(' '); }
+    static inline void print_spaces(uint8_t count) { count *= (PROPORTIONAL_FONT_RATIO); while (count--) HAL::serialWriteByte(' '); }
 
-  protected:
-  private:
 };
 
 #define START           Com::tStart
@@ -82,15 +92,14 @@ class Com {
 #define PAUSE           Com::tPauseCommunication
 #define RESUME          Com::tContinueCommunication
 #define DISCONNECT      Com::tDisconnectCommunication
-#define REQUEST_PAUSE   Com::tRequestPauseCommunication
 
 #define SERIAL_INIT(baud)                   HAL::serialSetBaudrate(baud)
 
-#define SERIAL_PS(message)                  (Com::PS_PGM(message))
-#define SERIAL_PGM(message)                 (Com::PS_PGM(PSTR(message)))
+#define SERIAL_PS(message)                  (Com::serialprintPGM(message))
+#define SERIAL_PGM(message)                 (Com::serialprintPGM(PSTR(message)))
 
-#define SERIAL_STR(str)                     (Com::PS_PGM(str))
-#define SERIAL_MSG(msg)                     (Com::PS_PGM(PSTR(msg)))
+#define SERIAL_STR(str)                     (Com::serialprintPGM(PSTR(str)))
+#define SERIAL_MSG(msg)                     (Com::serialprintPGM(PSTR(msg)))
 #define SERIAL_TXT(txt)                     (Com::print(txt))
 #define SERIAL_VAL(val, ...)                (Com::print(val, ## __VA_ARGS__))
 #define SERIAL_CHR(c)                       (Com::print(c))

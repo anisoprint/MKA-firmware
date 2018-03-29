@@ -1,9 +1,9 @@
 /**
- * MK4duo 3D Printer Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 - 2017 Alberto Cotronei @MagoKimbra
+ * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,61 +23,71 @@
 #ifndef __UTILITY_H__
 #define __UTILITY_H__
 
-#if ENABLED(ULTRA_LCD) || ENABLED(NEXTION)
+#if ENABLED(AUTO_BED_LEVELING_UBL) || ENABLED(G26_MESH_VALIDATION)
 
-  // Convert uint8_t to string with 123 format
-  char* i8tostr3(const uint8_t x);
+  /**
+   * These support functions allow the use of large bit arrays of flags that take very
+   * little RAM. Currently they are limited to being 16x16 in size. Changing the declaration
+   * to unsigned long will allow us to go to 32x32 if higher resolution Mesh's are needed
+   * in the future.
+   */
+  FORCE_INLINE void bitmap_clear(uint16_t bits[16], const uint8_t x, const uint8_t y)  { CBI(bits[y], x); }
+  FORCE_INLINE void bitmap_set(uint16_t bits[16], const uint8_t x, const uint8_t y)    { SBI(bits[y], x); }
+  FORCE_INLINE bool is_bitmap_set(uint16_t bits[16], const uint8_t x, const uint8_t y) { return TEST(bits[y], x); }
 
-  // Convert unsigned int to string with 12 format
-  char* itostr2(const uint8_t &xx);
+#endif
 
-  // Convert signed int to rj string with 123 or -12 format
-  char* itostr3(const int &xx);
+// Convert uint8_t to string with 123 format
+char* i8tostr3(const uint8_t x);
 
-  // Convert unsigned int to lj string with 123 format
-  char* itostr3left(const int &xx);
+// Convert unsigned int to string with 12 format
+char* itostr2(const uint8_t &xx);
 
-  // Convert signed int to rj string with _123, -123, _-12, or __-1 format
-  char *itostr4sign(const int &x);
+// Convert signed int to rj string with 123 or -12 format
+char* itostr3(const int &xx);
 
-  // Convert unsigned float to string with 1.23 format
-  char* ftostr12ns(const float &x);
+// Convert unsigned int to lj string with 123 format
+char* itostr3left(const int &xx);
 
-  // Convert signed float to fixed-length string with 023.45 / -23.45 format
-  char *ftostr32(const float &x);
+// Convert signed int to rj string with _123, -123, _-12, or __-1 format
+char *itostr4sign(const int &x);
 
-  // Convert float to fixed-length string with +123.4 / -123.4 format
-  char* ftostr41sign(const float &x);
+// Convert unsigned float to string with 1.23 format
+char* ftostr12ns(const float &x);
 
-  // Convert signed float to string (6 digit) with -1.234 / _0.000 / +1.234 format
-  char* ftostr43sign(const float &x, char plus=' ');
+// Convert signed float to fixed-length string with 023.45 / -23.45 format
+char *ftostr32(const float &x);
 
-  // Convert unsigned float to rj string with 12345 format
-  char* ftostr5rj(const float &x);
+// Convert float to fixed-length string with +123.4 / -123.4 format
+char* ftostr41sign(const float &x);
 
-  // Convert signed float to string with +1234.5 format
-  char* ftostr51sign(const float &x);
+// Convert signed float to string (6 digit) with -1.234 / _0.000 / +1.234 format
+char* ftostr43sign(const float &x, char plus=' ');
 
-  // Convert signed float to space-padded string with -_23.4_ format
-  char* ftostr52sp(const float &x);
+// Convert unsigned float to rj string with 12345 format
+char* ftostr5rj(const float &x);
 
-  // Convert signed float to string with +123.45 format
-  char* ftostr52sign(const float &x);
+// Convert signed float to string with +1234.5 format
+char* ftostr51sign(const float &x);
 
-  // Convert unsigned float to string with 1234.56 format omitting trailing zeros
-  char* ftostr62rj(const float &x);
+// Convert signed float to space-padded string with -_23.4_ format
+char* ftostr52sp(const float &x);
 
-  // Convert float to rj string with 123 or -12 format
-  FORCE_INLINE char *ftostr3(const float &x) { return itostr3((int)x); }
+// Convert signed float to string with +123.45 format
+char* ftostr52sign(const float &x);
 
-  #if ENABLED(LCD_DECIMAL_SMALL_XY)
-    // Convert float to rj string with 1234, _123, 12.3, _1.2, -123, _-12, or -1.2 format
-    char *ftostr4sign(const float &fx);
-  #else
-    // Convert float to rj string with 1234, _123, -123, __12, _-12, ___1, or __-1 format
-    FORCE_INLINE char *ftostr4sign(const float &fx) { return itostr4sign((int)fx); }
-  #endif
+// Convert unsigned float to string with 1234.56 format omitting trailing zeros
+char* ftostr62rj(const float &x);
 
-#endif // ULTRA_LCD || NEXTION
+// Convert float to rj string with 123 or -12 format
+FORCE_INLINE char *ftostr3(const float &x) { return itostr3((int)x); }
 
-#endif // __UTILITY_H__
+#if ENABLED(LCD_DECIMAL_SMALL_XY)
+  // Convert float to rj string with 1234, _123, 12.3, _1.2, -123, _-12, or -1.2 format
+  char *ftostr4sign(const float &fx);
+#else
+  // Convert float to rj string with 1234, _123, -123, __12, _-12, ___1, or __-1 format
+  FORCE_INLINE char *ftostr4sign(const float &fx) { return itostr4sign((int)fx); }
+#endif
+
+#endif /* __UTILITY_H__ */
