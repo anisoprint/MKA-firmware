@@ -333,7 +333,7 @@ class Stepper {
     // block begins.
     FORCE_INLINE static void trapezoid_generator_reset() {
 
-      //static int8_t last_extruder = -1;
+      static int8_t last_extruder = -1;
 
       #if ENABLED(LIN_ADVANCE)
         if (current_block->active_extruder != last_extruder) {

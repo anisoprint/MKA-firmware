@@ -185,17 +185,17 @@
  ***********************************************************************/
 // This defines the number of extruder real or virtual
 // 0,1,2,3,4,5,6
-#define EXTRUDERS 1
+#define EXTRUDERS 2
 
 // This defines the number of Driver extruder you have and use
 // 0,1,2,3,4,5,6
 #define DRIVER_EXTRUDERS 3
 
 // This defines the number of hotends you have and use
-#define HOTENDS 1
+#define HOTENDS 2
 
 // This defines which extruder corresponds to which hotend. First hotend is 0
-#define DRIVER_EXTRUDERS_HOTENDS  {0, 0, 0, 0, 0, 0}
+#define DRIVER_EXTRUDERS_HOTENDS  {0, 1, 1, 0, 0, 0}
 
 // This defines the type of extruder drivers (for plastic use 1, for fiber 0)
 #define PLASTIC_DRIVER_EXTRUDERS  {1, 0, 1, 0, 0, 0}

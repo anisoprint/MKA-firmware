@@ -33,32 +33,22 @@
  * Directly set the planner XYZ position (and stepper positions)
  * converting mm into steps.
  */
-void Mechanics::_set_position_mm(const float &a, const float &b, const float &c, const float &e) {
+void Mechanics::_set_position_mm(const float position[XYZE]) {
 
-  planner.position[X_AXIS] = LROUND(a * axis_steps_per_mm[X_AXIS]),
-  planner.position[Y_AXIS] = LROUND(b * axis_steps_per_mm[Y_AXIS]),
-  planner.position[Z_AXIS] = LROUND(c * axis_steps_per_mm[Z_AXIS]),
-  planner.position[E_AXIS] = LROUND(e * axis_steps_per_mm[E_INDEX]);
+LOOP_XYZE(i) planner.position[i] = LROUND(position[i] * axis_steps_per_mm[i]);
 
   #if ENABLED(LIN_ADVANCE)
-    planner.position_float[X_AXIS] = a;
-    planner.position_float[Y_AXIS] = b;
-    planner.position_float[Z_AXIS] = c;
-    planner.position_float[E_AXIS] = e;
+  	planner.LOOP_XYZE(i) position_float[i]= LROUND(pos[i]);
   #endif
 
-  stepper.set_position(planner.position[X_AXIS], planner.position[Y_AXIS], planner.position[Z_AXIS], planner.position[E_AXIS]);
+  stepper.set_position(planner.position);
   planner.zero_previous_nominal_speed();
   planner.zero_previous_speed();
 
 }
 void Mechanics::set_position_mm(const AxisEnum axis, const float &v) {
 
-  #if EXTRUDERS > 1
-    const uint8_t axis_index = axis + (axis == E_AXIS ? tools.active_extruder : 0);
-  #else
-    const uint8_t axis_index = axis;
-  #endif
+  const uint8_t axis_index = axis;
 
   planner.position[axis] = LROUND(v * axis_steps_per_mm[axis_index]);
   #if ENABLED(LIN_ADVANCE)
@@ -68,7 +58,7 @@ void Mechanics::set_position_mm(const AxisEnum axis, const float &v) {
   planner.zero_previous_speed(axis);
 
 }
-void Mechanics::set_position_mm(ARG_X, ARG_Y, ARG_Z, const float &e) {
+void Mechanics::set_position_mm(const float position[XYZE]) {
   #if PLANNER_LEVELING
     bedlevel.apply_leveling(rx, ry, rz);
   #endif

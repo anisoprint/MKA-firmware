@@ -504,7 +504,7 @@ void EEPROM::Postprocess() {
       EEPROM_WRITE(volumetric_enabled);
 
       // Save filament sizes
-      for (uint8_t e = 0; e < EXTRUDERS; e++)
+      for (uint8_t e = 0; e < DRIVER_EXTRUDERS; e++)
         EEPROM_WRITE(tools.filament_size[e]);
 
     #endif
@@ -954,7 +954,7 @@ void EEPROM::Postprocess() {
         EEPROM_READ(volumetric_enabled);
         printer.setVolumetric(volumetric_enabled);
 
-        for (uint8_t e = 0; e < EXTRUDERS; e++)
+        for (uint8_t e = 0; e < DRIVER_EXTRUDERS; e++)
           EEPROM_READ(tools.filament_size[e]);
 
       #endif
@@ -1316,7 +1316,7 @@ void EEPROM::Factory_Settings() {
     mechanics.max_acceleration_mm_per_s2[i] = pgm_read_dword_near(&tmp3[i < COUNT(tmp3) ? i : COUNT(tmp3) - 1]);
   }
 
-  for (uint8_t i = 0; i < EXTRUDERS; i++) {
+  for (uint8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
     mechanics.retract_acceleration[i]       = pgm_read_dword_near(&tmp4[i < COUNT(tmp4) ? i : COUNT(tmp4) - 1]);
     mechanics.max_jerk[E_AXIS + i]          = pgm_read_float(&tmp5[i < COUNT(tmp5) ? i : COUNT(tmp5) - 1]);
   }
@@ -1862,8 +1862,8 @@ void EEPROM::Factory_Settings() {
       SERIAL_MV(" T0 R", LINEAR_UNIT(mechanics.retract_acceleration[0]), 3);
     #endif
     SERIAL_EOL();
-    #if EXTRUDERS > 1
-      for (int8_t i = 0; i < EXTRUDERS; i++) {
+    #if DRIVER_EXTRUDERS > 1
+      for (int8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
         SERIAL_SMV(CFG, "  M204 T", i);
         SERIAL_EMV(" R", LINEAR_UNIT(mechanics.retract_acceleration[i]), 3);
       }
@@ -1880,8 +1880,8 @@ void EEPROM::Factory_Settings() {
       SERIAL_MV(" T0 E", LINEAR_UNIT(mechanics.max_jerk[E_AXIS]), 3);
     #endif
     SERIAL_EOL();
-    #if (EXTRUDERS > 1)
-      for(int8_t i = 0; i < EXTRUDERS; i++) {
+    #if (DRIVER_EXTRUDERS > 1)
+      for(int8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
         SERIAL_SMV(CFG, "  M205 T", i);
         SERIAL_EMV(" E" , LINEAR_UNIT(mechanics.max_jerk[E_AXIS + i]), 3);
       }
@@ -2179,7 +2179,7 @@ void EEPROM::Factory_Settings() {
       #if EXTRUDERS == 1
         SERIAL_LMV(CFG, "  M200 T0 D", tools.filament_size[0], 3);
       #elif EXTRUDERS > 1
-        for (uint8_t i = 0; i < EXTRUDERS; i++) {
+        for (uint8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
           SERIAL_SMV(CFG, "  M200 T", (int)i);
           SERIAL_EMV(" D", tools.filament_size[i], 3);
         }

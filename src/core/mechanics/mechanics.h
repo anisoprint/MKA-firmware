@@ -237,12 +237,12 @@ class Mechanics {
      *
      * Clears previous speed values.
      */
-            void _set_position_mm(const float &a, const float &b, const float &c, const float &e);
+            void _set_position_mm(const float &a, const float &b, const float &c, const float position_extruders[DRIVER_EXTRUDERS]);
             void set_position_mm(const AxisEnum axis, const float &v);
-    virtual void set_position_mm(ARG_X, ARG_Y, ARG_Z, const float &e);
-    virtual void set_position_mm(const float position[NUM_AXIS]);
+    virtual void set_position_mm(ARG_X, ARG_Y, ARG_Z, const float e[DRIVER_EXTRUDERS]);
+    virtual void set_position_mm(const float position[XYZ], const float position_extruders[DRIVER_EXTRUDERS]);
     FORCE_INLINE void set_z_position_mm(const float &z) { set_position_mm(AxisEnum(Z_AXIS), z); }
-    FORCE_INLINE void set_e_position_mm(const float &e) { set_position_mm(AxisEnum(E_AXIS), e); }
+    FORCE_INLINE void set_e_position_mm(const AxisEnum axis, const float &e) { set_position_mm(axis, e); }
 
     /**
      * Get the stepper positions in the cartes[] array.

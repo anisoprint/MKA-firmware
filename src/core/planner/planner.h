@@ -72,7 +72,7 @@ typedef struct {
 
   uint8_t flag;                             // Block flags (See BlockFlag enum above)
 
-  //unsigned char active_extruder;            // The extruder to move (if E move)
+  unsigned char active_extruder;            // The extruder to move (if E move)
   //unsigned char active_driver;              // Selects the active driver for E
 
   // Fields used by the Bresenham algorithm for tracing the line
@@ -238,9 +238,9 @@ class Planner {
      *  millimeters - the length of the movement, if known
      */
     #if ENABLED(LIN_ADVANCE)
-      static void buffer_steps(const int32_t (&target)[XYZE], const float (&target_float)[XYZE], float fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
+      static void buffer_steps(const int32_t (&target)[XYZ], const int32_t (&target_e)[DRIVER_EXTRUDERS], const float (&target_float)[XYZ], const float (&target_float_e)[DRIVER_EXTRUDERS], float fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
     #else
-      static void buffer_steps(const int32_t (&target)[XYZE], float fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
+      static void buffer_steps(const int32_t (&target)[XYZ], const float (&target_e)[DRIVER_EXTRUDERS], float fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
     #endif
 
     /**
@@ -255,7 +255,7 @@ class Planner {
      *  extruder    - target extruder
      *  millimeters - the length of the movement, if known
      */
-    static void buffer_segment(const float &a, const float &b, const float &c, const float &e, const float &fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
+    static void buffer_segment(const float &a, const float &b, const float &c, const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
 
     /**
      * Add a new linear movement to the buffer.
@@ -270,7 +270,7 @@ class Planner {
      *  extruder    - target extruder
      *  millimeters - the length of the movement, if known
      */
-    static void buffer_line(ARG_X, ARG_Y, ARG_Z, const float &e, const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
+    static void buffer_line(ARG_X, ARG_Y, ARG_Z, const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
 
     /**
      * Add a new linear movement to the buffer.
@@ -282,7 +282,7 @@ class Planner {
      *  extruder    - target extruder
      *  millimeters - the length of the movement, if known
      */
-    static void buffer_line_kinematic(const float cart[XYZE], const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
+    static void buffer_line_kinematic(const float cart[XYZ], const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
 
     FORCE_INLINE static void zero_previous_nominal_speed() { previous_nominal_speed = 0.0; } // Resets planner junction speeds. Assumes start from rest.
     FORCE_INLINE static void zero_previous_speed(const AxisEnum axis) { previous_speed[axis] = 0.0; }

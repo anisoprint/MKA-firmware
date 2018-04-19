@@ -720,7 +720,7 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
   #endif
 
   #if ENABLED(RFID_MODULE)
-    for (int8_t e = 0; e < EXTRUDERS; e++) {
+    for (int8_t e = 0; e < DRIVER_EXTRUDERS; e++) {
       if (Spool_must_read[e]) {
         if (rfid522.getID(e)) {
           Spool_ID[e] = rfid522.RfidDataID[e].Spool_ID;

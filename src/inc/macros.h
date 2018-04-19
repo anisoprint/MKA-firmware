@@ -218,6 +218,6 @@
 #define MMS_SCALED(MM_S) ((MM_S) * mechanics.feedrate_percentage * 0.01)
 
 #define INCLUDE_BY_PRINTER(P,H)    AS_QUOTEDSTRING(config/P/H)
-#define INCLUDE_BY_PRINTER_UP(P,H)    AS_QUOTEDSTRING(../config/P/H)
+#define INCLUDE_BY_PRINTER_UP(P,H)    AS_QUOTEDSTRING(../../config/P/H)
 
 #endif //__MACROS_H

@@ -34,27 +34,27 @@
 
   uint8_t Tools::active_extruder    = 0,
           Tools::previous_extruder  = 0,
-          Tools::target_extruder    = 0,
-          Tools::active_driver      = 0;
+          Tools::target_extruder    = 0;
+          //Tools::active_driver      = 0;
 
   int16_t Tools::flow_percentage[DRIVER_EXTRUDERS]       = ARRAY_BY_EXTRUDERS(100),
           Tools::density_percentage[DRIVER_EXTRUDERS]    = ARRAY_BY_EXTRUDERS(100);
   float   Tools::e_factor[DRIVER_EXTRUDERS]              = ARRAY_BY_EXTRUDERS(1.0);
   
   #if ENABLED(VOLUMETRIC_EXTRUSION)
-    float Tools::filament_size[EXTRUDERS]         = ARRAY_BY_EXTRUDERS(DEFAULT_NOMINAL_FILAMENT_DIA),
-          Tools::volumetric_area_nominal          = CIRCLE_AREA((DEFAULT_NOMINAL_FILAMENT_DIA) * 0.5),
-          Tools::volumetric_multiplier[EXTRUDERS] = ARRAY_BY_EXTRUDERS(1.0);
+    float Tools::filament_size[DRIVER_EXTRUDERS]         = ARRAY_BY_EXTRUDERS(DEFAULT_NOMINAL_FILAMENT_DIA),
+          Tools::volumetric_area_nominal          		 = CIRCLE_AREA((DEFAULT_NOMINAL_FILAMENT_DIA) * 0.5),
+          Tools::volumetric_multiplier[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(1.0);
   #endif
 
   float   Tools::hotend_offset[XYZ][HOTENDS] = { 0.0 };
 
   #if HAS_EXT_ENCODER
-    uint8_t Tools::encLastSignal[EXTRUDERS]           = ARRAY_BY_EXTRUDERS(0);
-    int8_t  Tools::encLastDir[EXTRUDERS]              = ARRAY_BY_EXTRUDERS(1);
-    int32_t Tools::encStepsSinceLastSignal[EXTRUDERS] = ARRAY_BY_EXTRUDERS(0),
-            Tools::encLastChangeAt[EXTRUDERS]         = ARRAY_BY_EXTRUDERS(0),
-            Tools::encErrorSteps[EXTRUDERS]           = ARRAY_BY_EXTRUDERS(ENC_ERROR_STEPS);
+    uint8_t Tools::encLastSignal[DRIVER_EXTRUDERS]           = ARRAY_BY_EXTRUDERS(0);
+    int8_t  Tools::encLastDir[DRIVER_EXTRUDERS]              = ARRAY_BY_EXTRUDERS(1);
+    int32_t Tools::encStepsSinceLastSignal[DRIVER_EXTRUDERS] = ARRAY_BY_EXTRUDERS(0),
+            Tools::encLastChangeAt[DRIVER_EXTRUDERS]         = ARRAY_BY_EXTRUDERS(0),
+            Tools::encErrorSteps[DRIVER_EXTRUDERS]           = ARRAY_BY_EXTRUDERS(ENC_ERROR_STEPS);
   #endif
 
   #if ENABLED(PID_ADD_EXTRUSION_RATE)
@@ -389,7 +389,7 @@
      * The multiplier converts a given E value into a length.
      */
     void Tools::calculate_volumetric_multipliers() {
-      for (uint8_t e = 0; e < EXTRUDERS; e++) {
+      for (uint8_t e = 0; e < DRIVER_EXTRUDERS; e++) {
         volumetric_multiplier[e] = calculate_volumetric_multiplier(filament_size[e]);
         refresh_e_factor(e);
       }

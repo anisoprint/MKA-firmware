@@ -34,12 +34,9 @@
  *       With multiple extruders use T to specify which one.
  */
 inline void gcode_M203(void) {
-
-  GET_TARGET_EXTRUDER(203);
-
   LOOP_XYZE(i) {
     if (parser.seen(axis_codes[i])) {
-      const uint8_t a = i + (i == E_AXIS ? TARGET_EXTRUDER : 0);
+      const uint8_t a = i;
       #if MECH(DELTA)
         const float value = parser.value_per_axis_unit((AxisEnum)a);
         if (i == E_AXIS)
