@@ -240,7 +240,7 @@ class Planner {
     #if ENABLED(LIN_ADVANCE)
       static void buffer_steps(const int32_t (&target)[XYZ], const int32_t (&target_e)[DRIVER_EXTRUDERS], const float (&target_float)[XYZ], const float (&target_float_e)[DRIVER_EXTRUDERS], float fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
     #else
-      static void buffer_steps(const int32_t (&target)[XYZ], const float (&target_e)[DRIVER_EXTRUDERS], float fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
+      static void buffer_steps(const int32_t (&target_xyz)[XYZ], const int32_t (&target_e)[DRIVER_EXTRUDERS], float fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
     #endif
 
     /**

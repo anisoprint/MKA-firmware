@@ -292,9 +292,9 @@ void Mechanics::do_homing_move(const AxisEnum axis, const float distance, const 
   // Tell the planner we're at Z=0
   current_position[axis] = 0;
 
-  set_position_mm(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS]);
+  set_position_mm(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position+XYZ);
   current_position[axis] = distance;
-  planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis], tools.active_extruder);
+  planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position+XYZ, fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis], tools.active_extruder);
 
   stepper.synchronize();
 
