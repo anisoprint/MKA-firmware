@@ -69,7 +69,7 @@ class Stepper {
 
   private: /** Private Parameters */
 
-    static uint8_t last_direction_bits;        // The next stepping-bits to be output
+    static uint16_t last_direction_bits;        // The next stepping-bits to be output
 
     #if ENABLED(X_TWO_ENDSTOPS)
       static bool locked_x_motor, locked_x2_motor;
@@ -83,6 +83,21 @@ class Stepper {
 
     // Counter variables for the Bresenham line tracer
     static long counter_X, counter_Y, counter_Z, counter_E;
+	#if DRIVER_EXTRUDERS > 1
+	  static long counter_U;
+	#endif
+	#if DRIVER_EXTRUDERS > 2
+	  static long counter_V;
+	#endif
+	#if DRIVER_EXTRUDERS > 3
+	  static long counter_W;
+	#endif
+	#if DRIVER_EXTRUDERS > 4
+	  static long counter_K;
+	#endif
+	#if DRIVER_EXTRUDERS > 5
+	  static long counter_L;
+	#endif
     static volatile uint32_t step_events_completed; // The number of step events executed in the current block
 
     #if ENABLED(LIN_ADVANCE)
@@ -175,9 +190,9 @@ class Stepper {
     //
     // Set current position in steps
     //
-    static void set_position(const long &a, const long &b, const long &c, const long &e);
+    static void set_position(const long position[XYZE]);
     static void set_position(const AxisEnum &a, const long &v);
-    static void set_e_position(const long &e);
+    static void set_e_position(const long e_position[DRIVER_EXTRUDERS]);
 
     //
     // Set direction bits for all steppers
@@ -333,7 +348,7 @@ class Stepper {
     // block begins.
     FORCE_INLINE static void trapezoid_generator_reset() {
 
-      static int8_t last_extruder = -1;
+      //static int8_t last_extruder = -1;
 
       #if ENABLED(LIN_ADVANCE)
         if (current_block->active_extruder != last_extruder) {
@@ -351,9 +366,9 @@ class Stepper {
           use_advance_lead = false;
       #endif
 
-      if (current_block->direction_bits != last_direction_bits || current_block->active_extruder != last_extruder) {
+      if (current_block->direction_bits != last_direction_bits) {
         last_direction_bits = current_block->direction_bits;
-        last_extruder = current_block->active_extruder;
+        //last_extruder = current_block->active_extruder;
         set_directions();
       }
 

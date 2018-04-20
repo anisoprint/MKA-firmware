@@ -72,7 +72,7 @@ int16_t Stepper::cleaning_buffer_counter = 0;
 
 // private:
 
-uint8_t Stepper::last_direction_bits = 0;        // The next stepping-bits to be output
+uint16_t Stepper::last_direction_bits = 0;        // The next stepping-bits to be output
 
 #if ENABLED(X_TWO_ENDSTOPS)
   bool Stepper::locked_x_motor = false, Stepper::locked_x2_motor = false;
@@ -88,6 +88,21 @@ long  Stepper::counter_X = 0,
       Stepper::counter_Y = 0,
       Stepper::counter_Z = 0,
       Stepper::counter_E = 0;
+#if DRIVER_EXTRUDERS > 1
+	long Stepper::counter_U = 0;
+#endif
+#if DRIVER_EXTRUDERS > 2
+	long Stepper::counter_V = 0;
+#endif
+#if DRIVER_EXTRUDERS > 3
+	long Stepper::counter_W = 0;
+#endif
+#if DRIVER_EXTRUDERS > 4
+	long Stepper::counter_K = 0;
+#endif
+#if DRIVER_EXTRUDERS > 5
+	long Stepper::counter_L = 0;
+#endif
 
 volatile uint32_t Stepper::step_events_completed = 0; // The number of step events executed in the current block
 
@@ -111,7 +126,23 @@ volatile uint32_t Stepper::step_events_completed = 0; // The number of step even
 #endif // LIN_ADVANCE
 
 volatile long Stepper::count_position[NUM_AXIS] = { 0 };
-volatile signed char Stepper::count_direction[NUM_AXIS] = { 1, 1, 1, 1 };
+volatile signed char Stepper::count_direction[NUM_AXIS] = { 1, 1, 1, 1
+#if DRIVER_EXTRUDERS > 1
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 2
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 3
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 4
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 5
+  , 1
+#endif
+};
 
 #if ENABLED(COLOR_MIXING_EXTRUDER)
   long Stepper::counter_m[MIXING_STEPPERS];
@@ -213,7 +244,27 @@ volatile long   Stepper::endstops_trigsteps[XYZ];
 #endif
 
 #if DISABLED(COLOR_MIXING_EXTRUDER)
-  #define E_APPLY_STEP(v,Q) E_STEP_WRITE(v)
+#define E_APPLY_STEP(v,Q) E_STEP_WRITE(v)
+	#if DRIVER_EXTRUDERS > 1
+		#define U_APPLY_STEP(v,Q) U_STEP_WRITE(v)
+		#define INVERT_U_STEP_PIN INVERT_E_STEP_PIN
+	#endif
+	#if DRIVER_EXTRUDERS > 2
+		#define V_APPLY_STEP(v,Q) V_STEP_WRITE(v)
+		#define INVERT_V_STEP_PIN INVERT_E_STEP_PIN
+	#endif
+	#if DRIVER_EXTRUDERS > 3
+		#define W_APPLY_STEP(v,Q) W_STEP_WRITE(v)
+		#define INVERT_W_STEP_PIN INVERT_E_STEP_PIN
+	#endif
+	#if DRIVER_EXTRUDERS > 4
+		#define K_APPLY_STEP(v,Q) K_STEP_WRITE(v)
+		#define INVERT_K_STEP_PIN INVERT_E_STEP_PIN
+	#endif
+	#if DRIVER_EXTRUDERS > 5
+		#define L_APPLY_STEP(v,Q) L_STEP_WRITE(v)
+		#define INVERT_L_STEP_PIN INVERT_E_STEP_PIN
+	#endif
 #endif
 
 /**
@@ -328,16 +379,67 @@ void Stepper::set_directions() {
     SET_STEP_DIR(Z); // C
   #endif
 
-  #if HAS_EXTRUDERS && DISABLED(LIN_ADVANCE)
-    if (motor_direction(E_AXIS)) {
-      REV_E_DIR();
-      count_direction[E_AXIS] = -1;
-    }
-    else {
-      NORM_E_DIR();
-      count_direction[E_AXIS] = 1;
-    }
-  #endif // HAS_EXTRUDERS && DISABLED(LIN_ADVANCE)
+#if HAS_EXTRUDERS && DISABLED(LIN_ADVANCE)
+		if (motor_direction(E_AXIS)) {
+			REV_E_DIR();
+			count_direction[E_AXIS] = -1;
+		}
+		else {
+			NORM_E_DIR();
+			count_direction[E_AXIS] = 1;
+		}
+	#if DRIVER_EXTRUDERS > 1
+		if (motor_direction(U_AXIS)) {  // -direction
+			REV_U_DIR();
+			count_direction[U_AXIS] = -1;
+		}
+		else { // +direction
+			NORM_U_DIR();
+			count_direction[U_AXIS]=1;
+		}
+	#endif
+	#if DRIVER_EXTRUDERS > 2
+		if (motor_direction(V_AXIS)) {  // -direction
+			REV_V_DIR();
+			count_direction[V_AXIS] = -1;
+		}
+		else { // +direction
+			NORM_V_DIR();
+			count_direction[V_AXIS]=1;
+		}
+	#endif
+	#if DRIVER_EXTRUDERS > 3
+		if (motor_direction(W_AXIS)) {  // -direction
+			REV_W_DIR();
+			count_direction[W_AXIS] = -1;
+		}
+		else { // +direction
+			NORM_W_DIR();
+			count_direction[W_AXIS]=1;
+		}
+	#endif
+	#if DRIVER_EXTRUDERS > 4
+		if (motor_direction(K_AXIS)) {  // -direction
+			REV_K_DIR();
+			count_direction[K_AXIS] = -1;
+		}
+		else { // +direction
+			NORM_K_DIR();
+			count_direction[K_AXIS]=1;
+		}
+	#endif
+	#if DRIVER_EXTRUDERS > 5
+		if (motor_direction(L_AXIS)) {  // -direction
+			REV_L_DIR();
+			count_direction[L_AXIS] = -1;
+		}
+		else { // +direction
+			NORM_L_DIR();
+			count_direction[L_AXIS]=1;
+		}
+	#endif
+
+#endif // HAS_EXTRUDERS && DISABLED(LIN_ADVANCE)
 
   #if HAS_EXT_ENCODER
 
