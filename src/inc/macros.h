@@ -31,9 +31,6 @@
 #define DISABLED !defined
 
 // The axis order in all axis related arrays is X, Y, Z, E
-#define NUM_AXIS  4
-#define XYZE      4
-#define ABCE      4
 #define ABC       3
 #define XYZ       3
 
@@ -160,8 +157,8 @@
 #define ARRAY_BY_N_N(N, ...) ARRAY_N(N, __VA_ARGS__)
 #define ARRAY_BY_N(N, v1) ARRAY_BY_N_N(N, v1, v1, v1, v1, v1, v1, v1, v1, v1, v1, v1, v1)
 
-// ARRAY_BY_EXTRUDERS based on EXTRUDERS
-#define ARRAY_BY_EXTRUDERS_N(...) ARRAY_N(EXTRUDERS, __VA_ARGS__)
+// ARRAY_BY_EXTRUDERS based on DRIVER_EXTRUDERS
+#define ARRAY_BY_EXTRUDERS_N(...) ARRAY_N(DRIVER_EXTRUDERS, __VA_ARGS__)
 #define ARRAY_BY_EXTRUDERS(v1) ARRAY_BY_EXTRUDERS_N(v1, v1, v1, v1, v1, v1, v1, v1, v1, v1, v1, v1)
 
 // ARRAY_BY_HOTENDS based on HOTENDS
@@ -202,11 +199,15 @@
 #define LOOP_NA(VAR)            LOOP_L_N(VAR, NUM_AXIS)
 #define LOOP_XY(VAR)            LOOP_S_LE_N(VAR, X_AXIS, Y_AXIS)
 #define LOOP_XYZ(VAR)           LOOP_S_LE_N(VAR, X_AXIS, Z_AXIS)
-#define LOOP_XYZE(VAR)          LOOP_S_LE_N(VAR, X_AXIS, E_AXIS)
+#define LOOP_XYZE(VAR)          LOOP_S_L_N(VAR, X_AXIS, XYZE)
 #define LOOP_XYZE_N(VAR)        LOOP_S_L_N(VAR, X_AXIS, XYZE_N)
 #define LOOP_ABC(VAR)           LOOP_S_LE_N(VAR, A_AXIS, C_AXIS)
-#define LOOP_ABCE(VAR)          LOOP_S_LE_N(VAR, A_AXIS, E_AXIS)
+#define LOOP_ABCE(VAR)          LOOP_S_L_N(VAR, A_AXIS, XYZE)
 #define LOOP_ABCE_N(VAR)        LOOP_S_L_N(VAR, A_AXIS, XYZE_N)
+
+#define LOOP_EUVW(VAR)    		LOOP_S_L_N(VAR, E_AXIS, XYZE)
+#define LOOP_EXTRUDERS(VAR)     LOOP_L_N(VAR, DRIVER_EXTRUDERS)
+
 #define LOOP_HOTEND()           LOOP_L_N(h, HOTENDS)
 #define LOOP_HEATER()           LOOP_L_N(h, HEATER_COUNT)
 #define LOOP_FAN()              LOOP_L_N(f, FAN_COUNT)
@@ -215,5 +216,8 @@
 #define MMM_TO_MMS(MM_M) ((MM_M) / 60.0)
 #define MMS_TO_MMM(MM_S) ((MM_S) * 60.0)
 #define MMS_SCALED(MM_S) ((MM_S) * mechanics.feedrate_percentage * 0.01)
+
+#define INCLUDE_BY_PRINTER(P,H)    AS_QUOTEDSTRING(config/P/H)
+#define INCLUDE_BY_PRINTER_UP(P,H)    AS_QUOTEDSTRING(../../config/P/H)
 
 #endif //__MACROS_H

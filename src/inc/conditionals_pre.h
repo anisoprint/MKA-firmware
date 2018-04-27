@@ -442,7 +442,7 @@
   #define TOOL_E_INDEX      current_block->active_extruder
 #endif
 
-#define TOOL_DE_INDEX       current_block->active_driver
+//#define TOOL_DE_INDEX       current_block->active_driver
 
 #if ENABLED(SINGLENOZZLE)                 // One hotend, multi-extruder
   #undef HOTENDS
@@ -455,23 +455,23 @@
   #define HOTEND_OFFSET_Y   { 0 }
   #define HOTEND_OFFSET_Z   { 0 }
 #else
-  #undef HOTENDS
-  #define HOTENDS           EXTRUDERS
+  //#undef HOTENDS
+  //#define HOTENDS           EXTRUDERS
 #endif
 
 /**
  * Multi-extruders support
  */
+
+#define NUM_AXIS  3 + DRIVER_EXTRUDERS
+#define XYZE      3 + DRIVER_EXTRUDERS
+#define ABCE      3 + DRIVER_EXTRUDERS
+#define XYZE_N    XYZE
+
 #if EXTRUDERS > 1
-  #define XYZE_N    3 + EXTRUDERS
-  #define E_AXIS_N  (E_AXIS + extruder)
-  #define E_INDEX   (E_AXIS + tools.active_extruder)
   #define GET_TARGET_EXTRUDER(CMD) if (commands.get_target_tool(CMD)) return
   #define TARGET_EXTRUDER tools.target_extruder
 #elif EXTRUDERS == 1
-  #define XYZE_N    XYZE
-  #define E_AXIS_N  E_AXIS
-  #define E_INDEX   E_AXIS
   #define GET_TARGET_EXTRUDER(CMD) NOOP
   #define TARGET_EXTRUDER 0
 #elif EXTRUDERS == 0
@@ -483,6 +483,12 @@
   #define E_INDEX   0
   #define GET_TARGET_EXTRUDER(CMD) NOOP
   #define TARGET_EXTRUDER 0
+#endif
+
+#if DRIVER_EXTRUDERS > 1
+	#define GET_TARGET_EXTRUDER_DRIVER(CMD) if (get_target_extruder_driver_from_command(CMD)) return
+#else
+	#define GET_TARGET_EXTRUDER_DRIVER(CMD) NOOP
 #endif
 
 /**

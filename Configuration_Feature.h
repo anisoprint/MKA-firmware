@@ -515,12 +515,12 @@
 /**************************************************************************
  ****************************** R/C Servo *********************************
  **************************************************************************/
-//#define ENABLE_SERVOS
+#define ENABLE_SERVOS
 // Number of servos
 // If you select a configuration below, this will receive a default value and does not need to be set manually
 // set it manually if you have more servos than extruders and wish to manually control some
 // leaving it defining as 0 will disable the servo subsystem
-#define NUM_SERVOS 0
+#define NUM_SERVOS 1
 // Servo index starts with 0 for M280 command
 //
 // Servo deactivation
@@ -1038,7 +1038,7 @@
 /*****************************************************************************************
  *************************************** SDCARD *******************************************
  ****************************************************************************************/
-//#define SDSUPPORT
+#define SDSUPPORT
 
 //#define SDSLOW              // Use slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
 //#define SDEXTRASLOW         // Use even slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
@@ -1927,7 +1927,7 @@
 // G2/G3 Arc Support
 //
 // Disable this feature to save ~3226 bytes
-#define ARC_SUPPORT
+//#define ARC_SUPPORT
 #define MM_PER_ARC_SEGMENT 1    // Length of each arc segment
 #define N_ARC_CORRECTION  25    // Number of intertpolated segments between corrections
 //#define ARC_P_CIRCLES         // Enable the 'P' parameter to specify complete circles

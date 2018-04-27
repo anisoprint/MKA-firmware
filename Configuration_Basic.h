@@ -60,7 +60,7 @@
  *
  * 2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000
  */
-#define BAUDRATE 250000
+#define BAUDRATE 115200
 
 /**
  * User-specified version info of this build to display in [Pronterface, etc] terminal window during
@@ -185,11 +185,21 @@
  ***********************************************************************/
 // This defines the number of extruder real or virtual
 // 0,1,2,3,4,5,6
-#define EXTRUDERS 1
+#define EXTRUDERS 2
 
 // This defines the number of Driver extruder you have and use
 // 0,1,2,3,4,5,6
-#define DRIVER_EXTRUDERS 1
+#define DRIVER_EXTRUDERS 3
+
+// This defines the number of hotends you have and use
+#define HOTENDS 2
+
+// This defines which extruder corresponds to which hotend. First hotend is 0
+#define DRIVER_EXTRUDERS_HOTENDS  {0, 1, 1, 0, 0, 0}
+
+// This defines the type of extruder drivers (for plastic use 1, for fiber 0)
+#define PLASTIC_DRIVER_EXTRUDERS  {1, 0, 1, 0, 0, 0}
+
 /***********************************************************************/
 
 #endif /* _CONFIGURATION_BASIC_H_ */

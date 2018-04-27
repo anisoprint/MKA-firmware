@@ -102,15 +102,15 @@
  * Put true for enable or put false for disable the endstop pullup resistors             *
  *                                                                                       *
  *****************************************************************************************/
-#define ENDSTOPPULLUP_XMIN    false
-#define ENDSTOPPULLUP_YMIN    false
-#define ENDSTOPPULLUP_ZMIN    false
-#define ENDSTOPPULLUP_XMAX    false
-#define ENDSTOPPULLUP_YMAX    false
-#define ENDSTOPPULLUP_ZMAX    false
-#define ENDSTOPPULLUP_Z2MIN   false
-#define ENDSTOPPULLUP_Z2MAX   false
-#define ENDSTOPPULLUP_ZPROBE  false
+#define ENDSTOPPULLUP_XMIN    true
+#define ENDSTOPPULLUP_YMIN    true
+#define ENDSTOPPULLUP_ZMIN    true
+#define ENDSTOPPULLUP_XMAX    true
+#define ENDSTOPPULLUP_YMAX    true
+#define ENDSTOPPULLUP_ZMAX    true
+#define ENDSTOPPULLUP_Z2MIN   true
+#define ENDSTOPPULLUP_Z2MAX   true
+#define ENDSTOPPULLUP_ZPROBE  true
 /*****************************************************************************************/
 
 
@@ -122,15 +122,15 @@
  * uses "false" here (most common setup).                                                *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define X_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define Z_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
-#define Z2_MIN_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
-#define Z2_MAX_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
-#define Z_PROBE_ENDSTOP_LOGIC false   // set to true to invert the logic of the probe.
+#define X_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define X_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define Z_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
+#define Z2_MIN_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
+#define Z2_MAX_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
+#define Z_PROBE_ENDSTOP_LOGIC true   // set to true to invert the logic of the probe.
 /*****************************************************************************************/
 
 
@@ -275,7 +275,7 @@
  * Be sure you have this distance over your Z MAX POS in case.                           *
  *                                                                                       *
  *****************************************************************************************/
-#define MIN_Z_HEIGHT_FOR_HOMING 0
+#define MIN_Z_HEIGHT_FOR_HOMING 5
 /*****************************************************************************************/
 
 
@@ -366,7 +366,7 @@
 /*****************************************************************************************
  ********************************** Axis relative mode ***********************************
  *****************************************************************************************/
-#define AXIS_RELATIVE_MODES {false, false, false, false}
+#define AXIS_RELATIVE_MODES {false, false, false, false, false, false}
 /*****************************************************************************************/
 
 
