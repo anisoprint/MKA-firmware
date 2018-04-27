@@ -191,8 +191,8 @@
    *                    adhesion.
    *
    *                    P4 moves to the closest Mesh Point (and/or the given X Y), raises the nozzle above the mesh height
-   *                    by the given 'H' offset (or default Z_PROBE_BETWEEN_HEIGHT), and waits while the controller is
-   *                    used to adjust the nozzle height. On click the displayed height is saved in the mesh.
+   *                    by the given 'H' offset (or default 0), and waits while the controller is used to adjust the nozzle
+   *                    height. On click the displayed height is saved in the mesh.
    *
    *                    Start Phase 4 at a specific location with X and Y. Adjust a specific number of Mesh Points with
    *                    the 'R' (Repeat) parameter. (If 'R' is left out, the whole matrix is assumed.) This command can be
@@ -233,9 +233,7 @@
    *                    for subsequent Load and Store operations. Valid storage slot numbers begin at 0 and
    *                    extend to a limit related to the available EEPROM storage.
    *
-   *   S -1  Store      Store the current Mesh as a print out that is suitable to be feed back into the system
-   *                    at a later date. The GCode output can be saved and later replayed by the host software
-   *                    to reconstruct the current mesh on another machine.
+   *   S -1  Store      Print the current Mesh as G-code that can be used to restore the mesh anytime.
    *
    *   T     Topology   Display the Mesh Map Topology.
    *                    'T' can be used alone (e.g., G29 T) or in combination with most of the other commands.
@@ -291,7 +289,7 @@
     if (mechanics.axis_unhomed_error()) {
       const int8_t p_val = parser.intval('P', -1);
       if (p_val == 1 || p_val == 2 || p_val == 4 || parser.seen('J'))
-        mechanics.home(true);
+        mechanics.home();
     }
 
     // Invalidate Mesh Points. This command is a little bit asymmetrical because
@@ -526,7 +524,7 @@
           #endif
           break;
 
-        case 5: find_mean_mesh_height(); break;
+        case 5: adjust_mesh_to_mean(g29_constant); break;
 
         case 6: shift_mesh_height(); break;
       }
@@ -619,7 +617,7 @@
     return;
   }
 
-  void unified_bed_leveling::find_mean_mesh_height() {
+  void unified_bed_leveling::adjust_mesh_to_mean(const float value) {
     float sum = 0.0;
     int n = 0;
     for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++) {
@@ -652,14 +650,11 @@
     const float sigma = SQRT(sum_of_diff_squared / (n + 1));
     SERIAL_EMV("Standard Deviation: ", sigma, 6);
 
-    if (g29_c_flag) {
-      for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++) {
-        for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++) {
+    if (g29_c_flag)
+      for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++)
+        for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++)
           if (!isnan(z_values[x][y]))
-            z_values[x][y] -= mean + g29_constant;
-        }
-      }
-    }
+            z_values[x][y] -= mean + value;
   }
 
   void unified_bed_leveling::shift_mesh_height() {
@@ -741,7 +736,7 @@
           const float rawx = mesh_index_to_xpos(location.x_index),
                       rawy = mesh_index_to_ypos(location.y_index);
 
-          const float measured_z = probe.check_pt(rawx, rawy, stow_probe, g29_verbose_level); // TODO: Needs error handling
+          const float measured_z = probe.check_pt(rawx, rawy, stow_probe ? PROBE_PT_STOW : PROBE_PT_RAISE, g29_verbose_level); // TODO: Needs error handling
           z_values[location.x_index][location.y_index] = measured_z;
         }
         HAL::serialFlush(); // Prevent host M105 buffer overrun.
@@ -770,7 +765,7 @@
       wait_for_release();
       while (!is_lcd_clicked()) {
         printer.idle();
-        commands.refresh_cmd_timeout();
+        commands.reset_stepper_timeout(); // Keep steppers powered
         if (encoder_diff) {
           mechanics.do_blocking_move_to_z(mechanics.current_position[Z_AXIS] + float(encoder_diff) * multiplier);
           encoder_diff = 0;
@@ -1072,7 +1067,7 @@
       SERIAL_EMV("bedlevel.z_fade_height : ", bedlevel.z_fade_height, 4);
     #endif
 
-    find_mean_mesh_height();
+    adjust_mesh_to_mean(g29_constant);
 
     #if HAS_BED_PROBE
       SERIAL_EMV("zprobe_zoffset: ", probe.offset[Z_AXIS], 7);
@@ -1331,12 +1326,11 @@
 
     void unified_bed_leveling::fine_tune_mesh(const float &rx, const float &ry, const bool do_ubl_mesh_map) {
       if (!parser.seen('R'))    // fine_tune_mesh() is special. If no repetition count flag is specified
-        g29_repetition_cnt = 1;   // do exactly one mesh location. Otherwise use what the parser decided.
+        g29_repetition_cnt = 1; // do exactly one mesh location. Otherwise use what the parser decided.
 
       #if ENABLED(UBL_MESH_EDIT_MOVES_Z)
-        const bool is_offset = parser.seen('H');
-        const float h_offset = is_offset ? parser.value_linear_units() : Z_PROBE_BETWEEN_HEIGHT;
-        if (is_offset && !WITHIN(h_offset, 0, 10)) {
+        const float h_offset = parser.seenval('H') ? parser.value_linear_units() : 0;
+        if (!WITHIN(h_offset, 0, 10)) {
           SERIAL_EM("Offset out of bounds. (0 to 10mm)\n");
           return;
         }
@@ -1352,63 +1346,63 @@
       save_ubl_active_state_and_disable();
 
       LCD_MESSAGEPGM(MSG_UBL_FINE_TUNE_MESH);
+      lcd_external_control = true;                                          // Take over control of the LCD encoder
 
-      mechanics.do_blocking_move_to(rx, ry, Z_PROBE_BETWEEN_HEIGHT);
+      mechanics.do_blocking_move_to(rx, ry, Z_PROBE_BETWEEN_HEIGHT);        // Move to the given XY with probe clearance
+
+      #if ENABLED(UBL_MESH_EDIT_MOVES_Z)
+        mechanics.do_blocking_move_to_z(h_offset);                          // Move Z to the given 'H' offset
+      #endif
 
       uint16_t not_done[16];
       memset(not_done, 0xFF, sizeof(not_done));
       do {
         location = find_closest_mesh_point_of_type(SET_IN_BITMAP, rx, ry, USE_NOZZLE_AS_REFERENCE, not_done);
 
-        if (location.x_index < 0) break; // stop when we can't find any more reachable points.
+        if (location.x_index < 0) break;                                    // stop when we can't find any more reachable points.
 
-        bitmap_clear(not_done, location.x_index, location.y_index); // Mark this location as 'adjusted' so we will find a
-                                                                    // different location the next time through the loop
+        bitmap_clear(not_done, location.x_index, location.y_index);         // Mark this location as 'adjusted' so we will find a
+                                                                            // different location the next time through the loop
 
         const float rawx = mesh_index_to_xpos(location.x_index),
                     rawy = mesh_index_to_ypos(location.y_index);
 
-        if (!mechanics.position_is_reachable(rawx, rawy)) // SHOULD NOT OCCUR because find_closest_mesh_point_of_type will only return reachable
-          break;
+        //if (!mechanics.position_is_reachable(rawx, rawy)) break;            // SHOULD NOT OCCUR because find_closest_mesh_point_of_type will only return reachable
 
-        mechanics.do_blocking_move_to(rawx, rawy, Z_PROBE_BETWEEN_HEIGHT); // Move the nozzle to the edit point
+        mechanics.do_blocking_move_to(rawx, rawy, Z_PROBE_BETWEEN_HEIGHT);  // Move the nozzle to the edit point
+
+        #if ENABLED(UBL_MESH_EDIT_MOVES_Z)
+          mechanics.do_blocking_move_to_z(h_offset);                        // Move Z to the given 'H' offset before editing
+        #endif
 
         printer.keepalive(PausedforUser);
-        lcd_external_control = true;
 
-        if (do_ubl_mesh_map) display_map(g29_map_type);  // show the user which point is being adjusted
+        if (do_ubl_mesh_map) display_map(g29_map_type);                     // Display the current point
 
         lcd_refresh();
 
         float new_z = z_values[location.x_index][location.y_index];
-        if (isnan(new_z)) new_z = 0.0;          // Set invalid mesh points to 0.0 so they can be edited
-        new_z = FLOOR(new_z * 1000.0) * 0.001;  // Chop off digits after the 1000ths place
+        if (isnan(new_z)) new_z = 0.0;                                      // Invalid points begin at 0
+        new_z = FLOOR(new_z * 1000.0) * 0.001;                              // Chop off digits after the 1000ths place
 
         lcd_mesh_edit_setup(new_z);
 
         do {
           new_z = lcd_mesh_edit();
           #if ENABLED(UBL_MESH_EDIT_MOVES_Z)
-            mechanics.do_blocking_move_to_z(h_offset + new_z); // Move the nozzle as the point is edited
+            mechanics.do_blocking_move_to_z(h_offset + new_z);              // Move the nozzle as the point is edited
           #endif
           printer.idle();
-          HAL::serialFlush(); // Prevent host M105 buffer overrun.
+          HAL::serialFlush();                                               // Prevent host M105 buffer overrun.
         } while (!is_lcd_clicked());
 
-        if (!lcd_map_control) lcd_return_to_status();
+        if (!lcd_map_control) lcd_return_to_status();                       // Just editing a single point? Return to status
 
-        // The technique used here generates a race condition for the encoder click.
-        // It could get detected in lcd_mesh_edit (actually _lcd_mesh_fine_tune) or here.
-        // Let's work on specifying a proper API for the LCD ASAP, OK?
-        lcd_external_control = true;
+        if (click_and_hold(abort_fine_tune)) goto FINE_TUNE_EXIT;           // If the click is held down, abort editing
 
-        if (click_and_hold(abort_fine_tune))
-          goto FINE_TUNE_EXIT;
+        z_values[location.x_index][location.y_index] = new_z;               // Save the updated Z value
 
-        printer.safe_delay(20);                       // We don't want any switch noise.
-
-        z_values[location.x_index][location.y_index] = new_z;
-
+        printer.safe_delay(20);                                             // No switch noise
         lcd_refresh();
 
       } while (location.x_index >= 0 && --g29_repetition_cnt > 0);
@@ -1505,7 +1499,7 @@
       incremental_LSF_reset(&lsf_results);
 
       if (do_3_pt_leveling) {
-        measured_z = probe.check_pt(PROBE_PT_1_X, PROBE_PT_1_Y, false, g29_verbose_level);
+        measured_z = probe.check_pt(PROBE_PT_1_X, PROBE_PT_1_Y, PROBE_PT_RAISE, g29_verbose_level);
         if (isnan(measured_z))
           abort_flag = true;
         else {
@@ -1519,7 +1513,7 @@
         }
 
         if (!abort_flag) {
-          measured_z = probe.check_pt(PROBE_PT_2_X, PROBE_PT_2_Y, false, g29_verbose_level);
+          measured_z = probe.check_pt(PROBE_PT_2_X, PROBE_PT_2_Y, PROBE_PT_RAISE, g29_verbose_level);
           //z2 = measured_z;
           if (isnan(measured_z))
             abort_flag = true;
@@ -1534,7 +1528,7 @@
         }
 
         if (!abort_flag) {
-          measured_z = probe.check_pt(PROBE_PT_3_X, PROBE_PT_3_Y, true, g29_verbose_level);
+          measured_z = probe.check_pt(PROBE_PT_3_X, PROBE_PT_3_Y, PROBE_PT_STOW, g29_verbose_level);
           //z3 = measured_z;
           if (isnan(measured_z))
             abort_flag = true;
@@ -1562,7 +1556,7 @@
             const float ry = float(y_min) + dy * (zig_zag ? g29_grid_size - 1 - iy : iy);
 
             if (!abort_flag) {
-              measured_z = probe.check_pt(rx, ry, parser.seen('E'), g29_verbose_level); // TODO: Needs error handling
+              measured_z = probe.check_pt(rx, ry, parser.seen('E') ? PROBE_PT_STOW : PROBE_PT_RAISE, g29_verbose_level); // TODO: Needs error handling
 
               abort_flag = isnan(measured_z);
 
@@ -1594,13 +1588,17 @@
                 }
               #endif
 
+              if (g29_verbose_level > 3) {
+                SERIAL_SP(16);
+                SERIAL_MV("Corrected_Z=", measured_z);
+              }
               incremental_LSF(&lsf_results, rx, ry, measured_z);
             }
           }
 
           zig_zag ^= true;
         }
-
+        STOW_PROBE();
       }
 
       if (abort_flag || finish_incremental_LSF(&lsf_results)) {

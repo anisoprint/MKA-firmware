@@ -233,13 +233,7 @@
 #endif
 
 /****************************************************************************************/
-#ifndef CONFIGURATION_OVERALL
-	#include "../Configuration_Pins.h"
-#else
-	#ifdef PRINTER_TYPE
-	    #include INCLUDE_BY_PRINTER_UP(PRINTER_TYPE, Configuration_Pins.h)
-	#endif
-#endif
+#include "../../Configuration_Pins.h"
 /****************************************************************************************/
 
 // Disabled MIN or MAX endstop if not used

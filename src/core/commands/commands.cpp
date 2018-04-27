@@ -1,5 +1,5 @@
 /**
- * MK4duo 3D Commands Firmware
+ * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
@@ -37,22 +37,13 @@ Commands commands;
 
 /**
  * GCode line number handling. Hosts may opt to include line numbers when
- * sending commands to Marlin, and lines will be checked for sequentiality.
+ * sending commands to MK4duo, and lines will be checked for sequentiality.
  * M110 N<int> sets the current line number.
  */
 long  Commands::gcode_N             = 0,
       Commands::gcode_LastN         = 0;
 
 bool Commands::send_ok[BUFSIZE];
-
-char Commands::buffer_ring[BUFSIZE][MAX_CMD_SIZE];
-
-// Inactivity shutdown
-millis_t Commands::previous_cmd_ms = 0;
-
-/**
- * Private Parameters
- */
 
 /**
  * GCode Command Buffer Ring
@@ -63,14 +54,18 @@ millis_t Commands::previous_cmd_ms = 0;
  * the main loop. The process_next function parses the next
  * command and hands off execution to individual handler functions.
  */
-uint8_t Commands::buffer_index_r = 0, // Read position in Buffer Ring
-        Commands::buffer_index_w = 0; // Write position in Buffer Ring
+uint8_t Commands::buffer_lenght   = 0,  // Number of commands in the Buffer Ring
+        Commands::buffer_index_r  = 0,  // Read position in Buffer Ring
+        Commands::buffer_index_w  = 0;  // Write position in Buffer Ring
 
-volatile uint8_t Commands::buffer_lenght = 0; // Number of commands in the Buffer Ring
+char Commands::buffer_ring[BUFSIZE][MAX_CMD_SIZE];
 
+/**
+ * Private Parameters
+ */
 int Commands::serial_count = 0;
 
-millis_t Commands::last_command_time = 0;
+watch_t Commands::last_command_watch(NO_TIMEOUTS);
 
 /**
  * Next Injected Command pointer. NULL if no commands are being injected.
@@ -92,7 +87,6 @@ void Commands::get_serial() {
 
   static char serial_line_buffer[MAX_CMD_SIZE];
   static bool serial_comment_mode = false;
-  millis_t time = millis();
 
   #if HAS_DOOR_OPEN
     if (READ(DOOR_OPEN_PIN) != endstops.isLogic(DOOR_OPEN_SENSOR)) {
@@ -110,10 +104,10 @@ void Commands::get_serial() {
   // If the command buffer is empty for too long,
   // send "wait" to indicate MK4duo is still waiting.
   #if NO_TIMEOUTS > 0
-    if (buffer_lenght == 0 && !MKSERIAL.available() && ELAPSED(time, last_command_time + NO_TIMEOUTS)) {
+    if (buffer_lenght == 0 && !MKSERIAL.available() && last_command_watch.elapsed()) {
       SERIAL_STR(WT);
       SERIAL_EOL();
-      last_command_time = time;
+      last_command_watch.start();
     }
   #endif
 
@@ -123,7 +117,8 @@ void Commands::get_serial() {
   while (buffer_lenght < BUFSIZE && HAL::serialByteAvailable()) {
     int c;
 
-    last_command_time = time;
+    last_command_watch.start();
+    printer.max_inactivity_watch.start();
 
     if ((c = MKSERIAL.read()) < 0) continue;
 
@@ -145,8 +140,8 @@ void Commands::get_serial() {
       char *command = serial_line_buffer;
 
       while (*command == ' ') command++;                // Skip leading spaces
-
       char *npos = (*command == 'N') ? command : NULL;  // Require the N parameter to start the line
+
       if (npos) {
 
         bool M110 = strstr_P(command, PSTR("M110")) != NULL;
@@ -179,6 +174,12 @@ void Commands::get_serial() {
 
         gcode_LastN = gcode_N;
       }
+      #if ENABLED(SDSUPPORT)
+        else if (card.saving) {
+          gcode_line_error(PSTR(MSG_ERR_NO_CHECKSUM));
+          return;
+        }
+      #endif
 
       // Movement commands alert when stopped
       if (!printer.isRunning()) {
@@ -250,7 +251,7 @@ void Commands::get_serial() {
 
     #if HAS_POWER_CHECK
       if (READ(POWER_CHECK_PIN) != endstops.isLogic(POWER_CHECK_SENSOR)) {
-        card.stopSDPrint();
+        printer.setAbortSDprinting(true);
         return;
       }
     #endif
@@ -270,7 +271,8 @@ void Commands::get_serial() {
       const int16_t n = card.get();
       char sd_char = (char)n;
       card_eof = card.eof();
-      last_command_time = millis();
+      last_command_watch.start();
+      printer.max_inactivity_watch.start();
       if (card_eof || n == -1
           || sd_char == '\n'  || sd_char == '\r'
           || ((sd_char == '#' || sd_char == ':') && !sd_comment_mode)
@@ -349,7 +351,6 @@ void Commands::flush_and_request_resend() {
  *   B<int>  Block queue space remaining
  */
 void Commands::ok_to_send() {
-  refresh_cmd_timeout();
   if (!send_ok[buffer_index_r]) return;
   SERIAL_STR(OK);
   #if ENABLED(ADVANCED_OK)
@@ -380,6 +381,10 @@ void Commands::get_available() {
   if (drain_injected_P()) return;
 
   get_serial();
+
+  #if HAS_SD_RESTART
+    if (restart.job_phase == RESTART_YES && enqueue_restart()) return;
+  #endif
 
   #if HAS_SDSUPPORT
     get_sdcard();
@@ -417,8 +422,12 @@ void Commands::advance_queue() {
         ok_to_send();
       }
     }
-    else
+    else {
       process_next();
+      #if HAS_SD_RESTART
+        if (card.cardOK && IS_SD_PRINTING) restart.save_data();
+      #endif
+    }
 
   #else // !HAS_SDSUPPORT
 
@@ -434,19 +443,6 @@ void Commands::advance_queue() {
 }
 
 /**
- * Enqueue with Serial Echo
- */
-bool Commands::enqueue_and_echo(const char* cmd, bool say_ok/*=false*/) {
-  if (enqueue(cmd, say_ok)) {
-    SERIAL_SMT(ECHO, MSG_ENQUEUEING, cmd);
-    SERIAL_CHR('"');
-    SERIAL_EOL();
-    return true;
-  }
-  return false;
-}
-
-/**
  * Record one or many commands to run from program memory.
  * Aborts the current queue, if any.
  * Note: drain_injected_P() must be called repeatedly to drain the commands afterwards
@@ -459,15 +455,15 @@ void Commands::enqueue_and_echo_P(const char * const pgcode) {
 /**
  * Enqueue and return only when commands are actually enqueued
  */
-void Commands::enqueue_and_echo_now(const char* cmd, bool say_ok/*=false*/) {
-  while (!enqueue_and_echo(cmd, say_ok)) printer.idle();
+void Commands::enqueue_and_echo_now(const char* cmd) {
+  while (!enqueue_and_echo(cmd)) printer.idle();
 }
 
 /**
  * Enqueue from program memory and return only when commands are actually enqueued
  */
-void Commands::enqueue_and_echo_P_now(const char * const pgcode) {
-  enqueue_and_echo_P(pgcode);
+void Commands::enqueue_and_echo_now_P(const char * const cmd) {
+  enqueue_and_echo_P(cmd);
   while (drain_injected_P()) printer.idle();
 }
 
@@ -481,15 +477,6 @@ void Commands::clear_queue() {
 }
 
 /**
- * Once a new command is in the ring buffer, call this to commit it
- */
-void Commands::commit(bool say_ok) {
-  send_ok[buffer_index_w] = say_ok;
-  if (++buffer_index_w >= BUFSIZE) buffer_index_w = 0;
-  buffer_lenght++;
-}
-
-/**
  * Copy a command from RAM into the main command buffer.
  * Return true if the command was successfully added.
  * Return false for a full buffer, or if the 'command' is a comment.
@@ -499,24 +486,6 @@ bool Commands::enqueue(const char* cmd, bool say_ok/*=false*/) {
   strcpy(buffer_ring[buffer_index_w], cmd);
   commit(say_ok);
   return true;
-}
-
-/**
- * Inject the next "immediate" command, when possible, onto the front of the buffer_ring.
- * Return true if any immediate commands remain to inject.
- */
-bool Commands::drain_injected_P() {
-  if (injected_commands_P != NULL) {
-    size_t i = 0;
-    char c, cmd[30];
-    strncpy_P(cmd, injected_commands_P, sizeof(cmd) - 1);
-    cmd[sizeof(cmd) - 1] = '\0';
-    while ((c = cmd[i]) && c != '\n') i++; // find the end of this gcode command
-    cmd[i] = '\0';
-    if (enqueue_and_echo(cmd))     // success?
-      injected_commands_P = c ? injected_commands_P + i + 1 : NULL; // next command or done
-  }
-  return (injected_commands_P != NULL);    // return whether any more remain
 }
 
 /**
@@ -628,20 +597,6 @@ bool Commands::get_target_heater(int8_t &h) {
  * Private Function
  */
 
-void Commands::gcode_line_error(const char* err) {
-  SERIAL_STR(ER);
-  SERIAL_PS(err);
-  SERIAL_EV(gcode_LastN);
-  flush_and_request_resend();
-  serial_count = 0;
-}
-
-void Commands::unknown_error() {
-  SERIAL_SMV(ECHO, MSG_UNKNOWN_COMMAND, parser.command_ptr);
-  SERIAL_CHR('"');
-  SERIAL_EOL();
-}
-
 /* G0 and G1 are sent to the machine way more frequently than any other GCode.
  * We want to make sure that their use is optimized to its maximum.
  */
@@ -664,6 +619,8 @@ void Commands::process_next() {
   if (printer.debugEcho()) SERIAL_LT(ECHO, current_command);
 
   printer.keepalive(InHandler);
+
+  stepper.move_watch.start(); // Keep steppers powered
 
   // Parse the next command in the buffer_ring
   parser.parse(current_command);
@@ -740,3 +697,74 @@ void Commands::process_next() {
 
   ok_to_send();
 }
+
+/**
+ * Once a new command is in the ring buffer, call this to commit it
+ */
+void Commands::commit(bool say_ok) {
+  send_ok[buffer_index_w] = say_ok;
+  if (++buffer_index_w >= BUFSIZE) buffer_index_w = 0;
+  buffer_lenght++;
+}
+
+void Commands::unknown_error() {
+  SERIAL_SMV(ECHO, MSG_UNKNOWN_COMMAND, parser.command_ptr);
+  SERIAL_CHR('"');
+  SERIAL_EOL();
+}
+
+void Commands::gcode_line_error(const char* err) {
+  SERIAL_STR(ER);
+  SERIAL_PS(err);
+  SERIAL_EV(gcode_LastN);
+  flush_and_request_resend();
+  serial_count = 0;
+}
+
+/**
+ * Enqueue with Serial Echo
+ */
+bool Commands::enqueue_and_echo(const char* cmd) {
+  if (enqueue(cmd)) {
+    SERIAL_SMT(ECHO, MSG_ENQUEUEING, cmd);
+    SERIAL_CHR('"');
+    SERIAL_EOL();
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Inject the next "immediate" command, when possible, onto the front of the buffer_ring.
+ * Return true if any immediate commands remain to inject.
+ */
+bool Commands::drain_injected_P() {
+  if (injected_commands_P != NULL) {
+    size_t i = 0;
+    char c, cmd[30];
+    strncpy_P(cmd, injected_commands_P, sizeof(cmd) - 1);
+    cmd[sizeof(cmd) - 1] = '\0';
+    while ((c = cmd[i]) && c != '\n') i++; // find the end of this gcode command
+    cmd[i] = '\0';
+    if (enqueue_and_echo(cmd))     // success?
+      injected_commands_P = c ? injected_commands_P + i + 1 : NULL; // next command or done
+  }
+  return (injected_commands_P != NULL);    // return whether any more remain
+}
+
+#if HAS_SD_RESTART
+
+  bool Commands::enqueue_restart() {
+    static uint8_t index = 0;
+    if (restart.count > 0) {
+      if (enqueue(restart.buffer_ring[index])) {
+        index++;
+        restart.count--;
+      }
+      return true;
+    }
+    else
+      return false;
+  }
+
+#endif

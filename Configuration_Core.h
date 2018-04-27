@@ -45,7 +45,8 @@
  * - Manual home positions
  * - Axis steps per unit
  * - Axis feedrate
- * - Axis accelleration
+ * - Axis acceleration
+ * - Axis jerk
  * - Homing feedrate
  * - Hotend offset
  *
@@ -68,7 +69,7 @@
  * Displayed in the LCD "Ready" message.                                                 *
  *                                                                                       *
  *****************************************************************************************/
-#define CUSTOM_MACHINE_NAME "Composer A4 alpha"
+#define CUSTOM_MACHINE_NAME "Core"
 /*****************************************************************************************/
 
 
@@ -101,15 +102,15 @@
  * Put true for enable or put false for disable the endstop pullup resistors             *
  *                                                                                       *
  *****************************************************************************************/
-#define ENDSTOPPULLUP_XMIN    true
-#define ENDSTOPPULLUP_YMIN    true
-#define ENDSTOPPULLUP_ZMIN    true
-#define ENDSTOPPULLUP_XMAX    true
-#define ENDSTOPPULLUP_YMAX    true
-#define ENDSTOPPULLUP_ZMAX    true
-#define ENDSTOPPULLUP_Z2MIN   true
-#define ENDSTOPPULLUP_Z2MAX   true
-#define ENDSTOPPULLUP_ZPROBE  true
+#define ENDSTOPPULLUP_XMIN    false
+#define ENDSTOPPULLUP_YMIN    false
+#define ENDSTOPPULLUP_ZMIN    false
+#define ENDSTOPPULLUP_XMAX    false
+#define ENDSTOPPULLUP_YMAX    false
+#define ENDSTOPPULLUP_ZMAX    false
+#define ENDSTOPPULLUP_Z2MIN   false
+#define ENDSTOPPULLUP_Z2MAX   false
+#define ENDSTOPPULLUP_ZPROBE  false
 /*****************************************************************************************/
 
 
@@ -262,7 +263,7 @@
  *****************************************************************************************/
 #define X_HOME_DIR -1
 #define Y_HOME_DIR -1
-#define Z_HOME_DIR  1
+#define Z_HOME_DIR -1
 /*****************************************************************************************/
 
 
@@ -274,7 +275,7 @@
  * Be sure you have this distance over your Z MAX POS in case.                           *
  *                                                                                       *
  *****************************************************************************************/
-#define MIN_Z_HEIGHT_FOR_HOMING 5
+#define MIN_Z_HEIGHT_FOR_HOMING 0
 /*****************************************************************************************/
 
 
@@ -352,11 +353,11 @@
  * Travel limits after homing (units are in mm)                                          *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MAX_POS 297
+#define X_MAX_POS 200
 #define X_MIN_POS 0
-#define Y_MAX_POS 210
+#define Y_MAX_POS 200
 #define Y_MIN_POS 0
-#define Z_MAX_POS 146.15
+#define Z_MAX_POS 200
 #define Z_MIN_POS 0
 #define E_MIN_POS 0
 /*****************************************************************************************/
@@ -365,7 +366,7 @@
 /*****************************************************************************************
  ********************************** Axis relative mode ***********************************
  *****************************************************************************************/
-#define AXIS_RELATIVE_MODES {false, false, false, false, false, false}
+#define AXIS_RELATIVE_MODES {false, false, false, false}
 /*****************************************************************************************/
 
 
@@ -574,7 +575,7 @@
  *                                                                                       *
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100.0, 100.0, 6400, 200, 103, 200, 625}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 80, 3200, 625, 625, 625, 625}
 /*****************************************************************************************/
 
 
@@ -582,9 +583,9 @@
  ********************************** Axis feedrate ****************************************
  *****************************************************************************************/
 //                                       X,   Y, Z,  E0...(per extruder). (mm/sec)
-#define DEFAULT_MAX_FEEDRATE          {200, 200, 7, 100, 100, 100, 100}
+#define DEFAULT_MAX_FEEDRATE          {300, 300, 2, 100, 100, 100, 100}
 // Feedrates for manual moves along        X,     Y,     Z,  E from panel
-#define MANUAL_FEEDRATE               {50*60, 50*60, 6*60, 10*60}
+#define MANUAL_FEEDRATE               {50*60, 50*60, 4*60, 10*60}
 // Minimum feedrate
 #define DEFAULT_MINIMUMFEEDRATE       0.0
 #define DEFAULT_MINTRAVELFEEDRATE     0.0
@@ -596,16 +597,16 @@
 
 
 /*****************************************************************************************
- ******************************** Axis accelleration *************************************
+ ******************************** Axis acceleration **************************************
  *****************************************************************************************/
 //  Maximum start speed for accelerated moves.    X,    Y,  Z,   E0...(per extruder)
-#define DEFAULT_MAX_ACCELERATION              {1500, 1500, 40, 1000, 1000, 1000, 1000}
+#define DEFAULT_MAX_ACCELERATION              {3000, 3000, 50, 1000, 1000, 1000, 1000}
 //  Maximum acceleration in mm/s^2 for retracts   E0... (per extruder)
 #define DEFAULT_RETRACT_ACCELERATION          {10000, 10000, 10000, 10000}
 //  X, Y, Z and E* maximum acceleration in mm/s^2 for printing moves
-#define DEFAULT_ACCELERATION          1500
+#define DEFAULT_ACCELERATION          3000
 //  X, Y, Z acceleration in mm/s^2 for travel (non printing) moves
-#define DEFAULT_TRAVEL_ACCELERATION   1500
+#define DEFAULT_TRAVEL_ACCELERATION   3000
 /*****************************************************************************************/
 
 
@@ -621,9 +622,9 @@
  * value set here, it may happen instantaneously.                                        *
  *                                                                                       *
  *****************************************************************************************/
-#define DEFAULT_XJERK  0.0
-#define DEFAULT_YJERK  0.0
-#define DEFAULT_ZJERK  0.3
+#define DEFAULT_XJERK 10.0
+#define DEFAULT_YJERK 10.0
+#define DEFAULT_ZJERK  0.4
 // E0... (mm/sec) per extruder
 #define DEFAULT_EJERK                   {5.0, 5.0, 5.0, 5.0}
 /*****************************************************************************************/
@@ -635,7 +636,7 @@
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_X (50*60)
 #define HOMING_FEEDRATE_Y (50*60)
-#define HOMING_FEEDRATE_Z (7*60)
+#define HOMING_FEEDRATE_Z (2*60)
 
 // Homing hits each endstop, retracts by these distances, then does a slower bump.
 #define X_HOME_BUMP_MM 5
@@ -643,7 +644,7 @@
 #define Z_HOME_BUMP_MM 2
 
 // Re-Bump Speed Divisor (Divides the Homing Feedrate)
-#define HOMING_BUMP_DIVISOR {5, 5, 4}
+#define HOMING_BUMP_DIVISOR {5, 5, 2}
 /*****************************************************************************************/
 
 

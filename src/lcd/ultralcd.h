@@ -23,7 +23,7 @@
 #ifndef ULTRALCD_H
 #define ULTRALCD_H
 
-#if ENABLED(ULTRA_LCD) || ENABLED(MALYAN_LCD)
+#if ENABLED(ULTRA_LCD)
   void lcd_init();
   bool lcd_detected();
 #endif
@@ -56,8 +56,6 @@
     constexpr bool lcd_wait_for_move = false;
   #endif
 
-  int16_t lcd_strlen(const char* s);
-  int16_t lcd_strlen_P(const char* s);
   void lcd_update();
   bool lcd_hasstatus();
   void lcd_setstatus(const char* message, const bool persist=false);

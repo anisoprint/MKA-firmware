@@ -73,7 +73,7 @@
  *   6 is 100k 0603 SMD Vishay NTCS0603E3104FXT (4.7k pullup)                                        *
  *   7 is 100k GE Sensing AL03006-58.2K-97-G1 (4.7k pullup)                                          *
  *   8 is 100k RS thermistor 198-961 (4.7k pullup)                                                   *
- *   9 User configuration                                                                            *
+ *   9 User Sensor                                                                                   *
  *  11 DHT probe sensor DHT11, DHT21 or DHT22 (ENABLE DHT SENSOR below)                              *
  *  20 is the PT100 circuit amplifier found in Ultimainboard V2.x and Wanhao D6                      *
  *                                                                                                   *
@@ -82,16 +82,21 @@
  * 999 : Dummy Table that ALWAYS reads 100 degC or the temperature defined below.                    *
  *                                                                                                   *
  *****************************************************************************************************/
-#define TEMP_SENSOR_0 -1
+#define TEMP_SENSOR_0 1
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
-#define TEMP_SENSOR_BED 1
+#define TEMP_SENSOR_BED 0
 #define TEMP_SENSOR_CHAMBER 0
 #define TEMP_SENSOR_COOLER 0
 
 // Thermistor series resistor value in Ohms (see on your board)
 #define THERMISTOR_SERIES_RS 4700.0
+
+// User Sensor
+#define T9_NAME   "User Sensor"
+#define T9_R25    100000.0  // Resistance in Ohms @ 25°C
+#define T9_BETA     4036.0  // Beta Value (K)
 
 // Enable this for support DHT sensor for temperature e Humidity DHT11, DHT21 or DHT22.
 //#define DHT_SENSOR
@@ -207,16 +212,6 @@
 
 
 /***********************************************************************
- ************************* Parallel heaters ****************************
- ***********************************************************************
- *                                                                     *
- * Control heater 0 and heater 1 in parallel.                          *
- *                                                                     *
- ***********************************************************************/
-#define HEATERS_PARALLEL //TODOAP
-/***********************************************************************/
-
-/***********************************************************************
  ********************** PID Settings - HOTEND **************************
  ***********************************************************************
  *                                                                     *
@@ -226,12 +221,12 @@
 // Put to false following line to disable PID and enable bang-bang.
 #define PIDTEMP true
 
-#define PID_MAX       255   // Limits current to nozzle while in PID mode;        255 = full current
-#define PID_DRIVE_MIN  40   // Limits min current to nozzle while PID is active;    0 = no current
-#define PID_DRIVE_MAX 230   // Limits max current to nozzle while PID is active;  255 = full current
+#define PID_MAX       255 // Limits current to nozzle while in PID mode;        255 = full current
+#define PID_DRIVE_MIN  40 // Limits min current to nozzle while PID is active;    0 = no current
+#define PID_DRIVE_MAX 230 // Limits max current to nozzle while PID is active;  255 = full current
 
-//#define PID_AUTOTUNE_MENU // Add PID Autotune to the LCD "Temperature" menu to run M303 and apply the result.
-//#define PID_DEBUG         // Sends debug data to the serial port.
+#define PID_AUTOTUNE_MENU // Add PID Autotune to the LCD "Temperature" menu to run M303 and apply the result.
+//#define PID_DEBUG       // Sends debug data to the serial port.
 
 // If the temperature difference between the target temperature and the actual temperature
 // is more then PID FUNCTIONAL RANGE then the PID will be shut off and the heater will be set to min/max.
@@ -267,7 +262,7 @@
 // If this is enabled, find your own PID constants below.
 #define PIDTEMPBED false
 
-#define BED_HYSTERESIS        2 // Only disable heating if T>target+BED_HYSTERESIS and enable heating if T>target-BED_HYSTERESIS (works only if BED_LIMIT_SWITCHING is enabled)
+#define BED_HYSTERESIS        2 // Only disable heating if T>target+BED_HYSTERESIS and enable heating if T<target-BED_HYSTERESIS
 #define BED_CHECK_INTERVAL 5000 // ms between checks in bang-bang control
 
 // This sets the max power delivered to the bed.
@@ -304,8 +299,8 @@
 // If this is enabled, find your own PID constants below.
 #define PIDTEMPCHAMBER false
 
-#define CHAMBER_HYSTERESIS 2 //only disable heating if T>target+CHAMBER_HYSTERESIS and enable heating if T>target-CHAMBER_HYSTERESIS (works only if CHAMBER_LIMIT_SWITCHING is enabled)
-#define CHAMBER_CHECK_INTERVAL 5000 //ms between checks in bang-bang control
+#define CHAMBER_HYSTERESIS        2 // only disable heating if T>target+CHAMBER_HYSTERESIS and enable heating if T<target-CHAMBER_HYSTERESIS
+#define CHAMBER_CHECK_INTERVAL 5000 // ms between checks in bang-bang control
 
 // This sets the max power delivered to the chamber.
 // all forms of chamber control obey this (PID, bang-bang, bang-bang with hysteresis)
@@ -345,8 +340,8 @@
 // Enable fast PWM for cooler
 //#define FAST_PWM_COOLER
 
-#define COOLER_HYSTERESIS 2 //only disable heating if T<target-COOLER_HYSTERESIS and enable heating if T<target+COOLER_HYSTERESIS (works only if COOLER_LIMIT_SWITCHING is enabled)
-#define COOLER_CHECK_INTERVAL 5000 //ms between checks in bang-bang control
+#define COOLER_HYSTERESIS        2 // only disable heating if T<target-COOLER_HYSTERESIS and enable heating if T>target+COOLER_HYSTERESIS
+#define COOLER_CHECK_INTERVAL 5000 // ms between checks in bang-bang control
 
 // This sets the max power delivered to the cooler.
 // all forms of cooler control obey this (PID, bang-bang, bang-bang with hysteresis)
@@ -387,7 +382,7 @@
  * falls out or temperature sensors fail in any way.                              *
  *                                                                                *
  * The issue: If a thermistor falls out or a temperature sensor fails,            *
- * Marlin can no longer sense the actual temperature. Since a                     *
+ * MK4duo can no longer sense the actual temperature. Since a                     *
  * disconnected thermistor reads as a low temperature, the firmware               *
  * will keep the heater/cooler on.                                                *
  *                                                                                *

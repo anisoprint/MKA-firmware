@@ -289,8 +289,8 @@ void EEPROM::Postprocess() {
 
 #if HAS_EEPROM
 
-  #define EEPROM_READ_START()   int eeprom_index = EEPROM_OFFSET; eeprom_error = access_start(true)
-  #define EEPROM_WRITE_START()  int eeprom_index = EEPROM_OFFSET; eeprom_error = access_start(false)
+  #define EEPROM_READ_START()   int eeprom_index = EEPROM_OFFSET; eeprom_error = access_start(O_READ)
+  #define EEPROM_WRITE_START()  int eeprom_index = EEPROM_OFFSET; eeprom_error = access_start(O_CREAT | O_WRITE | O_TRUNC | O_SYNC)
   #define EEPROM_FINISH()       access_finish()
   #define EEPROM_SKIP(VAR)      eeprom_index += sizeof(VAR)
   #define EEPROM_WRITE(VAR)     eeprom_error = write_data(eeprom_index, (uint8_t*)&VAR, sizeof(VAR), &working_crc)
@@ -504,7 +504,7 @@ void EEPROM::Postprocess() {
       EEPROM_WRITE(volumetric_enabled);
 
       // Save filament sizes
-      for (uint8_t e = 0; e < DRIVER_EXTRUDERS; e++)
+      for (uint8_t e = 0; e < EXTRUDERS; e++)
         EEPROM_WRITE(tools.filament_size[e]);
 
     #endif
@@ -589,67 +589,73 @@ void EEPROM::Postprocess() {
       //
       // Save TMC2130 or TMC2208 Hybrid Threshold, and placeholder values
       //
-      uint16_t tmc_hybrid_threshold[TMC_AXES] = {
-        #if X_IS_TRINAMIC
-          TMC_GET_PWMTHRS(X, X),
-        #else
-          X_HYBRID_THRESHOLD,
-        #endif
-        #if Y_IS_TRINAMIC
-          TMC_GET_PWMTHRS(Y, Y),
-        #else
-          Y_HYBRID_THRESHOLD,
-        #endif
-        #if Z_IS_TRINAMIC
-          TMC_GET_PWMTHRS(Z, Z),
-        #else
-          Z_HYBRID_THRESHOLD,
-        #endif
-        #if X2_IS_TRINAMIC
-          TMC_GET_PWMTHRS(X, X2),
-        #else
-          X2_HYBRID_THRESHOLD,
-        #endif
-        #if Y2_IS_TRINAMIC
-          TMC_GET_PWMTHRS(Y, Y2),
-        #else
-          Y2_HYBRID_THRESHOLD,
-        #endif
-        #if Z2_IS_TRINAMIC
-          TMC_GET_PWMTHRS(Z, Z2),
-        #else
-          Z2_HYBRID_THRESHOLD,
-        #endif
-        #if E0_IS_TRINAMIC
-          TMC_GET_PWMTHRS(E, E0),
-        #else
-          E0_HYBRID_THRESHOLD,
-        #endif
-        #if E1_IS_TRINAMIC
-          TMC_GET_PWMTHRS(E, E1),
-        #else
-          E1_HYBRID_THRESHOLD,
-        #endif
-        #if E2_IS_TRINAMIC
-          TMC_GET_PWMTHRS(E, E2),
-        #else
-          E2_HYBRID_THRESHOLD,
-        #endif
-        #if E3_IS_TRINAMIC
-          TMC_GET_PWMTHRS(E, E3),
-        #else
-          E3_HYBRID_THRESHOLD,
-        #endif
-        #if E4_IS_TRINAMIC
-          TMC_GET_PWMTHRS(E, E4),
-        #else
-          E4_HYBRID_THRESHOLD,
-        #endif
-        #if E5_IS_TRINAMIC
-          TMC_GET_PWMTHRS(E, E5)
-        #else
-          E5_HYBRID_THRESHOLD
-        #endif
+      uint32_t tmc_hybrid_threshold[TMC_AXES] = {
+        #if ENABLED(HYBRID_THRESHOLD)
+          #if X_IS_TRINAMIC
+            TMC_GET_PWMTHRS(X, X),
+          #else
+            X_HYBRID_THRESHOLD,
+          #endif
+          #if Y_IS_TRINAMIC
+            TMC_GET_PWMTHRS(Y, Y),
+          #else
+            Y_HYBRID_THRESHOLD,
+          #endif
+          #if Z_IS_TRINAMIC
+            TMC_GET_PWMTHRS(Z, Z),
+          #else
+            Z_HYBRID_THRESHOLD,
+          #endif
+          #if X2_IS_TRINAMIC
+            TMC_GET_PWMTHRS(X, X2),
+          #else
+            X2_HYBRID_THRESHOLD,
+          #endif
+          #if Y2_IS_TRINAMIC
+            TMC_GET_PWMTHRS(Y, Y2),
+          #else
+            Y2_HYBRID_THRESHOLD,
+          #endif
+          #if Z2_IS_TRINAMIC
+            TMC_GET_PWMTHRS(Z, Z2),
+          #else
+            Z2_HYBRID_THRESHOLD,
+          #endif
+          #if E0_IS_TRINAMIC
+            TMC_GET_PWMTHRS(E, E0),
+          #else
+            E0_HYBRID_THRESHOLD,
+          #endif
+          #if E1_IS_TRINAMIC
+            TMC_GET_PWMTHRS(E, E1),
+          #else
+            E1_HYBRID_THRESHOLD,
+          #endif
+          #if E2_IS_TRINAMIC
+            TMC_GET_PWMTHRS(E, E2),
+          #else
+            E2_HYBRID_THRESHOLD,
+          #endif
+          #if E3_IS_TRINAMIC
+            TMC_GET_PWMTHRS(E, E3),
+          #else
+            E3_HYBRID_THRESHOLD,
+          #endif
+          #if E4_IS_TRINAMIC
+            TMC_GET_PWMTHRS(E, E4),
+          #else
+            E4_HYBRID_THRESHOLD,
+          #endif
+          #if E5_IS_TRINAMIC
+            TMC_GET_PWMTHRS(E, E5)
+          #else
+            E5_HYBRID_THRESHOLD
+          #endif
+        #else // !HYBRID_THRESHOLD
+          100, 100, 3,            // X, Y, Z
+          100, 100, 3,            // X2, Y2, Z2
+          30, 30, 30, 30, 30, 30  // E0, E1, E2, E3, E4, E5
+        #endif // |HYBRID_THRESHOLD
       };
       EEPROM_WRITE(tmc_hybrid_threshold);
 
@@ -954,7 +960,7 @@ void EEPROM::Postprocess() {
         EEPROM_READ(volumetric_enabled);
         printer.setVolumetric(volumetric_enabled);
 
-        for (uint8_t e = 0; e < DRIVER_EXTRUDERS; e++)
+        for (uint8_t e = 0; e < EXTRUDERS; e++)
           EEPROM_READ(tools.filament_size[e]);
 
       #endif
@@ -1013,49 +1019,52 @@ void EEPROM::Postprocess() {
         #endif
 
         #define TMC_SET_PWMTHRS(P,Q) tmc_set_pwmthrs(stepper##Q, TMC_##Q, tmc_hybrid_threshold[TMC_##Q], mechanics.axis_steps_per_mm[P##_AXIS])
-        uint16_t tmc_hybrid_threshold[TMC_AXES];
+        uint32_t tmc_hybrid_threshold[TMC_AXES];
         EEPROM_READ(tmc_hybrid_threshold);
-        #if X_IS_TRINAMIC
-          TMC_SET_PWMTHRS(X, X);
-        #endif
-        #if Y_IS_TRINAMIC
-          TMC_SET_PWMTHRS(Y, Y);
-        #endif
-        #if Z_IS_TRINAMIC
-          TMC_SET_PWMTHRS(Z, Z);
-        #endif
-        #if X2_IS_TRINAMIC
-          TMC_SET_PWMTHRS(X, X2);
-        #endif
-        #if Y2_IS_TRINAMIC
-          TMC_SET_PWMTHRS(Y, Y2);
-        #endif
-        #if Z2_IS_TRINAMIC
-          TMC_SET_PWMTHRS(Z, Z2);
-        #endif
-        #if E0_IS_TRINAMIC
-          TMC_SET_PWMTHRS(E, E0);
-        #endif
-        #if E1_IS_TRINAMIC
-          TMC_SET_PWMTHRS(E, E1);
-        #endif
-        #if E2_IS_TRINAMIC
-          TMC_SET_PWMTHRS(E, E2);
-        #endif
-        #if E3_IS_TRINAMIC
-          TMC_SET_PWMTHRS(E, E3);
-        #endif
-        #if E4_IS_TRINAMIC
-          TMC_SET_PWMTHRS(E, E4);
-        #endif
-        #if E4_IS_TRINAMIC
-          TMC_SET_PWMTHRS(E, E5);
+        #if ENABLED(HYBRID_THRESHOLD)
+          #if X_IS_TRINAMIC
+            TMC_SET_PWMTHRS(X, X);
+          #endif
+          #if Y_IS_TRINAMIC
+            TMC_SET_PWMTHRS(Y, Y);
+          #endif
+          #if Z_IS_TRINAMIC
+            TMC_SET_PWMTHRS(Z, Z);
+          #endif
+          #if X2_IS_TRINAMIC
+            TMC_SET_PWMTHRS(X, X2);
+          #endif
+          #if Y2_IS_TRINAMIC
+            TMC_SET_PWMTHRS(Y, Y2);
+          #endif
+          #if Z2_IS_TRINAMIC
+            TMC_SET_PWMTHRS(Z, Z2);
+          #endif
+          #if E0_IS_TRINAMIC
+            TMC_SET_PWMTHRS(E, E0);
+          #endif
+          #if E1_IS_TRINAMIC
+            TMC_SET_PWMTHRS(E, E1);
+          #endif
+          #if E2_IS_TRINAMIC
+            TMC_SET_PWMTHRS(E, E2);
+          #endif
+          #if E3_IS_TRINAMIC
+            TMC_SET_PWMTHRS(E, E3);
+          #endif
+          #if E4_IS_TRINAMIC
+            TMC_SET_PWMTHRS(E, E4);
+          #endif
+          #if E4_IS_TRINAMIC
+            TMC_SET_PWMTHRS(E, E5);
+          #endif
         #endif
 
         /*
          * TMC2130 Sensorless homing threshold.
          * X and X2 use the same value
          * Y and Y2 use the same value
+         * Z and Z2 use the same value
          */
         int16_t tmc_sgt[XYZ];
         EEPROM_READ(tmc_sgt);
@@ -1316,7 +1325,7 @@ void EEPROM::Factory_Settings() {
     mechanics.max_acceleration_mm_per_s2[i] = pgm_read_dword_near(&tmp3[i < COUNT(tmp3) ? i : COUNT(tmp3) - 1]);
   }
 
-  for (uint8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
+  for (uint8_t i = 0; i < EXTRUDERS; i++) {
     mechanics.retract_acceleration[i]       = pgm_read_dword_near(&tmp4[i < COUNT(tmp4) ? i : COUNT(tmp4) - 1]);
     mechanics.max_jerk[E_AXIS + i]          = pgm_read_float(&tmp5[i < COUNT(tmp5) ? i : COUNT(tmp5) - 1]);
   }
@@ -1779,6 +1788,8 @@ void EEPROM::Factory_Settings() {
   endstops.setPullup(DOOR_OPEN_SENSOR, PULLUP_DOOR_OPEN);
   endstops.setPullup(POWER_CHECK_SENSOR, PULLUP_POWER_CHECK);
 
+  watchdog.reset();
+
   Postprocess();
 
   SERIAL_LM(ECHO, "Hardcoded Default Settings Loaded");
@@ -1862,8 +1873,8 @@ void EEPROM::Factory_Settings() {
       SERIAL_MV(" T0 R", LINEAR_UNIT(mechanics.retract_acceleration[0]), 3);
     #endif
     SERIAL_EOL();
-    #if DRIVER_EXTRUDERS > 1
-      for (int8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
+    #if EXTRUDERS > 1
+      for (int8_t i = 0; i < EXTRUDERS; i++) {
         SERIAL_SMV(CFG, "  M204 T", i);
         SERIAL_EMV(" R", LINEAR_UNIT(mechanics.retract_acceleration[i]), 3);
       }
@@ -1880,8 +1891,8 @@ void EEPROM::Factory_Settings() {
       SERIAL_MV(" T0 E", LINEAR_UNIT(mechanics.max_jerk[E_AXIS]), 3);
     #endif
     SERIAL_EOL();
-    #if (DRIVER_EXTRUDERS > 1)
-      for(int8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
+    #if (EXTRUDERS > 1)
+      for(int8_t i = 0; i < EXTRUDERS; i++) {
         SERIAL_SMV(CFG, "  M205 T", i);
         SERIAL_EMV(" E" , LINEAR_UNIT(mechanics.max_jerk[E_AXIS + i]), 3);
       }
@@ -2179,7 +2190,7 @@ void EEPROM::Factory_Settings() {
       #if EXTRUDERS == 1
         SERIAL_LMV(CFG, "  M200 T0 D", tools.filament_size[0], 3);
       #elif EXTRUDERS > 1
-        for (uint8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
+        for (uint8_t i = 0; i < EXTRUDERS; i++) {
           SERIAL_SMV(CFG, "  M200 T", (int)i);
           SERIAL_EMV(" D", tools.filament_size[i], 3);
         }
@@ -2255,45 +2266,47 @@ void EEPROM::Factory_Settings() {
       /**
        * TMC2130 or TMC2208 Hybrid Threshold
        */
-      CONFIG_MSG_START("Hybrid Threshold:");
-      SERIAL_SM(CFG, "  M913");
-      #if X_IS_TRINAMIC
-        SERIAL_MV(" X", TMC_GET_PWMTHRS(X, X));
-      #endif
-      #if X2_IS_TRINAMIC
-        SERIAL_MV(" I1 X", TMC_GET_PWMTHRS(X, X2));
-      #endif
-      #if Y_IS_TRINAMIC
-        SERIAL_MV(" Y", TMC_GET_PWMTHRS(Y, Y));
-      #endif
-      #if Y2_IS_TRINAMIC
-        SERIAL_MV(" I1 Y", TMC_GET_PWMTHRS(Y, Y2));
-      #endif
-      #if Z_IS_TRINAMIC
-        SERIAL_MV(" Z", TMC_GET_PWMTHRS(Z, Z));
-      #endif
-      #if Z2_IS_TRINAMIC
-        SERIAL_MV(" I1 Z", TMC_GET_PWMTHRS(Z, Z2));
-      #endif
-      #if E0_IS_TRINAMIC
-        SERIAL_MV(" T0 E", TMC_GET_PWMTHRS(E, E0));
-      #endif
-      #if E1_IS_TRINAMIC
-        SERIAL_MV(" T1 E", TMC_GET_PWMTHRS(E, E1));
-      #endif
-      #if E2_IS_TRINAMIC
-        SERIAL_MV(" T2 E", TMC_GET_PWMTHRS(E, E2));
-      #endif
-      #if E3_IS_TRINAMIC
-        SERIAL_MV(" T3 E", TMC_GET_PWMTHRS(E, E3));
-      #endif
-      #if E4_IS_TRINAMIC
-        SERIAL_MV(" T4 E", TMC_GET_PWMTHRS(E, E4));
-      #endif
-      #if E5_IS_TRINAMIC
-        SERIAL_MV(" T5 E", TMC_GET_PWMTHRS(E, E5));
-      #endif
-      SERIAL_EOL();
+      #if ENABLED(HYBRID_THRESHOLD)
+        CONFIG_MSG_START("Hybrid Threshold:");
+        SERIAL_SM(CFG, "  M913");
+        #if X_IS_TRINAMIC
+          SERIAL_MV(" X", TMC_GET_PWMTHRS(X, X));
+        #endif
+        #if X2_IS_TRINAMIC
+          SERIAL_MV(" I1 X", TMC_GET_PWMTHRS(X, X2));
+        #endif
+        #if Y_IS_TRINAMIC
+          SERIAL_MV(" Y", TMC_GET_PWMTHRS(Y, Y));
+        #endif
+        #if Y2_IS_TRINAMIC
+          SERIAL_MV(" I1 Y", TMC_GET_PWMTHRS(Y, Y2));
+        #endif
+        #if Z_IS_TRINAMIC
+          SERIAL_MV(" Z", TMC_GET_PWMTHRS(Z, Z));
+        #endif
+        #if Z2_IS_TRINAMIC
+          SERIAL_MV(" I1 Z", TMC_GET_PWMTHRS(Z, Z2));
+        #endif
+        #if E0_IS_TRINAMIC
+          SERIAL_MV(" T0 E", TMC_GET_PWMTHRS(E, E0));
+        #endif
+        #if E1_IS_TRINAMIC
+          SERIAL_MV(" T1 E", TMC_GET_PWMTHRS(E, E1));
+        #endif
+        #if E2_IS_TRINAMIC
+          SERIAL_MV(" T2 E", TMC_GET_PWMTHRS(E, E2));
+        #endif
+        #if E3_IS_TRINAMIC
+          SERIAL_MV(" T3 E", TMC_GET_PWMTHRS(E, E3));
+        #endif
+        #if E4_IS_TRINAMIC
+          SERIAL_MV(" T4 E", TMC_GET_PWMTHRS(E, E4));
+        #endif
+        #if E5_IS_TRINAMIC
+          SERIAL_MV(" T5 E", TMC_GET_PWMTHRS(E, E5));
+        #endif
+        SERIAL_EOL();
+      #endif // HYBRID_THRESHOLD
 
       /**
        * TMC2130 Sensorless homing thresholds

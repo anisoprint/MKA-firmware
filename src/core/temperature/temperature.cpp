@@ -113,7 +113,7 @@ void Temperature::wait_heater(Heater *act, bool no_wait_for_cooling/*=true*/) {
     now = millis();
     printer.idle();
     printer.keepalive(WaitHeater);
-    commands.refresh_cmd_timeout(); // to prevent stepper.stepper_inactive_time from running out
+    stepper.move_watch.start(); // Keep steppers powered
 
     const float temp = act->current_temperature;
 
@@ -177,7 +177,7 @@ void Temperature::wait_heater(Heater *act, bool no_wait_for_cooling/*=true*/) {
   } while (printer.isWaitForHeatUp() && TEMP_CONDITIONS);
 
   if (printer.isWaitForHeatUp()) {
-    LCD_MESSAGEPGM(MSG_HEATING_COMPLETE);
+    lcd_setstatusPGM(no_wait_for_cooling ? PSTR(MSG_HEATING_COMPLETE) : PSTR(MSG_COOLING_COMPLETE));
     #if ENABLED(PRINTER_EVENT_LEDS)
       leds.set_white();
     #endif
@@ -274,7 +274,7 @@ void Temperature::spin() {
       const float nom_meas_ratio = 1.0 + 0.01 * measurement_delay[meas_shift_index],
                   ratio_2 = sq(nom_meas_ratio);
 
-      tools.volumetric_multiplier[FILAMENT_SENSOR_EXTRUDER_NUM] = tools.volumetric_enabled
+      tools.volumetric_multiplier[FILAMENT_SENSOR_EXTRUDER_NUM] = printer.isVolumetric()
         ? ratio_2 / CIRCLE_AREA(filament_width_nominal * 0.5) // Volumetric uses a true volumetric multiplier
         : ratio_2;                                            // Linear squares the ratio, which scales the volume
 
@@ -357,10 +357,6 @@ void Temperature::PID_autotune(Heater *act, const float temp, const uint8_t ncyc
     printer.keepalive(WaitHeater);
 
     act->updateCurrentTemperature();
-
-    #if FAN_COUNT > 0
-      LOOP_FAN() fans[f].spin();
-    #endif
 
     const millis_t time = millis();
     currentTemp = act->current_temperature;
@@ -547,6 +543,9 @@ void Temperature::PID_autotune(Heater *act, const float temp, const uint8_t ncyc
   disable_all_heaters();
 }
 
+/**
+ * Switch off all heaters, set all target temperatures to 0
+ */
 void Temperature::disable_all_heaters() {
 
   #if HAS_TEMP_HOTEND && ENABLED(AUTOTEMP)
@@ -578,6 +577,16 @@ void Temperature::disable_all_heaters() {
 
   pid_pointer = 255;
 
+}
+
+/**
+ * Check if there are heaters on
+ */
+bool Temperature::heaters_isON() {
+  #if HEATER_COUNT > 0
+    LOOP_HEATER() if (heaters[h].isON()) return true;
+  #endif
+  return false;
 }
 
 #if ENABLED(FILAMENT_SENSOR)
@@ -830,13 +839,4 @@ void Temperature::print_heater_state(Heater *act, const bool print_ID, const boo
     SERIAL_CHR(')');
   }
 
-}
-
-uint8_t Temperature::extruder_driver_to_hotend(uint8_t extruder_driver) {
-	const uint8_t hotends[] = DRIVER_EXTRUDERS_HOTENDS;
-	if (extruder_driver<DRIVER_EXTRUDERS)
-	{
-		return hotends[extruder_driver];
-	}
-	return 0;
 }

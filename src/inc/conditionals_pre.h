@@ -35,7 +35,7 @@
 #define LCD_HAS_DIRECTIONAL_BUTTONS (BUTTON_EXISTS(UP) || BUTTON_EXISTS(DWN) || BUTTON_EXISTS(LFT) || BUTTON_EXISTS(RT))
 
 #if ENABLED(NEXTION)
-  #define LCD_HEIGHT 4 //TODOAP NEX
+  #define LCD_HEIGHT 4
 #endif
 
 #if DISABLED(LCD_TIMEOUT_TO_STATUS)
@@ -442,7 +442,7 @@
   #define TOOL_E_INDEX      current_block->active_extruder
 #endif
 
-//#define TOOL_DE_INDEX       current_block->active_driver
+#define TOOL_DE_INDEX       current_block->active_driver
 
 #if ENABLED(SINGLENOZZLE)                 // One hotend, multi-extruder
   #undef HOTENDS
@@ -462,20 +462,16 @@
 /**
  * Multi-extruders support
  */
-
-#define NUM_AXIS  3 + DRIVER_EXTRUDERS
-#define XYZE      3 + DRIVER_EXTRUDERS
-#define ABCE      3 + DRIVER_EXTRUDERS
-#define XYZE_N    XYZE
-
 #if EXTRUDERS > 1
-//  #define E_AXIS_N  (E_AXIS + extruder)
-//  #define E_INDEX   (E_AXIS + tools.active_extruder)
+  #define XYZE_N    3 + EXTRUDERS
+  #define E_AXIS_N  (E_AXIS + extruder)
+  #define E_INDEX   (E_AXIS + tools.active_extruder)
   #define GET_TARGET_EXTRUDER(CMD) if (commands.get_target_tool(CMD)) return
   #define TARGET_EXTRUDER tools.target_extruder
 #elif EXTRUDERS == 1
-//  #define E_AXIS_N  E_AXIS
-//  #define E_INDEX   E_AXIS
+  #define XYZE_N    XYZE
+  #define E_AXIS_N  E_AXIS
+  #define E_INDEX   E_AXIS
   #define GET_TARGET_EXTRUDER(CMD) NOOP
   #define TARGET_EXTRUDER 0
 #elif EXTRUDERS == 0

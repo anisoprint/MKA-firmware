@@ -44,14 +44,14 @@
                       target_extruder,
                       active_driver;
 
-      static int16_t  flow_percentage[DRIVER_EXTRUDERS],       // Extrusion factor for each extruder
-                      density_percentage[DRIVER_EXTRUDERS];    // Extrusion density factor for each extruder
-      static float    e_factor[DRIVER_EXTRUDERS];              // The flow percentage and volumetric multiplier combine to scale E movement
+      static int16_t  flow_percentage[EXTRUDERS],       // Extrusion factor for each extruder
+                      density_percentage[EXTRUDERS];    // Extrusion density factor for each extruder
+      static float    e_factor[EXTRUDERS];              // The flow percentage and volumetric multiplier combine to scale E movement
 
       #if ENABLED(VOLUMETRIC_EXTRUSION)
-        static float  filament_size[DRIVER_EXTRUDERS],         // Diameter of filament (in millimeters), typically around 1.75 or 2.85, 0 disables the volumetric calculations for the tools.
+        static float  filament_size[EXTRUDERS],         // Diameter of filament (in millimeters), typically around 1.75 or 2.85, 0 disables the volumetric calculations for the tools.
                       volumetric_area_nominal,          // Nominal cross-sectional area
-                      volumetric_multiplier[DRIVER_EXTRUDERS]; // Reciprocal of cross-sectional area of filament (in mm^2). Pre-calculated to reduce computation in the planner
+                      volumetric_multiplier[EXTRUDERS]; // Reciprocal of cross-sectional area of filament (in mm^2). Pre-calculated to reduce computation in the planner
                                                         // May be auto-adjusted by a filament width sensor
       #endif
 
@@ -95,14 +95,6 @@
 
       #endif
 
-      #if HAS_MKMULTI_TOOLS
-        static void MK_multi_tool_change(const uint8_t e);
-      #endif
-
-      #if HAS_DONDOLO
-        static void move_extruder_servo(const uint8_t e);
-      #endif
-
       #if ENABLED(EXT_SOLENOID)
         static void enable_solenoid(const uint8_t e);
         static void enable_solenoid_on_active_extruder();
@@ -115,6 +107,22 @@
 
       #if ENABLED(VOLUMETRIC_EXTRUSION)
         static float calculate_volumetric_multiplier(const float diameter);
+      #endif
+
+      #if HAS_MKMULTI_TOOLS
+        static void MK_multi_tool_change(const uint8_t e);
+      #endif
+
+      #if HAS_DONDOLO
+        static void move_extruder_servo(const uint8_t e);
+      #endif
+
+      #if ENABLED(COLOR_MIXING_EXTRUDER) && MIXING_VIRTUAL_TOOLS > 1
+        static void mixing_tool_change(const uint8_t tmp_extruder);
+      #endif
+
+      #if ENABLED(DUAL_X_CARRIAGE)
+        static void dualx_tool_change(const uint8_t tmp_extruder, bool &no_move);
       #endif
 
   };

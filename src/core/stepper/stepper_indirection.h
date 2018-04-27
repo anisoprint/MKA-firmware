@@ -96,15 +96,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #define X_ENABLE_WRITE(STATE) WRITE(X_ENABLE_PIN,STATE)
     #define X_ENABLE_READ READ(X_ENABLE_PIN)
   #endif
-  #if ENABLED(HAVE_TMC2130) && ENABLED(X_IS_TMC2130)
-    #define X_DIR_INIT NOOP
-    #define X_DIR_WRITE(STATE) stepperX.shaft_dir(STATE)
-    #define X_DIR_READ stepperX.shaft_dir()
-  #else
-    #define X_DIR_INIT SET_OUTPUT(X_DIR_PIN)
-    #define X_DIR_WRITE(STATE) WRITE(X_DIR_PIN,STATE)
-    #define X_DIR_READ READ(X_DIR_PIN)
-  #endif
+  #define X_DIR_INIT SET_OUTPUT(X_DIR_PIN)
+  #define X_DIR_WRITE(STATE) WRITE(X_DIR_PIN,STATE)
+  #define X_DIR_READ READ(X_DIR_PIN)
 #endif
 #define X_STEP_INIT SET_OUTPUT(X_STEP_PIN)
 #define X_STEP_WRITE(STATE) WRITE(X_STEP_PIN,STATE)
@@ -135,15 +129,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #define Y_ENABLE_WRITE(STATE) WRITE(Y_ENABLE_PIN,STATE)
     #define Y_ENABLE_READ READ(Y_ENABLE_PIN)
   #endif
-  #if ENABLED(HAVE_TMC2130) && ENABLED(Y_IS_TMC2130)
-    #define Y_DIR_INIT NOOP
-    #define Y_DIR_WRITE(STATE) stepperY.shaft_dir(STATE)
-    #define Y_DIR_READ stepperY.shaft_dir()
-  #else
-    #define Y_DIR_INIT SET_OUTPUT(Y_DIR_PIN)
-    #define Y_DIR_WRITE(STATE) WRITE(Y_DIR_PIN,STATE)
-    #define Y_DIR_READ READ(Y_DIR_PIN)
-  #endif
+  #define Y_DIR_INIT SET_OUTPUT(Y_DIR_PIN)
+  #define Y_DIR_WRITE(STATE) WRITE(Y_DIR_PIN,STATE)
+  #define Y_DIR_READ READ(Y_DIR_PIN)
 #endif
 #define Y_STEP_INIT SET_OUTPUT(Y_STEP_PIN)
 #define Y_STEP_WRITE(STATE) WRITE(Y_STEP_PIN,STATE)
@@ -174,15 +162,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #define Z_ENABLE_WRITE(STATE) WRITE(Z_ENABLE_PIN,STATE)
     #define Z_ENABLE_READ READ(Z_ENABLE_PIN)
   #endif
-  #if ENABLED(HAVE_TMC2130) && ENABLED(Z_IS_TMC2130)
-    #define Z_DIR_INIT NOOP
-    #define Z_DIR_WRITE(STATE) stepperZ.shaft_dir(STATE)
-    #define Z_DIR_READ stepperZ.shaft_dir()
-  #else
-    #define Z_DIR_INIT SET_OUTPUT(Z_DIR_PIN)
-    #define Z_DIR_WRITE(STATE) WRITE(Z_DIR_PIN,STATE)
-    #define Z_DIR_READ READ(Z_DIR_PIN)
-  #endif
+  #define Z_DIR_INIT SET_OUTPUT(Z_DIR_PIN)
+  #define Z_DIR_WRITE(STATE) WRITE(Z_DIR_PIN,STATE)
+  #define Z_DIR_READ READ(Z_DIR_PIN)
 #endif
 #define Z_STEP_INIT SET_OUTPUT(Z_STEP_PIN)
 #define Z_STEP_WRITE(STATE) WRITE(Z_STEP_PIN,STATE)
@@ -214,15 +196,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
       #define X2_ENABLE_WRITE(STATE) WRITE(X2_ENABLE_PIN,STATE)
       #define X2_ENABLE_READ READ(X2_ENABLE_PIN)
     #endif
-    #if ENABLED(HAVE_TMC2130) && ENABLED(X2_IS_TMC2130)
-      #define X2_DIR_INIT NOOP
-      #define X2_DIR_WRITE(STATE) stepperX2.shaft_dir(STATE)
-      #define X2_DIR_READ stepperX2.shaft_dir()
-    #else
-      #define X2_DIR_INIT SET_OUTPUT(X2_DIR_PIN)
-      #define X2_DIR_WRITE(STATE) WRITE(X2_DIR_PIN,STATE)
-      #define X2_DIR_READ READ(X2_DIR_PIN)
-    #endif
+    #define X2_DIR_INIT SET_OUTPUT(X2_DIR_PIN)
+    #define X2_DIR_WRITE(STATE) WRITE(X2_DIR_PIN,STATE)
+    #define X2_DIR_READ READ(X2_DIR_PIN)
   #endif
   #define X2_STEP_INIT SET_OUTPUT(X2_STEP_PIN)
   #define X2_STEP_WRITE(STATE) WRITE(X2_STEP_PIN,STATE)
@@ -254,15 +230,6 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
       #define Y2_ENABLE_INIT SET_OUTPUT(Y2_ENABLE_PIN)
       #define Y2_ENABLE_WRITE(STATE) WRITE(Y2_ENABLE_PIN,STATE)
       #define Y2_ENABLE_READ READ(Y2_ENABLE_PIN)
-    #endif
-    #if ENABLED(HAVE_TMC2130) && ENABLED(Y2_IS_TMC2130)
-      #define Y2_DIR_INIT NOOP
-      #define Y2_DIR_WRITE(STATE) stepperY2.shaft_dir(STATE)
-      #define Y2_DIR_READ stepperY2.shaft_dir()
-    #else
-      #define Y2_DIR_INIT SET_OUTPUT(Y2_DIR_PIN)
-      #define Y2_DIR_WRITE(STATE) WRITE(Y2_DIR_PIN,STATE)
-      #define Y2_DIR_READ READ(Y2_DIR_PIN)
     #endif
     #define Y2_DIR_INIT SET_OUTPUT(Y2_DIR_PIN)
     #define Y2_DIR_WRITE(STATE) WRITE(Y2_DIR_PIN,STATE)
@@ -299,15 +266,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
       #define Z2_ENABLE_WRITE(STATE) WRITE(Z2_ENABLE_PIN,STATE)
       #define Z2_ENABLE_READ READ(Z2_ENABLE_PIN)
     #endif
-    #if ENABLED(HAVE_TMC2130) && ENABLED(Z2_IS_TMC2130)
-      #define Z2_DIR_INIT NOOP
-      #define Z2_DIR_WRITE(STATE) stepperZ2.shaft_dir(STATE)
-      #define Z2_DIR_READ stepperZ2.shaft_dir()
-    #else
-      #define Z2_DIR_INIT SET_OUTPUT(Z2_DIR_PIN)
-      #define Z2_DIR_WRITE(STATE) WRITE(Z2_DIR_PIN,STATE)
-      #define Z2_DIR_READ READ(Z2_DIR_PIN)
-    #endif
+    #define Z2_DIR_INIT SET_OUTPUT(Z2_DIR_PIN)
+    #define Z2_DIR_WRITE(STATE) WRITE(Z2_DIR_PIN,STATE)
+    #define Z2_DIR_READ READ(Z2_DIR_PIN)
   #endif
   #define Z2_STEP_INIT SET_OUTPUT(Z2_STEP_PIN)
   #define Z2_STEP_WRITE(STATE) WRITE(Z2_STEP_PIN,STATE)
@@ -335,15 +296,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
       #define Z3_ENABLE_WRITE(STATE) WRITE(Z3_ENABLE_PIN,STATE)
       #define Z3_ENABLE_READ READ(Z3_ENABLE_PIN)
     #endif
-    #if Z3_IS_TRINAMIC
-      #define Z3_DIR_INIT NOOP
-      #define Z3_DIR_WRITE(STATE) stepperZ3.shaft_dir(STATE)
-      #define Z3_DIR_READ stepperZ3.shaft_dir()
-    #else
-      #define Z3_DIR_INIT SET_OUTPUT(Z3_DIR_PIN)
-      #define Z3_DIR_WRITE(STATE) WRITE(Z3_DIR_PIN,STATE)
-      #define Z3_DIR_READ READ(Z3_DIR_PIN)
-    #endif
+    #define Z3_DIR_INIT SET_OUTPUT(Z3_DIR_PIN)
+    #define Z3_DIR_WRITE(STATE) WRITE(Z3_DIR_PIN,STATE)
+    #define Z3_DIR_READ READ(Z3_DIR_PIN)
   #endif
   #define Z3_STEP_INIT SET_OUTPUT(Z3_STEP_PIN)
   #define Z3_STEP_WRITE(STATE) WRITE(Z3_STEP_PIN,STATE)
@@ -371,15 +326,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
       #define Z4_ENABLE_WRITE(STATE) WRITE(Z4_ENABLE_PIN,STATE)
       #define Z4_ENABLE_READ READ(Z4_ENABLE_PIN)
     #endif
-    #if Z4_IS_TRINAMIC
-      #define Z4_DIR_INIT NOOP
-      #define Z4_DIR_WRITE(STATE) stepperZ4.shaft_dir(STATE)
-      #define Z4_DIR_READ stepperZ4.shaft_dir()
-    #else
-      #define Z4_DIR_INIT SET_OUTPUT(Z4_DIR_PIN)
-      #define Z4_DIR_WRITE(STATE) WRITE(Z4_DIR_PIN,STATE)
-      #define Z4_DIR_READ READ(Z4_DIR_PIN)
-    #endif
+    #define Z4_DIR_INIT SET_OUTPUT(Z4_DIR_PIN)
+    #define Z4_DIR_WRITE(STATE) WRITE(Z4_DIR_PIN,STATE)
+    #define Z4_DIR_READ READ(Z4_DIR_PIN)
   #endif
   #define Z4_STEP_INIT SET_OUTPUT(Z4_STEP_PIN)
   #define Z4_STEP_WRITE(STATE) WRITE(Z4_STEP_PIN,STATE)
@@ -410,15 +359,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #define E0_ENABLE_WRITE(STATE) WRITE(E0_ENABLE_PIN,STATE)
     #define E0_ENABLE_READ READ(E0_ENABLE_PIN)
   #endif
-  #if ENABLED(HAVE_TMC2130) && ENABLED(E0_IS_TMC2130)
-    #define E0_DIR_INIT NOOP
-    #define E0_DIR_WRITE(STATE) stepperE0.shaft_dir(STATE)
-    #define E0_DIR_READ stepperE0.shaft_dir()
-  #else
-    #define E0_DIR_INIT SET_OUTPUT(E0_DIR_PIN)
-    #define E0_DIR_WRITE(STATE) WRITE(E0_DIR_PIN,STATE)
-    #define E0_DIR_READ READ(E0_DIR_PIN)
-  #endif
+  #define E0_DIR_INIT SET_OUTPUT(E0_DIR_PIN)
+  #define E0_DIR_WRITE(STATE) WRITE(E0_DIR_PIN,STATE)
+  #define E0_DIR_READ READ(E0_DIR_PIN)
 #endif
 #if HAS_DAV_SYSTEM
   #define E0_STEP_INIT          SET_OUTPUT(E0_STEP_PIN); SET_OUTPUT(FIL_RUNOUT_DAV_PIN)
@@ -455,15 +398,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #define E1_ENABLE_WRITE(STATE) WRITE(E1_ENABLE_PIN,STATE)
     #define E1_ENABLE_READ READ(E1_ENABLE_PIN)
   #endif
-  #if ENABLED(HAVE_TMC2130) && ENABLED(E1_IS_TMC2130)
-    #define E1_DIR_INIT NOOP
-    #define E1_DIR_WRITE(STATE) stepperE1.shaft_dir(STATE)
-    #define E1_DIR_READ stepperE1.shaft_dir()
-  #else
-    #define E1_DIR_INIT SET_OUTPUT(E1_DIR_PIN)
-    #define E1_DIR_WRITE(STATE) WRITE(E1_DIR_PIN,STATE)
-    #define E1_DIR_READ READ(E1_DIR_PIN)
-  #endif
+  #define E1_DIR_INIT SET_OUTPUT(E1_DIR_PIN)
+  #define E1_DIR_WRITE(STATE) WRITE(E1_DIR_PIN,STATE)
+  #define E1_DIR_READ READ(E1_DIR_PIN)
 #endif
 #define E1_STEP_INIT SET_OUTPUT(E1_STEP_PIN)
 #define E1_STEP_WRITE(STATE) WRITE(E1_STEP_PIN,STATE)
@@ -494,15 +431,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #define E2_ENABLE_WRITE(STATE) WRITE(E2_ENABLE_PIN,STATE)
     #define E2_ENABLE_READ READ(E2_ENABLE_PIN)
   #endif
-  #if ENABLED(HAVE_TMC2130) && ENABLED(E2_IS_TMC2130)
-    #define E2_DIR_INIT NOOP
-    #define E2_DIR_WRITE(STATE) stepperE2.shaft_dir(STATE)
-    #define E2_DIR_READ stepperE2.shaft_dir()
-  #else
-    #define E2_DIR_INIT SET_OUTPUT(E2_DIR_PIN)
-    #define E2_DIR_WRITE(STATE) WRITE(E2_DIR_PIN,STATE)
-    #define E2_DIR_READ READ(E2_DIR_PIN)
-  #endif
+  #define E2_DIR_INIT SET_OUTPUT(E2_DIR_PIN)
+  #define E2_DIR_WRITE(STATE) WRITE(E2_DIR_PIN,STATE)
+  #define E2_DIR_READ READ(E2_DIR_PIN)
 #endif
 #define E2_STEP_INIT SET_OUTPUT(E2_STEP_PIN)
 #define E2_STEP_WRITE(STATE) WRITE(E2_STEP_PIN,STATE)
@@ -533,15 +464,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #define E3_ENABLE_WRITE(STATE) WRITE(E3_ENABLE_PIN,STATE)
     #define E3_ENABLE_READ READ(E3_ENABLE_PIN)
   #endif
-  #if ENABLED(HAVE_TMC2130) && ENABLED(E3_IS_TMC2130)
-    #define E3_DIR_INIT NOOP
-    #define E3_DIR_WRITE(STATE) stepperE3.shaft_dir(STATE)
-    #define E3_DIR_READ stepperE3.shaft_dir()
-  #else
-    #define E3_DIR_INIT SET_OUTPUT(E3_DIR_PIN)
-    #define E3_DIR_WRITE(STATE) WRITE(E3_DIR_PIN,STATE)
-    #define E3_DIR_READ READ(E3_DIR_PIN)
-  #endif
+  #define E3_DIR_INIT SET_OUTPUT(E3_DIR_PIN)
+  #define E3_DIR_WRITE(STATE) WRITE(E3_DIR_PIN,STATE)
+  #define E3_DIR_READ READ(E3_DIR_PIN)
 #endif
 #define E3_STEP_INIT SET_OUTPUT(E3_STEP_PIN)
 #define E3_STEP_WRITE(STATE) WRITE(E3_STEP_PIN,STATE)
@@ -572,15 +497,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #define E4_ENABLE_WRITE(STATE) WRITE(E4_ENABLE_PIN,STATE)
     #define E4_ENABLE_READ READ(E4_ENABLE_PIN)
   #endif
-  #if ENABLED(HAVE_TMC2130) && ENABLED(E4_IS_TMC2130)
-    #define E4_DIR_INIT NOOP
-    #define E4_DIR_WRITE(STATE) stepperE4.shaft_dir(STATE)
-    #define E4_DIR_READ stepperE4.shaft_dir()
-  #else
-    #define E4_DIR_INIT SET_OUTPUT(E4_DIR_PIN)
-    #define E4_DIR_WRITE(STATE) WRITE(E4_DIR_PIN,STATE)
-    #define E4_DIR_READ READ(E4_DIR_PIN)
-  #endif
+  #define E4_DIR_INIT SET_OUTPUT(E4_DIR_PIN)
+  #define E4_DIR_WRITE(STATE) WRITE(E4_DIR_PIN,STATE)
+  #define E4_DIR_READ READ(E4_DIR_PIN)
 #endif
 #define E4_STEP_INIT SET_OUTPUT(E4_STEP_PIN)
 #define E4_STEP_WRITE(STATE) WRITE(E4_STEP_PIN,STATE)
@@ -611,15 +530,9 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #define E5_ENABLE_WRITE(STATE) WRITE(E5_ENABLE_PIN,STATE)
     #define E5_ENABLE_READ READ(E5_ENABLE_PIN)
   #endif
-  #if ENABLED(HAVE_TMC2130) && ENABLED(E5_IS_TMC2130)
-    #define E5_DIR_INIT NOOP
-    #define E5_DIR_WRITE(STATE) stepperE5.shaft_dir(STATE)
-    #define E5_DIR_READ stepperE5.shaft_dir()
-  #else
-    #define E5_DIR_INIT SET_OUTPUT(E5_DIR_PIN)
-    #define E5_DIR_WRITE(STATE) WRITE(E5_DIR_PIN,STATE)
-    #define E5_DIR_READ READ(E5_DIR_PIN)
-  #endif
+  #define E5_DIR_INIT SET_OUTPUT(E5_DIR_PIN)
+  #define E5_DIR_WRITE(STATE) WRITE(E5_DIR_PIN,STATE)
+  #define E5_DIR_READ READ(E5_DIR_PIN)
 #endif
 #define E5_STEP_INIT SET_OUTPUT(E5_STEP_PIN)
 #define E5_STEP_WRITE(STATE) WRITE(E5_STEP_PIN,STATE)
@@ -652,76 +565,31 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #define REV_E_DIR()         do{ E0_DIR_WRITE( INVERT_E0_DIR); E1_DIR_WRITE( INVERT_E1_DIR); }while(0)
   #endif
 #elif DRIVER_EXTRUDERS > 5
-	#define E_STEP_WRITE(v) E0_STEP_WRITE(v)
-	#define NORM_E_DIR() E0_DIR_WRITE(!INVERT_E0_DIR)
-	#define REV_E_DIR()  E0_DIR_WRITE( INVERT_E0_DIR)
-	#define U_STEP_WRITE(v) E1_STEP_WRITE(v)
-	#define NORM_U_DIR() E1_DIR_WRITE(!INVERT_E1_DIR)
-	#define REV_U_DIR()  E1_DIR_WRITE( INVERT_E1_DIR)
-	#define V_STEP_WRITE(v) E2_STEP_WRITE(v)
-	#define NORM_V_DIR() E2_DIR_WRITE(!INVERT_E2_DIR)
-	#define REV_V_DIR()  E2_DIR_WRITE( INVERT_E2_DIR)
-	#define W_STEP_WRITE(v) E3_STEP_WRITE(v)
-	#define NORM_W_DIR() E3_DIR_WRITE(!INVERT_E3_DIR)
-	#define REV_W_DIR()  E3_DIR_WRITE( INVERT_E3_DIR)
-	#define K_STEP_WRITE(v) E4_STEP_WRITE(v)
-	#define NORM_K_DIR() E4_DIR_WRITE(!INVERT_E4_DIR)
-	#define REV_K_DIR()  E4_DIR_WRITE( INVERT_E4_DIR)
-	#define L_STEP_WRITE(v) E5_STEP_WRITE(v)
-	#define NORM_L_DIR() E5_DIR_WRITE(!INVERT_E5_DIR)
-	#define REV_L_DIR()  E5_DIR_WRITE( INVERT_E5_DIR)
+  #define E_STEP_WRITE(v)       do{ switch(TOOL_DE_INDEX) { case 5: E5_STEP_WRITE(v); break; case 4: E4_STEP_WRITE(v); break; case 3: E3_STEP_WRITE(v); break; case 2: E2_STEP_WRITE(v); break; case 1: E1_STEP_WRITE(v); break; case 0: E0_STEP_WRITE(v); break; } }while(0)
+  #define NORM_E_DIR()          do{ switch(TOOL_DE_INDEX) { case 5: E5_DIR_WRITE(!INVERT_E5_DIR); break; case 4: E4_DIR_WRITE(!INVERT_E4_DIR); break; case 3: E3_DIR_WRITE(!INVERT_E3_DIR); break; case 2: E2_DIR_WRITE(!INVERT_E2_DIR); break; case 1: E1_DIR_WRITE(!INVERT_E1_DIR); break; case 0: E0_DIR_WRITE(!INVERT_E0_DIR); break; } }while(0)
+  #define REV_E_DIR()           do{ switch(TOOL_DE_INDEX) { case 5: E5_DIR_WRITE( INVERT_E5_DIR); break; case 4: E4_DIR_WRITE( INVERT_E4_DIR); break; case 3: E3_DIR_WRITE( INVERT_E3_DIR); break; case 2: E2_DIR_WRITE( INVERT_E2_DIR); break; case 1: E1_DIR_WRITE( INVERT_E1_DIR); break; case 0: E0_DIR_WRITE( INVERT_E0_DIR); break; } }while(0)
 #elif DRIVER_EXTRUDERS > 4
-	#define E_STEP_WRITE(v) E0_STEP_WRITE(v)
-	#define NORM_E_DIR() E0_DIR_WRITE(!INVERT_E0_DIR)
-	#define REV_E_DIR()  E0_DIR_WRITE( INVERT_E0_DIR)
-	#define U_STEP_WRITE(v) E1_STEP_WRITE(v)
-	#define NORM_U_DIR() E1_DIR_WRITE(!INVERT_E1_DIR)
-	#define REV_U_DIR()  E1_DIR_WRITE( INVERT_E1_DIR)
-	#define V_STEP_WRITE(v) E2_STEP_WRITE(v)
-	#define NORM_V_DIR() E2_DIR_WRITE(!INVERT_E2_DIR)
-	#define REV_V_DIR()  E2_DIR_WRITE( INVERT_E2_DIR)
-	#define W_STEP_WRITE(v) E3_STEP_WRITE(v)
-	#define NORM_W_DIR() E3_DIR_WRITE(!INVERT_E3_DIR)
-	#define REV_W_DIR()  E3_DIR_WRITE( INVERT_E3_DIR)
-	#define K_STEP_WRITE(v) E4_STEP_WRITE(v)
-	#define NORM_K_DIR() E4_DIR_WRITE(!INVERT_E4_DIR)
-	#define REV_K_DIR()  E4_DIR_WRITE( INVERT_E4_DIR)
+  #define E_STEP_WRITE(v)       do{ switch(TOOL_DE_INDEX) { case 4: E4_STEP_WRITE(v); break; case 3: E3_STEP_WRITE(v); break; case 2: E2_STEP_WRITE(v); break; case 1: E1_STEP_WRITE(v); break; case 0: E0_STEP_WRITE(v); break; } }while(0)
+  #define NORM_E_DIR()          do{ switch(TOOL_DE_INDEX) { case 4: E4_DIR_WRITE(!INVERT_E4_DIR); break; case 3: E3_DIR_WRITE(!INVERT_E3_DIR); break; case 2: E2_DIR_WRITE(!INVERT_E2_DIR); break; case 1: E1_DIR_WRITE(!INVERT_E1_DIR); break; case 0: E0_DIR_WRITE(!INVERT_E0_DIR); break; } }while(0)
+  #define REV_E_DIR()           do{ switch(TOOL_DE_INDEX) { case 4: E4_DIR_WRITE( INVERT_E4_DIR); break; case 3: E3_DIR_WRITE( INVERT_E3_DIR); break; case 2: E2_DIR_WRITE( INVERT_E2_DIR); break; case 1: E1_DIR_WRITE( INVERT_E1_DIR); break; case 0: E0_DIR_WRITE( INVERT_E0_DIR); break; } }while(0)
 #elif DRIVER_EXTRUDERS > 3
-	#define E_STEP_WRITE(v) E0_STEP_WRITE(v)
-	#define NORM_E_DIR() E0_DIR_WRITE(!INVERT_E0_DIR)
-	#define REV_E_DIR()  E0_DIR_WRITE( INVERT_E0_DIR)
-	#define U_STEP_WRITE(v) E1_STEP_WRITE(v)
-	#define NORM_U_DIR() E1_DIR_WRITE(!INVERT_E1_DIR)
-	#define REV_U_DIR()  E1_DIR_WRITE( INVERT_E1_DIR)
-	#define V_STEP_WRITE(v) E2_STEP_WRITE(v)
-	#define NORM_V_DIR() E2_DIR_WRITE(!INVERT_E2_DIR)
-	#define REV_V_DIR()  E2_DIR_WRITE( INVERT_E2_DIR)
-	#define W_STEP_WRITE(v) E3_STEP_WRITE(v)
-	#define NORM_W_DIR() E3_DIR_WRITE(!INVERT_E3_DIR)
-	#define REV_W_DIR()  E3_DIR_WRITE( INVERT_E3_DIR)
+  #define E_STEP_WRITE(v)       do{ switch(TOOL_DE_INDEX) { case 3: E3_STEP_WRITE(v); break; case 2: E2_STEP_WRITE(v); break; case 1: E1_STEP_WRITE(v); break; case 0: E0_STEP_WRITE(v); break; } }while(0)
+  #define NORM_E_DIR()          do{ switch(TOOL_DE_INDEX) { case 3: E3_DIR_WRITE(!INVERT_E3_DIR); break; case 2: E2_DIR_WRITE(!INVERT_E2_DIR); break; case 1: E1_DIR_WRITE(!INVERT_E1_DIR); break; case 0: E0_DIR_WRITE(!INVERT_E0_DIR); break; } }while(0)
+  #define REV_E_DIR()           do{ switch(TOOL_DE_INDEX) { case 3: E3_DIR_WRITE( INVERT_E3_DIR); break; case 2: E2_DIR_WRITE( INVERT_E2_DIR); break; case 1: E1_DIR_WRITE( INVERT_E1_DIR); break; case 0: E0_DIR_WRITE( INVERT_E0_DIR); break; } }while(0)
 #elif DRIVER_EXTRUDERS > 2
-	#define E_STEP_WRITE(v) E0_STEP_WRITE(v)
-	#define NORM_E_DIR() E0_DIR_WRITE(!INVERT_E0_DIR)
-	#define REV_E_DIR()  E0_DIR_WRITE( INVERT_E0_DIR)
-	#define U_STEP_WRITE(v) E1_STEP_WRITE(v)
-	#define NORM_U_DIR() E1_DIR_WRITE(!INVERT_E1_DIR)
-	#define REV_U_DIR()  E1_DIR_WRITE( INVERT_E1_DIR)
-	#define V_STEP_WRITE(v) E2_STEP_WRITE(v)
-	#define NORM_V_DIR() E2_DIR_WRITE(!INVERT_E2_DIR)
-	#define REV_V_DIR()  E2_DIR_WRITE( INVERT_E2_DIR)
+  #define E_STEP_WRITE(v)       do{ switch(TOOL_DE_INDEX) { case 2: E2_STEP_WRITE(v); break; case 1: E1_STEP_WRITE(v); break; case 0: E0_STEP_WRITE(v); break; } }while(0)
+  #define NORM_E_DIR()          do{ switch(TOOL_DE_INDEX) { case 2: E2_DIR_WRITE(!INVERT_E2_DIR); break; case 1: E1_DIR_WRITE(!INVERT_E1_DIR); break; case 0: E0_DIR_WRITE(!INVERT_E0_DIR); break; } }while(0)
+  #define REV_E_DIR()           do{ switch(TOOL_DE_INDEX) { case 2: E2_DIR_WRITE( INVERT_E2_DIR); break; case 1: E1_DIR_WRITE( INVERT_E1_DIR); break; case 0: E0_DIR_WRITE( INVERT_E0_DIR); break; } }while(0)
 #elif DRIVER_EXTRUDERS > 1
   #if ENABLED(DUAL_X_CARRIAGE)
     #define E_STEP_WRITE(v)     do{ if(mechanics.hotend_duplication_enabled) { E0_STEP_WRITE(v); E1_STEP_WRITE(v); } else if(TOOL_DE_INDEX == 0) { E0_STEP_WRITE(v); } else { E1_STEP_WRITE(v); } }while(0)
     #define NORM_E_DIR()        do{ if(mechanics.hotend_duplication_enabled) { E0_DIR_WRITE(!INVERT_E0_DIR); E1_DIR_WRITE(!INVERT_E1_DIR); } else if(TOOL_DE_INDEX == 0) { E0_DIR_WRITE(!INVERT_E0_DIR); } else { E1_DIR_WRITE(!INVERT_E1_DIR); } }while(0)
     #define REV_E_DIR()         do{ if(mechanics.hotend_duplication_enabled) { E0_DIR_WRITE( INVERT_E0_DIR); E1_DIR_WRITE( INVERT_E1_DIR); } else if(TOOL_DE_INDEX == 0) { E0_DIR_WRITE( INVERT_E0_DIR); } else { E1_DIR_WRITE( INVERT_E1_DIR); } }while(0)
   #else
-	#define E_STEP_WRITE(v) E0_STEP_WRITE(v)
-	#define NORM_E_DIR() E0_DIR_WRITE(!INVERT_E0_DIR)
-	#define REV_E_DIR()  E0_DIR_WRITE( INVERT_E0_DIR)
-	#define U_STEP_WRITE(v) E1_STEP_WRITE(v)
-	#define NORM_U_DIR() E1_DIR_WRITE(!INVERT_E1_DIR)
-	#define REV_U_DIR()  E1_DIR_WRITE( INVERT_E1_DIR)
-#endif
+    #define E_STEP_WRITE(v)     do{ switch(TOOL_DE_INDEX) { case 0: E0_STEP_WRITE(v); break;              case 1: E1_STEP_WRITE(v); break; } }while(0)
+    #define NORM_E_DIR()        do{ switch(TOOL_DE_INDEX) { case 0: E0_DIR_WRITE(!INVERT_E0_DIR); break;  case 1: E1_DIR_WRITE(!INVERT_E1_DIR); break; } }while(0)
+    #define REV_E_DIR()         do{ switch(TOOL_DE_INDEX) { case 0: E0_DIR_WRITE( INVERT_E0_DIR); break;  case 1: E1_DIR_WRITE( INVERT_E1_DIR); break; } }while(0)
+  #endif
 #elif DRIVER_EXTRUDERS > 0
   #if ENABLED(DONDOLO_SINGLE_MOTOR)
     #define E_STEP_WRITE(v)     E0_STEP_WRITE(v)

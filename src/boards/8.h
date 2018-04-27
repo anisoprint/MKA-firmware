@@ -10,8 +10,8 @@
 #if DISABLED(__AVR_AT90USB1286__)
   #error Oops!  Make sure you have 'Teensy++ 2.0' selected from the 'Tools -> Boards' menu.
 #endif
-#if ENABLED(AT90USBxx_TEENSYPP_ASSIGNMENTS)  // use Teensyduino Teensy++2.0 pin assignments instead of Marlin traditional.
-  #error These Teensylu/Printrboard assignments depend on traditional Marlin assignments, not AT90USBxx_TEENSYPP_ASSIGNMENTS in fastio.h
+#if ENABLED(AT90USBxx_TEENSYPP_ASSIGNMENTS)
+  #error These Teensylu/Printrboard assignments depend on traditional MK4duo assignments, not AT90USBxx_TEENSYPP_ASSIGNMENTS in fastio.h
 #endif
 //@@@
 
@@ -169,19 +169,19 @@
 //@@@
 
 //###IF_BLOCKS
-// You may need to change ORIG_FAN0_PIN to 16 because Marlin isn't using fastio.h
+// You may need to change ORIG_FAN0_PIN to 16 because MK4duo isn't using fastio.h
 // for the fan and Teensyduino uses a different pin mapping.
 #if MB(TEENSYLU)  // Teensylu
   #define X_STOP_PIN         13
   #define Y_STOP_PIN         14
   #define Z_STOP_PIN         15
-  #define ORIG_TEMP_0_PIN          7  // Extruder / Analog pin numbering
-  #define ORIG_TEMP_BED_PIN        6  // Bed / Analog pin numbering
+  #define ORIG_TEMP_0_PIN     7
+  #define ORIG_TEMP_BED_PIN   6
 #else  // Printrboard
   #define X_STOP_PIN         35
   #define Y_STOP_PIN          8
   #define Z_STOP_PIN         36
-  #define ORIG_TEMP_0_PIN          1  // Extruder / Analog pin numbering
-  #define ORIG_TEMP_BED_PIN        0  // Bed / Analog pin numbering
+  #define ORIG_TEMP_0_PIN     1
+  #define ORIG_TEMP_BED_PIN   0
 #endif
 //@@@

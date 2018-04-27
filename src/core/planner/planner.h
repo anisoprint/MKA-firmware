@@ -73,7 +73,7 @@ typedef struct {
   uint8_t flag;                             // Block flags (See BlockFlag enum above)
 
   unsigned char active_extruder;            // The extruder to move (if E move)
-  //unsigned char active_driver;              // Selects the active driver for E
+  unsigned char active_driver;              // Selects the active driver for E
 
   // Fields used by the Bresenham algorithm for tracing the line
   int32_t steps[NUM_AXIS];                  // Step count along each axis
@@ -84,10 +84,19 @@ typedef struct {
   #endif
 
   int32_t accelerate_until,                 // The index of the step event on which to stop acceleration
-          decelerate_after,                 // The index of the step event on which to start decelerating
-          acceleration_rate;                // The acceleration rate used for acceleration calculation
+          decelerate_after;                 // The index of the step event on which to start decelerating
 
-  uint16_t direction_bits;                   // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
+ #if ENABLED(BEZIER_JERK_CONTROL)
+    uint32_t  cruise_rate;                  // The actual cruise rate to use, between end of the acceleration phase and start of deceleration phase
+    uint32_t  acceleration_time,            // Acceleration time and deceleration time in STEP timer counts
+              deceleration_time;
+    uint32_t  acceleration_time_inverse,    // Inverse of acceleration and deceleration periods, expressed as integer. Scale depends on CPU being used
+              deceleration_time_inverse;
+  #else
+    int32_t   acceleration_rate;            // The acceleration rate used for acceleration calculation
+  #endif
+
+  uint8_t direction_bits;                   // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
 
   // Advance extrusion
   #if ENABLED(LIN_ADVANCE)
@@ -105,7 +114,6 @@ typedef struct {
         millimeters,                        // The total travel of this block in mm
         acceleration;                       // acceleration mm/sec^2
 
-  // Settings for the trapezoid generator
   uint32_t  nominal_rate,                   // The nominal step rate for this block in step_events/sec
             initial_rate,                   // The jerk-adjusted step rate at start of block
             final_rate,                     // The minimal rate at exit
@@ -145,12 +153,6 @@ class Planner {
   public: /** Public Parameters */
 
     /**
-     * The current position of the tool in absolute steps
-     * Recalculated if any axis_steps_per_mm are changed by gcode
-     */
-    static int32_t position[NUM_AXIS];
-
-    /**
      * The move buffer, calculated in stepper steps
      *
      * block_buffer is a ring buffer...
@@ -180,6 +182,12 @@ class Planner {
   private: /** Private Parameters */
 
     /**
+     * The current position of the tool in absolute steps
+     * Recalculated if any axis_steps_per_mm are changed by gcode
+     */
+    static int32_t position[NUM_AXIS];
+
+    /**
      * Speed of previous path line segment
      */
     static float previous_speed[NUM_AXIS];
@@ -193,14 +201,14 @@ class Planner {
       /**
        * Counters to manage disabling inactive extruders
        */
-      static uint8_t g_uc_extruder_last_move[DRIVER_EXTRUDERS];
+      static uint8_t g_uc_extruder_last_move[EXTRUDERS];
     #endif // DISABLE_INACTIVE_EXTRUDER
 
     #if ENABLED(XY_FREQUENCY_LIMIT)
       // Used for the frequency limit
       #define MAX_FREQ_TIME_US (uint32_t)(1000000.0 / XY_FREQUENCY_LIMIT)
       // Old direction bits. Used for speed calculations
-      static uint16_t old_direction_bits;
+      static unsigned char old_direction_bits;
       // Segment times (in µs). Used for speed calculations
       static uint32_t axis_segment_time_us[2][3];
     #endif
@@ -225,6 +233,8 @@ class Planner {
      */
     FORCE_INLINE static uint8_t movesplanned() { return BLOCK_MOD(block_buffer_head - block_buffer_tail + BLOCK_BUFFER_SIZE); }
 
+    FORCE_INLINE static void clear_block_buffer() { block_buffer_head = block_buffer_tail = 0; }
+
     FORCE_INLINE static bool is_full() { return block_buffer_tail == next_block_index(block_buffer_head); }
 
     /**
@@ -238,9 +248,9 @@ class Planner {
      *  millimeters - the length of the movement, if known
      */
     #if ENABLED(LIN_ADVANCE)
-      static void buffer_steps(const int32_t (&target)[XYZ], const int32_t (&target_e)[DRIVER_EXTRUDERS], const float (&target_float)[XYZ], const float (&target_float_e)[DRIVER_EXTRUDERS], float fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
+      static void buffer_steps(const int32_t (&target)[XYZE], const float (&target_float)[XYZE], float fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
     #else
-      static void buffer_steps(const int32_t (&target_xyz)[XYZ], const int32_t (&target_e)[DRIVER_EXTRUDERS], float fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
+      static void buffer_steps(const int32_t (&target)[XYZE], float fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
     #endif
 
     /**
@@ -255,7 +265,7 @@ class Planner {
      *  extruder    - target extruder
      *  millimeters - the length of the movement, if known
      */
-    static void buffer_segment(const float &a, const float &b, const float &c, const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
+    static void buffer_segment(const float &a, const float &b, const float &c, const float &e, const float &fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
 
     /**
      * Add a new linear movement to the buffer.
@@ -270,7 +280,7 @@ class Planner {
      *  extruder    - target extruder
      *  millimeters - the length of the movement, if known
      */
-    static void buffer_line(ARG_X, ARG_Y, ARG_Z, const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
+    static void buffer_line(ARG_X, ARG_Y, ARG_Z, const float &e, const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
 
     /**
      * Add a new linear movement to the buffer.
@@ -282,21 +292,27 @@ class Planner {
      *  extruder    - target extruder
      *  millimeters - the length of the movement, if known
      */
-    static void buffer_line_kinematic(const float cart[XYZ], const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
+    static void buffer_line_kinematic(const float cart[XYZE], const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
 
-    FORCE_INLINE static void zero_previous_nominal_speed() { previous_nominal_speed = 0.0; } // Resets planner junction speeds. Assumes start from rest.
-    FORCE_INLINE static void zero_previous_speed(const AxisEnum axis) { previous_speed[axis] = 0.0; }
-    FORCE_INLINE static void zero_previous_speed() { ZERO(previous_speed); }
+    /**
+     * Set the planner.position and individual stepper positions.
+     * Used by G92, G28, G29, and other procedures.
+     *
+     * Multiplies by axis_steps_per_mm[] and does necessary conversion
+     *
+     * Clears previous speed values.
+     */
+    static void _set_position_mm(const float &a, const float &b, const float &c, const float &e);
+    static void set_position_mm(ARG_X, ARG_Y, ARG_Z, const float &e);
+    static void set_position_mm(const AxisEnum axis, const float &v);
+    static void set_position_mm_kinematic(const float (&cart)[XYZE]);
+    FORCE_INLINE static void set_z_position_mm(const float &z) { set_position_mm(AxisEnum(Z_AXIS), z); }
+    FORCE_INLINE static void set_e_position_mm(const float &e) { set_position_mm(AxisEnum(E_AXIS), e); }
 
     /**
      * Sync from the stepper positions. (e.g., after an interrupted move)
      */
     static void sync_from_steppers();
-
-    /**
-     * Abort Printing
-     */
-    void abort();
 
     /**
      * Does the buffer have any blocks queued?
@@ -320,28 +336,6 @@ class Planner {
       const bool discard = has_blocks_queued() && TEST(block_buffer[block_buffer_tail].flag, BLOCK_BIT_CONTINUED);
       if (discard) discard_current_block();
       return discard;
-    }
-
-    /**
-     * length of commands in planner
-     */
-    FORCE_INLINE static uint16_t command_in_planner_len() {
-      uint8_t _block_buffer_head = block_buffer_head;
-      uint8_t _block_buffer_tail = block_buffer_tail;
-      uint16_t block_len = 0;
-
-      while (_block_buffer_head != _block_buffer_tail) {
-        block_len += block_buffer[_block_buffer_tail].block_len;
-        _block_buffer_tail = (_block_buffer_tail + 1) & (BLOCK_BUFFER_SIZE - 1);
-      }
-      return block_len;
-    }
-
-    /**
-     * Number of block in planner
-     */
-    FORCE_INLINE static uint8_t number_of_blocks() {
-      return (block_buffer_head + BLOCK_BUFFER_SIZE - block_buffer_tail) & (BLOCK_BUFFER_SIZE - 1);
     }
 
     FORCE_INLINE void add_block_length(uint16_t block_len) {
@@ -449,6 +443,15 @@ class Planner {
     static float max_allowable_speed(const float &accel, const float &target_velocity, const float &distance) {
       return SQRT(sq(target_velocity) - 2 * accel * distance);
     }
+
+    #if ENABLED(BEZIER_JERK_CONTROL)
+      /**
+       * Calculate the speed reached given initial speed, acceleration and distance
+       */
+      static float final_speed(const float &initial_velocity, const float &accel, const float &distance) {
+        return SQRT(sq(initial_velocity) + 2 * accel * distance);
+      }
+    #endif
 
     static void calculate_trapezoid_for_block(block_t* const block, const float &entry_factor, const float &exit_factor);
 

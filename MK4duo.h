@@ -66,12 +66,12 @@ typedef int8_t    pin_t;
  * Configuration settings loading
  */
 
-#include "Configuration.h"
+#include "Configuration_Overall.h"
 #include "Configuration_Version.h"
 
 #ifndef CONFIGURATION_OVERALL
   #include "Configuration_Basic.h"
-  #include "Configuration.h"
+  #include "Configuration_Overall.h"
 
   #if IS_CARTESIAN
     #include "Configuration_Cartesian.h"
@@ -87,25 +87,7 @@ typedef int8_t    pin_t;
 
   #include "Configuration_Temperature.h"
   #include "Configuration_Feature.h"
-#else
-
-#ifdef PRINTER_TYPE
-	#define AS_QUOTEDSTRING(S) #S
-	#include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Basic.h)
-    #if MECH(CARTESIAN)
-	  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Cartesian.h)
-    #elif IS_CORE
-	  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Core.h)
-    #elif MECH(DELTA)
-	  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Delta.h)
-    #elif IS_SCARA
-   	  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Scara.h)
-    #elif MECH(MUVE3D)
-	  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Muve3D.h)
-    #endif
-    #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Temperature.h)
-    #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Feature.h)
-#endif
+  #include "Configuration_Overall.h"
 #endif
 
 #if ENABLED(LASER)
@@ -130,6 +112,7 @@ typedef int8_t    pin_t;
 #include "src/inc/conditionals_post.h"
 #include "src/inc/sanitycheck.h"
 #include "src/inc/point_t.h"
+#include "src/inc/watch.h"
 
 // HAL Modules
 #include "src/HAL/HAL.h"
@@ -154,10 +137,6 @@ typedef int8_t    pin_t;
 #include "src/lcd/language/language.h"
 #include "src/lcd/ultralcd.h"
 #include "src/lcd/nextion/Nextion_lcd.h"
-
-// TODOAP #include "src/nextion/HMIevents.h"
-// TODOAP #include "src/materials/materials.h"
-// TODOAP #include "src/nextion/NextionHMI.h"
 
 // SD modules
 #include "src/sd/cardreader.h"
@@ -188,6 +167,7 @@ typedef int8_t    pin_t;
 #include "src/feature/dhtsensor/dhtsensor.h"
 #include "src/feature/rgbled/led.h"
 #include "src/feature/caselight/caselight.h"
+#include "src/feature/restart/restart.h"
 
 /**
  * External libraries loading

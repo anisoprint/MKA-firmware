@@ -42,11 +42,12 @@
  * - Extruder run-out prevention
  * - Extruder Advance Linear Pressure Control
  * MOTION FEATURES:
+ * - Workspace offsets
+ * - Bézier Jerk Control
  * - Software endstops
  * - Endstops only for homing
  * - Abort on endstop hit feature
  * - G38.2 and G38.3 Probe Target
- * - Scad Mesh Output
  * - R/C Servo
  * - Late Z axis
  * - Ahead slowdown
@@ -104,6 +105,7 @@
  * - Advanced Pause Park
  * - G20/G21 Inch mode support
  * - Report JSON-style response
+ * - Scad Mesh Output
  * - M43 command for pins info and testing
  * - Extend capabilities report
  * - Watchdog
@@ -151,7 +153,7 @@
 // Default fan 1 is auto fan for Hotend 0
 #define AUTO_FAN { -1, 0, -1, -1, -1, -1 }
 // Parameters for Hotend Fan
-#define HOTEND_AUTO_FAN_TEMPERATURE  80
+#define HOTEND_AUTO_FAN_TEMPERATURE  50
 #define HOTEND_AUTO_FAN_SPEED       255 // 255 = full speed
 #define HOTEND_AUTO_FAN_MIN_SPEED     0
 // Parameters for Controller Fan
@@ -442,6 +444,19 @@
 
 
 /**************************************************************************
+ ************************ Bézier Jerk Control *****************************
+ **************************************************************************
+ *                                                                        *
+ * This option eliminates vibration during printing by fitting a Bézier   *
+ * curve to move acceleration, producing much smoother direction changes. *
+ * A 32-bit processor is required.                                        *
+ *                                                                        *
+ **************************************************************************/
+//#define BEZIER_JERK_CONTROL
+/**************************************************************************/
+
+
+/**************************************************************************
  *************************** Software endstops ****************************
  **************************************************************************/
 // If enabled, axis won't move to coordinates less than MIN POS.
@@ -498,32 +513,14 @@
 
 
 /**************************************************************************
- ************************* Scad Mesh Output *******************************
- **************************************************************************
- *                                                                        *
- * Enable if you prefer your output in JSON format                        *
- * suitable for SCAD or JavaScript mesh visualizers.                      *
- *                                                                        *
- * Visualize meshes in OpenSCAD using the included script.                *
- *                                                                        *
- * scad/MK4duoMesh.scad                                                   *
- *                                                                        *
- * By Scott Latherine @Thinkyhead                                         *
- *                                                                        *
- **************************************************************************/
-//#define SCAD_MESH_OUTPUT
-/**************************************************************************/
-
-
-/**************************************************************************
  ****************************** R/C Servo *********************************
  **************************************************************************/
-#define ENABLE_SERVOS
+//#define ENABLE_SERVOS
 // Number of servos
 // If you select a configuration below, this will receive a default value and does not need to be set manually
 // set it manually if you have more servos than extruders and wish to manually control some
 // leaving it defining as 0 will disable the servo subsystem
-#define NUM_SERVOS 1
+#define NUM_SERVOS 0
 // Servo index starts with 0 for M280 command
 //
 // Servo deactivation
@@ -1041,7 +1038,7 @@
 /*****************************************************************************************
  *************************************** SDCARD *******************************************
  ****************************************************************************************/
-#define SDSUPPORT
+//#define SDSUPPORT
 
 //#define SDSLOW              // Use slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
 //#define SDEXTRASLOW         // Use even slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
@@ -1049,7 +1046,7 @@
 //#define SD_EXTENDED_DIR     // Show extended directory including file length. Don't use this with Pronterface
 
 // Decomment this if you have external SD without DETECT_PIN
-#define SD_DISABLED_DETECT
+//#define SD_DISABLED_DETECT
 // Some RAMPS and other boards don't detect when an SD card is inserted. You can work
 // around this by connecting a push button or single throw switch to the pin defined
 // as SD_DETECT_PIN in your board's pins definitions.
@@ -1101,6 +1098,10 @@
 #define SDSORT_CACHE_VFATS 2      // Maximum number of 13-byte VFAT entries to use for sorting.
                                   // Note: Only affects SCROLL_LONG_FILENAMES with SDSORT_CACHE_NAMES but not SDSORT_DYNAMIC_RAM.
 
+// This function enable the firmware write restart.bin file for restart print when power loss
+//#define SD_RESTART_FILE           // Uncomment to enable
+#define SD_RESTART_FILE_SAVE_TIME 1 // seconds between update
+
 // This enable the firmware to write statistics, that require frequent update on the SD card.
 //#define SD_SETTINGS             // Uncomment to enable
 #define SD_CFG_SECONDS 300        // seconds between update
@@ -1113,24 +1114,19 @@
  *                                                                                       *
  * Here you may choose the language used by MK4duo on the LCD menus,                     *
  * the following list of languages are available:                                        *
- *  en, an, bg, ca, cn, cz, cz_utf8, de, el, el-gr, es, es_utf8, eu, fi, fr, fr_utf8,    *
- *  gl, hr, it, kana, kana_utf8, nl, pl, pt, pt_utf8, pt-br, pt-br_utf8, sk_utf8 ru,     *
+ *  en, an, bg, ca, cn, cz, de, el, el-gr, es, eu, fi, fr,                               *
+ *  gl, hr, it, jp-kana, nl, pl, pt, pt-br, ru, sk,                                      *
  *  tr, uk, zh_CN, zh_TW                                                                 *
  *                                                                                       *
  * 'en':'English',          'an':'Aragonese', 'bg':'Bulgarian',       'ca':'Catalan',    *
  * 'cn':'Chinese',          'cz':'Czech',     'de':'German',          'el':'Greek',      *
  * 'el-gr':'Greek (Greece)' 'es':'Spanish',   'eu':'Basque-Euskera',  'fi':'Finnish',    *
  * 'fr':'French',           'gl':'Galician',  'hr':'Croatian',        'it':'Italian',    *
- * 'kana':'Japanese',       'nl':'Dutch',     'pl':'Polish',          'pt':'Portuguese', *
- * 'ru':'Russian',          'tr':'Turkish',   'uk':'Ukrainian',                          *
- * 'fr_utf8':'French (UTF8)                                                              *
- * 'cz_utf8':'Czech (UTF8)'                                                              *
- * 'kana_utf8':'Japanese (UTF8)'                                                         *
- * 'es_utf8':'Spanish (UTF8)'                                                            *
- * 'pt_utf8':'Portuguese (UTF8)'                                                         *
- * 'pt-br':'Portuguese (Brazilian)'                                                      *
- * 'pt-br_utf8':'Portuguese (Brazilian UTF8)'                                            *
- * 'sk_utf8':'Slovak (UTF8)'                                                             *
+ * 'jp-kana':'Japanese',    'nl':'Dutch',     'pl':'Polish',          'pt':'Portuguese', *
+ * 'ru':'Russian',          'sk':'Slovak',    'tr':'Turkish',         'uk':'Ukrainian',  *
+ * 'pt-br':'Portuguese (Brazilian)',                                                     *
+ * 'zh_CN':'Chinese (Simplified)'                                                        *
+ * 'zh_TW':'Chinese (Traditional)'                                                       *
  *                                                                                       *
  *****************************************************************************************/
 #define LCD_LANGUAGE en
@@ -1151,14 +1147,6 @@
 //  - JAPANESE ... the most common
 //  - WESTERN  ... with more accented characters
 //  - CYRILLIC ... for the Russian language
-//
-// To determine the language extension installed on your controller:
-//
-//  - Compile and upload with LCD_LANGUAGE set to 'test'
-//  - Click the controller to view the LCD menu
-//  - The LCD will display Japanese, Western, or Cyrillic text
-//
-// :['JAPANESE', 'WESTERN', 'CYRILLIC']
 //
 #define DISPLAY_CHARSET_HD44780 JAPANESE
 
@@ -1261,7 +1249,7 @@
 
 // SPEAKER/BUZZER
 // If you have a speaker that can produce tones, enable it here.
-// By default Marlin assumes you have a buzzer with a fixed frequency.
+// By default MK4duo assumes you have a buzzer with a fixed frequency.
 //#define SPEAKER
 
 // The duration and frequency for the UI feedback sound.
@@ -1496,9 +1484,9 @@
 // CONTROLLER TYPE: Serial display
 
 // Nextion 4.3" HMI panel model NX4827T043_11
-#define NEXTION
+//#define NEXTION
 // Define Serial it use
-#define NEXTION_SERIAL 3
+#define NEXTION_SERIAL 1
 // For GFX preview visualization enable NEXTION GFX
 //#define NEXTION_GFX
 // Define name firmware file for Nextion on SD
@@ -1939,7 +1927,7 @@
 // G2/G3 Arc Support
 //
 // Disable this feature to save ~3226 bytes
-// #define ARC_SUPPORT
+#define ARC_SUPPORT
 #define MM_PER_ARC_SEGMENT 1    // Length of each arc segment
 #define N_ARC_CORRECTION  25    // Number of intertpolated segments between corrections
 //#define ARC_P_CIRCLES         // Enable the 'P' parameter to specify complete circles
@@ -2131,6 +2119,24 @@
  *****************************************************************************************/
 //#define JSON_OUTPUT
 /*****************************************************************************************/
+
+
+/**************************************************************************
+ ************************* Scad Mesh Output *******************************
+ **************************************************************************
+ *                                                                        *
+ * Enable if you prefer your output in JSON format                        *
+ * suitable for SCAD or JavaScript mesh visualizers.                      *
+ *                                                                        *
+ * Visualize meshes in OpenSCAD using the included script.                *
+ *                                                                        *
+ * scad/MK4duoMesh.scad                                                   *
+ *                                                                        *
+ * By Scott Latherine @Thinkyhead                                         *
+ *                                                                        *
+ **************************************************************************/
+//#define SCAD_MESH_OUTPUT
+/**************************************************************************/
 
 
 /*****************************************************************************************

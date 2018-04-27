@@ -79,7 +79,6 @@ uint8_t MCUSR;
 int16_t HAL::AnalogInputValues[NUM_ANALOG_INPUTS] = { 0 };
 bool    HAL::Analog_is_ready = false;
 
-
 #if HEATER_COUNT > 0
   ADCAveragingFilter HAL::sensorFilters[HEATER_COUNT];
 #endif
@@ -549,7 +548,7 @@ void HAL::Tick() {
             ADCAveragingFilter& currentFilter = const_cast<ADCAveragingFilter&>(sensorFilters[h]);
             currentFilter.ProcessReading(AnalogInReadPin(heaters[h].sensor.pin));
             if (currentFilter.IsValid()) {
-              AnalogInputValues[heaters[h].sensor.pin] = currentFilter.GetSum() / (NUM_ADC_SAMPLES >> OVERSAMPLENR);
+              AnalogInputValues[heaters[h].sensor.pin] = (currentFilter.GetSum() / NUM_ADC_SAMPLES) << OVERSAMPLENR;
               Analog_is_ready = true;
             }
           }
@@ -559,19 +558,19 @@ void HAL::Tick() {
       #if HAS_FILAMENT_SENSOR
         const_cast<ADCAveragingFilter&>(filamentFilter).ProcessReading(AnalogInReadPin(FILWIDTH_PIN));
         if (filamentFilter.IsValid())
-          AnalogInputValues[FILWIDTH_PIN] = filamentFilter.GetSum() / (NUM_ADC_SAMPLES >> OVERSAMPLENR);
+          AnalogInputValues[FILWIDTH_PIN] = (filamentFilter.GetSum() / NUM_ADC_SAMPLES) << OVERSAMPLENR;
       #endif
 
       #if HAS_POWER_CONSUMPTION_SENSOR
         const_cast<ADCAveragingFilter&>(powerFilter).ProcessReading(AnalogInReadPin(POWER_CONSUMPTION_PIN));
         if (powerFilter.IsValid())
-          AnalogInputValues[POWER_CONSUMPTION_PIN] = powerFilter.GetSum() / (NUM_ADC_SAMPLES >> OVERSAMPLENR);
+          AnalogInputValues[POWER_CONSUMPTION_PIN] = (powerFilter.GetSum() / NUM_ADC_SAMPLES) << OVERSAMPLENR;
       #endif
 
       #if HAS_MCU_TEMPERATURE
         const_cast<ADCAveragingFilter&>(mcuFilter).ProcessReading(AnalogInReadPin(ADC_TEMPERATURE_SENSOR));
         if (mcuFilter.IsValid())
-          thermalManager.mcu_current_temperature_raw = mcuFilter.GetSum() / (NUM_ADC_SAMPLES >> OVERSAMPLENR);
+          thermalManager.mcu_current_temperature_raw = (mcuFilter.GetSum() / NUM_ADC_SAMPLES) << OVERSAMPLENR;
       #endif
 
     }

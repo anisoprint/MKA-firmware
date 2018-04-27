@@ -40,7 +40,7 @@
     public: /** Public Parameters */
 
       static bool   autoretract_enabled,                // M209 S - Autoretract switch
-                    retracted[DRIVER_EXTRUDERS];               // Which extruders are currently retracted
+                    retracted[EXTRUDERS];               // Which extruders are currently retracted
       static float  retract_length,                     // M207 S - G10 Retract length
                     retract_feedrate_mm_s,              // M207 F - G10 Retract feedrate
                     retract_zlift,                      // M207 Z - G10 Retract hop size
@@ -54,7 +54,7 @@
     private: /** Private Parameters */
 
       #if EXTRUDERS > 1
-        static bool retracted_swap[DRIVER_EXTRUDERS];          // Which extruders are swap-retracted
+        static bool retracted_swap[EXTRUDERS];          // Which extruders are swap-retracted
       #endif
 
     public: /** Public Function */
@@ -62,7 +62,7 @@
       static void reset();
 
       static void refresh_autoretract() {
-        for (uint8_t e = 0; e < DRIVER_EXTRUDERS; e++) retracted[e] = false;
+        for (uint8_t e = 0; e < EXTRUDERS; e++) retracted[e] = false;
       }
 
       static void enable_autoretract(const bool enable) {
