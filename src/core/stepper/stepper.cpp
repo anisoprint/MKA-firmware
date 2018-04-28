@@ -81,7 +81,7 @@ int16_t Stepper::cleaning_buffer_counter = 0;
 
 // private:
 
-uint8_t Stepper::last_direction_bits = 0;        // The next stepping-bits to be output
+uint16_t Stepper::last_direction_bits = 0;        // The next stepping-bits to be output
 
 #if ENABLED(X_TWO_ENDSTOPS)
   bool Stepper::locked_x_motor = false, Stepper::locked_x2_motor = false;
@@ -97,6 +97,21 @@ long  Stepper::counter_X = 0,
       Stepper::counter_Y = 0,
       Stepper::counter_Z = 0,
       Stepper::counter_E = 0;
+#if DRIVER_EXTRUDERS > 1
+	long Stepper::counter_U = 0;
+#endif
+#if DRIVER_EXTRUDERS > 2
+	long Stepper::counter_V = 0;
+#endif
+#if DRIVER_EXTRUDERS > 3
+	long Stepper::counter_W = 0;
+#endif
+#if DRIVER_EXTRUDERS > 4
+	long Stepper::counter_K = 0;
+#endif
+#if DRIVER_EXTRUDERS > 5
+	long Stepper::counter_L = 0;
+#endif
 
 volatile uint32_t Stepper::step_events_completed = 0; // The number of step events executed in the current block
 
@@ -132,7 +147,23 @@ volatile uint32_t Stepper::step_events_completed = 0; // The number of step even
 #endif // LIN_ADVANCE
 
 volatile int32_t      Stepper::count_position[NUM_AXIS]   = { 0 };
-volatile signed char  Stepper::count_direction[NUM_AXIS]  = { 1, 1, 1, 1 };
+volatile signed char Stepper::count_direction[NUM_AXIS] = { 1, 1, 1, 1
+#if DRIVER_EXTRUDERS > 1
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 2
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 3
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 4
+   , 1
+#endif
+#if DRIVER_EXTRUDERS > 5
+  , 1
+#endif
+};
 
 #if ENABLED(COLOR_MIXING_EXTRUDER)
   long Stepper::counter_m[MIXING_STEPPERS]  = { 0 };
@@ -237,6 +268,26 @@ volatile long Stepper::endstops_trigsteps[XYZ] = { 0 };
 
 #if DISABLED(COLOR_MIXING_EXTRUDER)
   #define E_APPLY_STEP(v,Q) E_STEP_WRITE(v)
+#if DRIVER_EXTRUDERS > 1
+	#define U_APPLY_STEP(v,Q) U_STEP_WRITE(v)
+	#define INVERT_U_STEP_PIN INVERT_E_STEP_PIN
+#endif
+#if DRIVER_EXTRUDERS > 2
+	#define V_APPLY_STEP(v,Q) V_STEP_WRITE(v)
+	#define INVERT_V_STEP_PIN INVERT_E_STEP_PIN
+#endif
+#if DRIVER_EXTRUDERS > 3
+	#define W_APPLY_STEP(v,Q) W_STEP_WRITE(v)
+	#define INVERT_W_STEP_PIN INVERT_E_STEP_PIN
+#endif
+#if DRIVER_EXTRUDERS > 4
+	#define K_APPLY_STEP(v,Q) K_STEP_WRITE(v)
+	#define INVERT_K_STEP_PIN INVERT_E_STEP_PIN
+#endif
+#if DRIVER_EXTRUDERS > 5
+	#define L_APPLY_STEP(v,Q) L_STEP_WRITE(v)
+	#define INVERT_L_STEP_PIN INVERT_E_STEP_PIN
+#endif
 #endif
 
 /**
@@ -357,34 +408,102 @@ void Stepper::set_directions() {
       NORM_E_DIR();
       count_direction[E_AXIS] = 1;
     }
+	#if DRIVER_EXTRUDERS > 1
+		if (motor_direction(U_AXIS)) {  // -direction
+	  REV_U_DIR();
+	  count_direction[U_AXIS] = -1;
+		}
+		else { // +direction
+			NORM_U_DIR();
+			count_direction[U_AXIS]=1;
+		}
+	#endif
+	#if DRIVER_EXTRUDERS > 2
+		if (motor_direction(V_AXIS)) {  // -direction
+			REV_V_DIR();
+			count_direction[V_AXIS] = -1;
+		}
+		else { // +direction
+			NORM_V_DIR();
+			count_direction[V_AXIS]=1;
+		}
+	#endif
+	#if DRIVER_EXTRUDERS > 3
+		if (motor_direction(W_AXIS)) {  // -direction
+			REV_W_DIR();
+			count_direction[W_AXIS] = -1;
+		}
+		else { // +direction
+			NORM_W_DIR();
+			count_direction[W_AXIS]=1;
+		}
+	#endif
+	#if DRIVER_EXTRUDERS > 4
+		if (motor_direction(K_AXIS)) {  // -direction
+			REV_K_DIR();
+			count_direction[K_AXIS] = -1;
+		}
+		else { // +direction
+			NORM_K_DIR();
+			count_direction[K_AXIS]=1;
+		}
+	#endif
+	#if DRIVER_EXTRUDERS > 5
+		if (motor_direction(L_AXIS)) {  // -direction
+			REV_L_DIR();
+			count_direction[L_AXIS] = -1;
+		}
+		else { // +direction
+			NORM_L_DIR();
+			count_direction[L_AXIS]=1;
+		}
+	#endif
   #endif // HAS_EXTRUDERS && DISABLED(LIN_ADVANCE)
 
   #if HAS_EXT_ENCODER
 
-    switch(tools.active_extruder) {
-      case 0:
-        RESET_EXTRUDER_ENC(0, count_direction[E_AXIS]); break;
-      #if EXTRUDERS > 1
-        case 1:
-          RESET_EXTRUDER_ENC(1, count_direction[E_AXIS]); break;
-        #if EXTRUDERS > 2
-          case 2:
-            RESET_EXTRUDER_ENC(2, count_direction[E_AXIS]); break;
-          #if EXTRUDERS > 3
-            case 3:
-              RESET_EXTRUDER_ENC(3, count_direction[E_AXIS]); break;
-            #if EXTRUDERS > 4
-              case 4:
-                RESET_EXTRUDER_ENC(4, count_direction[E_AXIS]); break;
-              #if EXTRUDERS > 5
-                case 5:
-                  RESET_EXTRUDER_ENC(5, count_direction[E_AXIS]); break;
-              #endif // EXTRUDERS > 5
-            #endif // EXTRUDERS > 4
-          #endif // EXTRUDERS > 3
-        #endif // EXTRUDERS > 2
-      #endif // EXTRUDERS > 1
-    }
+			RESET_EXTRUDER_ENC(0, count_direction[E_AXIS]); break;
+	#if DRIVER_EXTRUDERS > 1
+			RESET_EXTRUDER_ENC(1, count_direction[U_AXIS]); break;
+	#endif
+	#if DRIVER_EXTRUDERS > 2
+			RESET_EXTRUDER_ENC(2, count_direction[V_AXIS]); break;
+	#endif
+	#if DRIVER_EXTRUDERS > 3
+			RESET_EXTRUDER_ENC(3, count_direction[W_AXIS]); break;
+	#endif
+	#if DRIVER_EXTRUDERS > 4
+			RESET_EXTRUDER_ENC(4, count_direction[K_AXIS]); break;
+	#endif
+	#if DRIVER_EXTRUDERS > 5
+			RESET_EXTRUDER_ENC(5, count_direction[L_AXIS]); break;
+	#endif
+
+
+//    switch(tools.active_extruder) {
+//      case 0:
+//        RESET_EXTRUDER_ENC(0, count_direction[E_AXIS]); break;
+//      #if EXTRUDERS > 1
+//        case 1:
+//          RESET_EXTRUDER_ENC(1, count_direction[E_AXIS]); break;
+//        #if EXTRUDERS > 2
+//          case 2:
+//            RESET_EXTRUDER_ENC(2, count_direction[E_AXIS]); break;
+//          #if EXTRUDERS > 3
+//            case 3:
+//              RESET_EXTRUDER_ENC(3, count_direction[E_AXIS]); break;
+//            #if EXTRUDERS > 4
+//              case 4:
+//                RESET_EXTRUDER_ENC(4, count_direction[E_AXIS]); break;
+//              #if EXTRUDERS > 5
+//                case 5:
+//                  RESET_EXTRUDER_ENC(5, count_direction[E_AXIS]); break;
+//              #endif // EXTRUDERS > 5
+//            #endif // EXTRUDERS > 4
+//          #endif // EXTRUDERS > 3
+//        #endif // EXTRUDERS > 2
+//      #endif // EXTRUDERS > 1
+//    }
 
   #endif
 }
@@ -1257,7 +1376,7 @@ void Stepper::isr() {
     if ((current_block = planner.get_current_block())) {
 
       // Initialize the trapezoid generator from the current block.
-      static int8_t last_extruder = -1;
+      //static int8_t last_extruder = -1;
 
       #if ENABLED(LIN_ADVANCE)
         #if EXTRUDERS > 1
@@ -1274,9 +1393,9 @@ void Stepper::isr() {
         }
       #endif
 
-      if (current_block->direction_bits != last_direction_bits || current_block->active_extruder != last_extruder) {
+      if (current_block->direction_bits != last_direction_bits) {
         last_direction_bits = current_block->direction_bits;
-        last_extruder = current_block->active_extruder;
+        //last_extruder = current_block->active_extruder;
         set_directions();
       }
 
@@ -1311,6 +1430,21 @@ void Stepper::isr() {
 
       // Initialize Bresenham counters to 1/2 the ceiling
       counter_X = counter_Y = counter_Z = counter_E = -(current_block->step_event_count >> 1);
+		#if DRIVER_EXTRUDERS > 1
+			counter_U = counter_X;
+		#endif
+		#if DRIVER_EXTRUDERS > 2
+			counter_V = counter_X;
+		#endif
+		#if DRIVER_EXTRUDERS > 3
+			counter_W = counter_X;
+		#endif
+		#if DRIVER_EXTRUDERS > 4
+			counter_K = counter_X;
+		#endif
+		#if DRIVER_EXTRUDERS > 5
+			counter_L = counter_X;
+		#endif
 
       #if ENABLED(LASER)
         counter_L = counter_X;
@@ -1444,11 +1578,27 @@ void Stepper::isr() {
         }
       #else // !COLOR_MIXING_EXTRUDER
         PULSE_START(E);
+		#if DRIVER_EXTRUDERS > 1
+			PULSE_START(U);
+		#endif
+		#if DRIVER_EXTRUDERS > 2
+			PULSE_START(V);
+		#endif
+		#if DRIVER_EXTRUDERS > 3
+			PULSE_START(W);
+		#endif
+		#if DRIVER_EXTRUDERS > 4
+			PULSE_START(K);
+		#endif
+		#if DRIVER_EXTRUDERS > 5
+			PULSE_START(L);
+		#endif
       #endif
 
     #endif // !LIN_ADVANCE
 
     #if HAS_EXT_ENCODER
+	TODO: MULTIEXTRUDER
       if (counter_E > 0) {
         switch(tools.active_extruder) {
           case 0:
@@ -1488,6 +1638,21 @@ void Stepper::isr() {
     #endif
 
     STEP_TICK(E); // Always tick the single E axis
+	#if DRIVER_EXTRUDERS > 1
+    STEP_TICK(U);
+	#endif
+	#if DRIVER_EXTRUDERS > 2
+    STEP_TICK(V);
+	#endif
+	#if DRIVER_EXTRUDERS > 3
+    STEP_TICK(W);
+	#endif
+	#if DRIVER_EXTRUDERS > 4
+    STEP_TICK(K);
+	#endif
+	#if DRIVER_EXTRUDERS > 5
+    STEP_TICK(L);
+	#endif
 
     // For a minimum pulse time wait before stopping pulses
     #if MINIMUM_STEPPER_PULSE > 0
@@ -1515,6 +1680,21 @@ void Stepper::isr() {
         }
       #else // !COLOR_MIXING_EXTRUDER
         PULSE_STOP(E);
+		#if DRIVER_EXTRUDERS > 1
+			PULSE_STOP(U);
+		#endif
+		#if DRIVER_EXTRUDERS > 2
+			PULSE_STOP(V);
+		#endif
+		#if DRIVER_EXTRUDERS > 3
+			PULSE_STOP(W);
+		#endif
+		#if DRIVER_EXTRUDERS > 4
+			PULSE_STOP(K);
+		#endif
+		#if DRIVER_EXTRUDERS > 5
+			PULSE_STOP(L);
+		#endif
       #endif
     #endif // HAS_EXTRUDERS && DISABLED(LIN_ADVANCE)
 
@@ -2138,34 +2318,35 @@ void Stepper::synchronize() {
  * This allows get_axis_position_mm to correctly
  * derive the current XYZ position later on.
  */
-void Stepper::set_position(const long &a, const long &b, const long &c, const long &e) {
+void Stepper::set_position(const long position[XYZE]) {
 
   synchronize(); // Bad to set stepper counts in the middle of a move
 
   CRITICAL_SECTION_START
-    #if CORE_IS_XY
-      // corexy positioning
-      count_position[A_AXIS] = a + (CORE_FACTOR) * b;
-      count_position[B_AXIS] = CORESIGN(a - (CORE_FACTOR) * b);
-      count_position[Z_AXIS] = c;
-    #elif CORE_IS_XZ
-      // corexz planning
-      count_position[A_AXIS] = a + (CORE_FACTOR) * c;
-      count_position[Y_AXIS] = b;
-      count_position[C_AXIS] = CORESIGN(a - (CORE_FACTOR) * c);
-    #elif CORE_IS_YZ
-      // coreyz planning
-      count_position[X_AXIS] = a;
-      count_position[B_AXIS] = b + (CORE_FACTOR) * c;
-      count_position[C_AXIS] = CORESIGN(b - (CORE_FACTOR) * c);
-    #else
-      // default non-h-bot planning
-      count_position[X_AXIS] = a;
-      count_position[Y_AXIS] = b;
-      count_position[Z_AXIS] = c;
-    #endif
 
-    count_position[E_AXIS] = e;
+	#if CORE_IS_XY
+	  // corexy positioning
+	  count_position[A_AXIS] = position[X_AXIS] + (CORE_FACTOR) * position[Y_AXIS];
+	  count_position[B_AXIS] = CORESIGN(position[X_AXIS] - (CORE_FACTOR) * position[Y_AXIS]);
+	  count_position[Z_AXIS] = position[Z_AXIS];
+	#elif CORE_IS_XZ
+	  // corexz planning
+	  count_position[A_AXIS] = position[X_AXIS] + (CORE_FACTOR) * position[Z_AXIS];
+	  count_position[Y_AXIS] = position[Y_AXIS];
+	  count_position[C_AXIS] = CORESIGN(position[X_AXIS] - (CORE_FACTOR) * position[Z_AXIS]);
+	#elif CORE_IS_YZ
+	  // coreyz planning
+	  count_position[X_AXIS] = position[X_AXIS];
+	  count_position[B_AXIS] = position[Y_AXIS] + (CORE_FACTOR) * position[Z_AXIS];
+	  count_position[C_AXIS] = CORESIGN(position[Y_AXIS] - (CORE_FACTOR) * position[Z_AXIS]);
+	#else
+	  // default non-h-bot planning
+	  count_position[X_AXIS] = position[X_AXIS];
+	  count_position[Y_AXIS] = position[Y_AXIS];
+	  count_position[Z_AXIS] = position[Z_AXIS];
+	#endif
+
+	LOOP_EUVW(ie) count_position[ie] = position[ie];
   CRITICAL_SECTION_END
 }
 
@@ -2175,9 +2356,9 @@ void Stepper::set_position(const AxisEnum &axis, const long &v) {
   CRITICAL_SECTION_END
 }
 
-void Stepper::set_e_position(const long &e) {
+void Stepper::set_e_position(const long e_position[DRIVER_EXTRUDERS]) {
   CRITICAL_SECTION_START
-    count_position[E_AXIS] = e;
+    LOOP_EUVW(ie) count_position[ie] = e_position[ie-XYZ];
   CRITICAL_SECTION_END
 }
 
