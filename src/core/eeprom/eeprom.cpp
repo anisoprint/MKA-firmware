@@ -1325,7 +1325,7 @@ void EEPROM::Factory_Settings() {
     mechanics.max_acceleration_mm_per_s2[i] = pgm_read_dword_near(&tmp3[i < COUNT(tmp3) ? i : COUNT(tmp3) - 1]);
   }
 
-  for (uint8_t i = 0; i < EXTRUDERS; i++) {
+  for (uint8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
     mechanics.retract_acceleration[i]       = pgm_read_dword_near(&tmp4[i < COUNT(tmp4) ? i : COUNT(tmp4) - 1]);
     mechanics.max_jerk[E_AXIS + i]          = pgm_read_float(&tmp5[i < COUNT(tmp5) ? i : COUNT(tmp5) - 1]);
   }

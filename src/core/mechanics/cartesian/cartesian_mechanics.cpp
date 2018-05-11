@@ -638,6 +638,7 @@
   }
 
   #if ENABLED(HYSTERESIS)
+  	 ERROR: HYSTERESIS DO NOT WORK WITH MULTIEXTRUDER
 
     void Cartesian_Mechanics::set_hysteresis(float x_mm, float y_mm, float z_mm, float e_mm) {
       m_hysteresis_mm[X_AXIS] = x_mm;
@@ -681,8 +682,8 @@
 
     void Cartesian_Mechanics::insert_hysteresis_correction(const float x, const float y, const float z, const float e) {
       long target[NUM_AXIS] = {x * axis_steps_per_mm[X_AXIS], y * axis_steps_per_mm[Y_AXIS], z * axis_steps_per_mm[Z_AXIS], e * axis_steps_per_mm[E_AXIS + tools.active_extruder]};
-      uint8_t direction_bits = calc_direction_bits(planner.position, target);
-      uint8_t move_bits = calc_move_bits(planner.position, target);
+      uint16_t direction_bits = calc_direction_bits(planner.position, target);
+      uint16_t move_bits = calc_move_bits(planner.position, target);
 
       // if the direction has changed in any of the axis that need hysteresis corrections...
       uint8_t direction_change_bits = (direction_bits ^ m_hysteresis_prev_direction_bits) & move_bits;

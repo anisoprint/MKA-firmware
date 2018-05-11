@@ -73,7 +73,7 @@ typedef struct {
   uint8_t flag;                             // Block flags (See BlockFlag enum above)
 
   unsigned char active_extruder;            // The extruder to move (if E move)
-  unsigned char active_driver;              // Selects the active driver for E
+  //unsigned char active_driver;              // Selects the active driver for E
 
   // Fields used by the Bresenham algorithm for tracing the line
   int32_t steps[NUM_AXIS];                  // Step count along each axis
@@ -96,7 +96,7 @@ typedef struct {
     int32_t   acceleration_rate;            // The acceleration rate used for acceleration calculation
   #endif
 
-  uint8_t direction_bits;                   // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
+  uint16_t direction_bits;                   // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
 
   // Advance extrusion
   #if ENABLED(LIN_ADVANCE)
@@ -260,12 +260,12 @@ class Planner {
      *
      * Leveling and kinematics should be applied ahead of calling this.
      *
-     *  a,b,c,e     - target positions in mm and/or degrees
+     *  destination     - target positions in mm and/or degrees
      *  fr_mm_s     - (target) speed of the move
      *  extruder    - target extruder
      *  millimeters - the length of the movement, if known
      */
-    static void buffer_segment(const float &a, const float &b, const float &c, const float &e, const float &fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
+    static void buffer_segment(const float &a, const float &b, const float &c, const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
 
     /**
      * Add a new linear movement to the buffer.
@@ -280,7 +280,7 @@ class Planner {
      *  extruder    - target extruder
      *  millimeters - the length of the movement, if known
      */
-    static void buffer_line(ARG_X, ARG_Y, ARG_Z, const float &e, const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
+    static void buffer_line(ARG_X, ARG_Y, ARG_Z, const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
 
     /**
      * Add a new linear movement to the buffer.
@@ -302,12 +302,12 @@ class Planner {
      *
      * Clears previous speed values.
      */
-    static void _set_position_mm(const float &a, const float &b, const float &c, const float &e);
-    static void set_position_mm(ARG_X, ARG_Y, ARG_Z, const float &e);
+    static void _set_position_mm(const float &a, const float &b, const float &c, const float e[DRIVER_EXTRUDERS]);
+    static void set_position_mm(ARG_X, ARG_Y, ARG_Z, const float e[DRIVER_EXTRUDERS]);
     static void set_position_mm(const AxisEnum axis, const float &v);
     static void set_position_mm_kinematic(const float (&cart)[XYZE]);
     FORCE_INLINE static void set_z_position_mm(const float &z) { set_position_mm(AxisEnum(Z_AXIS), z); }
-    FORCE_INLINE static void set_e_position_mm(const float &e) { set_position_mm(AxisEnum(E_AXIS), e); }
+    FORCE_INLINE static void set_e_position_mm(const float e[DRIVER_EXTRUDERS]) {  LOOP_EUVW(ie) set_position_mm(AxisEnum(ie), e[ie-XYZ]); }
 
     /**
      * Sync from the stepper positions. (e.g., after an interrupted move)

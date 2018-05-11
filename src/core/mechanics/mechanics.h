@@ -416,7 +416,7 @@ class Mechanics {
 
   protected: /** Protected Function */
 
-    static void report_xyze(const float pos[], const uint8_t n=4, const uint8_t precision=3);
+    static void report_xyze(const float pos[], const uint8_t n=XYZE, const uint8_t precision=3);
 
     static float get_homing_bump_feedrate(const AxisEnum axis);
 
