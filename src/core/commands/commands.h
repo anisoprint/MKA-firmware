@@ -74,6 +74,7 @@ class Commands {
 
     static void get_destination();
     static bool get_target_tool(const uint16_t code);
+    static bool get_target_driver(const uint16_t code);
     static bool get_target_heater(int8_t &h);
 
     FORCE_INLINE static void setup() { for (uint8_t i = 0; i < COUNT(send_ok); i++) send_ok[i] = true; }

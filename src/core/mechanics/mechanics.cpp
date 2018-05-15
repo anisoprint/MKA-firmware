@@ -126,7 +126,7 @@ void Mechanics::set_current_from_steppers_for_axis(const AxisEnum axis) {
  * (or from wherever it has been told it is located).
  */
 void Mechanics::line_to_current_position() {
-  planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], feedrate_mm_s, tools.active_extruder);
+  planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position+XYZ, feedrate_mm_s, tools.active_extruder);
 }
 
 /**
@@ -135,7 +135,7 @@ void Mechanics::line_to_current_position() {
  * used by G0/G1/G2/G3/G5 and many other functions to set a destination.
  */
 void Mechanics::line_to_destination(float fr_mm_s) {
-  planner.buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], fr_mm_s, tools.active_extruder);
+  planner.buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination+XYZ, fr_mm_s, tools.active_extruder);
 }
 
 /**
@@ -244,25 +244,20 @@ void Mechanics::sync_plan_position() {
   #if ENABLED(DEBUG_LEVELING_FEATURE)
     if (printer.debugLeveling()) DEBUG_POS("sync_plan_position", current_position);
   #endif
-  planner.set_position_mm(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS]);
+  planner.set_position_mm(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position+XYZ);
 }
 void Mechanics::sync_plan_position_e() {
-  planner.set_e_position_mm(current_position[E_AXIS]);
+  planner.set_e_position_mm(current_position+XYZ);
 }
 
 /**
  * Recalculate the steps/s^2 acceleration rates, based on the mm/s^2
  */
 void Mechanics::reset_acceleration_rates() {
-  #if EXTRUDERS > 1
-    #define HIGHEST_CONDITION (i < E_AXIS || i == E_INDEX)
-  #else
-    #define HIGHEST_CONDITION true
-  #endif
   uint32_t highest_rate = 1;
   LOOP_XYZE_N(i) {
     max_acceleration_steps_per_s2[i] = max_acceleration_mm_per_s2[i] * axis_steps_per_mm[i];
-    if (HIGHEST_CONDITION) NOLESS(highest_rate, max_acceleration_steps_per_s2[i]);
+    if (highest_rate) NOLESS(highest_rate, max_acceleration_steps_per_s2[i]);
   }
   planner.cutoff_long = 4294967295UL / highest_rate;
 }
@@ -323,7 +318,7 @@ void Mechanics::do_homing_move(const AxisEnum axis, const float distance, const 
 
   sync_plan_position();
   current_position[axis] = distance;
-  planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis], tools.active_extruder);
+  planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position+XYZ, fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis], tools.active_extruder);
 
   stepper.synchronize();
 
@@ -363,7 +358,25 @@ void Mechanics::report_current_position() {
   SERIAL_MV( "X:", LOGICAL_X_POSITION(current_position[X_AXIS]), 2);
   SERIAL_MV(" Y:", LOGICAL_Y_POSITION(current_position[Y_AXIS]), 2);
   SERIAL_MV(" Z:", LOGICAL_Z_POSITION(current_position[Z_AXIS]), 3);
-  SERIAL_EMV(" E:", current_position[E_AXIS], 4);
+  SERIAL_MV(" E:", current_position[E_AXIS], 4);
+
+	#if DRIVER_EXTRUDERS > 1
+	SERIAL_MV(" U:", current_position[U_AXIS], 4);
+	#endif
+	#if DRIVER_EXTRUDERS > 2
+	SERIAL_MV(" V:", current_position[V_AXIS], 4);
+	#endif
+	#if DRIVER_EXTRUDERS > 3
+	SERIAL_MV(" W:", current_position[W_AXIS], 4);
+	#endif
+	#if DRIVER_EXTRUDERS > 4
+	SERIAL_MV(" K:", current_position[K_AXIS], 4);
+	#endif
+	#if DRIVER_EXTRUDERS > 5
+	SERIAL_MV(" L:", current_position[L_AXIS], 4);
+	#endif
+
+  SERIAL_EOL();
 }
 void Mechanics::report_current_position_detail() {
 
@@ -419,6 +432,7 @@ void Mechanics::report_current_position_detail() {
 
 }
 
+//TODOAP
 void Mechanics::report_xyze(const float pos[], const uint8_t n/*=4*/, const uint8_t precision/*=3*/) {
   char str[12];
   for (uint8_t i = 0; i < n; i++) {

@@ -31,4 +31,4 @@
 /**
  * M83: Set E codes relative while in Absolute Coordinates (G90) mode
  */
-inline void gcode_M83(void) { printer.axis_relative_modes[E_AXIS] = true; }
+inline void gcode_M83(void) { LOOP_EUVW(ie) printer.axis_relative_modes[ie] = true;}

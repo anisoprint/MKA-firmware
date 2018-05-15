@@ -42,16 +42,16 @@
       static uint8_t  active_extruder,
                       previous_extruder,
                       target_extruder,
-                      active_driver;
+					  target_driver;
 
-      static int16_t  flow_percentage[EXTRUDERS],       // Extrusion factor for each extruder
-                      density_percentage[EXTRUDERS];    // Extrusion density factor for each extruder
-      static float    e_factor[EXTRUDERS];              // The flow percentage and volumetric multiplier combine to scale E movement
+      static int16_t  flow_percentage[DRIVER_EXTRUDERS],       // Extrusion factor for each extruder
+                      density_percentage[DRIVER_EXTRUDERS];    // Extrusion density factor for each extruder
+      static float    e_factor[DRIVER_EXTRUDERS];              // The flow percentage and volumetric multiplier combine to scale E movement
 
       #if ENABLED(VOLUMETRIC_EXTRUSION)
-        static float  filament_size[EXTRUDERS],         // Diameter of filament (in millimeters), typically around 1.75 or 2.85, 0 disables the volumetric calculations for the tools.
+        static float  filament_size[DRIVER_EXTRUDERS],         // Diameter of filament (in millimeters), typically around 1.75 or 2.85, 0 disables the volumetric calculations for the tools.
                       volumetric_area_nominal,          // Nominal cross-sectional area
-                      volumetric_multiplier[EXTRUDERS]; // Reciprocal of cross-sectional area of filament (in mm^2). Pre-calculated to reduce computation in the planner
+                      volumetric_multiplier[DRIVER_EXTRUDERS]; // Reciprocal of cross-sectional area of filament (in mm^2). Pre-calculated to reduce computation in the planner
                                                         // May be auto-adjusted by a filament width sensor
       #endif
 
@@ -59,11 +59,11 @@
       static float    hotend_offset[XYZ][HOTENDS];
 
       #if HAS_EXT_ENCODER
-        static uint8_t  encLastSignal[EXTRUDERS];           // what was the last signal
-        static int8_t   encLastDir[EXTRUDERS];
-        static int32_t  encStepsSinceLastSignal[EXTRUDERS], // when was the last signal
-                        encLastChangeAt[EXTRUDERS],
-                        encErrorSteps[EXTRUDERS];
+        static uint8_t  encLastSignal[DRIVER_EXTRUDERS];           // what was the last signal
+        static int8_t   encLastDir[DRIVER_EXTRUDERS];
+        static int32_t  encStepsSinceLastSignal[DRIVER_EXTRUDERS], // when was the last signal
+                        encLastChangeAt[DRIVER_EXTRUDERS],
+                        encErrorSteps[DRIVER_EXTRUDERS];
       #endif
 
       #if ENABLED(PID_ADD_EXTRUSION_RATE)

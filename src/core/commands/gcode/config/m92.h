@@ -32,17 +32,15 @@
  * M92: Set axis steps-per-unit for one or more axes, X, Y, Z, and E.
  *      (Follows the same syntax as G92)
  *
- *      With multiple extruders use T to specify which one.
  */
 inline void gcode_M92(void) {
 
-  GET_TARGET_EXTRUDER(92);
 
   LOOP_XYZE(i) {
     if (parser.seen(axis_codes[i])) {
-      const uint8_t a = i + (i == E_AXIS ? TARGET_EXTRUDER : 0);
+      const uint8_t a = i;
       const float value = parser.value_per_axis_unit((AxisEnum)a);
-      if (i == E_AXIS) {
+      if (i >= E_AXIS) {
         if (value < 20.0) {
           float factor = mechanics.axis_steps_per_mm[a] / value; // increase e constants if M92 E14 is given for netfab.
           mechanics.max_jerk[a] *= factor;

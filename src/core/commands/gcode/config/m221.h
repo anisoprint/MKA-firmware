@@ -35,14 +35,14 @@
    */
   inline void gcode_M221(void) {
 
-    GET_TARGET_EXTRUDER(221);
+    GET_TARGET_DRIVER(221);
     if (parser.seenval('S')) {
-      tools.flow_percentage[TARGET_EXTRUDER] = parser.value_int();
-      tools.refresh_e_factor(TARGET_EXTRUDER);
+      tools.flow_percentage[TARGET_DRIVER] = parser.value_int();
+      tools.refresh_e_factor(TARGET_DRIVER);
     }
     else {
-      SERIAL_SMV(ECHO, "E", TARGET_EXTRUDER);
-      SERIAL_MV(" Flow: ", tools.flow_percentage[TARGET_EXTRUDER]);
+      SERIAL_SMV(ECHO, "E", TARGET_DRIVER);
+      SERIAL_MV(" Flow: ", tools.flow_percentage[TARGET_DRIVER]);
       SERIAL_CHR('%');
       SERIAL_EOL();
     }

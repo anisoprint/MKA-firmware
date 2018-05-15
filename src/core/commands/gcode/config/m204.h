@@ -39,7 +39,7 @@
  */
 inline void gcode_M204(void) {
 
-  GET_TARGET_EXTRUDER(204);
+	GET_TARGET_DRIVER(204);
 
   if (parser.seen('S')) {  // Kept for legacy compatibility. Should NOT BE USED for new developments.
     mechanics.travel_acceleration = mechanics.acceleration = parser.value_linear_units();
@@ -50,8 +50,8 @@ inline void gcode_M204(void) {
     SERIAL_EMV("Setting Print acceleration: ", mechanics.acceleration );
   }
   if (parser.seen('R')) {
-    mechanics.retract_acceleration[TARGET_EXTRUDER] = parser.value_linear_units();
-    SERIAL_EMV("Setting Retract acceleration: ", mechanics.retract_acceleration[TARGET_EXTRUDER]);
+    mechanics.retract_acceleration[TARGET_DRIVER] = parser.value_linear_units();
+    SERIAL_EMV("Setting Retract acceleration: ", mechanics.retract_acceleration[TARGET_DRIVER]);
   }
   if (parser.seen('V')) {
     mechanics.travel_acceleration = parser.value_linear_units();

@@ -33,7 +33,7 @@ struct printStatistics {
   uint16_t  finishedPrints; // Number of complete prints
   uint32_t  printTime;      // Accumulated printing time
   uint32_t  printer_usage;  // Printer usage ON
-  double    filamentUsed;   // Accumulated filament consumed in mm
+  double    filamentUsed[DRIVER_EXTRUDERS];   // Accumulated filament consumed in mm
 };
 
 class PrintCounter: public Stopwatch {

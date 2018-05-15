@@ -162,7 +162,7 @@ class Mechanics {
      */
     static float    acceleration,
                     travel_acceleration,
-                    retract_acceleration[EXTRUDERS],
+                    retract_acceleration[DRIVER_EXTRUDERS],
                     max_jerk[XYZE_N];
     static uint32_t max_acceleration_steps_per_s2[XYZE_N],
                     max_acceleration_mm_per_s2[XYZE_N];

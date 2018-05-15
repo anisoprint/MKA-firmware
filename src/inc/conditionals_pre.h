@@ -471,9 +471,13 @@
 #if EXTRUDERS > 1
   #define GET_TARGET_EXTRUDER(CMD) if (commands.get_target_tool(CMD)) return
   #define TARGET_EXTRUDER tools.target_extruder
+  #define GET_TARGET_DRIVER(CMD) if (commands.get_target_driver(CMD)) return
+  #define TARGET_DRIVER tools.target_driver
 #elif EXTRUDERS == 1
   #define GET_TARGET_EXTRUDER(CMD) NOOP
   #define TARGET_EXTRUDER 0
+  #define GET_TARGET_DRIVER(CMD) NOOP
+  #define TARGET_DRIVER 0
 #elif EXTRUDERS == 0
   #undef PIDTEMP
   #define PIDTEMP false
@@ -483,6 +487,8 @@
   #define E_INDEX   0
   #define GET_TARGET_EXTRUDER(CMD) NOOP
   #define TARGET_EXTRUDER 0
+  #define GET_TARGET_DRIVER(CMD) NOOP
+  #define TARGET_DRIVER 0
 #endif
 
 #if DRIVER_EXTRUDERS > 1

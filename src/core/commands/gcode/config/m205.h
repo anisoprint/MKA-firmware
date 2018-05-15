@@ -41,15 +41,13 @@
  */
 inline void gcode_M205(void) {
 
-  GET_TARGET_EXTRUDER(205);
-
   if (parser.seen('S')) mechanics.min_feedrate_mm_s = parser.value_linear_units();
   if (parser.seen('V')) mechanics.min_travel_feedrate_mm_s = parser.value_linear_units();
   if (parser.seen('B')) mechanics.min_segment_time_us = parser.value_ulong();
 
   LOOP_XYZE(i) {
     if (parser.seen(axis_codes[i])) {
-      const uint8_t a = i + (i == E_AXIS ? TARGET_EXTRUDER : 0);
+      const uint8_t a = i;
       #if MECH(DELTA)
         const float value = parser.value_per_axis_unit((AxisEnum)a);
         if (i == E_AXIS)

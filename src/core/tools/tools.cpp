@@ -35,7 +35,7 @@
   uint8_t Tools::active_extruder    = 0,
           Tools::previous_extruder  = 0,
           Tools::target_extruder    = 0,
-          Tools::active_driver      = 0;
+  	  	  Tools::target_driver      = 0;
 
   int16_t Tools::flow_percentage[DRIVER_EXTRUDERS]       = ARRAY_BY_EXTRUDERS(100),
           Tools::density_percentage[DRIVER_EXTRUDERS]    = ARRAY_BY_EXTRUDERS(100);
@@ -129,7 +129,7 @@
               active_extruder = tmp_extruder;
               active_driver = 0;
             #else
-              active_extruder = active_driver = tmp_extruder;
+              active_extruder = tmp_extruder;
             #endif
 
           #endif // !DUAL_X_CARRIAGE
@@ -197,7 +197,6 @@
 
       #endif // HOTENDS <= 1
 
-      SERIAL_LMV(ECHO, MSG_ACTIVE_DRIVER, (int)active_driver);
       SERIAL_LMV(ECHO, MSG_ACTIVE_EXTRUDER, (int)active_extruder);
 
     #endif // !MIXING_EXTRUDER || MIXING_VIRTUAL_TOOLS <= 1

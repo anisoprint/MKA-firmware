@@ -34,22 +34,39 @@
 inline void gcode_G92(void) {
 
   bool  didXYZ = false,
-        didE = false;
+        didE = false,
+  	  	doAll = false;
+
+  LOOP_XYZ(i)
+  {
+  	if (parser.seenval(axis_codes[i]))
+  	{
+  		didXYZ = true;
+  		break;
+  	}
+  }
+
+  LOOP_EUVW(ie)
+  {
+  	if (parser.seenval(axis_codes[ie]))
+  	{
+  		didE = true;
+  		break;
+  	}
+  }
+
+
+  doAll = !(didXYZ || didE);
 
   stepper.synchronize();
 
   LOOP_XYZE(i) {
     if (parser.seenval(axis_codes[i])) {
       const float l = parser.value_axis_units((AxisEnum)i),
-                  v = (i == E_AXIS) ? l : mechanics.logical_to_native(l, (AxisEnum)i),
+                  v = (i >= E_AXIS) ? l : mechanics.logical_to_native(l, (AxisEnum)i),
                   d = v - mechanics.current_position[i];
 
       if (!NEAR_ZERO(d)) {
-        if (i == E_AXIS)
-          didE = true;
-        else
-          didXYZ = true;
-
         #if IS_SCARA
           mechanics.current_position[i] = v;        // For SCARA just set the position directly
         #elif ENABLED(WORKSPACE_OFFSETS)
@@ -64,9 +81,16 @@ inline void gcode_G92(void) {
         #endif
       }
     }
+    else
+    {
+    	if (doAll)
+    	{
+            mechanics.current_position[i] = 0;
+    	}
+    }
   }
 
-  if (didXYZ)
+  if (didXYZ || doAll)
     mechanics.sync_plan_position_mech_specific();
   else if (didE)
     mechanics.sync_plan_position_e();

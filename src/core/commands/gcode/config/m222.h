@@ -35,12 +35,12 @@
    */
   inline void gcode_M222(void) {
 
-    GET_TARGET_EXTRUDER(222);
+    GET_TARGET_DRIVER(222);
 
     if (parser.seenval('S')) {
-      tools.density_percentage[TARGET_EXTRUDER] = parser.value_int();
+      tools.density_percentage[TARGET_DRIVER] = parser.value_int();
       #if ENABLED(RFID_MODULE)
-        rfid522.RfidData[TARGET_EXTRUDER].data.density = tools.density_percentage[TARGET_EXTRUDER];
+        rfid522.RfidData[TARGET_DRIVER].data.density = tools.density_percentage[TARGET_DRIVER];
       #endif
     }
   }

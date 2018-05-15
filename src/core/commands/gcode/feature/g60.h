@@ -48,5 +48,21 @@ inline void gcode_G60(void) {
   SERIAL_MV("<-X:", mechanics.stored_position[slot][X_AXIS]);
   SERIAL_MV(" Y:", mechanics.stored_position[slot][Y_AXIS]);
   SERIAL_MV(" Z:", mechanics.stored_position[slot][Z_AXIS]);
-  SERIAL_EMV(" E:", mechanics.stored_position[slot][E_AXIS]);
+  SERIAL_MV(" E:", mechanics.stored_position[slot][E_AXIS]);
+#if DRIVER_EXTRUDERS > 1
+  SERIAL_MV(" U:", mechanics.stored_position[slot][U_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 2
+  SERIAL_MV(" V:", mechanics.stored_position[slot][V_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 3
+  SERIAL_MV(" W:", mechanics.stored_position[slot][W_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 4
+  SERIAL_MV(" K:", mechanics.stored_position[slot][K_AXIS]);
+#endif
+#if DRIVER_EXTRUDERS > 5
+  SERIAL_MV(" L:", mechanics.stored_position[slot][L_AXIS]);
+#endif
+  SERIAL_EOL();
 }

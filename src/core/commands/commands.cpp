@@ -506,7 +506,7 @@ void Commands::get_destination() {
       const float v = parser.value_axis_units((AxisEnum)i);
       mechanics.destination[i] = (printer.axis_relative_modes[i] || printer.isRelativeMode())
         ? mechanics.current_position[i] + v
-        : (i == E_AXIS) ? v : mechanics.logical_to_native(v, (AxisEnum)i);
+        : (i >= E_AXIS) ? v : mechanics.logical_to_native(v, (AxisEnum)i);
     }
     else
       mechanics.destination[i] = mechanics.current_position[i];
@@ -515,12 +515,14 @@ void Commands::get_destination() {
   if (parser.linearval('F') > 0.0)
     mechanics.feedrate_mm_s = MMM_TO_MMS(parser.value_feedrate());
 
-  if (parser.seen('P'))
-    mechanics.destination[E_AXIS] = (parser.value_axis_units(E_AXIS) * tools.density_percentage[tools.previous_extruder] / 100) + mechanics.current_position[E_AXIS];
+  //if (parser.seen('P'))
+  //  mechanics.destination[E_AXIS] = (parser.value_axis_units(E_AXIS) * tools.density_percentage[tools.previous_extruder] / 100) + mechanics.current_position[E_AXIS];
 
   if (!printer.debugDryrun() && !printer.debugSimulation()) {
-    const float diff = mechanics.destination[E_AXIS] - mechanics.current_position[E_AXIS];
-    print_job_counter.data.filamentUsed += diff;
+    LOOP_EXTRUDERS(ie)
+    {
+    	print_job_counter.data.filamentUsed[ie] = mechanics.destination[ie+XYZ] - mechanics.current_position[ie+XYZ];
+    }
     #if ENABLED(RFID_MODULE)
       rfid522.RfidData[tools.active_extruder].data.lenght -= diff;
     #endif
@@ -562,6 +564,22 @@ bool Commands::get_target_tool(const uint16_t code) {
   }
   else
     tools.target_extruder = tools.active_extruder;
+
+  return false;
+}
+
+bool Commands::get_target_driver(const uint16_t code) {
+  if (parser.seenval('T')) {
+    const int8_t t = parser.value_byte();
+    if (t >= DRIVER_EXTRUDERS) {
+      SERIAL_SMV(ECHO, "M", code);
+      SERIAL_EMV(" " MSG_INVALID_EXTRUDER, t);
+      return true;
+    }
+    tools.target_driver = t;
+  }
+  else
+    tools.target_driver = tools.active_extruder;
 
   return false;
 }
