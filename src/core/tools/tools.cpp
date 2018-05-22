@@ -192,7 +192,7 @@
         #else
           // Set the new active extruder
           previous_extruder = active_extruder;
-          active_driver = active_extruder = tmp_extruder;
+          active_extruder = tmp_extruder;
         #endif
 
       #endif // HOTENDS <= 1

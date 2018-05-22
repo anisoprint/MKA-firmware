@@ -119,17 +119,17 @@ class Temperature {
       FORCE_INLINE static bool tooCold(const int16_t temp) {
         return printer.isAllowColdExtrude() ? false : temp < extrude_min_temp;
       }
-      FORCE_INLINE static bool tooColdToExtrude(const uint8_t h) {
+      FORCE_INLINE static bool tooColdToExtrude(const uint8_t e) {
         #if HOTENDS <= 1
-          UNUSED(h);
+          UNUSED(e);
         #endif
-        return tooCold(heaters[HOTEND_INDEX].current_temperature);
+        return tooCold(heaters[extruder_driver_to_hotend(e)].current_temperature);
       }
-      FORCE_INLINE static bool targetTooColdToExtrude(const uint8_t h) {
+      FORCE_INLINE static bool targetTooColdToExtrude(const uint8_t e) {
         #if HOTENDS == 1
-          UNUSED(h);
+          UNUSED(e);
         #endif
-        return tooCold(heaters[HOTEND_INDEX].target_temperature);
+        return tooCold(heaters[extruder_driver_to_hotend(e)].target_temperature);
       }
     #else
       FORCE_INLINE static bool tooColdToExtrude(const uint8_t h) { UNUSED(h); return false; }
@@ -140,6 +140,8 @@ class Temperature {
     FORCE_INLINE static bool targetHotEnoughToExtrude(const uint8_t h) { return !targetTooColdToExtrude(h); }
 
   private:
+
+    static uint8_t extruder_driver_to_hotend(uint8_t extruder_driver);
 
     #if HAS_FILAMENT_SENSOR
       static float analog2widthFil(); // Convert raw Filament Width to millimeters

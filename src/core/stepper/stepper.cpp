@@ -2319,7 +2319,7 @@ void Stepper::synchronize() {
  * derive the current XYZ position later on.
  */
 
-void Stepper::set_position(const long &a, const long &b, const long &c, const long e_position[DRIVER_EXTRUDERS]) {
+void Stepper::set_position(const long position[XYZE]) {
 
   synchronize(); // Bad to set stepper counts in the middle of a move
 
@@ -2327,27 +2327,27 @@ void Stepper::set_position(const long &a, const long &b, const long &c, const lo
 
     #if CORE_IS_XY
       // corexy positioning
-      count_position[A_AXIS] = a + (CORE_FACTOR) * b;
-      count_position[B_AXIS] = CORESIGN(a - (CORE_FACTOR) * b);
-      count_position[Z_AXIS] = c;
+      count_position[A_AXIS] = position[X_AXIS] + (CORE_FACTOR) * position[Y_AXIS];
+      count_position[B_AXIS] = CORESIGN(position[X_AXIS] - (CORE_FACTOR) * position[Y_AXIS]);
+      count_position[Z_AXIS] = position[Z_AXIS];
     #elif CORE_IS_XZ
       // corexz planning
-      count_position[A_AXIS] = a + (CORE_FACTOR) * c;
-      count_position[Y_AXIS] = b;
-      count_position[C_AXIS] = CORESIGN(a - (CORE_FACTOR) * c);
+      count_position[A_AXIS] = position[X_AXIS] + (CORE_FACTOR) * position[Z_AXIS];
+      count_position[Y_AXIS] = position[Y_AXIS];
+      count_position[C_AXIS] = CORESIGN(position[X_AXIS] - (CORE_FACTOR) * position[Z_AXIS]);
     #elif CORE_IS_YZ
       // coreyz planning
-      count_position[X_AXIS] = a;
-      count_position[B_AXIS] = b + (CORE_FACTOR) * c;
-      count_position[C_AXIS] = CORESIGN(b - (CORE_FACTOR) * c);
+      count_position[X_AXIS] = position[X_AXIS];
+      count_position[B_AXIS] = position[Y_AXIS] + (CORE_FACTOR) * position[Z_AXIS];
+      count_position[C_AXIS] = CORESIGN(position[Y_AXIS] - (CORE_FACTOR) * position[Z_AXIS]);
     #else
       // default non-h-bot planning
-      count_position[X_AXIS] = a;
-      count_position[Y_AXIS] = b;
-      count_position[Z_AXIS] = c;
+      count_position[X_AXIS] = position[X_AXIS];
+      count_position[Y_AXIS] = position[Y_AXIS];
+      count_position[Z_AXIS] = position[Z_AXIS];
     #endif
 
-	LOOP_EUVW(ie) count_position[ie] = e_position[ie-XYZ];
+	LOOP_EUVW(ie) count_position[ie] = position[ie];
   CRITICAL_SECTION_END
 }
 

@@ -117,6 +117,7 @@ enum AxisEnum {
 #define NATIVE_Y_POSITION(POS)  mechanics.logical_to_native(POS, Y_AXIS)
 #define NATIVE_Z_POSITION(POS)  mechanics.logical_to_native(POS, Z_AXIS)
 
+/*
 #if PLANNER_LEVELING || ENABLED(ZWOBBLE) || ENABLED(HYSTERESIS)
   #define ARG_X float rx
   #define ARG_Y float ry
@@ -126,6 +127,7 @@ enum AxisEnum {
   #define ARG_Y const float &ry
   #define ARG_Z const float &rz
 #endif
+*/
 
 class Mechanics {
 

@@ -840,3 +840,12 @@ void Temperature::print_heater_state(Heater *act, const bool print_ID, const boo
   }
 
 }
+
+uint8_t Temperature::extruder_driver_to_hotend(uint8_t extruder_driver) {
+	const uint8_t hotends[] = DRIVER_EXTRUDERS_HOTENDS;
+	if (extruder_driver<DRIVER_EXTRUDERS)
+	{
+		return hotends[extruder_driver];
+	}
+	return 0;
+}

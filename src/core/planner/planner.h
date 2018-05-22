@@ -260,12 +260,14 @@ class Planner {
      *
      * Leveling and kinematics should be applied ahead of calling this.
      *
-     *  destination     - target positions in mm and/or degrees
+     *  dest     - target positions in mm and/or degrees
      *  fr_mm_s     - (target) speed of the move
      *  extruder    - target extruder
      *  millimeters - the length of the movement, if known
      */
-    static void buffer_segment(const float &a, const float &b, const float &c, const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
+    static void buffer_segment(const float dest[XYZE], const float &fr_mm_s, const uint8_t extruder, const float &millimeters=0.0);
+
+
 
     /**
      * Add a new linear movement to the buffer.
@@ -280,7 +282,7 @@ class Planner {
      *  extruder    - target extruder
      *  millimeters - the length of the movement, if known
      */
-    static void buffer_line(ARG_X, ARG_Y, ARG_Z, const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
+    static void buffer_line(const float target[XYZE], const float &fr_mm_s, const uint8_t extruder, const float millimeters=0.0);
 
     /**
      * Add a new linear movement to the buffer.
@@ -302,8 +304,8 @@ class Planner {
      *
      * Clears previous speed values.
      */
-    static void _set_position_mm(const float &a, const float &b, const float &c, const float e[DRIVER_EXTRUDERS]);
-    static void set_position_mm(ARG_X, ARG_Y, ARG_Z, const float e[DRIVER_EXTRUDERS]);
+    static void _set_position_mm(const float pos[XYZE]);
+    static void set_position_mm(const float pos[XYZE]);
     static void set_position_mm(const AxisEnum axis, const float &v);
     static void set_position_mm_kinematic(const float (&cart)[XYZE]);
     FORCE_INLINE static void set_z_position_mm(const float &z) { set_position_mm(AxisEnum(Z_AXIS), z); }

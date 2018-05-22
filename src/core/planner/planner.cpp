@@ -1857,34 +1857,34 @@ void Planner::check_axes_activity() {
  *
  * Leveling and kinematics should be applied ahead of calling this.
  *
- *  a,b,c,e     - target positions in mm and/or degrees
+ *  dest     - target positions in mm and/or degrees
  *  fr_mm_s     - (target) speed of the move
  *  extruder    - target extruder
  *  millimeters - the length of the movement, if known
  */
-void Planner::buffer_segment(const float &a, const float &b, const float &c, const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float &millimeters/*=0.0*/) {
+void Planner::buffer_segment(const float dest[XYZE], const float &fr_mm_s, const uint8_t extruder, const float &millimeters/*=0.0*/) {
 
   // The target position of the tool in absolute steps
   // Calculate target position in absolute steps
   const int32_t target[XYZE] = {
-    LROUND(a * mechanics.axis_steps_per_mm[X_AXIS]),
-    LROUND(b * mechanics.axis_steps_per_mm[Y_AXIS]),
-    LROUND(c * mechanics.axis_steps_per_mm[Z_AXIS]),
-    LROUND(e[0] * mechanics.axis_steps_per_mm[E_AXIS])
+    LROUND(dest[X_AXIS] * mechanics.axis_steps_per_mm[X_AXIS]),
+    LROUND(dest[Y_AXIS] * mechanics.axis_steps_per_mm[Y_AXIS]),
+    LROUND(dest[Z_AXIS] * mechanics.axis_steps_per_mm[Z_AXIS]),
+    LROUND(dest[E_AXIS] * mechanics.axis_steps_per_mm[E_AXIS])
 #if DRIVER_EXTRUDERS > 1
-		  , LROUND(e[1] * mechanics.axis_steps_per_mm[U_AXIS])
+		  , LROUND(dest[U_AXIS] * mechanics.axis_steps_per_mm[U_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 2
-		  , LROUND(e[2] * mechanics.axis_steps_per_mm[V_AXIS])
+		  , LROUND(dest[V_AXIS] * mechanics.axis_steps_per_mm[V_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 3
-		  , LROUND(e[3] * mechanics.axis_steps_per_mm[W_AXIS])
+		  , LROUND(dest[W_AXIS] * mechanics.axis_steps_per_mm[W_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 4
-		  , LROUND(e[4] * mechanics.axis_steps_per_mm[K_AXIS])
+		  , LROUND(dest[K_AXIS] * mechanics.axis_steps_per_mm[K_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 5
-		  , LROUND(e[5] * mechanics.axis_steps_per_mm[L_AXIS])
+		  , LROUND(dest[L_AXIS] * mechanics.axis_steps_per_mm[L_AXIS])
 #endif
   };
 
@@ -1910,17 +1910,17 @@ void Planner::buffer_segment(const float &a, const float &b, const float &c, con
   if (printer.debugDryrun() || printer.debugSimulation()) {
 		LOOP_EUVW(i)
 		{
-			position[i] = e[i-XYZ];
+			position[i] = target[i];
 		}
     #if ENABLED(LIN_ADVANCE)
 		  LOOP_EUVW(i)
 		  {
-			  position_float[i] = e[i-XYZ];
+			  position_float[i] = dest[i];
 		  }
     #endif
   }
 
-  /* <-- add a slash to enable
+  //* <-- add a slash to enable
     SERIAL_MV("  buffer_segment FR:", fr_mm_s);
     #if IS_KINEMATIC
       SERIAL_MV(" A:", a);
@@ -1928,23 +1928,26 @@ void Planner::buffer_segment(const float &a, const float &b, const float &c, con
       SERIAL_MV("->", target[A_AXIS]);
       SERIAL_MV(") B:", b);
     #else
-      SERIAL_MV(" X:", a);
+      SERIAL_MV(" X:", dest[X_AXIS]);
       SERIAL_MV(" (", position[X_AXIS]);
       SERIAL_MV("->", target[X_AXIS]);
-      SERIAL_MV(") Y:", b);
+      SERIAL_MV(") Y:", dest[Y_AXIS]);
     #endif
     SERIAL_MV(" (", position[Y_AXIS]);
     SERIAL_MV("->", target[Y_AXIS]);
     #if MECH(DELTA)
       SERIAL_MV(") C:", c);
     #else
-      SERIAL_MV(") Z:", c);
+      SERIAL_MV(") Z:", dest[Z_AXIS]);
     #endif
     SERIAL_MV(" (", position[Z_AXIS]);
     SERIAL_MV("->", target[Z_AXIS]);
-    SERIAL_MV(") E:", e);
+    SERIAL_MV(") E:", dest[E_AXIS]);
     SERIAL_MV(" (", position[E_AXIS]);
     SERIAL_MV("->", target[E_AXIS]);
+    SERIAL_MV(") U:", dest[U_AXIS]);
+    SERIAL_MV(" (", position[U_AXIS]);
+    SERIAL_MV("->", target[U_AXIS]);
     SERIAL_EM(")");
   //*/
 
@@ -1977,7 +1980,7 @@ void Planner::buffer_segment(const float &a, const float &b, const float &c, con
  *  extruder     - target extruder
  *  millimeters  - the length of the movement, if known
  */
-void Planner::buffer_line(ARG_X, ARG_Y, ARG_Z, const float e[DRIVER_EXTRUDERS], const float &fr_mm_s, const uint8_t extruder, const float millimeters/*=0.0*/) {
+void Planner::buffer_line(const float target[XYZE], const float &fr_mm_s, const uint8_t extruder, const float millimeters/*=0.0*/) {
   #if PLANNER_LEVELING && (IS_CARTESIAN || IS_CORE)
     bedlevel.apply_leveling(rx, ry, rz);
   #endif
@@ -1989,7 +1992,7 @@ void Planner::buffer_line(ARG_X, ARG_Y, ARG_Z, const float e[DRIVER_EXTRUDERS], 
     // Calculate Hysteresis
     mechanics.insert_hysteresis_correction(rx, ry, rz, e);
   #endif
-  buffer_segment(rx, ry, rz, e, fr_mm_s, extruder, millimeters);
+  buffer_segment(target, fr_mm_s, extruder, millimeters);
 }
 
 /**
@@ -2033,29 +2036,26 @@ void Planner::buffer_line_kinematic(const float cart[XYZE], const float &fr_mm_s
  *
  * On CORE machines stepper ABC will be translated from the given XYZ.
  */
-void Planner::_set_position_mm(const float &a, const float &b, const float &c, const float e[DRIVER_EXTRUDERS]) {
+void Planner::_set_position_mm(const float pos[XYZE]) {
 
-  const int32_t na = position[X_AXIS] = LROUND(a * mechanics.axis_steps_per_mm[X_AXIS]),
-                nb = position[Y_AXIS] = LROUND(b * mechanics.axis_steps_per_mm[Y_AXIS]),
-                nc = position[Z_AXIS] = LROUND(c * mechanics.axis_steps_per_mm[Z_AXIS]);
-
-
-  const long ne[DRIVER_EXTRUDERS] = {
-		    LROUND(e[0] * mechanics.axis_steps_per_mm[E_AXIS])
+  const int32_t n[XYZE] = { position[X_AXIS] = LROUND(pos[X_AXIS] * mechanics.axis_steps_per_mm[X_AXIS]),
+                			position[Y_AXIS] = LROUND(pos[Y_AXIS] * mechanics.axis_steps_per_mm[Y_AXIS]),
+							position[Z_AXIS] = LROUND(pos[Z_AXIS] * mechanics.axis_steps_per_mm[Z_AXIS]),
+		    LROUND(pos[E_AXIS] * mechanics.axis_steps_per_mm[E_AXIS])
 #if DRIVER_EXTRUDERS > 1
-		  , LROUND(e[1] * mechanics.axis_steps_per_mm[U_AXIS])
+		  , LROUND(pos[U_AXIS] * mechanics.axis_steps_per_mm[U_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 2
-		  , LROUND(e[2] * mechanics.axis_steps_per_mm[V_AXIS])
+		  , LROUND(pos[V_AXIS] * mechanics.axis_steps_per_mm[V_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 3
-		  , LROUND(e[3] * mechanics.axis_steps_per_mm[W_AXIS])
+		  , LROUND(pos[W_AXIS] * mechanics.axis_steps_per_mm[W_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 4
-		  , LROUND(e[4] * mechanics.axis_steps_per_mm[K_AXIS])
+		  , LROUND(pos[K_AXIS] * mechanics.axis_steps_per_mm[K_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 5
-		  , LROUND(e[5] * mechanics.axis_steps_per_mm[L_AXIS])
+		  , LROUND(pos[L_AXIS] * mechanics.axis_steps_per_mm[L_AXIS])
 #endif
 };
 
@@ -2067,17 +2067,17 @@ void Planner::_set_position_mm(const float &a, const float &b, const float &c, c
 	LOOP_EUVW(ie) position_float[ie] = e[ie-XYZ];
   #endif
 
-  stepper.set_position(na, nb, nc, ne);
+  stepper.set_position(n);
   previous_nominal_speed = 0.0; // Resets planner junction speeds. Assumes start from rest.
   ZERO(previous_speed);
 
 }
 
-void Planner::set_position_mm(ARG_X, ARG_Y, ARG_Z, const float e[DRIVER_EXTRUDERS]) {
+void Planner::set_position_mm(const float pos[XYZE]) {
   #if PLANNER_LEVELING
     bedlevel.apply_leveling(rx, ry, rz);
   #endif
-  _set_position_mm(rx, ry, rz, e);
+  _set_position_mm(pos);
 }
 
 void Planner::set_position_mm(const AxisEnum axis, const float &v) {
