@@ -126,7 +126,7 @@ void Mechanics::set_current_from_steppers_for_axis(const AxisEnum axis) {
  * (or from wherever it has been told it is located).
  */
 void Mechanics::line_to_current_position() {
-  planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position+XYZ, feedrate_mm_s, tools.active_extruder);
+  planner.buffer_line(current_position, feedrate_mm_s, tools.active_extruder);
 }
 
 /**
@@ -135,7 +135,7 @@ void Mechanics::line_to_current_position() {
  * used by G0/G1/G2/G3/G5 and many other functions to set a destination.
  */
 void Mechanics::line_to_destination(float fr_mm_s) {
-  planner.buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination+XYZ, fr_mm_s, tools.active_extruder);
+  planner.buffer_line(destination, fr_mm_s, tools.active_extruder);
 }
 
 /**
@@ -244,10 +244,10 @@ void Mechanics::sync_plan_position() {
   #if ENABLED(DEBUG_LEVELING_FEATURE)
     if (printer.debugLeveling()) DEBUG_POS("sync_plan_position", current_position);
   #endif
-  planner.set_position_mm(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position+XYZ);
+  planner.set_position_mm(current_position);
 }
 void Mechanics::sync_plan_position_e() {
-  planner.set_e_position_mm(current_position+XYZ);
+	LOOP_EUVW(ie) planner.set_position_mm(AxisEnum(ie), current_position[ie]);
 }
 
 /**
@@ -318,7 +318,7 @@ void Mechanics::do_homing_move(const AxisEnum axis, const float distance, const 
 
   sync_plan_position();
   current_position[axis] = distance;
-  planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position+XYZ, fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis], tools.active_extruder);
+  planner.buffer_line(current_position, fr_mm_s ? fr_mm_s : homing_feedrate_mm_s[axis], tools.active_extruder);
 
   stepper.synchronize();
 

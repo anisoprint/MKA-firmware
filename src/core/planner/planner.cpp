@@ -2006,27 +2006,42 @@ void Planner::buffer_line(const float target[XYZE], const float &fr_mm_s, const 
  */
 void Planner::buffer_line_kinematic(const float cart[XYZE], const float &fr_mm_s, const uint8_t extruder, const float millimeters/*= 0.0*/) {
   #if PLANNER_LEVELING || ENABLED(ZWOBBLE) || ENABLED(HYSTERESIS)
-    float raw[XYZ]={ cart[X_AXIS], cart[Y_AXIS], cart[Z_AXIS] };
+    float level_raw[XYZ]={ cart[X_AXIS], cart[Y_AXIS], cart[Z_AXIS] };
     #if PLANNER_LEVELING
-      bedlevel.apply_leveling(raw);
+      bedlevel.apply_leveling(level_raw);
     #endif
     #if ENABLED(ZWOBBLE)
       // Calculate ZWobble
-      mechanics.insert_zwobble_correction(raw[Z_AXIS]);
+      mechanics.insert_zwobble_correction(level_raw[Z_AXIS]);
     #endif
     #if ENABLED(HYSTERESIS)
       // Calculate Hysteresis
-      mechanics.insert_hysteresis_correction(raw[X_AXIS], raw[Y_AXIS], raw[Z_AXIS], cart[E_AXIS]);
+      mechanics.insert_hysteresis_correction(level_raw[X_AXIS], level_raw[Y_AXIS], level_raw[Z_AXIS], cart[E_AXIS]);
     #endif
+    float raw[XYZE];
+    raw[X_AXIS] = level_raw[X_AXIS];
+    raw[Y_AXIS] = level_raw[Y_AXIS];
+    raw[X_AXIS] = level_raw[Z_AXIS];
+    LOOP_EUVW(i)
+	{
+    	raw[i] = cart[i];
+	}
   #else
     const float * const raw = cart;
   #endif
-
   #if IS_KINEMATIC
     mechanics.Transform(raw);
-    buffer_segment(mechanics.delta[A_AXIS], mechanics.delta[B_AXIS], mechanics.delta[C_AXIS], cart + XYZ, fr_mm_s, extruder, millimeters);
+    float kin_raw[XYZE];
+    kin_raw[X_AXIS] = mechanics.delta[A_AXIS];
+    kin_raw[Y_AXIS] = mechanics.delta[B_AXIS];
+    kin_raw[X_AXIS] = mechanics.delta[C_AXIS];
+    LOOP_EUVW(i)
+	{
+    	kin_raw[i] = cart[i];
+	}
+    buffer_segment(kin_raw, fr_mm_s, extruder, millimeters);
   #else
-    buffer_segment(raw[X_AXIS], raw[Y_AXIS], raw[Z_AXIS], cart + XYZ, fr_mm_s, extruder, millimeters);
+    buffer_segment(raw, fr_mm_s, extruder, millimeters);
   #endif
 }
 
@@ -2091,16 +2106,25 @@ void Planner::set_position_mm(const AxisEnum axis, const float &v) {
 
 void Planner::set_position_mm_kinematic(const float (&cart)[XYZE]) {
   #if PLANNER_LEVELING
-    float raw[XYZ] = { cart[X_AXIS], cart[Y_AXIS], cart[Z_AXIS] };
-    bedlevel.apply_leveling(raw);
+    float raw_level[XYZ] = { cart[X_AXIS], cart[Y_AXIS], cart[Z_AXIS] };
+    bedlevel.apply_leveling(raw_level);
+    float raw[XYZE];
+    raw[X_AXIS] = level_raw[X_AXIS];
+    raw[Y_AXIS] = level_raw[Y_AXIS];
+    raw[X_AXIS] = level_raw[Z_AXIS];
+    LOOP_EUVW(i)
+	{
+    	raw[i] = cart[i];
+	}
   #else
     const float (&raw)[XYZE] = cart;
   #endif
   #if IS_KINEMATIC
+	#error "ERROR KINEMATIC NOT WORKING WITH MULTIEXTRUDER"
     mechanics.Transform(raw);
     _set_position_mm(mechanics.delta[A_AXIS], mechanics.delta[B_AXIS], mechanics.delta[C_AXIS], cart[E_AXIS]);
   #else
-    _set_position_mm(raw[X_AXIS], raw[Y_AXIS], raw[Z_AXIS], cart+XYZ);
+    _set_position_mm(raw);
   #endif
 }
 
