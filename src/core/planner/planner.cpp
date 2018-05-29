@@ -1213,6 +1213,16 @@ void Planner::check_axes_activity() {
     #endif
   #endif
 
+      //* <-- add a slash to enable
+          SERIAL_MV("buffer_steps:" , 0);
+          SERIAL_MV(" X:", block->steps[X_AXIS]);
+          SERIAL_MV(" Y:", block->steps[Y_AXIS]);
+          SERIAL_MV(" Z:", block->steps[Z_AXIS]);
+          SERIAL_MV(" E:", block->steps[E_AXIS]);
+          SERIAL_MV(" U:", block->steps[U_AXIS]);
+          SERIAL_EOL();
+      //*/
+
   // Enable extruder(s)
   if (extruder_moves) {
 
@@ -1920,7 +1930,7 @@ void Planner::buffer_segment(const float dest[XYZE], const float &fr_mm_s, const
     #endif
   }
 
-  //* <-- add a slash to enable
+  /* <-- add a slash to enable
     SERIAL_MV("  buffer_segment FR:", fr_mm_s);
     #if IS_KINEMATIC
       SERIAL_MV(" A:", a);

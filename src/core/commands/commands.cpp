@@ -497,6 +497,16 @@ bool Commands::enqueue(const char* cmd, bool say_ok/*=false*/) {
  */
 void Commands::get_destination() {
 
+    /* <-- add a slash to enable
+        SERIAL_MV("get_destination_before:" , 0);
+        SERIAL_MV(" X:", mechanics.destination[X_AXIS]);
+        SERIAL_MV(" Y:", mechanics.destination[Y_AXIS]);
+        SERIAL_MV(" Z:", mechanics.destination[Z_AXIS]);
+        SERIAL_MV(" E:", mechanics.destination[E_AXIS]);
+        SERIAL_MV(" U:", mechanics.destination[U_AXIS]);
+        SERIAL_EOL();
+    //*/
+
   #if ENABLED(IDLE_OOZING_PREVENT)
     if (parser.seen('E')) printer.IDLE_OOZING_retract(false);
   #endif
@@ -507,6 +517,9 @@ void Commands::get_destination() {
       mechanics.destination[i] = (printer.axis_relative_modes[i] || printer.isRelativeMode())
         ? mechanics.current_position[i] + v
         : (i >= E_AXIS) ? v : mechanics.logical_to_native(v, (AxisEnum)i);
+
+
+
     }
     else
       mechanics.destination[i] = mechanics.current_position[i];
@@ -545,6 +558,17 @@ void Commands::get_destination() {
         gfx_cursor_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.destination[Z_AXIS]);
     #endif
   #endif
+
+      /* <-- add a slash to enable
+          SERIAL_MV("get_destination:" , 0);
+          SERIAL_MV(" X:", mechanics.destination[X_AXIS]);
+          SERIAL_MV(" Y:", mechanics.destination[Y_AXIS]);
+          SERIAL_MV(" Z:", mechanics.destination[Z_AXIS]);
+          SERIAL_MV(" E:", mechanics.destination[E_AXIS]);
+          SERIAL_MV(" U:", mechanics.destination[U_AXIS]);
+          SERIAL_EOL();
+      //*/
+
 }
 
 /**

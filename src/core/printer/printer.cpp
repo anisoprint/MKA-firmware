@@ -28,7 +28,23 @@
 
 #include "../../../MK4duo.h"
 
-const char axis_codes[XYZE] = {'X', 'Y', 'Z', 'E'};
+const char axis_codes[NUM_AXIS] = {'X', 'Y', 'Z', 'E'
+#if DRIVER_EXTRUDERS > 1
+  , 'U'
+#endif
+#if DRIVER_EXTRUDERS > 2
+  , 'V'
+#endif
+#if DRIVER_EXTRUDERS > 3
+  , 'W'
+#endif
+#if DRIVER_EXTRUDERS > 4
+  , 'K'
+#endif
+#if DRIVER_EXTRUDERS > 5
+  , 'L'
+#endif
+};
 
 Printer printer;
 
