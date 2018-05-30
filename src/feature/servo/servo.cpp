@@ -50,19 +50,51 @@
 
     #if NUM_SERVOS >= 1 && HAS_SERVO_0
       servo[0].attach(SERVO0_PIN);
-      servo[0].detach(); // Just set up the pin. We don't have a position yet. Don't move to a random position.
+	  #ifdef SET_SERVO_NEUTRAL_AT_STARTUP
+      	  servo[0].write(NEUTRAL_SERVO_ANGLE);
+          printer.safe_delay(SERVO_DEACTIVATION_DELAY);
+          #if ENABLED(DEACTIVATE_SERVOS_AFTER_MOVE)
+            this->detach();
+          #endif
+	  #else
+      	  servo[0].detach(); // Just set up the pin. We don't have a position yet. Don't move to a random position.
+	  #endif
     #endif
     #if NUM_SERVOS >= 2 && HAS_SERVO_1
       servo[1].attach(SERVO1_PIN);
-      servo[1].detach();
+		#ifdef SET_SERVO_NEUTRAL_AT_STARTUP
+			  servo[1].write(NEUTRAL_SERVO_ANGLE);
+		      printer.safe_delay(SERVO_DEACTIVATION_DELAY);
+		      #if ENABLED(DEACTIVATE_SERVOS_AFTER_MOVE)
+		        this->detach();
+		      #endif
+		#else
+			  servo[1].detach(); // Just set up the pin. We don't have a position yet. Don't move to a random position.
+		#endif
     #endif
     #if NUM_SERVOS >= 3 && HAS_SERVO_2
       servo[2].attach(SERVO2_PIN);
-      servo[2].detach();
+		#ifdef SET_SERVO_NEUTRAL_AT_STARTUP
+			  servo[2].write(NEUTRAL_SERVO_ANGLE);
+		      printer.safe_delay(SERVO_DEACTIVATION_DELAY);
+		      #if ENABLED(DEACTIVATE_SERVOS_AFTER_MOVE)
+		        this->detach();
+		      #endif
+		#else
+			  servo[2].detach(); // Just set up the pin. We don't have a position yet. Don't move to a random position.
+		#endif
     #endif
     #if NUM_SERVOS >= 4 && HAS_SERVO_3
       servo[3].attach(SERVO3_PIN);
-      servo[3].detach();
+		#ifdef SET_SERVO_NEUTRAL_AT_STARTUP
+			  servo[3].write(NEUTRAL_SERVO_ANGLE);
+		      printer.safe_delay(SERVO_DEACTIVATION_DELAY);
+		      #if ENABLED(DEACTIVATE_SERVOS_AFTER_MOVE)
+		        this->detach();
+		      #endif
+		#else
+			  servo[3].detach(); // Just set up the pin. We don't have a position yet. Don't move to a random position.
+		#endif
     #endif
 
     #if HAS_DONDOLO

@@ -151,7 +151,7 @@
 // Or put 7 for controller fan
 // -1 disables auto mode.
 // Default fan 1 is auto fan for Hotend 0
-#define AUTO_FAN { -1, -1, -1, -1, -1, -1 }
+#define AUTO_FAN { -1, 0, -1, -1, -1, -1 }
 // Parameters for Hotend Fan
 #define HOTEND_AUTO_FAN_TEMPERATURE  50
 #define HOTEND_AUTO_FAN_SPEED       255 // 255 = full speed
@@ -526,11 +526,6 @@
 // Servo deactivation
 // With this option servos are powered only during movement, then turned off to prevent jitter.
 //#define DEACTIVATE_SERVOS_AFTER_MOVE
-
-// Servo deactivation
-// With this option servos are powered only during movement, then turned off to prevent jitter.
-#define SET_SERVO_NEUTRAL_AT_STARTUP
-#define NEUTRAL_SERVO_ANGLE 90
 
 // Delay (in milliseconds) before turning the servo off. This depends on the servo speed.
 // 300ms is a good value but you can try less delay.
