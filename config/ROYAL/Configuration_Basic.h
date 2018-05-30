@@ -60,7 +60,7 @@
  *
  * 2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000
  */
-#define BAUDRATE 115200
+#define BAUDRATE 250000
 
 /**
  * User-specified version info of this build to display in [Pronterface, etc] terminal window during
@@ -123,7 +123,7 @@
  * See: https://github.com/MagoKimbra/MK4duo/blob/master/Documentation/Hardware.md *
  *                                                                                       *
  *****************************************************************************************/
-#define MOTHERBOARD BOARD_RAMPS_13_HHB
+#define MOTHERBOARD BOARD_MKS_13
 /*****************************************************************************************/
 
 
@@ -143,8 +143,8 @@
  * MAKERARM_SCARA - SCARA Makerfarm                                    *
  *                                                                     *
  ***********************************************************************/
-#define MECHANISM MECH_CARTESIAN
-//#define MECHANISM MECH_COREXY
+//#define MECHANISM MECH_CARTESIAN
+#define MECHANISM MECH_COREXY
 //#define MECHANISM MECH_COREYX
 //#define MECHANISM MECH_COREXZ
 //#define MECHANISM MECH_COREZX
@@ -185,14 +185,14 @@
  ***********************************************************************/
 // This defines the number of extruder real or virtual
 // 0,1,2,3,4,5,6
-#define EXTRUDERS 1
+#define EXTRUDERS 2
 
 // This defines the number of Driver extruder you have and use
 // 0,1,2,3,4,5,6
-#define DRIVER_EXTRUDERS 2
+#define DRIVER_EXTRUDERS 3
 
 // This defines the number of hotends you have and use
-#define HOTENDS 1
+#define HOTENDS 2
 
 // This defines which extruder corresponds to which hotend. First hotend is 0
 #define DRIVER_EXTRUDERS_HOTENDS  {0, 1, 1, 0, 0, 0}

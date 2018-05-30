@@ -69,7 +69,7 @@
  * Displayed in the LCD "Ready" message.                                                 *
  *                                                                                       *
  *****************************************************************************************/
-#define CUSTOM_MACHINE_NAME "Core"
+#define CUSTOM_MACHINE_NAME "Composer A4 alpha"
 /*****************************************************************************************/
 
 
@@ -122,15 +122,15 @@
  * uses "false" here (most common setup).                                                *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define X_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define Z_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define Z2_MIN_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
-#define Z2_MAX_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
-#define Z_PROBE_ENDSTOP_LOGIC true   // set to true to invert the logic of the probe.
+#define X_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define X_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define Z_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define Z2_MIN_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
+#define Z2_MAX_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
+#define Z_PROBE_ENDSTOP_LOGIC false   // set to true to invert the logic of the probe.
 /*****************************************************************************************/
 
 
@@ -262,7 +262,7 @@
  *                                                                                       *
  *****************************************************************************************/
 #define X_HOME_DIR -1
-#define Y_HOME_DIR -1
+#define Y_HOME_DIR 1
 #define Z_HOME_DIR -1
 /*****************************************************************************************/
 
@@ -353,11 +353,11 @@
  * Travel limits after homing (units are in mm)                                          *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MAX_POS 200
+#define X_MAX_POS 300
 #define X_MIN_POS 0
-#define Y_MAX_POS 200
+#define Y_MAX_POS 300
 #define Y_MIN_POS 0
-#define Z_MAX_POS 200
+#define Z_MAX_POS 250
 #define Z_MIN_POS 0
 #define E_MIN_POS 0
 /*****************************************************************************************/
@@ -575,7 +575,7 @@
  *                                                                                       *
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 80, 3200, 625, 625, 625, 625}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 80, 1600, 95.5, 98.56, 95.5, 625}
 /*****************************************************************************************/
 
 
@@ -583,9 +583,9 @@
  ********************************** Axis feedrate ****************************************
  *****************************************************************************************/
 //                                       X,   Y, Z,  E0...(per extruder). (mm/sec)
-#define DEFAULT_MAX_FEEDRATE          {300, 300, 2, 100, 100, 100, 100}
+#define DEFAULT_MAX_FEEDRATE          {200, 200, 3, 100, 100, 100, 100}
 // Feedrates for manual moves along        X,     Y,     Z,  E from panel
-#define MANUAL_FEEDRATE               {50*60, 50*60, 4*60, 10*60}
+#define MANUAL_FEEDRATE               {50*60, 50*60, 3*60, 10*60}
 // Minimum feedrate
 #define DEFAULT_MINIMUMFEEDRATE       0.0
 #define DEFAULT_MINTRAVELFEEDRATE     0.0
@@ -636,7 +636,7 @@
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_X (50*60)
 #define HOMING_FEEDRATE_Y (50*60)
-#define HOMING_FEEDRATE_Z (2*60)
+#define HOMING_FEEDRATE_Z (3*60)
 
 // Homing hits each endstop, retracts by these distances, then does a slower bump.
 #define X_HOME_BUMP_MM 5

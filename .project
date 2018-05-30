@@ -42,9 +42,19 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.20/variants/mega</locationURI>
 		</link>
 		<link>
+			<name>libraries/LiquidCrystal</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/LiquidCrystal/1.0.7</locationURI>
+		</link>
+		<link>
 			<name>libraries/SPI</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.20/libraries/SPI</locationURI>
+		</link>
+		<link>
+			<name>libraries/U8glib</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/U8glib/1.19.1</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

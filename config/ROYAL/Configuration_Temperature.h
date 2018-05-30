@@ -238,9 +238,9 @@
 #define LPQ_MAX_LEN 50
 
 //           HotEnd{HE0,HE1,HE2,HE3}
-#define DEFAULT_Kp {28.89, 40, 40, 40}     // Kp for H0, H1, H2, H3
-#define DEFAULT_Ki {1.23, 07, 07, 07}     // Ki for H0, H1, H2, H3
-#define DEFAULT_Kd {169.92, 60, 60, 60}     // Kd for H0, H1, H2, H3
+#define DEFAULT_Kp {11.96, 15.63, 40, 40}     // Kp for H0, H1, H2, H3
+#define DEFAULT_Ki {1.27, 1.18, 07, 07}     // Ki for H0, H1, H2, H3
+#define DEFAULT_Kd {28.15, 51.67, 60, 60}     // Kd for H0, H1, H2, H3
 #define DEFAULT_Kc {100, 100, 100, 100} // heating power = Kc * (e_speed)
 /***********************************************************************/
 
@@ -397,13 +397,13 @@
  * Put THERMAL PROTECTION COOLER at true to enable this feature for the cooler.   *
  *                                                                                *
  **********************************************************************************/
-#define THERMAL_PROTECTION_HOTENDS false
-#define THERMAL_PROTECTION_BED false
+#define THERMAL_PROTECTION_HOTENDS true
+#define THERMAL_PROTECTION_BED true
 #define THERMAL_PROTECTION_CHAMBER false
 #define THERMAL_PROTECTION_COOLER false
 
 #define THERMAL_PROTECTION_PERIOD    40     // Seconds
-#define THERMAL_PROTECTION_HYSTERESIS 4     // Degrees Celsius
+#define THERMAL_PROTECTION_HYSTERESIS 6     // Degrees Celsius
 
 /**
  * When ever increases the target temperature the firmware will wait for the
