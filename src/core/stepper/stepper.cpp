@@ -2486,6 +2486,26 @@ void Stepper::report_positions() {
     const long  xpos = count_position[X_AXIS],
                 ypos = count_position[Y_AXIS],
                 zpos = count_position[Z_AXIS];
+
+#if DRIVER_EXTRUDERS > 0
+   const long epos = count_position[E_AXIS];
+#endif
+#if DRIVER_EXTRUDERS > 1
+   const long upos = count_position[U_AXIS];
+#endif
+#if DRIVER_EXTRUDERS > 2
+   const long vpos = count_position[V_AXIS];
+#endif
+#if DRIVER_EXTRUDERS > 3
+   const long wpos = count_position[W_AXIS];
+#endif
+#if DRIVER_EXTRUDERS > 4
+   const long kpos = count_position[K_AXIS];
+#endif
+#if DRIVER_EXTRUDERS > 5
+   const long lpos = count_position[L_AXIS];
+#endif
+
   CRITICAL_SECTION_END
 
   #if CORE_IS_XY || CORE_IS_XZ || IS_SCARA
@@ -2514,6 +2534,31 @@ void Stepper::report_positions() {
     SERIAL_MSG(" Z:");
   #endif
   SERIAL_VAL(zpos);
+
+#if DRIVER_EXTRUDERS > 0
+  SERIAL_MSG(" E:");
+  SERIAL_VAL(epos);
+#endif
+#if DRIVER_EXTRUDERS > 1
+  SERIAL_MSG(" U:");
+  SERIAL_VAL(upos);
+#endif
+#if DRIVER_EXTRUDERS > 2
+  SERIAL_MSG(" V:");
+  SERIAL_VAL(vpos);
+#endif
+#if DRIVER_EXTRUDERS > 3
+  SERIAL_MSG(" W:");
+  SERIAL_VAL(wpos);
+#endif
+#if DRIVER_EXTRUDERS > 4
+  SERIAL_MSG(" K:");
+  SERIAL_VAL(kpos);
+#endif
+#if DRIVER_EXTRUDERS > 5
+  SERIAL_MSG(" L:");
+  SERIAL_VAL(lpos);
+#endif
 
   SERIAL_EOL();
 }

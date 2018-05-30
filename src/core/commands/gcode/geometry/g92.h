@@ -61,11 +61,18 @@ inline void gcode_G92(void) {
   stepper.synchronize();
 
   LOOP_XYZE(i) {
-    if (parser.seenval(axis_codes[i])) {
-      const float l = parser.value_axis_units((AxisEnum)i),
-                  v = (i >= E_AXIS) ? l : mechanics.logical_to_native(l, (AxisEnum)i),
-                  d = v - mechanics.current_position[i];
-
+    if (parser.seenval(axis_codes[i]) || doAll) {
+    	float l;
+    	if (doAll)
+    	{
+    	   l = 0;
+    	}
+    	else
+    	{
+		  l = parser.value_axis_units((AxisEnum)i);
+    	}
+		  const float v = (i >= E_AXIS) ? l : mechanics.logical_to_native(l, (AxisEnum)i),
+		  d = v - mechanics.current_position[i];
       if (!NEAR_ZERO(d)) {
         #if IS_SCARA
           mechanics.current_position[i] = v;        // For SCARA just set the position directly
@@ -81,13 +88,6 @@ inline void gcode_G92(void) {
         #endif
       }
     }
-    else
-    {
-    	if (doAll)
-    	{
-            mechanics.current_position[i] = 0;
-    	}
-    }
   }
 
   if (didXYZ || doAll)
@@ -96,4 +96,7 @@ inline void gcode_G92(void) {
     mechanics.sync_plan_position_e();
 
   mechanics.report_current_position();
+  stepper.report_positions();
+
+
 }

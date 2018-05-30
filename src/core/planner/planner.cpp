@@ -1010,15 +1010,27 @@ void Planner::check_axes_activity() {
   }
 
   /* <-- add a slash to enable
-    SERIAL_MV("  buffer_steps FR:", fr_mm_s);
-    SERIAL_MV(" A:", target[A_AXIS]);
-    SERIAL_MV(" (", da);
-    SERIAL_MV(" steps) B:", target[B_AXIS]);
-    SERIAL_MV(" (", db);
-    SERIAL_MV(" steps) C:", target[C_AXIS]);
-    SERIAL_MV(" (", dc);
+      SERIAL_MV("buffer_steps position:" , 0);
+      SERIAL_MV(" X:", position[X_AXIS]);
+      SERIAL_MV(" Y:", position[Y_AXIS]);
+      SERIAL_MV(" Z:", position[Z_AXIS]);
+      SERIAL_MV(" E:", position[E_AXIS]);
+      SERIAL_MV(" U:", position[U_AXIS]);
+      SERIAL_EOL();
+  //*/
+
+  /* <-- add a slash to enable
+    SERIAL_MV("  buffer_steps Delta FR:", fr_mm_s);
+    SERIAL_MV(" A:", target[X_AXIS]);
+    SERIAL_MV(" (", dx);
+    SERIAL_MV(" steps) B:", target[Y_AXIS]);
+    SERIAL_MV(" (", dy);
+    SERIAL_MV(" steps) C:", target[Z_AXIS]);
+    SERIAL_MV(" (", dz);
     SERIAL_MV(" steps) E:", target[E_AXIS]);
-    SERIAL_MV(" (", de);
+    SERIAL_MV(" (", de[0]);
+    SERIAL_MV(" steps) U:", target[U_AXIS]);
+    SERIAL_MV(" (", de[1]);
     SERIAL_EM(" steps)");
   //*/
 
@@ -1213,8 +1225,8 @@ void Planner::check_axes_activity() {
     #endif
   #endif
 
-      //* <-- add a slash to enable
-          SERIAL_MV("buffer_steps:" , 0);
+      /* <-- add a slash to enable
+          SERIAL_MV("buffer_steps block:" , 0);
           SERIAL_MV(" X:", block->steps[X_AXIS]);
           SERIAL_MV(" Y:", block->steps[Y_AXIS]);
           SERIAL_MV(" Z:", block->steps[Z_AXIS]);
@@ -2066,21 +2078,21 @@ void Planner::_set_position_mm(const float pos[XYZE]) {
   const int32_t n[XYZE] = { position[X_AXIS] = LROUND(pos[X_AXIS] * mechanics.axis_steps_per_mm[X_AXIS]),
                 			position[Y_AXIS] = LROUND(pos[Y_AXIS] * mechanics.axis_steps_per_mm[Y_AXIS]),
 							position[Z_AXIS] = LROUND(pos[Z_AXIS] * mechanics.axis_steps_per_mm[Z_AXIS]),
-		    LROUND(pos[E_AXIS] * mechanics.axis_steps_per_mm[E_AXIS])
+							position[E_AXIS] = LROUND(pos[E_AXIS] * mechanics.axis_steps_per_mm[E_AXIS])
 #if DRIVER_EXTRUDERS > 1
-		  , LROUND(pos[U_AXIS] * mechanics.axis_steps_per_mm[U_AXIS])
+		  , position[U_AXIS] = LROUND(pos[U_AXIS] * mechanics.axis_steps_per_mm[U_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 2
-		  , LROUND(pos[V_AXIS] * mechanics.axis_steps_per_mm[V_AXIS])
+		  , position[V_AXIS] = LROUND(pos[V_AXIS] * mechanics.axis_steps_per_mm[V_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 3
-		  , LROUND(pos[W_AXIS] * mechanics.axis_steps_per_mm[W_AXIS])
+		  , position[W_AXIS] = LROUND(pos[W_AXIS] * mechanics.axis_steps_per_mm[W_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 4
-		  , LROUND(pos[K_AXIS] * mechanics.axis_steps_per_mm[K_AXIS])
+		  , position[K_AXIS] = LROUND(pos[K_AXIS] * mechanics.axis_steps_per_mm[K_AXIS])
 #endif
 #if DRIVER_EXTRUDERS > 5
-		  , LROUND(pos[L_AXIS] * mechanics.axis_steps_per_mm[L_AXIS])
+		  , position[L_AXIS] = LROUND(pos[L_AXIS] * mechanics.axis_steps_per_mm[L_AXIS])
 #endif
 };
 
