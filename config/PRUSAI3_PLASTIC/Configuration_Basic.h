@@ -123,7 +123,7 @@
  * See: https://github.com/MagoKimbra/MK4duo/blob/master/Documentation/Hardware.md *
  *                                                                                       *
  *****************************************************************************************/
-#define MOTHERBOARD BOARD_RAMPS_13_HHB
+#define MOTHERBOARD BOARD_RAMPS_13_HFB
 /*****************************************************************************************/
 
 
