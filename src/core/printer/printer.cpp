@@ -272,8 +272,13 @@ void Printer::setup() {
       SERIAL_EM("RFID CONNECT");
   #endif
 
-  lcd_init();
-  LCD_MESSAGEPGM(WELCOME_MSG);
+  #if ENABLED(NEXTION_HMI)
+    NextionHMI::Init();
+  #else
+	lcd_init();
+	LCD_MESSAGEPGM(WELCOME_MSG);
+  #endif
+
 
   #if ENABLED(SHOW_BOOTSCREEN)
     #if ENABLED(DOGLCD) || ENABLED(ULTRA_LCD)
@@ -400,6 +405,9 @@ void Printer::check_periodical_actions() {
       #if ENABLED(NEXTION)
         nextion_draw_update();
       #endif
+	  #if ENABLED(NEXTION_HMI)
+		NextionHMI::DrawUpdate();
+	  #endif
     }
 
     // Event 2.5 Second

@@ -22,7 +22,9 @@
 
 #include "../../../../MK4duo.h"
 
-#if ENABLED(NEXTION)
+#if ENABLED(NEXTION) || ENABLED(NEXTION_HMI)
+
+char nexBuffer[70] = {0};
 
   #include "Nextion.h"
 
@@ -123,6 +125,20 @@
     cmd += this->__name;
     cmd += ".txt=\"";
     cmd += buffer;
+    cmd += "\"";
+    sendCommand(cmd.c_str());
+    recvRetCommandFinished();
+  }
+
+  void NexObject::setTextPGM(const char *buffer, const char *pname) {
+    String cmd;
+    if (pname) {
+      cmd += pname;
+      cmd += ".";
+    }
+    cmd += this->__name;
+    cmd += ".txt=\"";
+    while (char ch = pgm_read_byte(buffer++)) cmd +=ch;
     cmd += "\"";
     sendCommand(cmd.c_str());
     recvRetCommandFinished();
@@ -766,5 +782,7 @@
   void sendRefreshAll(void) {
     sendCommand("ref 0");
   }
+
+
 
 #endif // NEXTION

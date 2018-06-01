@@ -1485,6 +1485,10 @@
 
 // Nextion 4.3" HMI panel model NX4827T043_11
 //#define NEXTION
+
+// Nextion 3.5" HMI panel
+#define NEXTION_HMI
+
 // Define Serial it use
 #define NEXTION_SERIAL 2
 // For GFX preview visualization enable NEXTION GFX

@@ -49,6 +49,7 @@
   };
 
   typedef enum { IS_HOTEND = 0, IS_BED = 1, IS_CHAMBER = 2, IS_COOLER = 3 } Heater_type;
+  enum HeatingStatus { COOL, HEATING, COOLING, HOT  };
 
   constexpr uint16_t  temp_check_interval[HEATER_TYPE]  = { 0, BED_CHECK_INTERVAL, CHAMBER_CHECK_INTERVAL, COOLER_CHECK_INTERVAL };
   constexpr uint8_t   temp_hysteresis[HEATER_TYPE]      = { 0, BED_HYSTERESIS, CHAMBER_HYSTERESIS, COOLER_HYSTERESIS };
@@ -104,6 +105,8 @@
       void print_PID();
       void print_parameters();
       void sensor_print_parameters();
+
+      HeatingStatus heaterStatus();
 
       #if HARDWARE_PWM
         void SetHardwarePwm();

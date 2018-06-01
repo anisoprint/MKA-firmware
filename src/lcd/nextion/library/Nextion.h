@@ -23,6 +23,8 @@
 #ifndef __NEXTION_H__
 #define __NEXTION_H__
 
+extern char nexBuffer[70];
+
 #if NEXTION_SERIAL > 0
   #if NEXTION_SERIAL == 1
     #define nexSerial Serial1
@@ -159,6 +161,7 @@ class NexObject {
      * @param pname  - To set page name
      */
     void setText(const char *buffer, const char *pname=NULL);
+    void setTextPGM(const char *buffer, const char *pname=NULL);
 
     /**
      * Get val attribute of component

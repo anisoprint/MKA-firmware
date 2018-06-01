@@ -103,12 +103,13 @@ typedef int8_t    pin_t;
 	  #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Muve3D.h)
     #endif
 
-    #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Temperature.h)
-    #include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Feature.h)
+	#include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Temperature.h)
+
 
 #endif
 #endif
 
+#include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Feature.h)
 #if ENABLED(LASER)
   #include "Configuration_Laser.h"
 #endif
@@ -156,6 +157,10 @@ typedef int8_t    pin_t;
 #include "src/lcd/language/language.h"
 #include "src/lcd/ultralcd.h"
 #include "src/lcd/nextion/Nextion_lcd.h"
+
+// NEXTION HMI modules
+#include "src/lcd/nextion_hmi/NextionHMI.h"
+#include "src/lcd/nextion_hmi/StateStatus.h"
 
 // SD modules
 #include "src/sd/cardreader.h"

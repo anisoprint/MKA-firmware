@@ -89,6 +89,26 @@
     }
   }
 
+
+  HeatingStatus Heater::heaterStatus()
+  {
+	if (target_temperature<30 && current_temperature<30) return HeatingStatus::COOL;
+
+	int16_t delta = (target_temperature-current_temperature);
+	bool tempEqual = (abs(delta)<TEMP_HYSTERESIS);
+	if (!tempEqual)
+	{
+		if (delta>0)
+			return HeatingStatus::HEATING;
+		else
+			return HeatingStatus::COOLING;
+	}
+	else
+	{
+		return HeatingStatus::HOT;
+	}
+  }
+
   void Heater::get_pid_output(const bool cycle_1s) {
 
     const float difference = (float)target_temperature - current_temperature;
