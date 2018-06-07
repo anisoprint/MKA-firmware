@@ -161,6 +161,8 @@ typedef int8_t    pin_t;
 // NEXTION HMI modules
 #include "src/lcd/nextion_hmi/NextionHMI.h"
 #include "src/lcd/nextion_hmi/StateStatus.h"
+#include "src/lcd/nextion_hmi/StateTemperature.h"
+#include "src/lcd/nextion_hmi/StateFiles.h"
 
 // SD modules
 #include "src/sd/cardreader.h"

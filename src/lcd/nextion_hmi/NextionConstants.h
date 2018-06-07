@@ -57,6 +57,9 @@
 
 #define NEX_ICON_DONE 27
 
-
+/*	      char UBL_LCD_GCODE[20];
+	      commands.enqueue_and_echo_P(PSTR("G28"));
+	      #if HAS_TEMP_BED
+	        sprintf_P(UBL_LCD_GCODE, PSTR("M190 S%i"), custom_bed_temp);*/
 
 #endif /* SRC_LCD_NEXTION_HMI_NEXTIONCONSTANTS_H_ */

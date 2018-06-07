@@ -20,16 +20,21 @@ namespace {
 	uint8_t _pageID = 0;
 }
 
+uint8_t NextionHMI::pageState = 0;
+uint8_t NextionHMI::pageData = 0;
+
 NexObject NextionHMI::headerText = NexObject(0,  0,  "tH");
 NexObject NextionHMI::headerIcon = NexObject(0,  0,  "iH");
-NexObject NextionHMI::sdText = NexObject(0,  0,  "tSD");;
-NexObject NextionHMI::sdIcon = NexObject(0,  0,  "iSD");;
+NexObject NextionHMI::sdText = NexObject(0,  0,  "tSD");
+NexObject NextionHMI::sdIcon = NexObject(0,  0,  "iSD");
+
+char NextionHMI::buffer[70] = {0};
 
 void NextionHMI::Init() {
 
 	for (uint8_t i = 0; i < 10; i++) {
-		ZERO(nexBuffer);
-		_nextionOn = nexInit(nexBuffer);
+		ZERO(buffer);
+		_nextionOn = nexInit(buffer);
 		if (_nextionOn)
 		{
 			break;
@@ -45,10 +50,10 @@ void NextionHMI::Init() {
 	//Retreiving model
 
 	  serial_print("\n>>>>>>>>>>>>\n");
-	  serial_print(nexBuffer);
+	  serial_print(buffer);
 	  serial_print("\n>>>>>>>>>>>>\n");
 
-	if (strstr(nexBuffer, "NX4832T035")) {
+	if (strstr(buffer, "NX4832T035")) {
 		SERIAL_MSG("Nextion LCD connected!  \n");
 	}
 	else
@@ -73,6 +78,8 @@ void NextionHMI::Init() {
 	Status_Activate();*/
 
 	StateStatus::Init();
+	StateTemperature::Init();
+	StateFiles::Init();
 
 	StateStatus::Activate();
 }
@@ -81,9 +88,9 @@ void NextionHMI::DrawUpdate() {
 	switch(_pageID) {
 	    case PAGE_STATUS : StateStatus::DrawUpdate();
 	         break;
-	    case PAGE_TEMPERATURE : //Temperature_DrawUpdate();
+	    case PAGE_TEMPERATURE : StateTemperature::DrawUpdate();
 	         break;
-	    case PAGE_FILES :
+	    case PAGE_FILES : //Nothing to update
 	         break;
 	    case PAGE_FILEINFO : //Fileinfo_DrawUpdate();
 	         break;
@@ -111,6 +118,36 @@ void NextionHMI::DrawUpdate() {
 }
 
 void NextionHMI::TouchUpdate() {
+	switch(_pageID) {
+	    case PAGE_STATUS : StateStatus::TouchUpdate();
+	         break;
+	    case PAGE_TEMPERATURE : StateTemperature::TouchUpdate();
+	         break;
+	    case PAGE_FILES : StateFiles::TouchUpdate();
+	         break;
+	    case PAGE_FILEINFO : //Fileinfo_DrawUpdate();
+	         break;
+	    case PAGE_PRINTING : //Printing_DrawUpdate();
+	         break;
+	    case PAGE_MESSAGE :
+	         break;
+	    case PAGE_PAUSE :
+	         break;
+	    case PAGE_CHANGE :
+	         break;
+	    case PAGE_WIZARD :
+	         break;
+	    case PAGE_MAINTENANCE : //Maintenance_DrawUpdate();
+	         break;
+	    case PAGE_MOVEMENT : //Movement_DrawUpdate();
+	         break;
+	    case PAGE_EXTRUDERS :
+	         break;
+	    case PAGE_SETTINGS :
+	         break;
+	    case PAGE_ABOUT :
+	         break;
+	}
 }
 
 void NextionHMI::ActivateState(uint8_t state_id) {

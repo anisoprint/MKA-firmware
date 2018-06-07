@@ -1182,6 +1182,9 @@
       }
     }
     return false;
-  }
+}
+
+void CardReader::readFileInfo(SdBaseFile& file) {
+}
 
 #endif //SDSUPPORT

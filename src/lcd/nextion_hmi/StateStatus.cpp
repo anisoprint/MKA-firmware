@@ -37,19 +37,38 @@ namespace {
 };
 
 void StateStatus::Temperature_Push(void* ptr) {
+	SERIAL_MSG("SHOW T \n");
+	uint8_t heater;
+	if (ptr==&_bBuildPlate)
+	{
+		heater = BED_INDEX;
+		StateTemperature::Activate(PREHEAT_1_TEMP_BED, heater);
+		return;
+	}
+
+	if (ptr==&_bH0)
+	{
+		heater = HOT0_INDEX;
+	}
+	else
+	{
+		if (ptr==&_bH1) heater = HOT1_INDEX;
+	}
+	StateTemperature::Activate(PREHEAT_1_TEMP_HOTEND, heater);
 
 }
 
 void StateStatus::Print_Push(void* ptr) {
+	StateFiles::Activate();
 }
 
 void StateStatus::Maintenance_Push(void* ptr) {
 }
 
 void StateStatus::Init() {
-	_bH0.attachPush(Temperature_Push);
-	_bH1.attachPush(Temperature_Push);
-	_bBuildPlate.attachPush(Temperature_Push);
+	_bH0.attachPush(Temperature_Push, &_bH0);
+	_bH1.attachPush(Temperature_Push, &_bH1);
+	_bBuildPlate.attachPush(Temperature_Push, &_bBuildPlate);
 	_bPrint.attachPush(Print_Push);
 	_bMaintenance.attachPush(Maintenance_Push);
 }

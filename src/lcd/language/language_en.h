@@ -39,6 +39,29 @@
   #define CHARSIZE 1
 #endif
 
+
+#ifndef COMPOSITE
+  #define COMPOSITE                           _UxGT("Composite")
+#endif
+
+#ifndef PLASTIC
+  #define PLASTIC                             _UxGT("Plastic")
+#endif
+
+#ifndef COMPOSITE_EXTRUDER_TEMP
+  #define COMPOSITE_EXTRUDER_TEMP             _UxGT("Composite extruder temperature")
+#endif
+
+#ifndef PLASTIC_EXTRUDER_TEMP
+  #define PLASTIC_EXTRUDER_TEMP               _UxGT("Plastic extruder temperature")
+#endif
+
+#ifndef BUILDPLATE_TEMP
+  #define BUILDPLATE_TEMP                     _UxGT("Build plate temperature")
+#endif
+
+
+
 #ifndef WELCOME_MSG
   #define WELCOME_MSG                         MACHINE_NAME _UxGT(" ready")
 #endif

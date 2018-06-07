@@ -19,6 +19,11 @@ namespace NextionHMI {
 	extern NexObject sdText;
 	extern NexObject sdIcon;
 
+	extern uint8_t pageState;
+	extern uint8_t pageData;
+
+	extern char buffer[70];
+
 	void Init();
 	void DrawUpdate();
 	void TouchUpdate();

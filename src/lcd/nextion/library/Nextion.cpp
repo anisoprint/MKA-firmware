@@ -24,8 +24,6 @@
 
 #if ENABLED(NEXTION) || ENABLED(NEXTION_HMI)
 
-char nexBuffer[70] = {0};
-
   #include "Nextion.h"
 
   NexObject::NexObject(uint8_t pid, uint8_t cid, const char *name) {
@@ -68,10 +66,15 @@ char nexBuffer[70] = {0};
   void NexObject::iterate(NexObject **list, const uint8_t pid, const uint8_t cid, const int32_t event) {
     NexObject *e = NULL;
     uint16_t i = 0;
-
+        serial_print("\n>>>>>>>>>>>>\n");
+      	serial_print(cid);
+        serial_print("\n>>>>>>>>>>>>\n");
     if (NULL == list) return;
 
     for (i = 0; (e = list[i]) != NULL; i++) {
+  	  //serial_print("\n>>>>>>>>>>>>\n");
+  	  	//serial_print(e->getObjCid());
+  	    //serial_print("\n>>>>>>>>>>>>\n");
       if (e->__pid == pid && e->__cid == cid) {
         if (NEX_EVENT_PUSH == event)
           e->push();

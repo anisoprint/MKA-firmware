@@ -579,7 +579,11 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
   #if ENABLED(NEXTION)
     lcd_key_touch_update();
   #else
+  #if ENABLED(NEXTION_HMI)
+    NextionHMI::TouchUpdate();
+  #else
     lcd_update();
+  #endif
   #endif
 
   check_periodical_actions();

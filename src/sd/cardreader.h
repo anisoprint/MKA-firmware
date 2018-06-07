@@ -237,6 +237,7 @@
 
       void lsDive(SdBaseFile parent, const char* const match = NULL);
       void parsejson(SdBaseFile &parser_file);
+      void readFileInfo(SdBaseFile &file);
       bool findGeneratedBy(char* buf, char* genBy);
       bool findFirstLayerHeight(char* buf, float &firstlayerHeight);
       bool findLayerHeight(char* buf, float &layerHeight);
