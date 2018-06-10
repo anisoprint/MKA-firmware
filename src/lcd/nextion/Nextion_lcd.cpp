@@ -1055,7 +1055,6 @@
     ZERO(buffer);
     Filgcode.getText(buffer, sizeof(buffer));
     if (ptr == &FilExtr)
-      commands.enqueue_and_echo(buffer);
     else {
       commands.enqueue_and_echo_P(PSTR("G91"));
       commands.enqueue_and_echo(buffer);

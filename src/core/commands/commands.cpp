@@ -279,6 +279,9 @@ void Commands::get_serial() {
       ) {
         if (card_eof) {
           SERIAL_EM(MSG_FILE_PRINTED);
+			#if ENABLED(NEXTION_HMI)
+				  NextionHMI::RaiseEvent(HMIevent::SD_PRINT_FINISHED);
+			#endif
           card.printingHasFinished();
 
           if (card.sdprinting)

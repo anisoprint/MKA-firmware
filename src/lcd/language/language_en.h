@@ -47,6 +47,14 @@
   #define MSG_NO                             	  _UxGT("No")
 #endif
 
+#ifndef MSG_OK
+  #define MSG_OK                             	  _UxGT("OK")
+#endif
+
+#ifndef MSG_CANCEL
+  #define MSG_CANCEL                              _UxGT("Cancel")
+#endif
+
 #ifndef MSG_COMPOSITE
   #define MSG_COMPOSITE                           _UxGT("Composite")
 #endif
@@ -89,6 +97,26 @@
 
 #ifndef MSG_CANCEL_PRINTING
   #define MSG_CANCEL_PRINTING              			_UxGT("Cancel printing")
+#endif
+
+#ifndef MSG_DONE
+  #define MSG_DONE             						_UxGT("DONE!")
+#endif
+
+#ifndef MSG_FINISHED
+  #define MSG_FINISHED             					_UxGT("Finished")
+#endif
+
+#ifndef MSG_PRINT_AGAIN
+  #define MSG_PRINT_AGAIN                           _UxGT("Print again")
+#endif
+
+#ifndef MSG_PAUSE
+  #define MSG_PAUSE                           		_UxGT("Pause")
+#endif
+
+#ifndef MSG_RESUME
+  #define MSG_RESUME                           		_UxGT("Resume")
 #endif
 
 

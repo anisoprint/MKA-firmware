@@ -34,7 +34,7 @@ namespace NextionHMI {
 
 	uint8_t GetActiveState();
 
-	void RaiseEvent(HMIevent event, uint8_t eventArg);
+	void RaiseEvent(HMIevent event, uint8_t eventArg=0);
 };
 
 

@@ -36,10 +36,26 @@ namespace {
 }
 
 void StatePrinting::Cancel_Push(void* ptr) {
-	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, MSG_CANCEL_PRINTING, MSG_CONFIRM_CANCEL_PRINTING, 2, MSG_NO, CancelMessage_No, MSG_YES, CancelMessage_Yes);
+	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_CANCEL_PRINTING), PSTR(MSG_CONFIRM_CANCEL_PRINTING), 2, PSTR(MSG_NO), CancelMessage_No, PSTR(MSG_YES), CancelMessage_Yes);
 }
 
 void StatePrinting::Pause_Push(void* ptr) {
+    UNUSED(ptr);
+
+    if (card.cardOK && card.isFileOpen()) {
+      if (IS_SD_PRINTING) {
+        card.pauseSDPrint();
+        print_job_counter.pause();
+        SERIAL_STR(PAUSE);
+        SERIAL_EOL();
+        _bPause.setTextPGM(PSTR(MSG_RESUME));
+      }
+      else {
+        card.startFileprint();
+        print_job_counter.start();
+        _bPause.setTextPGM(PSTR(MSG_PAUSE));
+      }
+    }
 }
 
 void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
@@ -48,6 +64,9 @@ void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
 	    case HMIevent::HEATING_STARTED_EXTRUDER :
 	    	DrawUpdate();
 	    	break;
+	    case HMIevent::SD_PRINT_FINISHED :
+	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), PSTR(MSG_DONE), 2, PSTR(MSG_OK), DoneMessage_OK, PSTR(MSG_PRINT_AGAIN), DoneMessage_Again, NEX_ICON_DONE);
+	        break;
 	    default:
 	    	_tStatus.setTextPGM(PSTR(MSG_PRINTING));
 	}
@@ -111,7 +130,7 @@ void StatePrinting::TouchUpdate() {
 }
 
 void StatePrinting::CancelMessage_Yes(void* ptr) {
-	card.stopSDPrint();
+	printer.setAbortSDprinting(true);
 	StateStatus::Activate();
 }
 
@@ -120,6 +139,7 @@ void StatePrinting::CancelMessage_No(void* ptr) {
 }
 
 void StatePrinting::DoneMessage_OK(void* ptr) {
+	StateStatus::Activate();
 }
 
 void StatePrinting::DoneMessage_Again(void* ptr) {

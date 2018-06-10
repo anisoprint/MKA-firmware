@@ -159,7 +159,7 @@ void NextionHMI::ActivateState(uint8_t state_id) {
 	_pageID = state_id;
 }
 
-void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg) {
+void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg=0) {
 	lastEvent = event;
 	lastEventArg = eventArg;
 	switch(_pageID) {
