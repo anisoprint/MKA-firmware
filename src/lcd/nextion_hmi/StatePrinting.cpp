@@ -75,9 +75,6 @@ void StatePrinting::Activate() {
 
 void StatePrinting::DrawUpdate() {
     if (IS_SD_PRINTING) {
-  	  serial_print("\n>>>>>>>>>>>>\n");
-  	  serial_print("1");
-  	  serial_print("\n>>>>>>>>>>>>\n");
     	switch(NextionHMI::lastEvent) {
     	    case HMIevent::HEATING_STARTED_BUILDPLATE :
     	    	 sprintf_P(NextionHMI::buffer, PSTR("%s (%d/%d\370C)"), MSG_BUILDPLATE_HEATING, (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
@@ -96,15 +93,9 @@ void StatePrinting::DrawUpdate() {
 					}
 				 }
    	    	     _tStatus.setText(NextionHMI::buffer);
-				  serial_print("\n>>>>>>>>>>>>\n");
-				  serial_print("2");
-				  serial_print("\n>>>>>>>>>>>>\n");
     	         break;
     	}
         if (_previousPercentDone != card.percentDone()) {
-			  serial_print("\n>>>>>%>>>>>>\n");
-			  serial_print(card.percentDone());
-			  serial_print("\n>>>>>%>>>>>>\n");
 			  sprintf_P(NextionHMI::buffer, PSTR("%d%%"), card.percentDone());
 			  _tProgress.setText(NextionHMI::buffer);
 			  // Progress bar solid part
