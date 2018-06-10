@@ -65,12 +65,12 @@ void StateTemperature::Activate(uint16_t autoTemp, uint8_t heater) {
 #if HAS_HEATER_BED
 	if (heater == BED_INDEX)
 	{
-		NextionHMI::headerText.setTextPGM(PSTR(BUILDPLATE_TEMP));
+		NextionHMI::headerText.setTextPGM(PSTR(MSG_BUILDPLATE_TEMP));
 	}
 	else
 	{
-		if (heater == HOT0_INDEX) NextionHMI::headerText.setTextPGM(PSTR(PLASTIC_EXTRUDER_TEMP));
-		if (heater == HOT1_INDEX) NextionHMI::headerText.setTextPGM(PSTR(COMPOSITE_EXTRUDER_TEMP));
+		if (heater == HOT0_INDEX) NextionHMI::headerText.setTextPGM(PSTR(MSG_PLASTIC_EXTRUDER_TEMP));
+		if (heater == HOT1_INDEX) NextionHMI::headerText.setTextPGM(PSTR(MSG_COMPOSITE_EXTRUDER_TEMP));
 	}
 #else
 	if (heater == HOT0_INDEX) NextionHMI::headerText.setTextPGM(PSTR(PLASTIC_EXTRUDER_TEMP));

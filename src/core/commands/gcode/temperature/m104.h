@@ -53,11 +53,15 @@
       #endif
 
       if (temp > heaters[TRG_EXTRUDER_IDX].current_temperature) {
-        #if HOTENDS > 1
-          lcd_status_printf_P(0, PSTR("H%i " MSG_HEATING), TRG_EXTRUDER_IDX);
-        #else
-          LCD_MESSAGEPGM("H " MSG_HEATING);
-        #endif
+		#if ENABLED(NEXTION_HMI)
+    	  	NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_EXTRUDER, TRG_EXTRUDER_IDX);
+		#else
+			#if HOTENDS > 1
+			  lcd_status_printf_P(0, PSTR("H%i " MSG_HEATING), TRG_EXTRUDER_IDX);
+			#else
+			  LCD_MESSAGEPGM("H " MSG_HEATING);
+			#endif
+		#endif
       }
     }
 

@@ -42,8 +42,11 @@
       heaters[BED_INDEX].target_temperature = parser.value_celsius();
     }
     else return;
-
-    lcd_setstatusPGM(heaters[BED_INDEX].isHeating() ? PSTR(MSG_BED_HEATING) : PSTR(MSG_BED_COOLING));
+	#if ENABLED(NEXTION_HMI)
+		NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_BUILDPLATE, BED_INDEX);
+	#else
+		lcd_setstatusPGM(heaters[BED_INDEX].isHeating() ? PSTR(MSG_BED_HEATING) : PSTR(MSG_BED_COOLING));
+	#endif
 
     thermalManager.wait_heater(&heaters[BED_INDEX], no_wait_for_cooling);
   }

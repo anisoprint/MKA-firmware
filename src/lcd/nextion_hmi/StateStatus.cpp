@@ -13,11 +13,9 @@
 #include "StateStatus.h"
 
 namespace {
-
 	///////////// Nextion components //////////
 	//Page
 	NexObject _page = NexObject(PAGE_STATUS,  0,  "status");
-
 	//Build plate status
 	NexObject _tBuildPlateTemperature = NexObject(PAGE_STATUS,  14,  "tBPt");
 	NexObject _tBuildPlateColorStatus = NexObject(PAGE_STATUS,  11,  "tBPc");
@@ -45,7 +43,6 @@ void StateStatus::Temperature_Push(void* ptr) {
 		StateTemperature::Activate(PREHEAT_1_TEMP_BED, heater);
 		return;
 	}
-
 	if (ptr==&_bH0)
 	{
 		heater = HOT0_INDEX;

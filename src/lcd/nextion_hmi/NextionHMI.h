@@ -22,12 +22,19 @@ namespace NextionHMI {
 	extern uint8_t pageState;
 	extern uint8_t pageData;
 
+	extern HMIevent lastEvent;
+	extern uint8_t  lastEventArg;
+
 	extern char buffer[70];
 
 	void Init();
 	void DrawUpdate();
 	void TouchUpdate();
 	void ActivateState(uint8_t state_id);
+
+	uint8_t GetActiveState();
+
+	void RaiseEvent(HMIevent event, uint8_t eventArg);
 };
 
 

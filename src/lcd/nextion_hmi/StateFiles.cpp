@@ -185,7 +185,7 @@ void StateFiles::FFile_Push(void* ptr) {
     	_tFName6.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
 
     card.selectFile(NextionHMI::buffer);
-    //Fileinfo_Activate();
+    StateFileinfo::Activate();
 }
 
 void StateFiles::FFolder_Push(void* ptr) {

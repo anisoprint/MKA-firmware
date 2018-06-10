@@ -39,26 +39,59 @@
   #define CHARSIZE 1
 #endif
 
-
-#ifndef COMPOSITE
-  #define COMPOSITE                           _UxGT("Composite")
+#ifndef MSG_YES
+  #define MSG_YES                           	  _UxGT("Yes")
 #endif
 
-#ifndef PLASTIC
-  #define PLASTIC                             _UxGT("Plastic")
+#ifndef MSG_NO
+  #define MSG_NO                             	  _UxGT("No")
 #endif
 
-#ifndef COMPOSITE_EXTRUDER_TEMP
-  #define COMPOSITE_EXTRUDER_TEMP             _UxGT("Composite extruder temperature")
+#ifndef MSG_COMPOSITE
+  #define MSG_COMPOSITE                           _UxGT("Composite")
 #endif
 
-#ifndef PLASTIC_EXTRUDER_TEMP
-  #define PLASTIC_EXTRUDER_TEMP               _UxGT("Plastic extruder temperature")
+#ifndef MSG_PLASTIC
+  #define MSG_PLASTIC                             _UxGT("Plastic")
 #endif
 
-#ifndef BUILDPLATE_TEMP
-  #define BUILDPLATE_TEMP                     _UxGT("Build plate temperature")
+#ifndef MSG_COMPOSITE_EXTRUDER_TEMP
+  #define MSG_COMPOSITE_EXTRUDER_TEMP             _UxGT("Composite extruder temperature")
 #endif
+
+#ifndef MSG_PLASTIC_EXTRUDER_TEMP
+  #define MSG_PLASTIC_EXTRUDER_TEMP               _UxGT("Plastic extruder temperature")
+#endif
+
+#ifndef MSG_BUILDPLATE_TEMP
+  #define MSG_BUILDPLATE_TEMP                     _UxGT("Build plate temperature")
+#endif
+
+#ifndef MSG_BUILDPLATE_HEATING
+  #define MSG_BUILDPLATE_HEATING                    _UxGT("Build plate heating")
+#endif
+
+#ifndef MSG_COMPOSITE_EXTRUDER_HEATING
+  #define MSG_COMPOSITE_EXTRUDER_HEATING            _UxGT("Composite extruder heating")
+#endif
+
+#ifndef MSG_PLASTIC_EXTRUDER_HEATING
+  #define MSG_PLASTIC_EXTRUDER_HEATING              _UxGT("Plastic extruder heating")
+#endif
+
+#ifndef MSG_PRINTING
+  #define MSG_PRINTING              				_UxGT("Printing...")
+#endif
+
+#ifndef MSG_CONFIRM_CANCEL_PRINTING
+  #define MSG_CONFIRM_CANCEL_PRINTING              	_UxGT("Do you really want to cancel printing?")
+#endif
+
+#ifndef MSG_CANCEL_PRINTING
+  #define MSG_CANCEL_PRINTING              			_UxGT("Cancel printing")
+#endif
+
+
 
 
 

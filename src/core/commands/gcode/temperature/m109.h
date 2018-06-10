@@ -55,11 +55,15 @@
 
       const bool heating = heaters[TRG_EXTRUDER_IDX].isHeating();
       if (heating || !no_wait_for_cooling) {
-        #if HOTENDS > 1
-          lcd_status_printf_P(0, heating ? PSTR("H%i " MSG_HEATING) : PSTR("H%i " MSG_COOLING), TARGET_EXTRUDER);
-        #else
-          lcd_setstatusPGM(heating ? PSTR("H " MSG_HEATING) : PSTR("H " MSG_COOLING));
-        #endif
+		#if ENABLED(NEXTION_HMI)
+			NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_EXTRUDER, TRG_EXTRUDER_IDX);
+		#else
+			#if HOTENDS > 1
+			  lcd_status_printf_P(0, heating ? PSTR("H%i " MSG_HEATING) : PSTR("H%i " MSG_COOLING), TARGET_EXTRUDER);
+			#else
+			  lcd_setstatusPGM(heating ? PSTR("H " MSG_HEATING) : PSTR("H " MSG_COOLING));
+			#endif
+		#endif
       }
     }
     else return;

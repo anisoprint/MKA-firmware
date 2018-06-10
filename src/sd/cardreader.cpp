@@ -1185,6 +1185,52 @@
 }
 
 void CardReader::readFileInfo(SdBaseFile& file) {
+	  //fileSize = file.fileSize();
+	  //filamentNeeded    = 0.0;
+	  //objectHeight      = 0.0;
+	  //firstlayerHeight  = 0.0;
+	  //layerHeight       = 0.0;
+
+	  bool genByFound = false;//, firstlayerHeightFound = false, layerHeightFound = false, filamentNeedFound = false;
+
+	  if (!file.isOpen()) return;
+
+	  #if CPU_ARCH==ARCH_AVR
+	    #define GCI_BUF_SIZE 120
+	  #else
+	    #define GCI_BUF_SIZE 1024
+	  #endif
+
+	  // READ 4KB FROM THE BEGINNING
+	  char buf[GCI_BUF_SIZE];
+	  for (int i = 0; i < 4096; i += GCI_BUF_SIZE - 50) {
+	    if(!file.seekSet(i)) break;
+	    file.read(buf, GCI_BUF_SIZE);
+	    if (!genByFound && findGeneratedBy(buf, generatedBy)) genByFound = true;
+	    //if (!firstlayerHeightFound && findFirstLayerHeight(buf, firstlayerHeight)) firstlayerHeightFound = true;
+	    //if (!layerHeightFound && findLayerHeight(buf, layerHeight)) layerHeightFound = true;
+	    //if (!filamentNeedFound && findFilamentNeed(buf, filamentNeeded)) filamentNeedFound = true;
+	    //if(genByFound && layerHeightFound && filamentNeedFound) goto get_objectHeight;
+	  }
+	  // READ 4KB FROM END
+	  for (int i = 0; i < 4096; i += GCI_BUF_SIZE - 50) {
+	    if(!file.seekEnd(-4096 + i)) break;
+	    file.read(buf, GCI_BUF_SIZE);
+	    if (!genByFound && findGeneratedBy(buf, generatedBy)) genByFound = true;
+	    //if (!firstlayerHeightFound && findFirstLayerHeight(buf, firstlayerHeight)) firstlayerHeightFound = true;
+	    //if (!layerHeightFound && findLayerHeight(buf, layerHeight)) layerHeightFound = true;
+	    //if (!filamentNeedFound && findFilamentNeed(buf, filamentNeeded)) filamentNeedFound = true;
+	    //if(genByFound && layerHeightFound && filamentNeedFound) goto get_objectHeight;
+	  }
+	/*
+	  get_objectHeight:
+	  // MOVE FROM END UP IN 1KB BLOCKS UP TO 30KB
+	  for (int i = GCI_BUF_SIZE; i < 30000; i += GCI_BUF_SIZE - 50) {
+	    if(!file.seekEnd(-i)) break;
+	    file.read(buf, GCI_BUF_SIZE);
+	    if (findTotalHeight(buf, objectHeight)) break;
+	  }*/
+	  file.seekSet(0);
 }
 
 #endif //SDSUPPORT
