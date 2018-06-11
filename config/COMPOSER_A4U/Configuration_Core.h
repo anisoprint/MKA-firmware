@@ -318,8 +318,8 @@
  * Change (or reverse the motor connector) if an axis goes the wrong way.                *
  *                                                                                       *
  *****************************************************************************************/
-#define INVERT_X_DIR false
-#define INVERT_Y_DIR false
+#define INVERT_X_DIR true
+#define INVERT_Y_DIR true
 #define INVERT_Z_DIR false
 #define INVERT_E0_DIR false
 #define INVERT_E1_DIR false
@@ -575,7 +575,7 @@
  *                                                                                       *
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 3200, 95.5, 97.25, 95.5, 625}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 1600, 95.5, 97.25, 95.5, 625}
 /*****************************************************************************************/
 
 
@@ -583,9 +583,9 @@
  ********************************** Axis feedrate ****************************************
  *****************************************************************************************/
 //                                       X,   Y, Z,  E0...(per extruder). (mm/sec)
-#define DEFAULT_MAX_FEEDRATE          {200, 200, 5, 100, 100, 100, 100}
+#define DEFAULT_MAX_FEEDRATE          {200, 200, 30, 100, 100, 100, 100}
 // Feedrates for manual moves along        X,     Y,     Z,  E from panel
-#define MANUAL_FEEDRATE               {50*60, 50*60, 5*60, 10*60}
+#define MANUAL_FEEDRATE               {50*60, 50*60, 10*60, 10*60}
 // Minimum feedrate
 #define DEFAULT_MINIMUMFEEDRATE       0.0
 #define DEFAULT_MINTRAVELFEEDRATE     0.0
@@ -636,7 +636,7 @@
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_X (50*60)
 #define HOMING_FEEDRATE_Y (50*60)
-#define HOMING_FEEDRATE_Z (7*60)
+#define HOMING_FEEDRATE_Z (20*60)
 
 // Homing hits each endstop, retracts by these distances, then does a slower bump.
 #define X_HOME_BUMP_MM 5
@@ -644,7 +644,7 @@
 #define Z_HOME_BUMP_MM 2
 
 // Re-Bump Speed Divisor (Divides the Homing Feedrate)
-#define HOMING_BUMP_DIVISOR {5, 5, 2}
+#define HOMING_BUMP_DIVISOR {5, 5, 4}
 /*****************************************************************************************/
 
 

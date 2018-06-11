@@ -29,7 +29,7 @@ namespace {
 
 	uint8_t _currentPriority = 0;
 }
-;
+
 
 void StateMessage::Init() {
 }

@@ -1011,7 +1011,7 @@
     }
   #endif
 
-  void setmovePopCallback(void *ptr) {
+  void 	(void *ptr) {
     UNUSED(ptr);
 
     #if EXTRUDERS > 1

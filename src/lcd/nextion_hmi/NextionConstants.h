@@ -20,7 +20,7 @@
 #define PAGE_PAUSE 7
 #define PAGE_CHANGE 8
 #define PAGE_WIZARD 9
-#define PAGE_MAINTENANCE 10
+#define PAGE_MENU 10
 #define PAGE_MOVEMENT 11
 #define PAGE_EXTRUDERS 12
 #define PAGE_SETTINGS 13

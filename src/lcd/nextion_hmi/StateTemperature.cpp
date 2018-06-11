@@ -38,6 +38,7 @@ namespace {
 void StateTemperature::Set_Push(void* ptr) {
 	uint32_t targetTemp=0;
 	targetTemp = _vTargetTemp.getValue();
+	if (targetTemp<=21) targetTemp=0;
 	heaters[NextionHMI::pageData].setTarget(targetTemp);
 	StateStatus::Activate();
 }

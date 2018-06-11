@@ -529,7 +529,7 @@
 
 // Servo deactivation
 // With this option servos are powered only during movement, then turned off to prevent jitter.
-#define SET_SERVO_NEUTRAL_AT_STARTUP
+//#define SET_SERVO_NEUTRAL_AT_STARTUP
 #define NEUTRAL_SERVO_ANGLE 90
 
 // Delay (in milliseconds) before turning the servo off. This depends on the servo speed.

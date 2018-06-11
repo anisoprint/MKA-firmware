@@ -60,6 +60,7 @@ void StateStatus::Print_Push(void* ptr) {
 }
 
 void StateStatus::Maintenance_Push(void* ptr) {
+	StateMenu::ActivateMaintenance();
 }
 
 void StateStatus::Init() {

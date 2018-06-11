@@ -297,7 +297,7 @@ void Commands::get_serial() {
               #endif
               leds.set_off();
             #endif
-            card.checkautostart(true);
+            //card.checkautostart(true);
           }
         }
         else if (n == -1) {

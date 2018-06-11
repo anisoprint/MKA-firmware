@@ -13,7 +13,6 @@
 #include "../nextion/library/Nextion.h"
 
 #include "NextionConstants.h"
-#include "StateStatus.h"
 
 namespace {
 	bool _nextionOn = false;
@@ -52,9 +51,9 @@ void NextionHMI::Init() {
 
 	//Retreiving model
 
-	  serial_print("\n>>>>>>>>>>>>\n");
-	  serial_print(buffer);
-	  serial_print("\n>>>>>>>>>>>>\n");
+	  //serial_print("\n>>>>>>>>>>>>\n");
+	  //serial_print(buffer);
+	  //serial_print("\n>>>>>>>>>>>>\n");
 
 	if (strstr(buffer, "NX4832T035")) {
 		SERIAL_MSG("Nextion LCD connected!  \n");
@@ -85,6 +84,7 @@ void NextionHMI::Init() {
 	StateFiles::Init();
 	StateFileinfo::Init();
 	StatePrinting::Init();
+	StateMovement::Init();
 
 	StateStatus::Activate();
 }
@@ -109,9 +109,9 @@ void NextionHMI::DrawUpdate() {
 	         break;
 	    case PAGE_WIZARD :
 	         break;
-	    case PAGE_MAINTENANCE : //Maintenance_DrawUpdate();
+	    case PAGE_MENU : //Maintenance_DrawUpdate();
 	         break;
-	    case PAGE_MOVEMENT : //Movement_DrawUpdate();
+	    case PAGE_MOVEMENT :StateMovement::DrawUpdate();
 	         break;
 	    case PAGE_EXTRUDERS :
 	         break;
@@ -142,9 +142,9 @@ void NextionHMI::TouchUpdate() {
 	         break;
 	    case PAGE_WIZARD :
 	         break;
-	    case PAGE_MAINTENANCE : //Maintenance_DrawUpdate();
+	    case PAGE_MENU : StateMenu::TouchUpdate();
 	         break;
-	    case PAGE_MOVEMENT : //Movement_DrawUpdate();
+	    case PAGE_MOVEMENT : StateMovement::TouchUpdate();
 	         break;
 	    case PAGE_EXTRUDERS :
 	         break;
@@ -159,7 +159,7 @@ void NextionHMI::ActivateState(uint8_t state_id) {
 	_pageID = state_id;
 }
 
-void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg=0) {
+void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg) {
 	lastEvent = event;
 	lastEventArg = eventArg;
 	switch(_pageID) {
@@ -181,7 +181,7 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg=0) {
 	         break;
 	    case PAGE_WIZARD :
 	         break;
-	    case PAGE_MAINTENANCE :
+	    case PAGE_MENU :
 	         break;
 	    case PAGE_MOVEMENT :
 	         break;

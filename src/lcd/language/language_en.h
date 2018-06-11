@@ -119,8 +119,17 @@
   #define MSG_RESUME                           		_UxGT("Resume")
 #endif
 
+#ifndef MSG_MAINTENANCE
+  #define MSG_MAINTENANCE                           _UxGT("Maintenance")
+#endif
 
+#ifndef MSG_LEVEL_BUILD_PLATE
+  #define MSG_LEVEL_BUILD_PLATE                     _UxGT("Level build plate")
+#endif
 
+#ifndef MSG_MOVE_PRINT_HEAD
+  #define MSG_MOVE_PRINT_HEAD                     	_UxGT("Move print head")
+#endif
 
 
 #ifndef WELCOME_MSG

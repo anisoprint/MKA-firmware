@@ -143,6 +143,10 @@ void StatePrinting::DoneMessage_OK(void* ptr) {
 }
 
 void StatePrinting::DoneMessage_Again(void* ptr) {
+	String filename = String(card.fileName);
+	card.selectFile(filename.c_str());
+    commands.enqueue_and_echo_P(PSTR("M24"));
+	StatePrinting::Activate();
 }
 
 #endif
