@@ -322,7 +322,7 @@
 #define INVERT_Y_DIR true
 #define INVERT_Z_DIR false
 #define INVERT_E0_DIR false
-#define INVERT_E1_DIR false
+#define INVERT_E1_DIR true
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
 #define INVERT_E4_DIR false
@@ -357,7 +357,7 @@
 #define X_MIN_POS 0
 #define Y_MAX_POS 210
 #define Y_MIN_POS 0
-#define Z_MAX_POS 156
+#define Z_MAX_POS 139.8
 #define Z_MIN_POS 0
 #define E_MIN_POS 0
 /*****************************************************************************************/
@@ -575,7 +575,7 @@
  *                                                                                       *
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 1600, 95.5, 97.25, 95.5, 625}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 1600, 95.5, 98.23, 95.5, 625}
 /*****************************************************************************************/
 
 

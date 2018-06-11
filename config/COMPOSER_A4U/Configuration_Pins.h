@@ -85,20 +85,20 @@
 #endif
 
 #if DRIVER_EXTRUDERS > 1
-  #define E1_STEP_PIN       ORIG_E3_STEP_PIN
-  #define E1_DIR_PIN        ORIG_E3_DIR_PIN
-  #define E1_ENABLE_PIN     ORIG_E3_ENABLE_PIN
-  #define E1_CS_PIN         ORIG_E3_CS_PIN
-  #define SOL1_PIN          ORIG_SOL3_PIN
+  #define E1_STEP_PIN       ORIG_E2_STEP_PIN
+  #define E1_DIR_PIN        ORIG_E2_DIR_PIN
+  #define E1_ENABLE_PIN     ORIG_E2_ENABLE_PIN
+  #define E1_CS_PIN         ORIG_E2_CS_PIN
+  #define SOL1_PIN          ORIG_SOL2_PIN
   #define E1_ENC_PIN        NoPin
 #endif
 
 #if DRIVER_EXTRUDERS > 2
-  #define E2_STEP_PIN       6
-  #define E2_DIR_PIN        5
-  #define E2_ENABLE_PIN     4
-  #define E2_CS_PIN         ORIG_E2_CS_PIN
-  #define SOL2_PIN          -1
+  #define E2_STEP_PIN       ORIG_E3_STEP_PIN
+  #define E2_DIR_PIN        ORIG_E3_DIR_PIN
+  #define E2_ENABLE_PIN     ORIG_E3_ENABLE_PIN
+  #define E2_CS_PIN         ORIG_E3_CS_PIN
+  #define SOL2_PIN          ORIG_SOL3_PIN
   #define E2_ENC_PIN        NoPin
 #endif
 
