@@ -238,9 +238,9 @@
 #define LPQ_MAX_LEN 50
 
 //           HotEnd{HE0,HE1,HE2,HE3}
-#define DEFAULT_Kp {10.07, 9.494, 40, 40}     // Kp for H0, H1, H2, H3
-#define DEFAULT_Ki {0.798, 0.63, 07, 07}     // Ki for H0, H1, H2, H3
-#define DEFAULT_Kd {31.772, 35.408, 60, 60}     // Kd for H0, H1, H2, H3
+#define DEFAULT_Kp {11.96, 15.63, 40, 40}     // Kp for H0, H1, H2, H3
+#define DEFAULT_Ki {1.27, 1.18, 07, 07}     // Ki for H0, H1, H2, H3
+#define DEFAULT_Kd {28.15, 51.67, 60, 60}     // Kd for H0, H1, H2, H3
 #define DEFAULT_Kc {100, 100, 100, 100} // heating power = Kc * (e_speed)
 /***********************************************************************/
 
