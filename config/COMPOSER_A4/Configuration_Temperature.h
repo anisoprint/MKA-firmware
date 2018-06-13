@@ -177,7 +177,7 @@
  * in the start.gcode                                                                    *
  *                                                                                       *
  *****************************************************************************************/
-#define AUTOTEMP
+//#define AUTOTEMP
 #define AUTOTEMP_OLDWEIGHT 0.98
 /*****************************************************************************************/
 
@@ -222,8 +222,8 @@
 #define PIDTEMP true
 
 #define PID_MAX       255 // Limits current to nozzle while in PID mode;        255 = full current
-#define PID_DRIVE_MIN  40 // Limits min current to nozzle while PID is active;    0 = no current
-#define PID_DRIVE_MAX 230 // Limits max current to nozzle while PID is active;  255 = full current
+#define PID_DRIVE_MIN   0 // Limits min current to nozzle while PID is active;    0 = no current
+#define PID_DRIVE_MAX 255 // Limits max current to nozzle while PID is active;  255 = full current
 
 #define PID_AUTOTUNE_MENU // Add PID Autotune to the LCD "Temperature" menu to run M303 and apply the result.
 //#define PID_DEBUG       // Sends debug data to the serial port.
@@ -271,7 +271,7 @@
 // setting this to anything other than 255 enables a form of PWM to the bed,
 // so you shouldn't use it unless you are OK with PWM on your bed. (see the comment on enabling PIDTEMPBED)
 #define BED_PID_MAX       255   // Limits current to bed while in PID mode;       255 = full current
-#define BED_PID_DRIVE_MIN  80   // Limits min current to bed while PID is active;   0 = no current
+#define BED_PID_DRIVE_MIN   0   // Limits min current to bed while PID is active;   0 = no current
 #define BED_PID_DRIVE_MAX 255   // Limits max current to bed while PID is active; 255 = full current
 
 // 120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)

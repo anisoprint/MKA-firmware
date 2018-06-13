@@ -70,7 +70,7 @@
 					</folderInfo>
 					<fileInfo id="io.sloeber.core.toolChain.release.918675551.1735666758" name="StateStatus.h" rcbsApplicability="disable" resourcePath="src/lcd/nextion_hmi/StateStatus.h" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="src/lcd/nextion_hmi/StateStatusc.h|src/lcd/nextion_hmi/StateStatusc.cpp|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/**/test*/**|libraries/?*/**/third-party/**|libraries**/._*|libraries/?*/c*/?*|libraries/?*/d*/?*|libraries/?*/D*/?*" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/lcd/nextion_hmi/StateStatusc.cpp|libraries/?*/**/test*/**|libraries**/._*|libraries/?*/**/third-party/**|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/c*/?*|libraries/?*/d*/?*|src/lcd/nextion_hmi/StateStatusc.h|libraries/?*/D*/?*" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
