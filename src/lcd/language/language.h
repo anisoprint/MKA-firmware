@@ -189,7 +189,7 @@
 
 #define MSG_STOP_BLTOUCH                    "STOP called because of BLTouch error - restart with M999"
 #define MSG_STOP_UNHOMED                    "STOP called because of unhomed error - restart with M999"
-#define MSG_KILL_INACTIVE_TIME              "KILL caused by too much inactive time - current command: "
+#define MSG_KILL_INACTIVE_TIME              "KILL caused by too much inactive time "
 #define MSG_KILL_BUTTON                     "KILL caused by KILL button/pin"
 
 #define MSG_MICROSTEP_MS1_MS2               "MS1,MS2 Pins"

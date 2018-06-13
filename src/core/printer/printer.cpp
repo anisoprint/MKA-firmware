@@ -483,7 +483,11 @@ void Printer::kill(const char* lcd_msg) {
   #if ENABLED(ULTRA_LCD)
     kill_screen(lcd_msg);
   #else
-    UNUSED(lcd_msg);
+	#if ENABLED(NEXTION_HMI)
+		NextionHMI::RaiseEvent(HMIevent::PRINTER_KILLED, 0, lcd_msg);
+	#else
+		UNUSED(lcd_msg);
+	#endif
   #endif
 
   printer.safe_delay(600);  // Wait a short time (allows messages to get out before shutting down.
@@ -594,7 +598,7 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
 
   if (max_inactivity_watch.stopwatch && max_inactivity_watch.elapsed()) {
     SERIAL_LMT(ER, MSG_KILL_INACTIVE_TIME, parser.command_ptr);
-    kill(PSTR(MSG_KILLED));
+    kill(PSTR(MSG_KILL_INACTIVE_TIME));
   }
 
   #if ENABLED(DHT_SENSOR)

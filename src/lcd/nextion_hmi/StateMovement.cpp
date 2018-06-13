@@ -61,9 +61,13 @@ void StateMovement::Back_Push(void* ptr) {
 void StateMovement::Movement_Push(void* ptr) {
     ZERO(NextionHMI::buffer);
     _gcode.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
+
+    serial_print(NextionHMI::buffer);
+    SERIAL_EOL();
     commands.enqueue_and_echo_P(PSTR("G91"));
     commands.enqueue_and_echo(NextionHMI::buffer);
     commands.enqueue_and_echo_P(PSTR("G90"));
+	DrawUpdate();
 }
 
 void StateMovement::Init() {
@@ -76,9 +80,9 @@ void StateMovement::Init() {
 	_bMovementZplus.attachPush(Movement_Push);
 	_bMovementZminus.attachPush(Movement_Push);
 
-	_tMovementX.attachPush(Movement_Push);
-	_tMovementY.attachPush(Movement_Push);
-	_tMovementZ.attachPush(Movement_Push);
+	_bMovementXhome.attachPush(Movement_Push);
+	_bMovementYhome.attachPush(Movement_Push);
+	_bMovementZhome.attachPush(Movement_Push);
 
 	_bMovementExtruders.attachPush(Extruders_Push);
 	_bMovementBack.attachPush(Back_Push);
@@ -91,9 +95,12 @@ void StateMovement::Activate() {
 }
 
 void StateMovement::DrawUpdate() {
-	_tMovementX.setText(ftostr4sign(LOGICAL_X_POSITION(mechanics.current_position[X_AXIS])));
-	_tMovementY.setText(ftostr4sign(LOGICAL_Y_POSITION(mechanics.current_position[Y_AXIS])));
-	_tMovementZ.setText(ftostr4sign(LOGICAL_X_POSITION(mechanics.current_position[X_AXIS])));
+	if (!printer.isHoming())
+	{
+		_tMovementX.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[X_AXIS])));
+		_tMovementY.setText(ftostr62rj(LOGICAL_Y_POSITION(mechanics.current_position[Y_AXIS])));
+		_tMovementZ.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[Z_AXIS])));
+	}
 }
 
 void StateMovement::TouchUpdate() {

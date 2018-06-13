@@ -131,6 +131,10 @@
   #define MSG_MOVE_PRINT_HEAD                     	_UxGT("Move print head")
 #endif
 
+#ifndef RESTART_TO_CONTINUE
+  #define RESTART_TO_CONTINUE                     	_UxGT("To reset printer please turn it off")
+#endif
+
 
 #ifndef WELCOME_MSG
   #define WELCOME_MSG                         MACHINE_NAME _UxGT(" ready")

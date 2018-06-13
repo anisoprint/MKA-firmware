@@ -159,9 +159,15 @@ void NextionHMI::ActivateState(uint8_t state_id) {
 	_pageID = state_id;
 }
 
-void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg) {
+void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventMsg) {
 	lastEvent = event;
 	lastEventArg = eventArg;
+	//Error handling
+	switch(event) {
+		case HMIevent::PRINTER_KILLED : StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_ERROR, PSTR(MSG_ERR_KILLED), eventMsg, 1, PSTR(RESTART_TO_CONTINUE), 0, 0, 0);
+			return;
+	}
+
 	switch(_pageID) {
 	    case PAGE_STATUS :
 	         break;
