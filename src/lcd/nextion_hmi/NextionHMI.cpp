@@ -195,14 +195,17 @@ void NextionHMI::ShowState(uint8_t state_id) {
 void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventMsg) {
 	lastEvent = event;
 	lastEventArg = eventArg;
-	//Error handling
+	//Error handling and common events
 	switch(event) {
-		case HMIevent::PRINTER_KILLED :    StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_ERROR, eventMsg, PSTR(MSG_ERR_KILLED), 1, PSTR(RESTART_TO_CONTINUE), 0, 0, 0);
+		case HMIevent::PRINTER_KILLED : StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_ERROR, eventMsg, PSTR(MSG_ERR_KILLED), 1, PSTR(RESTART_TO_CONTINUE), 0, 0, 0);
 			return;
 		case HMIevent::TEMPERATURE_ERROR :
 			ZERO(NextionHMI::buffer);
 			sprintf_P(NextionHMI::buffer, PSTR("%s %d"), MSG_STOPPED_HEATER, eventArg);
 			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, eventMsg, NextionHMI::buffer, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+			return;
+		case HMIevent::WAIT_FOR_INPUT :
+			StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_INFO, eventMsg, PSTR(MSG_USERWAIT), 1, PSTR(MSG_OK), WaitOk_Push, 0, 0);
 			return;
 	}
 
@@ -240,6 +243,11 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventM
 
 uint8_t NextionHMI::GetActiveState() {
 	return _pageID;
+}
+
+void NextionHMI::WaitOk_Push(void* ptr) {
+    printer.setWaitForUser(false);
+    StateMessage::ReturnToLastState(ptr);
 }
 
 #endif

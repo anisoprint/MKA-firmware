@@ -14,8 +14,7 @@
 #include "../nextion/library/Nextion.h"
 #include "NextionConstants.h"
 
-#define MESSAGE_DIALOG 1
-
+#define MESSAGE_DIALOG 5
 #define MESSAGE_ERROR 200
 #define MESSAGE_CRITICAL_ERROR 255
 
