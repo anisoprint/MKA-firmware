@@ -31,6 +31,7 @@ namespace NextionHMI {
 	void DrawUpdate();
 	void TouchUpdate();
 	void ActivateState(uint8_t state_id);
+	void ShowState(uint8_t state_id);
 
 	uint8_t GetActiveState();
 

@@ -67,6 +67,17 @@
       else
         lcd_yesno(4, MSG_USERWAIT);
 
+	#elif ENABLED(NEXTION_HMI)
+
+	  /*if (!hasP && !hasS && args && *args)
+		lcd_yesno(4, args, "", MSG_USERWAIT);
+	  else
+		lcd_yesno(4, MSG_USERWAIT);*/
+
+      if (!hasP && !hasS && args && *args)
+        SERIAL_LT(ECHO, args);
+
+
     #else
 
       if (!hasP && !hasS && args && *args)

@@ -159,12 +159,50 @@ void NextionHMI::ActivateState(uint8_t state_id) {
 	_pageID = state_id;
 }
 
+void NextionHMI::ShowState(uint8_t state_id) {
+	switch(state_id) {
+		    case PAGE_STATUS : StateStatus::Activate();
+		         break;
+		    case PAGE_TEMPERATURE : StateStatus::Activate();
+		         break;
+		    case PAGE_FILES : StateFiles::Activate();
+		         break;
+		    case PAGE_FILEINFO : StateFileinfo::Activate();
+		         break;
+		    case PAGE_PRINTING : StatePrinting::Activate();
+		         break;
+		    case PAGE_MESSAGE :
+		         break;
+		    case PAGE_PAUSE :
+		         break;
+		    case PAGE_CHANGE :
+		         break;
+		    case PAGE_WIZARD :
+		         break;
+		    case PAGE_MENU :
+		         break;
+		    case PAGE_MOVEMENT : StateMovement::Activate();
+		         break;
+		    case PAGE_EXTRUDERS :
+		         break;
+		    case PAGE_SETTINGS :
+		         break;
+		    case PAGE_ABOUT :
+		         break;
+		}
+}
+
 void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventMsg) {
 	lastEvent = event;
 	lastEventArg = eventArg;
 	//Error handling
 	switch(event) {
-		case HMIevent::PRINTER_KILLED : StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_ERROR, PSTR(MSG_ERR_KILLED), eventMsg, 1, PSTR(RESTART_TO_CONTINUE), 0, 0, 0);
+		case HMIevent::PRINTER_KILLED :    StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_ERROR, eventMsg, PSTR(MSG_ERR_KILLED), 1, PSTR(RESTART_TO_CONTINUE), 0, 0, 0);
+			return;
+		case HMIevent::TEMPERATURE_ERROR :
+			ZERO(NextionHMI::buffer);
+			sprintf_P(NextionHMI::buffer, PSTR("%s %d"), MSG_STOPPED_HEATER, eventArg);
+			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, eventMsg, NextionHMI::buffer, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
 			return;
 	}
 

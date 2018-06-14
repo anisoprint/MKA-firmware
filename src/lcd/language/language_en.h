@@ -928,16 +928,16 @@
   #define MSG_AD595                           _UxGT("AD595 Offset & Gain")
 #endif
 #ifndef MSG_ERR_MAXTEMP
-  #define MSG_ERR_MAXTEMP                     _UxGT("Err: MAXTEMP")
+  #define MSG_ERR_MAXTEMP                     _UxGT("Error: MAXTEMP triggered")
 #endif
 #ifndef MSG_ERR_MINTEMP
-  #define MSG_ERR_MINTEMP                     _UxGT("Err: MINTEMP")
+  #define MSG_ERR_MINTEMP                     _UxGT("Error: MINTEMP triggered")
 #endif
 #ifndef MSG_ERR_MAXTEMP_BED
-  #define MSG_ERR_MAXTEMP_BED                 _UxGT("Err: MAXTEMP BED")
+  #define MSG_ERR_MAXTEMP_BED                 _UxGT("Error: MAXTEMP BED triggered")
 #endif
 #ifndef MSG_ERR_MINTEMP_BED
-  #define MSG_ERR_MINTEMP_BED                 _UxGT("Err: MINTEMP BED")
+  #define MSG_ERR_MINTEMP_BED                 _UxGT("Error: MINTEMP BED triggered")
 #endif
 #ifndef MSG_ERR_MAXTEMP_CHAMBER
   #define MSG_ERR_MAXTEMP_CHAMBER             _UxGT("Err: MAXTEMP CHAMBER")

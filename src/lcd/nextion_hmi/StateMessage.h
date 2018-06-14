@@ -16,14 +16,16 @@
 
 #define MESSAGE_DIALOG 1
 
+#define MESSAGE_ERROR 200
 #define MESSAGE_CRITICAL_ERROR 255
 
 namespace StateMessage {
 
 	void Init();
 	void ActivatePGM(uint8_t priority, uint8_t icon, const char *header_P, const char *message_P, uint8_t numButtons, const char *txtButtonRight_P, NexTouchEventCb cbRight, const char *txtButtonLeft_P, NexTouchEventCb cbLeft, uint8_t picture=0);
+	void ActivatePGM_M(uint8_t priority, uint8_t icon, const char *header_P, const char *message, uint8_t numButtons, const char *txtButtonRight_P, NexTouchEventCb cbRight, const char *txtButtonLeft_P, NexTouchEventCb cbLeft, uint8_t picture=0);
 	void TouchUpdate();
-
+	void ReturnToLastState(void* ptr);
 };
 
 #endif

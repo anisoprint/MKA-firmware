@@ -278,15 +278,14 @@ void Commands::get_serial() {
           || ((sd_char == '#' || sd_char == ':') && !sd_comment_mode)
       ) {
         if (card_eof) {
-          SERIAL_EM(MSG_FILE_PRINTED);
-			#if ENABLED(NEXTION_HMI)
-				  NextionHMI::RaiseEvent(HMIevent::SD_PRINT_FINISHED);
-			#endif
           card.printingHasFinished();
-
           if (card.sdprinting)
             sd_count = 0; // If a sub-file was printing, continue from call point
           else {
+            SERIAL_EM(MSG_FILE_PRINTED);
+			#if ENABLED(NEXTION_HMI)
+				NextionHMI::RaiseEvent(HMIevent::SD_PRINT_FINISHED);
+			#endif
             #if ENABLED(PRINTER_EVENT_LEDS)
               LCD_MESSAGEPGM(MSG_INFO_COMPLETED_PRINTS);
               leds.set_green();

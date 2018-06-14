@@ -709,6 +709,10 @@ void Temperature::_temp_error(const uint8_t h, const char * const serial_msg, co
     }
   }
 
+  #if ENABLED(NEXTION_HMI)
+  	  NextionHMI::RaiseEvent(HMIevent::TEMPERATURE_ERROR, h, lcd_msg);
+  #endif
+
   lcd_setstatusPGM(lcd_msg);
   heaters[h].setIdle(true);
 

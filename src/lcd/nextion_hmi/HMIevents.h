@@ -14,6 +14,7 @@
 enum HMIevent {					//Eventarg
   NONE,
   PRINTER_KILLED,				//-					msg
+  TEMPERATURE_ERROR,			//Heater number		msg
   HEATING_STARTED_EXTRUDER, 	//Heater number
   HEATING_STARTED_BUILDPLATE,	//Heater number
   SD_PRINT_FINISHED				//-
