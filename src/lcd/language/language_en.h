@@ -616,7 +616,7 @@
   #define MSG_ON                              _UxGT("On ")
 #endif
 #ifndef MSG_OFF
-  #define MSG_OFF                             _UxGT("Off")
+  #define MSG_OFF                             _UxGT("Switched Off")
 #endif
 #ifndef MSG_PID_P
   #define MSG_PID_P                           _UxGT("PID-P")

@@ -199,6 +199,8 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventM
 	switch(event) {
 		case HMIevent::PRINTER_KILLED : StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_ERROR, eventMsg, PSTR(MSG_ERR_KILLED), 1, PSTR(RESTART_TO_CONTINUE), 0, 0, 0);
 			return;
+		case HMIevent::SWITCHED_OFF : StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_ERROR, eventMsg, PSTR(MSG_OFF), 1, PSTR(RESTART_TO_CONTINUE), 0, 0, 0);
+			return;
 		case HMIevent::TEMPERATURE_ERROR :
 			ZERO(NextionHMI::buffer);
 			sprintf_P(NextionHMI::buffer, PSTR("%s %d"), MSG_STOPPED_HEATER, eventArg);

@@ -177,7 +177,11 @@ void Temperature::wait_heater(Heater *act, bool no_wait_for_cooling/*=true*/) {
   } while (printer.isWaitForHeatUp() && TEMP_CONDITIONS);
 
   if (printer.isWaitForHeatUp()) {
-    lcd_setstatusPGM(no_wait_for_cooling ? PSTR(MSG_HEATING_COMPLETE) : PSTR(MSG_COOLING_COMPLETE));
+	#if ENABLED(NEXTION_HMI)
+		NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
+	#else
+		lcd_setstatusPGM(no_wait_for_cooling ? PSTR(MSG_HEATING_COMPLETE) : PSTR(MSG_COOLING_COMPLETE));
+	#endif
     #if ENABLED(PRINTER_EVENT_LEDS)
       leds.set_white();
     #endif

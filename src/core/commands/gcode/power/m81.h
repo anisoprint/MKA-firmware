@@ -65,6 +65,10 @@ inline void gcode_M81(void) {
     powerManager.power_off();
   #endif
 
-  LCD_MESSAGEPGM(MACHINE_NAME " " MSG_OFF ".");
+	#if ENABLED(NEXTION_HMI)
+		NextionHMI::RaiseEvent(HMIevent::SWITCHED_OFF, 0, PSTR(MACHINE_NAME " " MSG_OFF));
+	#else
+	  LCD_MESSAGEPGM(MACHINE_NAME " " MSG_OFF ".");
+	#endif
 
 }
