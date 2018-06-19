@@ -22,6 +22,10 @@ namespace NextionHMI {
 	extern uint8_t pageState;
 	extern uint8_t pageData;
 
+    extern uint16_t autoPreheatTempHotend;
+    extern uint16_t autoPreheatTempBed;
+    extern uint8_t lcdBrightness;
+
 	extern HMIevent lastEvent;
 	extern uint8_t  lastEventArg;
 

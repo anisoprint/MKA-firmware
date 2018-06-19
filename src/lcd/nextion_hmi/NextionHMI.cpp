@@ -19,6 +19,10 @@ namespace {
 	uint8_t _pageID = 0;
 }
 
+uint16_t NextionHMI::autoPreheatTempHotend = PREHEAT_1_TEMP_HOTEND;
+uint16_t NextionHMI::autoPreheatTempBed = PREHEAT_1_TEMP_BED;
+uint8_t  NextionHMI::lcdBrightness = 90;
+
 uint8_t NextionHMI::pageState = 0;
 uint8_t NextionHMI::pageData = 0;
 

@@ -40,7 +40,7 @@ void StateStatus::Temperature_Push(void* ptr) {
 	if (ptr==&_bBuildPlate)
 	{
 		heater = BED_INDEX;
-		StateTemperature::Activate(PREHEAT_1_TEMP_BED, heater);
+		StateTemperature::Activate(NextionHMI::autoPreheatTempBed, heater);
 		return;
 	}
 	if (ptr==&_bH0)
@@ -51,7 +51,7 @@ void StateStatus::Temperature_Push(void* ptr) {
 	{
 		if (ptr==&_bH1) heater = HOT1_INDEX;
 	}
-	StateTemperature::Activate(PREHEAT_1_TEMP_HOTEND, heater);
+	StateTemperature::Activate(NextionHMI::autoPreheatTempHotend, heater);
 
 }
 
