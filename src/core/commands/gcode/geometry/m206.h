@@ -26,7 +26,7 @@
  * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
-#if ENABLED(WORKSPACE_OFFSETS)
+#if ENABLED(WORKSPACE_OFFSETS) || ENABLED(HOME_OFFSETS)
 
   #define CODE_M206
 
@@ -43,13 +43,16 @@
       if (parser.seen('P')) mechanics.set_home_offset(Y_AXIS, parser.value_linear_units()); // Psi
     #endif
 
-    #if IS_SCARA
-      mechanics.sync_plan_position_mech_specific();
-    #else
-      mechanics.sync_plan_position();
-    #endif
-
+	#if DISABLED(HOME_OFFSETS)
+		#if IS_SCARA
+		  mechanics.sync_plan_position_mech_specific();
+		#else
+		  mechanics.sync_plan_position();
+		#endif
+	#endif
     mechanics.report_current_position();
+
   }
+
 
 #endif // ENABLED(WORKSPACE_OFFSETS)

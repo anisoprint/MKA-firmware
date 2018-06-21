@@ -755,7 +755,18 @@ bool Mechanics::position_is_reachable_by_probe(const float &rx, const float &ry)
     home_offset[axis] = v;
     endstops.update_software_endstops(axis);
   }
+#elif ENABLED(HOME_OFFSETS)
+  /**
+   * Change the home offset for an axis.
+   * Also refreshes the workspace offset.
+   */
+  void Mechanics::set_home_offset(const AxisEnum axis, const float v) {
+    home_offset[axis] = v;
+    endstops.update_software_endstops(axis);
+  }
+#endif
 
+#if ENABLED(WORKSPACE_OFFSETS)
   float Mechanics::native_to_logical(const float pos, const AxisEnum axis) {
     if (axis == E_AXIS)
       return pos;

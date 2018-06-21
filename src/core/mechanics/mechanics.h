@@ -223,13 +223,17 @@ class Mechanics {
       // The distance that XYZ has been offset by G92. Reset by G28.
       static float position_shift[XYZ];
 
-      // This offset is added to the configured home position.
-      // Set by M206, M428, or menu item. Saved to EEPROM.
-      static float home_offset[XYZ];
-
       // The above two are combined to save on computes
       static float workspace_offset[XYZ];
     #endif
+
+	#if ENABLED(WORKSPACE_OFFSETS) || ENABLED(DUAL_X_CARRIAGE) || ENABLED(HOME_OFFSETS)
+		  // This offset is added to the configured home position.
+		  // Set by M206, M428, or menu item. Saved to EEPROM.
+		  static float home_offset[XYZ];
+	#endif
+
+
 
     #if ENABLED(CNC_WORKSPACE_PLANES)
       /**
@@ -379,7 +383,7 @@ class Mechanics {
       void plan_arc(const float (&cart)[XYZE], const float (&offset)[2], const uint8_t clockwise);
     #endif
 
-    #if ENABLED(WORKSPACE_OFFSETS)
+	#if ENABLED(WORKSPACE_OFFSETS) || ENABLED (HOME_OFFSETS)
       /**
        * Change the home offset for an axis, update the current
        * position and the software endstops to retain the same
@@ -389,13 +393,17 @@ class Mechanics {
        * call sync_plan_position soon after this.
        */
       void set_home_offset(const AxisEnum axis, const float v);
+	#endif
 
+    #if ENABLED(WORKSPACE_OFFSETS)
       float native_to_logical(const float pos, const AxisEnum axis);
       float logical_to_native(const float pos, const AxisEnum axis);
     #else
       FORCE_INLINE static float native_to_logical(const float pos, const AxisEnum axis) { UNUSED(axis); return pos; }
       FORCE_INLINE static float logical_to_native(const float pos, const AxisEnum axis) { UNUSED(axis); return pos; }
     #endif
+
+
 
     #if ENABLED(DEBUG_LEVELING_FEATURE)
       static void log_machine_info();

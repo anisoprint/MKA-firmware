@@ -576,7 +576,11 @@
       }
     #endif
 
-    current_position[axis] = base_home_pos[axis];
+	#if ENABLED(HOME_OFFSETS)
+	  current_position[axis] = base_home_pos[axis] + home_offset[axis];
+	#else
+	  current_position[axis] = base_home_pos[axis];
+	#endif
 
     /**
      * Z Probe Z Homing? Account for the probe's Z offset.

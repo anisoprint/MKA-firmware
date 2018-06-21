@@ -447,7 +447,12 @@ void Endstops::clamp_to_software_endstops(float target[XYZ]) {
 
   }
 
-#endif // ENABLED(WORKSPACE_OFFSETS) || DUAL_X_CARRIAGE
+#elif ENABLED(HOME_OFFSETS)
+  void Endstops::update_software_endstops(const AxisEnum axis) {
+	  if (mechanics.home_dir[axis] > 0) soft_endstop_max[axis] = mechanics.base_max_pos[axis] + mechanics.home_offset[axis];
+  }
+
+#endif
 
 #if ENABLED(PINS_DEBUGGING)
   /**
