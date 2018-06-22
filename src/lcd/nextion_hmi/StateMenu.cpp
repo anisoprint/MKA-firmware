@@ -40,17 +40,31 @@ void StateMenu::TouchUpdate() {
 	nexLoop(_listenList);
 }
 
+
+/*********************************************************************************
+ *
+ * Maintenance
+ *
+ *********************************************************************************/
+
 void StateMenu::ActivateMaintenance(void* ptr) {
 	NextionHMI::ActivateState(PAGE_MENU);
-	_count.setValue(2);
+	_count.setValue(5);
 	_page.show();
 	NextionHMI::headerText.setTextPGM(PSTR(MSG_MAINTENANCE));
 	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 
-	_b1.setTextPGM(PSTR(MSG_LEVEL_BUILD_PLATE));
-	_b2.setTextPGM(PSTR(MSG_MOVE_PRINT_HEAD));
+	_b1.setTextPGM(PSTR(MSG_MATERIALS));
+	_b2.setTextPGM(PSTR(MSG_MOVE));
+	_b3.setTextPGM(PSTR(MSG_CALIBRATE));
+	_b4.setTextPGM(PSTR(MSG_SETTINGS));
+	_b5.setTextPGM(PSTR(MSG_ABOUT_PRINTER));
 
-	_b2.attachPush(MaintenanceMovePH);
+	_b1.attachPush(0);
+	_b2.attachPush(Maintenance_Move);
+	_b3.attachPush(Maintenance_Calibrate);
+	_b4.attachPush(0);
+	_b5.attachPush(0);
 
 	_bBack.attachPush(MaintenanceBack);
 }
@@ -59,9 +73,49 @@ void StateMenu::MaintenanceBack(void* ptr) {
 	StateStatus::Activate();
 }
 
-void StateMenu::MaintenanceMovePH(void* ptr) {
+void StateMenu::Maintenance_Move(void* ptr) {
 	StateMovement::Activate();
 }
+
+void StateMenu::Maintenance_Calibrate(void* ptr) {
+	ActivateCalibrate();
+}
+
+/*********************************************************************************
+*
+* Level Build plate
+*
+*********************************************************************************/
+
+void StateMenu::ActivateCalibrate(void* ptr) {
+	NextionHMI::ActivateState(PAGE_MENU);
+	_count.setValue(3);
+	_page.show();
+	NextionHMI::headerText.setTextPGM(PSTR(MSG_CALIBRATE));
+	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
+
+	_b1.setTextPGM(PSTR(MSG_BUILD_PLATE));
+	_b2.setTextPGM(PSTR(MSG_Z_OFFSET));
+	_b3.setTextPGM(PSTR(MSG_PRINTHEAD));
+
+	_b1.attachPush(Calibrate_Buildplate);
+	_b2.attachPush(Calibrate_ZOffset);
+	_b3.attachPush(0);
+
+	_bBack.attachPush(CalibrateBack);
+}
+
+void StateMenu::Calibrate_Buildplate(void* ptr) {
+}
+
+void StateMenu::Calibrate_ZOffset(void* ptr) {
+}
+
+void StateMenu::CalibrateBack(void* ptr) {
+	StateMenu::ActivateMaintenance();
+}
+
+
 
 #endif
 

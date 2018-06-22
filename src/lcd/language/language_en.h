@@ -123,12 +123,36 @@
   #define MSG_MAINTENANCE                           _UxGT("Maintenance")
 #endif
 
-#ifndef MSG_LEVEL_BUILD_PLATE
-  #define MSG_LEVEL_BUILD_PLATE                     _UxGT("Level build plate")
+#ifndef MSG_CALIBRATE
+  #define MSG_CALIBRATE                     		_UxGT("Calibrate")
 #endif
 
-#ifndef MSG_MOVE_PRINT_HEAD
-  #define MSG_MOVE_PRINT_HEAD                     	_UxGT("Move print head")
+#ifndef MSG_MOVE
+  #define MSG_MOVE                    				_UxGT("Move")
+#endif
+
+#ifndef MSG_MATERIALS
+  #define MSG_MATERIALS                     		_UxGT("Materials")
+#endif
+
+#ifndef MSG_BUILD_PLATE
+  #define MSG_BUILD_PLATE                    		_UxGT("Build plate")
+#endif
+
+#ifndef MSG_PRINTHEAD
+  #define MSG_PRINTHEAD                   			_UxGT("Printhead")
+#endif
+
+#ifndef MSG_SETTINGS
+  #define MSG_SETTINGS                     			_UxGT("Settings")
+#endif
+
+#ifndef MSG_ABOUT_PRINTER
+  #define MSG_ABOUT_PRINTER                     	_UxGT("About printer")
+#endif
+
+#ifndef MSG_Z_OFFSET
+  #define MSG_Z_OFFSET                    			_UxGT("Z offset")
 #endif
 
 #ifndef RESTART_TO_CONTINUE

@@ -19,10 +19,17 @@ namespace StateMenu {
 
 	void TouchUpdate();
 
+	//Maintenance menu
 	void ActivateMaintenance(void *ptr=0);
-	void MaintenanceMovePH(void *ptr);
+	void Maintenance_Move(void *ptr);
+	void Maintenance_Calibrate(void *ptr);
 	void MaintenanceBack(void *ptr);
 
+	//Level Build plate menu
+	void ActivateCalibrate(void *ptr=0);
+	void Calibrate_Buildplate(void *ptr);
+	void Calibrate_ZOffset(void *ptr);
+	void CalibrateBack(void *ptr);
 
 };
 
