@@ -78,6 +78,10 @@ millis_t Mechanics::min_segment_time_us = 0;
 
   // The above two are combined to save on computes
   float Mechanics::workspace_offset[XYZ] = { 0.0 };
+#elif ENABLED(HOME_OFFSETS)
+  // This offset is added to the configured home position.
+  // Set by M206, M428, or menu item. Saved to EEPROM.
+  float Mechanics::home_offset[XYZ] = { 0.0 };
 #endif
 
 #if ENABLED(BABYSTEPPING)
