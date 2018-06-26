@@ -61,9 +61,6 @@ void StateMovement::Back_Push(void* ptr) {
 void StateMovement::Movement_Push(void* ptr) {
     ZERO(NextionHMI::buffer);
     _gcode.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
-
-    serial_print(NextionHMI::buffer);
-    SERIAL_EOL();
     commands.enqueue_and_echo_P(PSTR("G91"));
     commands.enqueue_and_echo(NextionHMI::buffer);
     commands.enqueue_and_echo_P(PSTR("G90"));

@@ -55,6 +55,14 @@
   #define MSG_CANCEL                              _UxGT("Cancel")
 #endif
 
+#ifndef MSG_NEXT
+  #define MSG_NEXT                                _UxGT("Next")
+#endif
+
+#ifndef MSG_FINISH
+  #define MSG_FINISH                              _UxGT("Finish")
+#endif
+
 #ifndef MSG_COMPOSITE
   #define MSG_COMPOSITE                           _UxGT("Composite")
 #endif
@@ -159,6 +167,13 @@
   #define RESTART_TO_CONTINUE                     	_UxGT("To reset printer please turn it off")
 #endif
 
+#ifndef MSG_HEADER_Z_OFFSET
+  #define MSG_HEADER_Z_OFFSET                    	_UxGT("Z-offset calibration")
+#endif
+
+#ifndef MSG_Z_OFFSET_S1
+  #define MSG_Z_OFFSET_S1                    		_UxGT("To adjust Z axis offset you will need a sheet\\rof 80gsm paper. Please be careful during the\\rprocess and follow instructions.\\r\\rDo not lift the build plate too much or too\\rfast to avoid collision with the printhead,\\rwhich can damage your printer.")
+#endif
 
 #ifndef WELCOME_MSG
   #define WELCOME_MSG                         MACHINE_NAME _UxGT(" ready")

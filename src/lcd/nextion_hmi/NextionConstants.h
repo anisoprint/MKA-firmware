@@ -25,6 +25,7 @@
 #define PAGE_EXTRUDERS 12
 #define PAGE_SETTINGS 13
 #define PAGE_ABOUT 14
+#define PAGE_WIZARDZ 15
 
 //Icons
 #define NEX_ICON_READY 1

@@ -123,6 +123,8 @@ void NextionHMI::DrawUpdate() {
 	         break;
 	    case PAGE_ABOUT :
 	         break;
+	    case PAGE_WIZARDZ :
+	         break;
 	}
 }
 
@@ -144,7 +146,7 @@ void NextionHMI::TouchUpdate() {
 	         break;
 	    case PAGE_CHANGE :
 	         break;
-	    case PAGE_WIZARD :
+	    case PAGE_WIZARD : StateWizard::TouchUpdate();
 	         break;
 	    case PAGE_MENU : StateMenu::TouchUpdate();
 	         break;
@@ -155,6 +157,8 @@ void NextionHMI::TouchUpdate() {
 	    case PAGE_SETTINGS :
 	         break;
 	    case PAGE_ABOUT :
+	         break;
+	    case PAGE_WIZARDZ : StateWizardZ::TouchUpdate();
 	         break;
 	}
 }
@@ -192,6 +196,8 @@ void NextionHMI::ShowState(uint8_t state_id) {
 		    case PAGE_SETTINGS :
 		         break;
 		    case PAGE_ABOUT :
+		         break;
+		    case PAGE_WIZARDZ :
 		         break;
 		}
 }
@@ -243,6 +249,8 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventM
 	    case PAGE_SETTINGS :
 	         break;
 	    case PAGE_ABOUT :
+	         break;
+	    case PAGE_WIZARDZ :
 	         break;
 	}
 }
