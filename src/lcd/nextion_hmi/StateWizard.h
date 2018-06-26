@@ -24,6 +24,8 @@ namespace StateWizard {
 	void ZOffsetFinish(void *ptr=0);
 	void ZOffsetCancel(void *ptr=0);
 
+	void Init2Buttons(const char* txtLeft, NexTouchEventCb cbLeft, const char* txtRight, NexTouchEventCb cbRight);
+	void Init1Button(const char* txtCenter, NexTouchEventCb cbCenter);
 
 	//Maintenance menu
 	//void ActivateMaintenance(void *ptr=0);
