@@ -109,6 +109,7 @@ void StateMenu::Calibrate_Buildplate(void* ptr) {
 }
 
 void StateMenu::Calibrate_ZOffset(void* ptr) {
+	StateWizard::ZOffsetS0();
 }
 
 void StateMenu::CalibrateBack(void* ptr) {

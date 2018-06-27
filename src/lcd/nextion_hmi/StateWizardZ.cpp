@@ -21,6 +21,8 @@ namespace {
 	//Variables
 	NexObject  _gcode = NexObject(PAGE_WIZARDZ,  29,  "$gc");
 
+	NexObject  _txtHeader = NexObject(PAGE_WIZARDZ,  3,  "tT");
+	NexObject  _txtCaption = NexObject(PAGE_WIZARDZ,  2,  "tC");
 
 	//Control
 	NexObject _bMovement1  = NexObject(PAGE_WIZARDZ,  10,  "bd1");
@@ -42,11 +44,15 @@ namespace {
 ;
 
 void StateWizardZ::Movement_Push(void* ptr) {
-    ZERO(NextionHMI::buffer);
-    _gcode.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
-    commands.enqueue_and_echo_P(PSTR("G91"));
-    commands.enqueue_and_echo(NextionHMI::buffer);
-    commands.enqueue_and_echo_P(PSTR("G90"));
+	if (planner.movesplanned()<4)
+	{
+		ZERO(NextionHMI::buffer);
+		_gcode.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
+		double dz = strtod(NextionHMI::buffer, NULL);
+        mechanics.current_position[Z_AXIS] += dz;
+        planner.buffer_line(mechanics.current_position, mechanics.homing_feedrate_mm_s[Z_AXIS], tools.active_extruder);
+	}
+	mechanics.report_current_position();
 }
 
 void StateWizardZ::Init() {
@@ -60,6 +66,40 @@ void StateWizardZ::Init() {
 
 void StateWizardZ::TouchUpdate() {
 	nexLoop(_listenList);
+}
+
+void StateWizardZ::ZOffsetS1(void* ptr) {
+	SERIAL_VAL(planner.movesplanned());
+	SERIAL_EOL();
+
+	if (!planner.movesplanned())
+	{
+		//Going to center adjust position
+		ZERO(NextionHMI::buffer);
+		sprintf_P(NextionHMI::buffer, PSTR("G1 F%i X%i Y%i"), (int)(mechanics.homing_feedrate_mm_s[X_AXIS]*60), int(BED_CENTER_ADJUST_X), int(BED_CENTER_ADJUST_Y));
+		commands.enqueue_and_echo(NextionHMI::buffer);
+
+		//Going to Z adjust position
+		ZERO(NextionHMI::buffer);
+		sprintf_P(NextionHMI::buffer, PSTR("G1 Z%i F%i"), 10, (int)(mechanics.homing_feedrate_mm_s[Z_AXIS]*60));
+		commands.enqueue_and_echo(NextionHMI::buffer);
+
+		NextionHMI::ActivateState(PAGE_WIZARDZ);
+
+		_page.show();
+		NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_Z_OFFSET));
+		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
+		_txtHeader.setTextPGM(PSTR(MSG_HEADER_Z_OFFSET ": 2/2"));
+		_txtCaption.setTextPGM(PSTR(MSG_Z_OFFSET_ST1));
+
+		_bLeft.setTextPGM(PSTR(MSG_CANCEL));
+		_bRight.setTextPGM(PSTR(MSG_FINISH));
+
+		_bLeft.attachPush(StateWizard::ZOffsetCancel);
+		_bRight.attachPush(StateWizard::ZOffsetFinish);
+
+	}
+
 }
 
 #endif

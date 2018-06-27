@@ -440,6 +440,10 @@
  *  - M206 and M428 are enabled.                                          *
  **************************************************************************/
 //#define WORKSPACE_OFFSETS
+
+//Simplified home offsets
+#define HOME_OFFSETS
+
 /**************************************************************************/
 
 
@@ -1031,9 +1035,12 @@
  * Uncomment EEPROM FLASH for use writing EEPROM on Flash Memory (Only for DUE)                                         *
  *                                                                                                                      *
  ************************************************************************************************************************/
-//#define EEPROM_SETTINGS
+#define EEPROM_SETTINGS
 
-//#define EEPROM_CHITCHAT // Uncomment this to enable EEPROM Serial responses.
+//Compact settings for Anisoprint Composer 3D printers
+#define EEPROM_LITE
+
+#define EEPROM_CHITCHAT // Uncomment this to enable EEPROM Serial responses.
 //#define EEPROM_SD
 //#define EEPROM_FLASH
 //#define DISABLE_M503

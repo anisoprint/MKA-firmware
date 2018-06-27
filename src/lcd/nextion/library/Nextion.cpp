@@ -59,7 +59,12 @@
     this->__cbpop_ptr = NULL;
   }
 
-  void NexObject::push(void) { if (__cb_push) __cb_push(__cbpush_ptr); }
+  void NexObject::push(void) {
+/*	serial_print("\n>>>>>>>>>>>>\n");
+	serial_print(__cb_push);
+	serial_print("\n>>>>>>>>>>>>\n");*/
+	if (__cb_push) __cb_push(__cbpush_ptr);
+  }
 
   void NexObject::pop(void) { if (__cb_pop) __cb_pop(__cbpop_ptr); }
 
@@ -73,7 +78,7 @@
 
     for (i = 0; (e = list[i]) != NULL; i++) {
   	  //serial_print("\n>>>>>>>>>>>>\n");
-  	  	//serial_print(e->getObjCid());
+  	  	//serial_print(e->__cid);
   	    //serial_print("\n>>>>>>>>>>>>\n");
       if (e->__pid == pid && e->__cid == cid) {
         if (NEX_EVENT_PUSH == event)

@@ -39,7 +39,7 @@
 #include "../../../MK4duo.h"
 
 #if ENABLED(EEPROM_LITE)
-	#define EEPROM_VERSION "MKA10"
+	#define EEPROM_VERSION "MKA11"
 /**
  * MKA10 EEPROM Layout:
  *

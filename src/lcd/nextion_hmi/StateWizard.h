@@ -14,6 +14,15 @@
 #include "../nextion/library/Nextion.h"
 #include "NextionConstants.h"
 
+#define BED_CENTER_ADJUST_X (X_MAX_POS/2)
+#define BED_CENTER_ADJUST_Y (Y_MAX_POS - 15)
+#define BED_LEFT_ADJUST_X 10
+#define BED_LEFT_ADJUST_Y 20
+#define BED_RIGHT_ADJUST_X (X_MAX_POS - 10)
+#define BED_RIGHT_ADJUST_Y 20
+
+#define LEVELING_OFFSET 0.1
+
 
 namespace StateWizard {
 
@@ -23,6 +32,10 @@ namespace StateWizard {
 	void ZOffsetS0(void *ptr=0);
 	void ZOffsetFinish(void *ptr=0);
 	void ZOffsetCancel(void *ptr=0);
+
+	void Init2Buttons(const char *txtLeft, NexTouchEventCb cbLeft, const char *txtRight, NexTouchEventCb cbRight);
+	void Init1Button(const char *txtCenter, NexTouchEventCb cbCenter);
+
 
 
 	//Maintenance menu

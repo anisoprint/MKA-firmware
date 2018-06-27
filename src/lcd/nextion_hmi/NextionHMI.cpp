@@ -89,6 +89,7 @@ void NextionHMI::Init() {
 	StateFileinfo::Init();
 	StatePrinting::Init();
 	StateMovement::Init();
+	StateWizardZ::Init();
 
 	StateStatus::Activate();
 }

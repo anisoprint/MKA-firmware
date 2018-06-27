@@ -171,8 +171,12 @@
   #define MSG_HEADER_Z_OFFSET                    	_UxGT("Z-offset calibration")
 #endif
 
-#ifndef MSG_Z_OFFSET_S1
-  #define MSG_Z_OFFSET_S1                    		_UxGT("To adjust Z axis offset you will need a sheet\\rof 80gsm paper. Please be careful during the\\rprocess and follow instructions.\\r\\rDo not lift the build plate too much or too\\rfast to avoid collision with the printhead,\\rwhich can damage your printer.")
+#ifndef MSG_Z_OFFSET_ST0
+  #define MSG_Z_OFFSET_ST0                    		_UxGT("To adjust Z axis offset you will need a sheet\\rof 80gsm paper.\\r\\rPlease be careful during the process. Do not\\rlift the build plate too much or too fast to\\ravoid collision with the printhead, which can\\rdamage your printer.")
+#endif
+
+#ifndef MSG_Z_OFFSET_ST1
+  #define MSG_Z_OFFSET_ST1                    		_UxGT("Slide a paper between the buildplate and the\\rnozzle. Move the buildplate with the buttons\\rbelow until you feel some friction while\\rsliding the paper.")
 #endif
 
 #ifndef WELCOME_MSG
