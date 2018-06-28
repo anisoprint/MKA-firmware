@@ -1644,11 +1644,7 @@ void EEPROM::Factory_Settings() {
       heat->resetFlag();
       heat->setUsePid(PIDTEMP);
       heat->setHWInverted(INVERTED_HEATER_PINS);
-      #if HAS_EEPROM
-        heat->setTuning(false);
-      #else
-        heat->setTuning(true);
-      #endif
+      heat->setTuning(true);
     #endif // HAS_HEATER_0
 
     #if HAS_HEATER_1
@@ -1679,11 +1675,7 @@ void EEPROM::Factory_Settings() {
       heat->resetFlag();
       heat->setUsePid(PIDTEMP);
       heat->setHWInverted(INVERTED_HEATER_PINS);
-      #if HAS_EEPROM
-        heat->setTuning(false);
-      #else
-        heat->setTuning(true);
-      #endif
+      heat->setTuning(true);
     #endif // HAS_HEATER_1
 
     #if HAS_HEATER_2
@@ -1714,11 +1706,7 @@ void EEPROM::Factory_Settings() {
       heat->resetFlag();
       heat->setUsePid(PIDTEMP);
       heat->setHWInverted(INVERTED_HEATER_PINS);
-      #if HAS_EEPROM
-        heat->setTuning(false);
-      #else
-        heat->setTuning(true);
-      #endif
+      heat->setTuning(true);
     #endif // HAS_HEATER_2
 
     #if HAS_HEATER_3
@@ -1749,11 +1737,7 @@ void EEPROM::Factory_Settings() {
       heat->resetFlag();
       heat->setUsePid(PIDTEMP);
       heat->setHWInverted(INVERTED_HEATER_PINS);
-      #if HAS_EEPROM
-        heat->setTuning(false);
-      #else
-        heat->setTuning(true);
-      #endif
+      heat->setTuning(true);
     #endif // HAS_HEATER_3
 
     #if HAS_HEATER_BED
@@ -1787,11 +1771,7 @@ void EEPROM::Factory_Settings() {
       heat->resetFlag();
       heat->setUsePid(PIDTEMPBED);
       heat->setHWInverted(INVERTED_BED_PIN);
-      #if HAS_EEPROM
-        heat->setTuning(false);
-      #else
-        heat->setTuning(true);
-      #endif
+      heat->setTuning(true);
     #endif // HAS_HEATER_BED
 
     #if HAS_HEATER_CHAMBER
@@ -1825,11 +1805,7 @@ void EEPROM::Factory_Settings() {
       heat->resetFlag();
       heat->setUsePid(PIDTEMPCHAMBER);
       heat->setHWInverted(INVERTED_CHAMBER_PIN);
-      #if HAS_EEPROM
-        heat->setTuning(false);
-      #else
-        heat->setTuning(true);
-      #endif
+      heat->setTuning(true);
     #endif // HAS_HEATER_BED
 
     #if HAS_HEATER_COOLER
@@ -1863,11 +1839,7 @@ void EEPROM::Factory_Settings() {
       heat->resetFlag();
       heat->setUsePid(PIDTEMPCOOLER);
       heat->setHWInverted(INVERTED_COOLER_PIN);
-      #if HAS_EEPROM
-        heat->setTuning(false);
-      #else
-        heat->setTuning(true);
-      #endif
+      heat->setTuning(true);
     #endif // HAS_HEATER_BED
 
   #endif // HEATER_COUNT > 0
