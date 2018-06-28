@@ -14,6 +14,8 @@
 #include "../nextion/library/Nextion.h"
 #include "NextionConstants.h"
 
+#define MODE_MOVE_AXIS false
+#define MODE_MOVE_EXTRUDERS true
 
 namespace StateMovement {
 
@@ -23,7 +25,8 @@ namespace StateMovement {
   	void Movement_Push(void *ptr);
 
 	void Init();
-	void Activate();
+	void Activate(bool mode);
+	void ActivateExtruders();
 	void DrawUpdate();
 	void TouchUpdate();
 

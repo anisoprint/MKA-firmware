@@ -190,7 +190,7 @@ void NextionHMI::ShowState(uint8_t state_id) {
 		         break;
 		    case PAGE_MENU :
 		         break;
-		    case PAGE_MOVEMENT : StateMovement::Activate();
+		    case PAGE_MOVEMENT : StateMovement::Activate(MODE_MOVE_AXIS);
 		         break;
 		    case PAGE_EXTRUDERS :
 		         break;

@@ -74,7 +74,7 @@ void StateMenu::MaintenanceBack(void* ptr) {
 }
 
 void StateMenu::Maintenance_Move(void* ptr) {
-	StateMovement::Activate();
+	StateMovement::Activate(MODE_MOVE_AXIS);
 }
 
 void StateMenu::Maintenance_Calibrate(void* ptr) {

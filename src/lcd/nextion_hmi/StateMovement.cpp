@@ -13,45 +13,47 @@
 #include "StateStatus.h"
 
 namespace {
+	bool _moveMode = false;
+
 	///////////// Nextion components //////////
 	//Page
 	NexObject _page = NexObject(PAGE_MOVEMENT,  0,  "movement");
 
 	//Variables
 	NexObject  _gcode = NexObject(PAGE_MOVEMENT,  29,  "$gc");
-
+	NexObject  _mode = NexObject(PAGE_MOVEMENT,  29,  "movement.$md");
 
 	//Control
-	NexObject _bMovementXplus  = NexObject(PAGE_MOVEMENT,  15,  "bXp");
-	NexObject _bMovementXminus  = NexObject(PAGE_MOVEMENT,  12,  "bXm");
-	NexObject _bMovementYplus  = NexObject(PAGE_MOVEMENT,  16,  "bYp");
-	NexObject _bMovementYminus  = NexObject(PAGE_MOVEMENT,  13,  "bYm");
-	NexObject _bMovementZplus  = NexObject(PAGE_MOVEMENT,  17,  "bZp");
-	NexObject _bMovementZminus  = NexObject(PAGE_MOVEMENT,  14,  "bZm");
+	NexObject _bMovementAplus  = NexObject(PAGE_MOVEMENT,  15,  "bAp");
+	NexObject _bMovementAminus  = NexObject(PAGE_MOVEMENT,  12,  "bAm");
+	NexObject _bMovementBplus  = NexObject(PAGE_MOVEMENT,  16,  "bBp");
+	NexObject _bMovementBminus  = NexObject(PAGE_MOVEMENT,  13,  "bBm");
+	NexObject _bMovementCplus  = NexObject(PAGE_MOVEMENT,  17,  "bCp");
+	NexObject _bMovementCminus  = NexObject(PAGE_MOVEMENT,  14,  "bCm");
 
-	NexObject _bMovementXhome  = NexObject(PAGE_MOVEMENT,  19,  "bXh");
-	NexObject _bMovementYhome  = NexObject(PAGE_MOVEMENT,  18,  "bYh");
-	NexObject _bMovementZhome  = NexObject(PAGE_MOVEMENT,  11,  "bZh");
+	NexObject _bMovementAact  = NexObject(PAGE_MOVEMENT,  19,  "bAa");
+	NexObject _bMovementBact  = NexObject(PAGE_MOVEMENT,  18,  "bBa");
+	NexObject _bMovementCact  = NexObject(PAGE_MOVEMENT,  11,  "bCa");
 
-	NexObject _tMovementX  = NexObject(PAGE_MOVEMENT,  26,  "tX");
-	NexObject _tMovementY  = NexObject(PAGE_MOVEMENT,  27,  "tY");
-	NexObject _tMovementZ  = NexObject(PAGE_MOVEMENT,  28,  "tZ");
+	NexObject _tMovementA  = NexObject(PAGE_MOVEMENT,  26,  "tA");
+	NexObject _tMovementB  = NexObject(PAGE_MOVEMENT,  27,  "tB");
+	NexObject _tMovementC  = NexObject(PAGE_MOVEMENT,  28,  "tC");
 
 	//Buttons
-	NexObject _bMovementExtruders = NexObject(PAGE_MOVEMENT,  6,  "bE");
+	NexObject _bMovementMode = NexObject(PAGE_MOVEMENT,  6,  "bM");
 	NexObject _bMovementBack = NexObject(PAGE_MOVEMENT,  24,  "bB");
 
-	NexObject *_listenList[] = { &_bMovementXplus, &_bMovementXminus,
-			&_bMovementYplus, &_bMovementYminus, &_bMovementZplus,
-			&_bMovementZminus, &_bMovementXhome, &_bMovementYhome, &_bMovementZhome,
-			&_tMovementX, &_tMovementY, &_tMovementZ, &_bMovementExtruders,
+	NexObject *_listenList[] = { &_bMovementAplus, &_bMovementAminus,
+			&_bMovementBplus, &_bMovementBminus, &_bMovementCplus,
+			&_bMovementCminus, &_bMovementAact, &_bMovementBact, &_bMovementCact,
+			&_tMovementA, &_tMovementB, &_tMovementC, &_bMovementMode,
 			&_bMovementBack, NULL };
 
 }
 ;
 
 void StateMovement::Extruders_Push(void* ptr) {
-
+	StateMovement::Activate(!_moveMode);
 }
 
 void StateMovement::Back_Push(void* ptr) {
@@ -59,50 +61,81 @@ void StateMovement::Back_Push(void* ptr) {
 }
 
 void StateMovement::Movement_Push(void* ptr) {
-    ZERO(NextionHMI::buffer);
-    _gcode.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
-    commands.enqueue_and_echo_P(PSTR("G91"));
-    commands.enqueue_and_echo(NextionHMI::buffer);
-    commands.enqueue_and_echo_P(PSTR("G90"));
+	if (_moveMode==MODE_MOVE_EXTRUDERS && ptr==&_bMovementBact)
+	{
+		//cut
+		commands.enqueue_and_echo_P(PSTR("M280 P0 S160 "));
+		commands.enqueue_and_echo_P(PSTR("G4 P100  "));
+		commands.enqueue_and_echo_P(PSTR("M280 P0 S90 "));
+	}
+	else
+	{
+		ZERO(NextionHMI::buffer);
+		_gcode.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
+		if (_moveMode==MODE_MOVE_EXTRUDERS)
+		{
+			if (((ptr==&_bMovementAplus || ptr==&_bMovementAminus) && thermalManager.tooColdToExtrude(0)) ||
+				((ptr==&_bMovementBplus || ptr==&_bMovementBminus) && thermalManager.tooColdToExtrude(1)) ||
+				((ptr==&_bMovementCplus || ptr==&_bMovementCminus) && thermalManager.tooColdToExtrude(1)))
+			StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_COLD_HOTEND), PSTR(MSG_COLD_HOTEND_TEXT), 1, PSTR(MSG_OK), StateMovement::ActivateExtruders, NULL, NULL, 0);
+		}
+		commands.enqueue_and_echo_P(PSTR("G91"));
+		commands.enqueue_and_echo(NextionHMI::buffer);
+		commands.enqueue_and_echo_P(PSTR("G90"));
+	}
 	DrawUpdate();
 }
 
 void StateMovement::Init() {
-	_bMovementXplus.attachPush(Movement_Push);
-	_bMovementXminus.attachPush(Movement_Push);
+	_bMovementAplus.attachPush(Movement_Push, &_bMovementAplus);
+	_bMovementAminus.attachPush(Movement_Push, &_bMovementAminus);
 
-	_bMovementYplus.attachPush(Movement_Push);
-	_bMovementYminus.attachPush(Movement_Push);
+	_bMovementBplus.attachPush(Movement_Push, &_bMovementBplus);
+	_bMovementBminus.attachPush(Movement_Push, &_bMovementBminus);
 
-	_bMovementZplus.attachPush(Movement_Push);
-	_bMovementZminus.attachPush(Movement_Push);
+	_bMovementCplus.attachPush(Movement_Push, &_bMovementCplus);
+	_bMovementCminus.attachPush(Movement_Push, &_bMovementCminus);
 
-	_bMovementXhome.attachPush(Movement_Push);
-	_bMovementYhome.attachPush(Movement_Push);
-	_bMovementZhome.attachPush(Movement_Push);
+	_bMovementAact.attachPush(Movement_Push, &_bMovementAact);
+	_bMovementBact.attachPush(Movement_Push, &_bMovementBact);
+	_bMovementCact.attachPush(Movement_Push, &_bMovementCact);
 
-	_bMovementExtruders.attachPush(Extruders_Push);
+	_bMovementMode.attachPush(Extruders_Push);
 	_bMovementBack.attachPush(Back_Push);
 }
 
-void StateMovement::Activate() {
+void StateMovement::Activate(bool mode) {
+	_moveMode = mode;
+	_mode.setValue(_moveMode);
 	NextionHMI::ActivateState(PAGE_MOVEMENT);
 	_page.show();
 	DrawUpdate();
 }
 
+void StateMovement::ActivateExtruders() {
+	Activate(MODE_MOVE_EXTRUDERS);
+}
+
 void StateMovement::DrawUpdate() {
-	if (!printer.isHoming())
+	if (_moveMode==MODE_MOVE_AXIS)
 	{
-		_tMovementX.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[X_AXIS])));
-		_tMovementY.setText(ftostr62rj(LOGICAL_Y_POSITION(mechanics.current_position[Y_AXIS])));
-		_tMovementZ.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[Z_AXIS])));
+		_tMovementA.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[X_AXIS])));
+		_tMovementB.setText(ftostr62rj(LOGICAL_Y_POSITION(mechanics.current_position[Y_AXIS])));
+		_tMovementC.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[Z_AXIS])));
+	}
+	else
+	{
+		_tMovementA.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[E_AXIS])));
+		_tMovementB.setText(ftostr62rj(LOGICAL_Y_POSITION(mechanics.current_position[U_AXIS])));
+		_tMovementC.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[V_AXIS])));
 	}
 }
 
 void StateMovement::TouchUpdate() {
 	nexLoop(_listenList);
 }
+
+
 
 #endif
 

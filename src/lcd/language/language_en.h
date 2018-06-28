@@ -179,6 +179,14 @@
   #define MSG_Z_OFFSET_ST1                    		_UxGT("Slide a paper between the buildplate and the\\rnozzle. Move the buildplate with the buttons\\rbelow until you feel some friction while\\rsliding the paper.")
 #endif
 
+#ifndef MSG_COLD_HOTEND
+  #define MSG_COLD_HOTEND                    		_UxGT("Hotend is cold")
+#endif
+
+#ifndef MSG_COLD_HOTEND_TEXT
+  #define MSG_COLD_HOTEND_TEXT                    	_UxGT("Please heat the hotend before extruding or retracting filament")
+#endif
+
 #ifndef WELCOME_MSG
   #define WELCOME_MSG                         MACHINE_NAME _UxGT(" ready")
 #endif
