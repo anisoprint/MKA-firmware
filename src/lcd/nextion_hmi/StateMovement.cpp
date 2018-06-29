@@ -77,7 +77,10 @@ void StateMovement::Movement_Push(void* ptr) {
 			if (((ptr==&_bMovementAplus || ptr==&_bMovementAminus) && thermalManager.tooColdToExtrude(0)) ||
 				((ptr==&_bMovementBplus || ptr==&_bMovementBminus) && thermalManager.tooColdToExtrude(1)) ||
 				((ptr==&_bMovementCplus || ptr==&_bMovementCminus) && thermalManager.tooColdToExtrude(1)))
-			StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_COLD_HOTEND), PSTR(MSG_COLD_HOTEND_TEXT), 1, PSTR(MSG_OK), StateMovement::ActivateExtruders, NULL, NULL, 0);
+			{
+				StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_COLD_HOTEND), PSTR(MSG_COLD_HOTEND_TEXT), 1, PSTR(MSG_OK), StateMovement::ActivateExtruders, NULL, NULL, 0);
+				return;
+			}
 		}
 		commands.enqueue_and_echo_P(PSTR("G91"));
 		commands.enqueue_and_echo(NextionHMI::buffer);
@@ -127,7 +130,9 @@ void StateMovement::DrawUpdate() {
 	{
 		_tMovementA.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[E_AXIS])));
 		_tMovementB.setText(ftostr62rj(LOGICAL_Y_POSITION(mechanics.current_position[U_AXIS])));
+#if DRIVER_EXTRUDERS>2
 		_tMovementC.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[V_AXIS])));
+#endif
 	}
 }
 

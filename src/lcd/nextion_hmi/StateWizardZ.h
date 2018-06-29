@@ -22,6 +22,7 @@ namespace StateWizardZ {
   	void Movement_Push(void *ptr);
 
   	void Init();
+  	void DrawUpdate();
 	void ZOffsetS1(void *ptr=0);
 	void TouchUpdate();
 

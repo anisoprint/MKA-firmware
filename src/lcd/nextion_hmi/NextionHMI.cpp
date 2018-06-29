@@ -124,7 +124,7 @@ void NextionHMI::DrawUpdate() {
 	         break;
 	    case PAGE_ABOUT :
 	         break;
-	    case PAGE_WIZARDZ :
+	    case PAGE_WIZARDZ : StateWizardZ::DrawUpdate();
 	         break;
 	}
 }

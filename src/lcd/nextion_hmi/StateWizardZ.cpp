@@ -23,6 +23,7 @@ namespace {
 
 	NexObject  _txtHeader = NexObject(PAGE_WIZARDZ,  3,  "tT");
 	NexObject  _txtCaption = NexObject(PAGE_WIZARDZ,  2,  "tC");
+	NexObject  _txtZ = NexObject(PAGE_WIZARDZ,  20,  "tZ");
 
 	//Control
 	NexObject _bMovement1  = NexObject(PAGE_WIZARDZ,  10,  "bd1");
@@ -98,8 +99,16 @@ void StateWizardZ::ZOffsetS1(void* ptr) {
 		_bLeft.attachPush(StateWizard::ZOffsetCancel);
 		_bRight.attachPush(StateWizard::ZOffsetFinish);
 
+		DrawUpdate();
+
 	}
 
+}
+
+void StateWizardZ::DrawUpdate() {
+	String strTemp = String("Z=");
+	strTemp+=ftostr32(LOGICAL_X_POSITION(mechanics.current_position[Z_AXIS]));
+	_txtZ.setText(strTemp.c_str());
 }
 
 #endif

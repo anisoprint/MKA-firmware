@@ -230,7 +230,7 @@
 
 // If the temperature difference between the target temperature and the actual temperature
 // is more then PID FUNCTIONAL RANGE then the PID will be shut off and the heater will be set to min/max.
-#define PID_FUNCTIONAL_RANGE 10
+#define PID_FUNCTIONAL_RANGE 15
 
 // this adds an experimental additional term to the heating power, proportional to the extrusion speed.
 // if Kc is chosen well, the additional required power due to increased melting should be compensated.
@@ -238,9 +238,9 @@
 #define LPQ_MAX_LEN 50
 
 //           HotEnd{HE0,HE1,HE2,HE3}
-#define DEFAULT_Kp {10.07, 9.494, 40, 40}     // Kp for H0, H1, H2, H3
-#define DEFAULT_Ki {0.798, 0.63, 07, 07}     // Ki for H0, H1, H2, H3
-#define DEFAULT_Kd {31.772, 35.408, 60, 60}     // Kd for H0, H1, H2, H3
+#define DEFAULT_Kp {4.0, 9.33, 40, 40}     // Kp for H0, H1, H2, H3
+#define DEFAULT_Ki {0.47, 0.62, 07, 07}     // Ki for H0, H1, H2, H3
+#define DEFAULT_Kd {67.09, 92.85, 60, 60}     // Kd for H0, H1, H2, H3
 #define DEFAULT_Kc {100, 100, 100, 100} // heating power = Kc * (e_speed)
 /***********************************************************************/
 /***********************************************************************/

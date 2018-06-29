@@ -159,8 +159,8 @@
   #define MSG_ABOUT_PRINTER                     	_UxGT("About printer")
 #endif
 
-#ifndef MSG_Z_OFFSET
-  #define MSG_Z_OFFSET                    			_UxGT("Z offset")
+#ifndef MSG_Z_AXIS
+  #define MSG_Z_AXIS                    			_UxGT("Z axis")
 #endif
 
 #ifndef RESTART_TO_CONTINUE
@@ -168,11 +168,11 @@
 #endif
 
 #ifndef MSG_HEADER_Z_OFFSET
-  #define MSG_HEADER_Z_OFFSET                    	_UxGT("Z-offset calibration")
+  #define MSG_HEADER_Z_OFFSET                    	_UxGT("Z axis calibration")
 #endif
 
 #ifndef MSG_Z_OFFSET_ST0
-  #define MSG_Z_OFFSET_ST0                    		_UxGT("To adjust Z axis offset you will need a sheet\\rof 80gsm paper.\\r\\rPlease be careful during the process. Do not\\rlift the build plate too much or too fast to\\ravoid collision with the printhead, which can\\rdamage your printer.")
+  #define MSG_Z_OFFSET_ST0                    		_UxGT("To adjust Z axis zero you will need a sheet\\rof 80gsm paper.\\r\\rPlease be careful during the process. Do not\\rlift the build plate too much or too fast to\\ravoid collision with the printhead, which can\\rdamage your printer.")
 #endif
 
 #ifndef MSG_Z_OFFSET_ST1
@@ -184,7 +184,7 @@
 #endif
 
 #ifndef MSG_COLD_HOTEND_TEXT
-  #define MSG_COLD_HOTEND_TEXT                    	_UxGT("Please heat the hotend before extruding or retracting filament")
+  #define MSG_COLD_HOTEND_TEXT                    	_UxGT("Please heat the hotend before extruding or\\rretracting the filament")
 #endif
 
 #ifndef WELCOME_MSG

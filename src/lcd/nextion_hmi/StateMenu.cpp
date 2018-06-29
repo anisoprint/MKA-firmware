@@ -95,11 +95,11 @@ void StateMenu::ActivateCalibrate(void* ptr) {
 	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 
 	_b1.setTextPGM(PSTR(MSG_BUILD_PLATE));
-	_b2.setTextPGM(PSTR(MSG_Z_OFFSET));
+	_b2.setTextPGM(PSTR(MSG_Z_AXIS));
 	_b3.setTextPGM(PSTR(MSG_PRINTHEAD));
 
 	_b1.attachPush(Calibrate_Buildplate);
-	_b2.attachPush(Calibrate_ZOffset);
+	_b2.attachPush(Calibrate_ZAxis);
 	_b3.attachPush(0);
 
 	_bBack.attachPush(CalibrateBack);
@@ -108,7 +108,7 @@ void StateMenu::ActivateCalibrate(void* ptr) {
 void StateMenu::Calibrate_Buildplate(void* ptr) {
 }
 
-void StateMenu::Calibrate_ZOffset(void* ptr) {
+void StateMenu::Calibrate_ZAxis(void* ptr) {
 	StateWizard::ZOffsetS0();
 }
 
