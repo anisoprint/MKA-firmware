@@ -82,8 +82,8 @@
  * 999 : Dummy Table that ALWAYS reads 100 degC or the temperature defined below.                    *
  *                                                                                                   *
  *****************************************************************************************************/
-#define TEMP_SENSOR_0 -3
-#define TEMP_SENSOR_1 -3
+#define TEMP_SENSOR_0 1
+#define TEMP_SENSOR_1 1
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_BED 1
@@ -177,7 +177,7 @@
  * in the start.gcode                                                                    *
  *                                                                                       *
  *****************************************************************************************/
-#define AUTOTEMP
+//#define AUTOTEMP
 #define AUTOTEMP_OLDWEIGHT 0.98
 /*****************************************************************************************/
 
@@ -222,15 +222,15 @@
 #define PIDTEMP true
 
 #define PID_MAX       255 // Limits current to nozzle while in PID mode;        255 = full current
-#define PID_DRIVE_MIN  40 // Limits min current to nozzle while PID is active;    0 = no current
-#define PID_DRIVE_MAX 230 // Limits max current to nozzle while PID is active;  255 = full current
+#define PID_DRIVE_MIN   0 // Limits min current to nozzle while PID is active;    0 = no current
+#define PID_DRIVE_MAX 255 // Limits max current to nozzle while PID is active;  255 = full current
 
 #define PID_AUTOTUNE_MENU // Add PID Autotune to the LCD "Temperature" menu to run M303 and apply the result.
 //#define PID_DEBUG       // Sends debug data to the serial port.
 
 // If the temperature difference between the target temperature and the actual temperature
 // is more then PID FUNCTIONAL RANGE then the PID will be shut off and the heater will be set to min/max.
-#define PID_FUNCTIONAL_RANGE 10
+#define PID_FUNCTIONAL_RANGE 15
 
 // this adds an experimental additional term to the heating power, proportional to the extrusion speed.
 // if Kc is chosen well, the additional required power due to increased melting should be compensated.
@@ -238,9 +238,9 @@
 #define LPQ_MAX_LEN 50
 
 //           HotEnd{HE0,HE1,HE2,HE3}
-#define DEFAULT_Kp {10.07, 9.494, 40, 40}     // Kp for H0, H1, H2, H3
-#define DEFAULT_Ki {0.798, 0.63, 07, 07}     // Ki for H0, H1, H2, H3
-#define DEFAULT_Kd {31.772, 35.408, 60, 60}     // Kd for H0, H1, H2, H3
+#define DEFAULT_Kp {4.0, 9.33, 40, 40}     // Kp for H0, H1, H2, H3
+#define DEFAULT_Ki {0.47, 0.62, 07, 07}     // Ki for H0, H1, H2, H3
+#define DEFAULT_Kd {67.09, 92.85, 60, 60}     // Kd for H0, H1, H2, H3
 #define DEFAULT_Kc {100, 100, 100, 100} // heating power = Kc * (e_speed)
 /***********************************************************************/
 /***********************************************************************/
@@ -271,7 +271,7 @@
 // setting this to anything other than 255 enables a form of PWM to the bed,
 // so you shouldn't use it unless you are OK with PWM on your bed. (see the comment on enabling PIDTEMPBED)
 #define BED_PID_MAX       255   // Limits current to bed while in PID mode;       255 = full current
-#define BED_PID_DRIVE_MIN  80   // Limits min current to bed while PID is active;   0 = no current
+#define BED_PID_DRIVE_MIN   0   // Limits min current to bed while PID is active;   0 = no current
 #define BED_PID_DRIVE_MAX 255   // Limits max current to bed while PID is active; 255 = full current
 
 // 120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)

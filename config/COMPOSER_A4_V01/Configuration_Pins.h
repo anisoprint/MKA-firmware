@@ -85,28 +85,28 @@
 #endif
 
 #if DRIVER_EXTRUDERS > 1
-  #define E1_STEP_PIN       ORIG_E2_STEP_PIN
-  #define E1_DIR_PIN        ORIG_E2_DIR_PIN
-  #define E1_ENABLE_PIN     ORIG_E2_ENABLE_PIN
-  #define E1_CS_PIN         ORIG_E2_CS_PIN
+  #define E1_STEP_PIN       ORIG_E1_STEP_PIN
+  #define E1_DIR_PIN        ORIG_E1_DIR_PIN
+  #define E1_ENABLE_PIN     ORIG_E1_ENABLE_PIN
+  #define E1_CS_PIN         ORIG_E1_CS_PIN
   #define SOL1_PIN          ORIG_SOL2_PIN
   #define E1_ENC_PIN        NoPin
 #endif
 
 #if DRIVER_EXTRUDERS > 2
-  #define E2_STEP_PIN       ORIG_E3_STEP_PIN
-  #define E2_DIR_PIN        ORIG_E3_DIR_PIN
-  #define E2_ENABLE_PIN     ORIG_E3_ENABLE_PIN
-  #define E2_CS_PIN         ORIG_E3_CS_PIN
-  #define SOL2_PIN          ORIG_SOL3_PIN
+  #define E2_STEP_PIN       ORIG_E2_STEP_PIN
+  #define E2_DIR_PIN        ORIG_E2_DIR_PIN
+  #define E2_ENABLE_PIN     ORIG_E2_ENABLE_PIN
+  #define E2_CS_PIN         ORIG_E2_CS_PIN
+  #define SOL2_PIN          ORIG_SOL2_PIN
   #define E2_ENC_PIN        NoPin
 #endif
 
 #if DRIVER_EXTRUDERS > 3
-  #define E3_STEP_PIN       ORIG_E1_STEP_PIN
-  #define E3_DIR_PIN        ORIG_E1_DIR_PIN
-  #define E3_ENABLE_PIN     ORIG_E1_ENABLE_PIN
-  #define E3_CS_PIN         ORIG_E1_CS_PIN
+  #define E3_STEP_PIN       ORIG_E3_STEP_PIN
+  #define E3_DIR_PIN        ORIG_E3_DIR_PIN
+  #define E3_ENABLE_PIN     ORIG_E3_ENABLE_PIN
+  #define E3_CS_PIN         ORIG_E3_CS_PIN
   #define SOL3_PIN          ORIG_SOL3_PIN
   #define E3_ENC_PIN        NoPin
 #endif
@@ -146,16 +146,16 @@
 
 // HEATER pin
 #define HEATER_0_PIN        ORIG_HEATER_0_PIN
-#define HEATER_1_PIN        ORIG_HEATER_1_PIN
+#define HEATER_1_PIN        ORIG_HEATER_2_PIN
 #define HEATER_2_PIN        ORIG_HEATER_BED_PIN
 #define HEATER_3_PIN        ORIG_HEATER_3_PIN
-#define HEATER_BED_PIN      ORIG_HEATER_2_PIN
+#define HEATER_BED_PIN      ORIG_HEATER_1_PIN
 #define HEATER_CHAMBER_PIN  NoPin
 #define HEATER_COOLER_PIN   NoPin
 
 // TEMP pin
-#define TEMP_0_PIN          ORIG_TEMP_0_PIN
-#define TEMP_1_PIN          ORIG_TEMP_1_PIN
+#define TEMP_0_PIN          ORIG_TEMP_1_PIN
+#define TEMP_1_PIN          ORIG_TEMP_0_PIN
 #define TEMP_2_PIN          ORIG_TEMP_2_PIN
 #define TEMP_3_PIN          ORIG_TEMP_3_PIN
 #define TEMP_BED_PIN        ORIG_TEMP_BED_PIN

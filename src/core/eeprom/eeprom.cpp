@@ -2051,7 +2051,7 @@ void EEPROM::Factory_Settings() {
 		LOOP_EUVW(i)
 		{
 		 SERIAL_MV(" ", axis_codes[i]);
-		 SERIAL_MV("", VOLUMETRIC_UNIT(mechanics.max_acceleration_mm_per_s2[i]), 3);
+		 SERIAL_MV("", (float)VOLUMETRIC_UNIT(mechanics.max_acceleration_mm_per_s2[i]), 3);
 		}
 		SERIAL_EOL();
     #endif // DRIVER_EXTRUDERS > 1

@@ -78,7 +78,7 @@ void StateMovement::Movement_Push(void* ptr) {
 				((ptr==&_bMovementBplus || ptr==&_bMovementBminus) && thermalManager.tooColdToExtrude(1)) ||
 				((ptr==&_bMovementCplus || ptr==&_bMovementCminus) && thermalManager.tooColdToExtrude(1)))
 			{
-				StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_COLD_HOTEND), PSTR(MSG_COLD_HOTEND_TEXT), 1, PSTR(MSG_OK), StateMovement::ActivateExtruders, NULL, NULL, 0);
+				StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_COLD_HOTEND), PSTR(MSG_COLD_HOTEND_TEXT), 1, PSTR(MSG_OK), (NexTouchEventCb)StateMovement::ActivateExtruders, NULL, NULL, 0);
 				return;
 			}
 		}
