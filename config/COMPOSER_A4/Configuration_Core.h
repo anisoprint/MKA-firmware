@@ -318,9 +318,9 @@
  * Change (or reverse the motor connector) if an axis goes the wrong way.                *
  *                                                                                       *
  *****************************************************************************************/
-#define INVERT_X_DIR true
-#define INVERT_Y_DIR true
-#define INVERT_Z_DIR false
+#define INVERT_X_DIR false
+#define INVERT_Y_DIR false
+#define INVERT_Z_DIR true
 #define INVERT_E0_DIR false
 #define INVERT_E1_DIR true
 #define INVERT_E2_DIR false
@@ -575,7 +575,7 @@
  *                                                                                       *
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 1600, 95.5, 98.23, 95.5, 625}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {200, 200, 3200, 95.5*2, 98.23, 95.5*2, 625} //XYZ,EV 1/32
 /*****************************************************************************************/
 
 

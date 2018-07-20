@@ -222,8 +222,8 @@
 #define PIDTEMP true
 
 #define PID_MAX       255 // Limits current to nozzle while in PID mode;        255 = full current
-#define PID_DRIVE_MIN  40 // Limits min current to nozzle while PID is active;    0 = no current
-#define PID_DRIVE_MAX 230 // Limits max current to nozzle while PID is active;  255 = full current
+#define PID_DRIVE_MIN   0 // Limits min current to nozzle while PID is active;    0 = no current
+#define PID_DRIVE_MAX 255 // Limits max current to nozzle while PID is active;  255 = full current
 
 #define PID_AUTOTUNE_MENU // Add PID Autotune to the LCD "Temperature" menu to run M303 and apply the result.
 //#define PID_DEBUG       // Sends debug data to the serial port.
