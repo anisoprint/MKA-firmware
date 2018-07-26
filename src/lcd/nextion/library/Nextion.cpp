@@ -662,13 +662,13 @@
     if (connect) {
       sendCommand("baud=115200");
       nexSerial.end();
-      HAL::delayMilliseconds(1000);
+      HAL::delayMilliseconds(500);
       nexSerial.begin(115200);
       return true;
     }
     else { // Else try to 115200 baudrate
       nexSerial.end();
-      HAL::delayMilliseconds(1000);
+      HAL::delayMilliseconds(500);
       nexSerial.begin(115200);
       connect = getConnect(buffer);
       if (connect) return true;

@@ -297,8 +297,12 @@ void Printer::setup() {
   // All Initialized set Running to true.
   setRunning(true);
 
-  #if ENABLED(DELTA_HOME_ON_POWER)
+  #if ENABLED(DELTA_HOME_ON_POWER) || ENABLED(HOME_ON_POWER)
     mechanics.home();
+  #endif
+
+  #if ENABLED(NEXTION_HMI)
+	StateStatus::Activate();
   #endif
 
   #if FAN_COUNT > 0

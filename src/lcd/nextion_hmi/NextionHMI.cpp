@@ -45,7 +45,7 @@ void NextionHMI::Init() {
 		{
 			break;
 		}
-		HAL::delayMilliseconds(1000);
+		HAL::delayMilliseconds(500);
 	}
 
 	if (!_nextionOn) {
@@ -91,7 +91,7 @@ void NextionHMI::Init() {
 	StateMovement::Init();
 	StateWizardZ::Init();
 
-	StateStatus::Activate();
+
 }
 
 void NextionHMI::DrawUpdate() {
