@@ -145,8 +145,8 @@
 #define Z_PROBE_PIN         NoPin
 
 // HEATER pin
-#define HEATER_0_PIN        ORIG_HEATER_0_PIN
-#define HEATER_1_PIN        ORIG_HEATER_1_PIN
+#define HEATER_0_PIN        ORIG_HEATER_1_PIN
+#define HEATER_1_PIN        ORIG_HEATER_0_PIN
 #define HEATER_2_PIN        ORIG_HEATER_BED_PIN
 #define HEATER_3_PIN        ORIG_HEATER_3_PIN
 #define HEATER_BED_PIN      ORIG_HEATER_2_PIN

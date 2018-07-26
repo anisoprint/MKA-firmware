@@ -222,8 +222,8 @@
 #define PIDTEMP true
 
 #define PID_MAX       255 // Limits current to nozzle while in PID mode;        255 = full current
-#define PID_DRIVE_MIN  40 // Limits min current to nozzle while PID is active;    0 = no current
-#define PID_DRIVE_MAX 230 // Limits max current to nozzle while PID is active;  255 = full current
+#define PID_DRIVE_MIN   0 // Limits min current to nozzle while PID is active;    0 = no current
+#define PID_DRIVE_MAX 255 // Limits max current to nozzle while PID is active;  255 = full current
 
 #define PID_AUTOTUNE_MENU // Add PID Autotune to the LCD "Temperature" menu to run M303 and apply the result.
 //#define PID_DEBUG       // Sends debug data to the serial port.
@@ -238,9 +238,9 @@
 #define LPQ_MAX_LEN 50
 
 //           HotEnd{HE0,HE1,HE2,HE3}
-#define DEFAULT_Kp {10.07, 9.494, 40, 40}     // Kp for H0, H1, H2, H3
+#define DEFAULT_Kp {10.07, 9.494, 40, 40}    // Kp for H0, H1, H2, H3
 #define DEFAULT_Ki {0.798, 0.63, 07, 07}     // Ki for H0, H1, H2, H3
-#define DEFAULT_Kd {31.772, 35.408, 60, 60}     // Kd for H0, H1, H2, H3
+#define DEFAULT_Kd {31.772, 35.408, 60, 60}  // Kd for H0, H1, H2, H3
 #define DEFAULT_Kc {100, 100, 100, 100} // heating power = Kc * (e_speed)
 /***********************************************************************/
 /***********************************************************************/

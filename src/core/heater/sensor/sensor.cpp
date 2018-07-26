@@ -123,9 +123,9 @@
     HAL::digitalWrite(cs_pin, HIGH); // disable TT_MAX31855
 
     // Process temp
-    if (data & 0x00010000)
-      return 20000; // Some form of error.
-    else {
+    //if (data & 0x00010000)
+    //  return 20000; // Some form of error.
+    //else {
       data = data >> MAX31855_DISCARD_BITS;
       temperature = data & 0x00001FFF;
 
@@ -133,7 +133,7 @@
         data = ~data;
         temperature = -1 * ((data & 0x00001FFF) + 1);
       }
-    }
+    //}
 
     return temperature;
   }

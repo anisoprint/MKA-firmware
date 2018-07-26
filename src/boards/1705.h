@@ -159,7 +159,7 @@
 
 
 //###UNKNOWN_PINS
-#define EEPROM_SD
+//#define EEPROM_SD
 #define MAX6675_SS_PIN    65
 #define MAX31855_SS0_PIN  65
 #define MAX31855_SS1_PIN  52

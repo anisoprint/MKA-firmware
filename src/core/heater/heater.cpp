@@ -65,7 +65,7 @@
     if (pin > 0) HAL::pinMode(pin, (isHWInverted()) ? OUTPUT_HIGH : OUTPUT_LOW);
 
     #if ENABLED(SUPPORT_MAX6675) || ENABLED(SUPPORT_MAX31855)
-      if (sensor.type == -2 || sensor.type == -1) {
+      if (sensor.type == -3 || sensor.type == -2 || sensor.type == -1) {
         HAL::pinMode(sensor.pin, OUTPUT_HIGH);
       }
     #endif

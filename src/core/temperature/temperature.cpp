@@ -655,7 +655,7 @@ void Temperature::report_temperatures(const bool showRaw/*=false*/) {
   #if HOTENDS > 1
     LOOP_HOTEND() {
       print_heater_state(&heaters[h], true, showRaw);
-      SERIAL_MV(MSG_AT, h);
+      //SERIAL_MV(MSG_AT, h);
       SERIAL_CHR(':');
       SERIAL_VAL((int)heaters[h].soft_pwm);
     }
