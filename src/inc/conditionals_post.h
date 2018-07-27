@@ -815,6 +815,8 @@
 /**
  * Temp Sensor defines
  */
+#if TEMP_SENSOR_0 == -4
+  #define SUPPORT_MAX31865
 #if TEMP_SENSOR_0 == -3
   #define SUPPORT_MAX31855
 #elif TEMP_SENSOR_0 == -2
@@ -830,7 +832,11 @@
   #define HEATER_0_USES_AMPLIFIER
 #endif
 
-#if TEMP_SENSOR_1 == -3
+#if TEMP_SENSOR_1 == -4
+  #if DISABLED(SUPPORT_MAX31865)
+    #define SUPPORT_MAX31865
+  #endif
+#elif TEMP_SENSOR_1 == -3
   #if DISABLED(SUPPORT_MAX31855)
     #define SUPPORT_MAX31855
   #endif
@@ -849,7 +855,11 @@
   #define HEATER_1_USES_AMPLIFIER
 #endif
 
-#if TEMP_SENSOR_2 == -3
+#if TEMP_SENSOR_2 == -4
+  #if DISABLED(SUPPORT_MAX31865)
+    #define SUPPORT_MAX31865
+  #endif
+#elif TEMP_SENSOR_2 == -3
   #if DISABLED(SUPPORT_MAX31855)
     #define SUPPORT_MAX31855
   #endif
@@ -868,7 +878,11 @@
   #define HEATER_2_USES_AMPLIFIER
 #endif
 
-#if TEMP_SENSOR_3 == -3
+#if TEMP_SENSOR_3 == -4
+  #if DISABLED(SUPPORT_MAX31865)
+    #define SUPPORT_MAX31865
+  #endif
+#elif TEMP_SENSOR_3 == -3
   #if DISABLED(SUPPORT_MAX31855)
     #define SUPPORT_MAX31855
   #endif

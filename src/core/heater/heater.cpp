@@ -69,6 +69,11 @@
         HAL::pinMode(sensor.pin, OUTPUT_HIGH);
       }
     #endif
+	#if ENABLED(SUPPORT_MAX31865)
+	  if (sensor.type == -4 ) {
+		  MAX31865::Initialize(MAX31865_3WIRE, sensor.pin);
+	  }
+	#endif
 
   }
 

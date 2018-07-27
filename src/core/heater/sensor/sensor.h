@@ -27,6 +27,8 @@
 #ifndef _SENSOR_H_
 #define _SENSOR_H_
 
+#include "MAX31865.h"
+
 class TemperatureSensor {
 
   public: /** Public Parameters */
