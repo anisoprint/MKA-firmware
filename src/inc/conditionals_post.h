@@ -817,7 +817,7 @@
  */
 #if TEMP_SENSOR_0 == -4
   #define SUPPORT_MAX31865
-#if TEMP_SENSOR_0 == -3
+#elif TEMP_SENSOR_0 == -3
   #define SUPPORT_MAX31855
 #elif TEMP_SENSOR_0 == -2
   #define SUPPORT_MAX6675

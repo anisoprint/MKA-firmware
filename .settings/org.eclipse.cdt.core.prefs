@@ -61,7 +61,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.USB_PROD
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.USB_PRODUCT/value="Arduino Due"
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.VARIANT.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.VARIANT.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.VARIANT.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.11\\variants\\arduino_due_x
+environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.VARIANT.PATH/value=D\:\\Programs\\sloeber4.2\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.11\\variants\\arduino_due_x
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.VARIANT/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.VARIANT/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.VARIANT/value=arduino_due_x
@@ -172,10 +172,10 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.DTS
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.DTS/value=0
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.LOCAL/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.LOCAL/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.LOCAL/value=1532111632
+environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.LOCAL/value=1532996753
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.UTC/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.UTC/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.UTC/value=1532100832
+environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.UTC/value=1532985953
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.ZONE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.ZONE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.EXTRA.TIME.ZONE/value=10800
@@ -202,7 +202,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.PID.1/operatio
 environment/project/io.sloeber.core.toolChain.release.918675551/A.PID.1/value=0x003d
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.AR.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.AR.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.AR.PATTERN.1/value="C\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-ar" rcs 
+environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.AR.PATTERN.1/value="D\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-ar" rcs 
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.AR.PATTERN.2/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.AR.PATTERN.2/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.AR.PATTERN.2/value=\ 
@@ -214,10 +214,10 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.AR.PATT
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.AR.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.AR.CMD}" ${A.COMPILER.AR.FLAGS} ${A.COMPILER.AR.EXTRA_FLAGS} "${A.ARCHIVE_FILE_PATH}" "${A.OBJECT_FILE}"
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN.1/value="C\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-gcc" -mcpu\=cortex-m3 -mthumb -Os -Wl,--gc-sections "-TC\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.11\\variants\\arduino_due_x/linker_scripts/gcc/flash.ld" "-Wl,-Map,C\:\\Users\\avaza\\git\\MKA/Release/MKA.map" -o "C\:\\Users\\avaza\\git\\MKA/Release/MKA.elf" "-LC\:\\Users\\avaza\\git\\MKA/Release" -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry\=Reset_Handler -Wl,--unresolved-symbols\=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group -u _sbrk -u link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid 
+environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN.1/value="D\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-gcc" -mcpu\=cortex-m3 -mthumb -Os -Wl,--gc-sections "-TD\:\\Programs\\sloeber4.2\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.11\\variants\\arduino_due_x/linker_scripts/gcc/flash.ld" "-Wl,-Map,C\:\\Users\\Avazar\\git\\MKA/Release/MKA.map" -o "C\:\\Users\\Avazar\\git\\MKA/Release/MKA.elf" "-LC\:\\Users\\Avazar\\git\\MKA/Release" -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry\=Reset_Handler -Wl,--unresolved-symbols\=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group -u _sbrk -u link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid 
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN.2/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN.2/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN.2/value=\ "C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.11\\variants\\arduino_due_x/libsam_sam3x8e_gcc_rel.a" 
+environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN.2/value=\ "D\:\\Programs\\sloeber4.2\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.11\\variants\\arduino_due_x/libsam_sam3x8e_gcc_rel.a" 
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN.3/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN.3/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN.3/value=\ -Wl,--end-group -lm -gcc
@@ -226,7 +226,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBI
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.COMBINE.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.C.ELF.CMD}" -mcpu\=${A.BUILD.MCU} -mthumb ${A.COMPILER.C.ELF.FLAGS} "-T${A.BUILD.VARIANT.PATH}/${A.BUILD.LDSCRIPT}" "-Wl,-Map,${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.map" ${A.COMPILER.C.ELF.EXTRA_FLAGS} -o "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.elf" "-L${A.BUILD.PATH}" -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry\=Reset_Handler -Wl,--unresolved-symbols\=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group ${A.COMPILER.COMBINE.FLAGS} ${A.OBJECT_FILES} "${A.BUILD.VARIANT.PATH}/${A.BUILD.VARIANT_SYSTEM_LIB}" "${A.BUILD.PATH}/${A.ARCHIVE_FILE}" -Wl,--end-group -lm -gcc
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.O.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.O.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.O.PATTERN.1/value="C\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-gcc" -c -g -Os -Wall -Wextra -std\=gnu11 -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single\=500 -Dprintf\=iprintf -mcpu\=cortex-m3 -mthumb -DF_CPU\=84000000L -DARDUINO\=10802 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ -mthumb -DUSB_VID\=0x2341 -DUSB_PID\=0x003e -DUSBCON "-DUSB_MANUFACTURER\=\\"Arduino LLC\\"" "-DUSB_PRODUCT\=\\"Arduino Due\\"" "-IC\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/libsam" "-IC\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/CMSIS/Include/" "-IC\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/Device/ATMEL/" 
+environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.O.PATTERN.1/value="D\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-gcc" -c -g -Os -Wall -Wextra -std\=gnu11 -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single\=500 -Dprintf\=iprintf -mcpu\=cortex-m3 -mthumb -DF_CPU\=84000000L -DARDUINO\=10802 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ -mthumb -DUSB_VID\=0x2341 -DUSB_PID\=0x003e -DUSBCON "-DUSB_MANUFACTURER\=\\"Arduino LLC\\"" "-DUSB_PRODUCT\=\\"Arduino Due\\"" "-ID\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/libsam" "-ID\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/CMSIS/Include/" "-ID\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/Device/ATMEL/" 
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.O.PATTERN.2/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.O.PATTERN.2/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.O.PATTERN.2/value=\ -o 
@@ -238,7 +238,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.O.PAT
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.C.O.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.C.CMD}" ${A.COMPILER.C.FLAGS} -mcpu\=${A.BUILD.MCU} -mthumb -DF_CPU\=${A.BUILD.F_CPU} -DARDUINO\=${A.RUNTIME.IDE.VERSION} -DARDUINO_${A.BUILD.BOARD} -DARDUINO_ARCH_${A.BUILD.ARCH} ${A.COMPILER.C.EXTRA_FLAGS} ${A.BUILD.EXTRA_FLAGS} ${A.COMPILER.LIBSAM.C.FLAGS} ${A.INCLUDES} "${A.SOURCE_FILE}" -o "${A.OBJECT_FILE}"
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.CPP.O.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.CPP.O.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.CPP.O.PATTERN.1/value="C\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-g++" -c -g -Os -Wall -Wextra -std\=gnu++11 -ffunction-sections -fdata-sections -nostdlib -fno-threadsafe-statics --param max-inline-insns-single\=500 -fno-rtti -fno-exceptions -Dprintf\=iprintf -mcpu\=cortex-m3 -mthumb -DF_CPU\=84000000L -DARDUINO\=10802 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ -mthumb -DUSB_VID\=0x2341 -DUSB_PID\=0x003e -DUSBCON "-DUSB_MANUFACTURER\=\\"Arduino LLC\\"" "-DUSB_PRODUCT\=\\"Arduino Due\\"" "-IC\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/libsam" "-IC\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/CMSIS/Include/" "-IC\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/Device/ATMEL/" 
+environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.CPP.O.PATTERN.1/value="D\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-g++" -c -g -Os -Wall -Wextra -std\=gnu++11 -ffunction-sections -fdata-sections -nostdlib -fno-threadsafe-statics --param max-inline-insns-single\=500 -fno-rtti -fno-exceptions -Dprintf\=iprintf -mcpu\=cortex-m3 -mthumb -DF_CPU\=84000000L -DARDUINO\=10802 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ -mthumb -DUSB_VID\=0x2341 -DUSB_PID\=0x003e -DUSBCON "-DUSB_MANUFACTURER\=\\"Arduino LLC\\"" "-DUSB_PRODUCT\=\\"Arduino Due\\"" "-ID\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/libsam" "-ID\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/CMSIS/Include/" "-ID\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/Device/ATMEL/" 
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.CPP.O.PATTERN.2/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.CPP.O.PATTERN.2/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.CPP.O.PATTERN.2/value=\ -o 
@@ -259,7 +259,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.OBJCOPY
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.OBJCOPY.EEP.PATTERN/value=
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.OBJCOPY.HEX.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.OBJCOPY.HEX.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.OBJCOPY.HEX.PATTERN.1/value="C\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-objcopy" -O binary "C\:\\Users\\avaza\\git\\MKA/Release/MKA.elf" "C\:\\Users\\avaza\\git\\MKA/Release/MKA.bin"
+environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.OBJCOPY.HEX.PATTERN.1/value="D\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-objcopy" -O binary "C\:\\Users\\Avazar\\git\\MKA/Release/MKA.elf" "C\:\\Users\\Avazar\\git\\MKA/Release/MKA.bin"
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.OBJCOPY.HEX.PATTERN/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.OBJCOPY.HEX.PATTERN/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.OBJCOPY.HEX.PATTERN/value=${A.RECIPE.OBJCOPY.BIN.PATTERN}
@@ -271,7 +271,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.OUTPUT.
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.OUTPUT.TMP_FILE/value=${A.BUILD.PROJECT_NAME}.bin
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.S.O.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.S.O.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.S.O.PATTERN.1/value="C\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-gcc" -c -g -x assembler-with-cpp -mcpu\=cortex-m3 -mthumb -DF_CPU\=84000000L -DARDUINO\=10802 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ -mthumb -DUSB_VID\=0x2341 -DUSB_PID\=0x003e -DUSBCON "-DUSB_MANUFACTURER\=\\"Arduino LLC\\"" "-DUSB_PRODUCT\=\\"Arduino Due\\"" "-IC\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/libsam" "-IC\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/CMSIS/Include/" "-IC\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/Device/ATMEL/" 
+environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.S.O.PATTERN.1/value="D\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-gcc" -c -g -x assembler-with-cpp -mcpu\=cortex-m3 -mthumb -DF_CPU\=84000000L -DARDUINO\=10802 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ -mthumb -DUSB_VID\=0x2341 -DUSB_PID\=0x003e -DUSBCON "-DUSB_MANUFACTURER\=\\"Arduino LLC\\"" "-DUSB_PRODUCT\=\\"Arduino Due\\"" "-ID\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/libsam" "-ID\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/CMSIS/Include/" "-ID\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/system/CMSIS/Device/ATMEL/" 
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.S.O.PATTERN.2/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.S.O.PATTERN.2/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.S.O.PATTERN.2/value=\ -o 
@@ -283,7 +283,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.S.O.PAT
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.S.O.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.S.CMD}" ${A.COMPILER.S.FLAGS} -mcpu\=${A.BUILD.MCU} -mthumb -DF_CPU\=${A.BUILD.F_CPU} -DARDUINO\=${A.RUNTIME.IDE.VERSION} -DARDUINO_${A.BUILD.BOARD} -DARDUINO_ARCH_${A.BUILD.ARCH} ${A.COMPILER.S.EXTRA_FLAGS} ${A.BUILD.EXTRA_FLAGS} ${A.COMPILER.LIBSAM.C.FLAGS} ${A.INCLUDES} "${A.SOURCE_FILE}" -o "${A.OBJECT_FILE}"
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.SIZE.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.SIZE.PATTERN.1/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.SIZE.PATTERN.1/value="C\:\\Programs\\sloeber\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-size" -A "C\:\\Users\\avaza\\git\\MKA/Release/MKA.elf"
+environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.SIZE.PATTERN.1/value="D\:\\Programs\\sloeber4.2\\/arduinoPlugin/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-size" -A "C\:\\Users\\Avazar\\git\\MKA/Release/MKA.elf"
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.SIZE.PATTERN/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.SIZE.PATTERN/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RECIPE.SIZE.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.SIZE.CMD}" -A "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.elf"
@@ -430,7 +430,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.ARCHITECT
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.ARCHITECTURE_ID/value=sam
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARDS_FILE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARDS_FILE/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARDS_FILE/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.11\\boards.txt
+environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARDS_FILE/value=D\:\\Programs\\sloeber4.2\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.11\\boards.txt
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARD_ID/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARD_ID/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARD_ID/value=arduino_due_x_dbg

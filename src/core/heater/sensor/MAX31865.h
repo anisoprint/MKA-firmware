@@ -27,9 +27,6 @@
 
 #if ENABLED(SUPPORT_MAX31865)
 
-#ifndef ADAFRUIT_MAX31865_H
-#define ADAFRUIT_MAX31865_H
-
 #define MAX31856_CONFIG_REG            0x00
 #define MAX31856_CONFIG_BIAS           0x80
 #define MAX31856_CONFIG_MODEAUTO       0x40
@@ -72,6 +69,18 @@ typedef enum max31865_numwires {
   MAX31865_3WIRE = 1,
   MAX31865_4WIRE = 0
 } max31865_numwires_t;
+
+// Default configuration register
+// Note that to get the MAX31865 to do continuous conversions, we need to set the bias bit as well as the continuous-conversion bit
+//  Vbias=1
+//  Conversion mode=1
+//	1shot = 0
+//	3wire=0
+//	Fault detection=00 no action
+//	Fault status=1 clear any existing fault
+//	50/60Hz reject=1 for 50Hz (0 for 60Hz)
+const uint8_t DefaultCr0 = 0b11000011;
+const uint8_t Cr0ReadMask = 0b11011101;
 
 namespace MAX31865 {
 

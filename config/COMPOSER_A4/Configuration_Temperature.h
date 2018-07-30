@@ -83,8 +83,8 @@
  * 999 : Dummy Table that ALWAYS reads 100 degC or the temperature defined below.                    *
  *                                                                                                   *
  *****************************************************************************************************/
-#define TEMP_SENSOR_0 -4
-#define TEMP_SENSOR_1 -4
+#define TEMP_SENSOR_0 -3
+#define TEMP_SENSOR_1 -3
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_BED 1

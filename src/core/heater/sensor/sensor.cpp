@@ -145,6 +145,10 @@ float TemperatureSensor::getTemperature() {
   const int16_t s_type      = type,
                 adcReading  = raw;
 
+  #if ENABLED(SUPPORT_MAX31865)
+	if (s_type == -4)
+	  return MAX31865::ReadTemperature(pin);
+  #endif
   #if ENABLED(SUPPORT_MAX31855)
     if (s_type == -3)
       return 0.25 * read_max31855(pin);
@@ -157,6 +161,7 @@ float TemperatureSensor::getTemperature() {
     if (s_type == -1)
       return ((adcReading * (((HAL_VOLTAGE_PIN) * 100.0) / (AD_RANGE))) * ad595_gain) + ad595_offset;
   #endif
+
 
   if (WITHIN(s_type, 1, 9)) {
     const int32_t averagedVssaReading = 2 * adcLowOffset,
