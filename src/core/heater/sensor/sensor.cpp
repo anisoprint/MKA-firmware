@@ -25,6 +25,7 @@
  */
 
 #include "../../../../MK4duo.h"
+
 #if ENABLED(SUPPORT_MAX6675)
 
   #define MAX6675_HEAT_INTERVAL 250u
@@ -146,7 +147,7 @@ float TemperatureSensor::getTemperature() {
 
   #if ENABLED(SUPPORT_MAX31865)
 	if (s_type == -4)
-	  return 0;//MAX31865::ReadTemperature(pin);
+	  return MAX31865::ReadTemperature(pin);
   #endif
   #if ENABLED(SUPPORT_MAX31855)
     if (s_type == -3)

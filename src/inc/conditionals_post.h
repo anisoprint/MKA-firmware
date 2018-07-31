@@ -816,7 +816,7 @@
  * Temp Sensor defines
  */
 #if TEMP_SENSOR_0 == -4
-  //#define SUPPORT_MAX31865
+  #define SUPPORT_MAX31865
 #elif TEMP_SENSOR_0 == -3
   #define SUPPORT_MAX31855
 #elif TEMP_SENSOR_0 == -2
@@ -834,7 +834,7 @@
 
 #if TEMP_SENSOR_1 == -4
   #if DISABLED(SUPPORT_MAX31865)
-    //#define SUPPORT_MAX31865
+    #define SUPPORT_MAX31865
   #endif
 #elif TEMP_SENSOR_1 == -3
   #if DISABLED(SUPPORT_MAX31855)

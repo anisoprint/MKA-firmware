@@ -22,12 +22,10 @@
   BSD license, all text above must be included in any redistribution
  ****************************************************/
 
-//#include "../../../../MK4duo.h"
-#include "MAX31865.h"
+#include "../../../../MK4duo.h"
 
-#if 0//ENABLED(SUPPORT_MAX31865)
+#if ENABLED(SUPPORT_MAX31865)
 
-/*
 namespace {
 
 void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin) {
@@ -130,10 +128,10 @@ bool readRTD (uint16_t &rtd, const pin_t cs_pin) {
 }
 
 }
-*/
+
 
 bool MAX31865::Initialize(max31865_numwires_t wires, const pin_t cs_pin) {
-	/*HAL::pinMode(cs_pin, OUTPUT_HIGH);
+	HAL::pinMode(cs_pin, OUTPUT_HIGH);
 	//start hardware SPI
 
 	HAL::spiBegin();
@@ -147,18 +145,18 @@ bool MAX31865::Initialize(max31865_numwires_t wires, const pin_t cs_pin) {
 	  }
 	  writeRegister8(MAX31856_CONFIG_REG, r0, cs_pin);
 
-	//Serial.print("config: "); Serial.println(readRegister8(MAX31856_CONFIG_REG), HEX);*/
+	//Serial.print("config: "); Serial.println(readRegister8(MAX31856_CONFIG_REG), HEX);
 	return true;
 }
 
 float MAX31865::ReadTemperature(const pin_t cs_pin) {
 	  // http://www.analog.com/media/en/technical-documentation/application-notes/AN709_0.pdf
 
-	  //float RTDnominal = RTD_RNOMINAL;
-	  //float refResistor = RTD_RREF;
+	  float RTDnominal = RTD_RNOMINAL;
+	  float refResistor = RTD_RREF;
 
 	  float Z1, Z2, Z3, Z4, Rt, temp;
-/*
+
 	  uint16_t rtd;
 	  if (!readRTD(rtd, cs_pin)) return 1000;
 
@@ -191,7 +189,7 @@ float MAX31865::ReadTemperature(const pin_t cs_pin) {
 	  temp -= 2.8183e-8 * rpoly;
 	  rpoly *= Rt;  // ^5
 	  temp += 1.5243e-10 * rpoly;
-*/
+
 	  return temp;
 }
 

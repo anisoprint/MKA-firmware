@@ -171,11 +171,7 @@
   #define HOT1_BETA 0.0
 #endif
 
-#if TEMP_SENSOR_2 == -4
-  #define HOT1_NAME "MAX31865"
-  #define HOT1_R25  0.0
-  #define HOT1_BETA 0.0
-#elif TEMP_SENSOR_2 == -3
+#if TEMP_SENSOR_2 == -3
   #define HOT2_NAME "MAX31855"
   #define HOT2_R25  0.0
   #define HOT2_BETA 0.0

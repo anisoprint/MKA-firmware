@@ -25,9 +25,8 @@
 #ifndef SRC_CORE_HEATER_SENSOR_MAX31865_H_
 #define SRC_CORE_HEATER_SENSOR_MAX31865_H_
 
-//#if ENABLED(SUPPORT_MAX31865)
+#if ENABLED(SUPPORT_MAX31865)
 
-/*
 #define MAX31856_CONFIG_REG            0x00
 #define MAX31856_CONFIG_BIAS           0x80
 #define MAX31856_CONFIG_MODEAUTO       0x40
@@ -65,7 +64,11 @@
 // 100.0 for PT100, 1000.0 for PT1000
 #define RTD_RNOMINAL  100.0
 
-
+typedef enum max31865_numwires {
+  MAX31865_2WIRE = 0,
+  MAX31865_3WIRE = 1,
+  MAX31865_4WIRE = 0
+} max31865_numwires_t;
 
 // Default configuration register
 // Note that to get the MAX31865 to do continuous conversions, we need to set the bias bit as well as the continuous-conversion bit
@@ -79,20 +82,12 @@
 const uint8_t DefaultCr0 = 0b11000011;
 const uint8_t Cr0ReadMask = 0b11011101;
 
-
-
-typedef enum max31865_numwires {
-  MAX31865_2WIRE = 0,
-  MAX31865_3WIRE = 1,
-  MAX31865_4WIRE = 0
-} max31865_numwires_t;
-
 namespace MAX31865 {
 
 	bool Initialize(max31865_numwires_t wires, const pin_t cs_pin);
 	float ReadTemperature(const pin_t cs_pin);
-}*/
+}
 
-//#endif
+#endif
 
 #endif /* SRC_CORE_HEATER_SENSOR_MAX31865_H_ */

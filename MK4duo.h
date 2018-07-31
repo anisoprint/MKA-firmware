@@ -149,7 +149,6 @@ typedef int8_t    pin_t;
 #include "src/core/endstop/endstops.h"
 #include "src/core/stepper/stepper.h"
 #include "src/core/heater/sensor/thermistor.h"
-//#include "src/core/heater/sensor/MAX31865.h"
 #include "src/core/heater/heater.h"
 #include "src/core/temperature/temperature.h"
 #include "src/core/printcounter/printcounter.h"
