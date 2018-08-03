@@ -124,14 +124,14 @@ void StateMovement::DrawUpdate() {
 	{
 		_tMovementA.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[X_AXIS])));
 		_tMovementB.setText(ftostr62rj(LOGICAL_Y_POSITION(mechanics.current_position[Y_AXIS])));
-		_tMovementC.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[Z_AXIS])));
+		_tMovementC.setText(ftostr62rj(LOGICAL_Z_POSITION(mechanics.current_position[Z_AXIS])));
 	}
 	else
 	{
-		_tMovementA.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[E_AXIS])));
-		_tMovementB.setText(ftostr62rj(LOGICAL_Y_POSITION(mechanics.current_position[U_AXIS])));
+		_tMovementA.setText(ftostr62rj(mechanics.current_position[E_AXIS]));
+		_tMovementB.setText(ftostr62rj(mechanics.current_position[U_AXIS]));
 #if DRIVER_EXTRUDERS>2
-		_tMovementC.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[V_AXIS])));
+		_tMovementC.setText(ftostr62rj(mechanics.current_position[V_AXIS]));
 #endif
 	}
 }
