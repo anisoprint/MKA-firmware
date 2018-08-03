@@ -471,9 +471,9 @@ void EEPROM::Postprocess() {
 
         #if HEATER_COUNT > 0
           LOOP_HEATER() {
+            EEPROM_READ(heaters[h].Kp);
             EEPROM_READ(heaters[h].Ki);
             EEPROM_READ(heaters[h].Kd);
-            EEPROM_READ(heaters[h].Kc);
           }
         #endif
 

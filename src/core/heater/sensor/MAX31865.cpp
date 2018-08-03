@@ -26,6 +26,8 @@
 
 #if ENABLED(SUPPORT_MAX31865)
 
+static SPISettings max31865_spisettings = SPISettings(500000, MSBFIRST, SPI_MODE1);
+
 namespace {
 
 void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin) {
@@ -33,6 +35,17 @@ void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin
 
   HAL::spiBegin();
   HAL::digitalWrite(cs_pin, LOW); // enable TT_MAX31855
+
+  SPI.beginTransaction(max31865_spisettings);
+
+  SPI.transfer(addr);
+
+  //Serial.print("$"); Serial.print(addr, HEX); Serial.print(": ");
+  while (n--) {
+    buffer[0] = SPI.transfer(0xFF);
+    //Serial.print(" 0x"); Serial.print(buffer[0], HEX);
+    buffer++;
+  }
 
   // ensure 100ns delay - a bit extra is fine
   #if ENABLED(ARDUINO_ARCH_SAM)
@@ -42,16 +55,8 @@ void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin
     asm("nop"); // 50ns on 20Mhz, 62.5ns on 16Mhz
   #endif
 
-  HAL::spiSend(addr);
-
-  //Serial.print("$"); Serial.print(addr, HEX); Serial.print(": ");
-  while (n--) {
-    buffer[0] = HAL::spiReceive();
-    //Serial.print(" 0x"); Serial.print(buffer[0], HEX);
-    buffer++;
-  }
+  SPI.endTransaction();
   //Serial.println();
-
 
   HAL::digitalWrite(cs_pin, HIGH); // disable TT_MAX31855
 }
@@ -80,6 +85,11 @@ void writeRegister8(uint8_t addr, uint8_t data, const pin_t cs_pin) {
   HAL::spiBegin();
   HAL::digitalWrite(cs_pin, LOW); // enable TT_MAX31855
 
+  SPI.beginTransaction(max31865_spisettings);
+  SPI.transfer(addr | 0x80);
+  SPI.transfer(data);
+  SPI.endTransaction();
+
   // ensure 100ns delay - a bit extra is fine
   #if ENABLED(ARDUINO_ARCH_SAM)
     HAL::delayMicroseconds(1);
@@ -88,13 +98,41 @@ void writeRegister8(uint8_t addr, uint8_t data, const pin_t cs_pin) {
     asm("nop"); // 50ns on 20Mhz, 62.5ns on 16Mhz
   #endif
 
-  HAL::spiSend(addr | 0x80); // make sure top bit is set
-  HAL::spiSend(data);
-
-  //Serial.print("$"); Serial.print(addr, HEX); Serial.print(" = 0x"); Serial.println(data, HEX);
+  //Serial.print("$"); Serial.print(addr | 0x80, HEX); Serial.print(" = 0x"); Serial.println(data, HEX);
 
   HAL::digitalWrite(cs_pin, HIGH); // disable TT_MAX31855
 }
+
+/*void enableBias(boolean b, const pin_t cs_pin) {
+  uint8_t t = readRegister8(MAX31856_CONFIG_REG, cs_pin);
+  if (b) {
+    t |= MAX31856_CONFIG_BIAS;       // enable bias
+  } else {
+    t &= ~MAX31856_CONFIG_BIAS;       // disable bias
+  }
+  writeRegister8(MAX31856_CONFIG_REG, t, cs_pin);
+}
+
+void autoConvert(boolean b, const pin_t cs_pin) {
+  uint8_t t = readRegister8(MAX31856_CONFIG_REG, cs_pin);
+  if (b) {
+    t |= MAX31856_CONFIG_MODEAUTO;       // enable autoconvert
+  } else {
+    t &= ~MAX31856_CONFIG_MODEAUTO;       // disable autoconvert
+  }
+  writeRegister8(MAX31856_CONFIG_REG, t, cs_pin);
+}
+
+void setWires(max31865_numwires_t wires , const pin_t cs_pin) {
+  uint8_t t = readRegister8(MAX31856_CONFIG_REG, cs_pin);
+  if (wires == MAX31865_3WIRE) {
+    t |= MAX31856_CONFIG_3WIRE;
+  } else {
+    // 2 or 4 wire
+    t &= ~MAX31856_CONFIG_3WIRE;
+  }
+  writeRegister8(MAX31856_CONFIG_REG, t, cs_pin);
+}*/
 
 void clearFault(const pin_t cs_pin) {
   uint8_t t = readRegister8(MAX31856_CONFIG_REG, cs_pin);
@@ -109,7 +147,7 @@ uint8_t readFault(const pin_t cs_pin) {
 
 bool readRTD (uint16_t &rtd, const pin_t cs_pin) {
 
-  //uint8_t r0 = readRegister8(MAX31856_CONFIG_REG, cs_pin);
+  uint8_t r0 = readRegister8(MAX31856_CONFIG_REG, cs_pin);
   rtd = readRegister16(MAX31856_RTDMSB_REG, cs_pin);
 
   if ((rtd & 1) != 0)										// if fault bit set
@@ -119,7 +157,9 @@ bool readRTD (uint16_t &rtd, const pin_t cs_pin) {
 	  else if (f & 0x13) SERIAL_EM("MAX31856 error - open circuit");
 	  else SERIAL_EM("MAX31856 hardware error");
 	  clearFault(cs_pin);
-	  return false;
+	  rtd >>= 1;
+	  return true;
+	  //return false;
   }
 
   // remove fault
@@ -136,6 +176,16 @@ bool MAX31865::Initialize(max31865_numwires_t wires, const pin_t cs_pin) {
 
 	HAL::spiBegin();
 
+	  /*setWires(wires, cs_pin);
+	  enableBias(true, cs_pin);
+	  autoConvert(true, cs_pin);
+	  clearFault(cs_pin);*/
+
+	//Serial.print("pin: "); Serial.println(cs_pin);
+	//Serial.println("config before: "); //Serial.println(readRegister8(MAX31856_CONFIG_REG, cs_pin), HEX);
+	//readRegister8(MAX31856_CONFIG_REG, cs_pin);
+
+
 	uint8_t r0 = DefaultCr0;
 	  if (wires == MAX31865_3WIRE) {
 		r0 |= MAX31856_CONFIG_3WIRE;
@@ -143,9 +193,11 @@ bool MAX31865::Initialize(max31865_numwires_t wires, const pin_t cs_pin) {
 	    // 2 or 4 wire
 		r0 &= ~MAX31856_CONFIG_3WIRE;
 	  }
+
+	  //Serial.print("config to set: "); Serial.println(r0, HEX);
 	  writeRegister8(MAX31856_CONFIG_REG, r0, cs_pin);
 
-	//Serial.print("config: "); Serial.println(readRegister8(MAX31856_CONFIG_REG), HEX);
+	//Serial.print("config after: "); Serial.println(readRegister8(MAX31856_CONFIG_REG, cs_pin), HEX);
 	return true;
 }
 

@@ -223,15 +223,15 @@
 #define PIDTEMP true
 
 #define PID_MAX       255 // Limits current to nozzle while in PID mode;        255 = full current
-#define PID_DRIVE_MIN  40 // Limits min current to nozzle while PID is active;    0 = no current
-#define PID_DRIVE_MAX 230 // Limits max current to nozzle while PID is active;  255 = full current
+#define PID_DRIVE_MIN 85 // Limits min current to nozzle while PID is active;    0 = no current
+#define PID_DRIVE_MAX 255 // Limits max current to nozzle while PID is active;  255 = full current
 
 #define PID_AUTOTUNE_MENU // Add PID Autotune to the LCD "Temperature" menu to run M303 and apply the result.
 //#define PID_DEBUG       // Sends debug data to the serial port.
 
 // If the temperature difference between the target temperature and the actual temperature
 // is more then PID FUNCTIONAL RANGE then the PID will be shut off and the heater will be set to min/max.
-#define PID_FUNCTIONAL_RANGE 10
+#define PID_FUNCTIONAL_RANGE 15
 
 // this adds an experimental additional term to the heating power, proportional to the extrusion speed.
 // if Kc is chosen well, the additional required power due to increased melting should be compensated.
@@ -239,9 +239,9 @@
 #define LPQ_MAX_LEN 50
 
 //           HotEnd{HE0,HE1,HE2,HE3}
-#define DEFAULT_Kp {10.07, 9.494, 40, 40}     // Kp for H0, H1, H2, H3
-#define DEFAULT_Ki {0.798, 0.63, 07, 07}     // Ki for H0, H1, H2, H3
-#define DEFAULT_Kd {31.772, 35.408, 60, 60}     // Kd for H0, H1, H2, H3
+#define DEFAULT_Kp {6.86, 9.494, 40, 40}     // Kp for H0, H1, H2, H3
+#define DEFAULT_Ki {0.52, 0.63, 07, 07}     // Ki for H0, H1, H2, H3
+#define DEFAULT_Kd {22.62, 35.408, 60, 60}     // Kd for H0, H1, H2, H3
 #define DEFAULT_Kc {100, 100, 100, 100} // heating power = Kc * (e_speed)
 /***********************************************************************/
 /***********************************************************************/
@@ -262,7 +262,7 @@
 // If your configuration is significantly different than this and you don't understand the issues involved, you probably
 // shouldn't use bed PID until someone else verifies your hardware works.
 // If this is enabled, find your own PID constants below.
-#define PIDTEMPBED false
+#define PIDTEMPBED true
 
 #define BED_HYSTERESIS        2 // Only disable heating if T>target+BED_HYSTERESIS and enable heating if T<target-BED_HYSTERESIS
 #define BED_CHECK_INTERVAL 5000 // ms between checks in bang-bang control
@@ -272,14 +272,14 @@
 // setting this to anything other than 255 enables a form of PWM to the bed,
 // so you shouldn't use it unless you are OK with PWM on your bed. (see the comment on enabling PIDTEMPBED)
 #define BED_PID_MAX       255   // Limits current to bed while in PID mode;       255 = full current
-#define BED_PID_DRIVE_MIN  80   // Limits min current to bed while PID is active;   0 = no current
+#define BED_PID_DRIVE_MIN  20   // Limits min current to bed while PID is active;   0 = no current
 #define BED_PID_DRIVE_MAX 255   // Limits max current to bed while PID is active; 255 = full current
 
 // 120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
 // from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-#define DEFAULT_bedKp   10.00
-#define DEFAULT_bedKi    0.1
-#define DEFAULT_bedKd  300.0
+#define DEFAULT_bedKp   79.8
+#define DEFAULT_bedKi   16.2
+#define DEFAULT_bedKd   98.06
 
 // FIND YOUR OWN: "M303 H-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 /***********************************************************************/

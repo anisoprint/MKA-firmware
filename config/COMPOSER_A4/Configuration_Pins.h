@@ -164,7 +164,7 @@
 
 // FAN pin
 #define FAN0_PIN            ORIG_FAN0_PIN
-#define FAN1_PIN            ORIG_FAN1_PIN
+#define FAN1_PIN            ORIG_HEATER_3_PIN //ORIG_FAN1_PIN
 #define FAN2_PIN            ORIG_FAN2_PIN
 #define FAN3_PIN            ORIG_FAN3_PIN
 #define FAN4_PIN            ORIG_FAN4_PIN
