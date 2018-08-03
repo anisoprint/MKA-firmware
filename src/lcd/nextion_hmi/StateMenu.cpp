@@ -106,10 +106,11 @@ void StateMenu::ActivateCalibrate(void* ptr) {
 }
 
 void StateMenu::Calibrate_Buildplate(void* ptr) {
+
 }
 
 void StateMenu::Calibrate_ZAxis(void* ptr) {
-	StateWizard::ZOffsetS0();
+	StateWizard::ZAxisS0();
 }
 
 void StateMenu::CalibrateBack(void* ptr) {

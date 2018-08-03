@@ -96,8 +96,8 @@ void StateWizardZ::ZOffsetS1(void* ptr) {
 		_bLeft.setTextPGM(PSTR(MSG_CANCEL));
 		_bRight.setTextPGM(PSTR(MSG_FINISH));
 
-		_bLeft.attachPush(StateWizard::ZOffsetCancel);
-		_bRight.attachPush(StateWizard::ZOffsetFinish);
+		_bLeft.attachPush(StateWizard::ZAxisCancel);
+		_bRight.attachPush(StateWizard::ZAxisFinish);
 
 		DrawUpdate();
 

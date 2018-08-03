@@ -1060,7 +1060,7 @@
 //#define SD_EXTENDED_DIR     // Show extended directory including file length. Don't use this with Pronterface
 
 // Decomment this if you have external SD without DETECT_PIN
-//#define SD_DISABLED_DETECT
+// #define SD_DISABLED_DETECT
 // Some RAMPS and other boards don't detect when an SD card is inserted. You can work
 // around this by connecting a push button or single throw switch to the pin defined
 // as SD_DETECT_PIN in your board's pins definitions.
@@ -1099,7 +1099,7 @@
  *  - SDSORT_CACHE_NAMES will retain the sorted file listing in RAM. (Expensive!)
  *  - SDSORT_DYNAMIC_RAM only uses RAM when the SD menu is visible. (Use with caution!)
  */
-//#define SDCARD_SORT_ALPHA
+#define SDCARD_SORT_ALPHA
 
 // SD Card Sorting options
 #define SDSORT_LIMIT       40     // Maximum number of sorted items (10-256). Costs 27 bytes each.

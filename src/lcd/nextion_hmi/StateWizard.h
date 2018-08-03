@@ -28,10 +28,15 @@ namespace StateWizard {
 
 	void TouchUpdate();
 
+	//Build plate calibration
+	void BuildPlateS0(void *ptr=0);
+	void BuildPlateFinish(void *ptr=0);
+	void BuildPlateCancel(void *ptr=0);
+
 	//Z offset calibration
-	void ZOffsetS0(void *ptr=0);
-	void ZOffsetFinish(void *ptr=0);
-	void ZOffsetCancel(void *ptr=0);
+	void ZAxisS0(void *ptr=0);
+	void ZAxisFinish(void *ptr=0);
+	void ZAxisCancel(void *ptr=0);
 
 	void Init2Buttons(const char *txtLeft, NexTouchEventCb cbLeft, const char *txtRight, NexTouchEventCb cbRight);
 	void Init1Button(const char *txtCenter, NexTouchEventCb cbCenter);

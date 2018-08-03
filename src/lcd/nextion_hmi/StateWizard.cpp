@@ -38,7 +38,7 @@ void StateWizard::TouchUpdate() {
 	nexLoop(_listenList);
 }
 
-void StateWizard::ZOffsetS0(void* ptr) {
+void StateWizard::ZAxisS0(void* ptr) {
 
 	//Homing
 	commands.enqueue_and_echo_P(PSTR("G28 Z"));
@@ -55,11 +55,11 @@ void StateWizard::ZOffsetS0(void* ptr) {
 	NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_Z_OFFSET));
 	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 
-	Init2Buttons(PSTR(MSG_CANCEL), ZOffsetCancel, PSTR(MSG_NEXT), StateWizardZ::ZOffsetS1);
+	Init2Buttons(PSTR(MSG_CANCEL), ZAxisCancel, PSTR(MSG_NEXT), StateWizardZ::ZOffsetS1);
 
 }
 
-void StateWizard::ZOffsetFinish(void* ptr) {
+void StateWizard::ZAxisFinish(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		float dz = mechanics.current_position[Z_AXIS]-LEVELING_OFFSET;
@@ -72,7 +72,7 @@ void StateWizard::ZOffsetFinish(void* ptr) {
 
 }
 
-void StateWizard::ZOffsetCancel(void* ptr) {
+void StateWizard::ZAxisCancel(void* ptr) {
 	commands.enqueue_and_echo_P(PSTR("G28 Z"));
 	commands.enqueue_and_echo_P(PSTR("G28 X Y"));
 	StateStatus::Activate();
@@ -91,6 +91,31 @@ inline void StateWizard::Init2Buttons(const char* txtLeft, NexTouchEventCb cbLef
 inline void StateWizard::Init1Button(const char* txtCenter, NexTouchEventCb cbCenter) {
 	_bC.setTextPGM(txtCenter);
 	_bC.attachPush(cbCenter);
+}
+
+void StateWizard::BuildPlateS0(void* ptr) {
+	//Homing
+	commands.enqueue_and_echo_P(PSTR("G28 Z"));
+	commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+
+	NextionHMI::ActivateState(PAGE_WIZARD);
+	_buttonsNum.setValue(2);
+	_pic.setValue(0);
+
+	_text.setTextPGM(PSTR(MSG_BP_CALIBR_ST0));
+	_head.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR ": 1/2"));
+
+	_page.show();
+	NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR));
+	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
+
+	Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::ZOffsetS1);
+}
+
+void StateWizard::BuildPlateFinish(void* ptr) {
+}
+
+void StateWizard::BuildPlateCancel(void* ptr) {
 }
 
 #endif
