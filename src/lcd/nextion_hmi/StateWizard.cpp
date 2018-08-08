@@ -30,9 +30,9 @@ namespace {
 	NexObject _buttonsNum = NexObject(PAGE_WIZARD,  15,  "wizard.$bn");
 
 	//Buttons
-	NexObject _bL = NexObject(PAGE_WIZARD,  10,   "b1");
-	NexObject _bR = NexObject(PAGE_WIZARD,  2,  "b2");
-	NexObject _bC = NexObject(PAGE_WIZARD,  16,   "b3");
+	NexObject _bL = NexObject(PAGE_WIZARD,  10,   "bL");
+	NexObject _bR = NexObject(PAGE_WIZARD,  2,  "bR");
+	NexObject _bC = NexObject(PAGE_WIZARD,  16,   "bC");
 
 	NexObject *_listenList[] = { &_bL, &_bR, &_bC, NULL };
 
