@@ -125,7 +125,11 @@ namespace {
 
 	    for (uint8_t row = start_row; row < 7; row++) {
 	      if (i < fileCnt) {
-	        card.getfilename(i);
+			#if ENABLED(SDCARD_SORT_ALPHA)
+			  card.getfilename_sorted(i);
+			#else
+			  card.getfilename(i);
+			#endif
 	        Files_PopulateFileRow(row, card.filenameIsDir, card.fileName);
 
 	      }
@@ -229,20 +233,24 @@ void StateFiles::Init() {
 }
 
 void StateFiles::Activate() {
-	NextionHMI::ActivateState(PAGE_FILES);
-	_page.show();
     _listPosition = 0;
     _insideDir = false;
+    StateMessage::ActivatePGM(0, NEX_ICON_FILES, PSTR(MSG_READING_SD), PSTR(MSG_READING_SD), 0, "", 0, "", 0, 0);
     card.mount();
     if (card.cardOK)
     {
-      //SDstatus = 2;
+      NextionHMI::ActivateState(PAGE_FILES);
+     _page.show();
 	  Files_PopulateFileList(_listPosition);
     }
     else
     {
-      //SDstatus = 1;
-      StateStatus::Activate();
+        StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_ERROR), PSTR(MSG_NO_SD), 1, PSTR(MSG_BACK), FilesCancel_Push, "", 0, 0);
+
+      //if (!card.cardOK)
+    	  //StateStatus::Activate();
+      //else
+    	//  Files_PopulateFileList(_listPosition);
     }
 	//NextionHMI::headerText.setTextPGM(PSTR(WELCOME_MSG));
 }

@@ -979,6 +979,10 @@ void Printer::setup_pinout() {
 
   #endif
 
+	#if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+	  SET_INPUT_PULLUP(SD_DETECT_PIN);
+	#endif
+
   #if PIN_EXISTS(SS)
     OUT_WRITE(SS_PIN, HIGH);
   #endif

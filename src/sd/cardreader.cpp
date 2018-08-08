@@ -807,7 +807,7 @@
                   strncpy(sortnames[i], fileName, SORTED_LONGNAME_MAXLEN);
                   sortnames[i][SORTED_LONGNAME_MAXLEN - 1] = '\0';
                 #else
-                  strcpy(sortnames[i], SORTED_LONGNAME_MAXLEN);
+                  strcpy(sortnames[i], fileName);
                 #endif
               #endif
               // char out[30];

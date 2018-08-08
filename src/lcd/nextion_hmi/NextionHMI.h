@@ -37,6 +37,11 @@ namespace NextionHMI {
 	void ActivateState(uint8_t state_id);
 	void ShowState(uint8_t state_id);
 
+	#if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+	void UpdateSDIcon();
+	#endif
+
+
 	uint8_t GetActiveState();
 
 	void RaiseEvent(HMIevent event, uint8_t eventArg=0, const char *eventMsg = 0);

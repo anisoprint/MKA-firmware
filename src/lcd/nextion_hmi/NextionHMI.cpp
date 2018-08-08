@@ -17,6 +17,7 @@
 namespace {
 	bool _nextionOn = false;
 	uint8_t _pageID = 0;
+	bool _sdInserted = false;
 }
 
 uint16_t NextionHMI::autoPreheatTempHotend = PREHEAT_1_TEMP_HOTEND;
@@ -95,6 +96,28 @@ void NextionHMI::Init() {
 }
 
 void NextionHMI::DrawUpdate() {
+	//check SD card
+	#if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+
+	Serial.println(READ(SD_DETECT_PIN));
+
+		const bool sd_status = IS_SD_INSERTED;
+		if (sd_status != _sdInserted) {
+		    _sdInserted = sd_status;
+		    if (sd_status) {
+		    	printer.safe_delay(1000);
+			    Serial.println("SD inserted!");
+			  card.mount();
+		    }
+		    else {
+			    Serial.println("SD out!");
+			  card.unmount();
+		    }
+		    UpdateSDIcon();
+
+		}
+	  #endif // HAS_SDSUPPORT && SD_DETECT_PIN
+
 	switch(_pageID) {
 	    case PAGE_STATUS : StateStatus::DrawUpdate();
 	         break;
@@ -166,6 +189,9 @@ void NextionHMI::TouchUpdate() {
 
 void NextionHMI::ActivateState(uint8_t state_id) {
 	_pageID = state_id;
+#if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+    UpdateSDIcon();
+#endif
 }
 
 void NextionHMI::ShowState(uint8_t state_id) {
@@ -264,6 +290,21 @@ void NextionHMI::WaitOk_Push(void* ptr) {
     printer.setWaitForUser(false);
     StateMessage::ReturnToLastState(ptr);
 }
+
+#if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+void NextionHMI::UpdateSDIcon() {
+	if (_sdInserted)
+	{
+		sdIcon.setPic(NEX_ICON_SD);
+		sdText.setTextPGM(PSTR("SD"));
+	}
+	else
+	{
+		sdIcon.setPic(NEX_ICON_NO_SD);
+		sdText.setTextPGM(PSTR(""));
+	}
+}
+#endif
 
 #endif
 

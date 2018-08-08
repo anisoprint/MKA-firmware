@@ -47,20 +47,28 @@ void StateMessage::ActivatePGM(uint8_t priority, uint8_t icon,
 	_page.show();
 
 
-
-	if(numButtons==1)
+	if(numButtons==0)
 	{
 		_bLeft.SetVisibility(false);
 		_bRight.SetVisibility(false);
-		_bSingle.setTextPGM(txtButtonRight_P);
-		_bSingle.attachPush(cbRight);
+		_bSingle.SetVisibility(false);
 	}
 	else
 	{
-		_bLeft.setTextPGM(txtButtonLeft_P);
-		_bLeft.attachPush(cbLeft);
-		_bRight.setTextPGM(txtButtonRight_P);
-		_bRight.attachPush(cbRight);
+		if(numButtons==1)
+		{
+			_bLeft.SetVisibility(false);
+			_bRight.SetVisibility(false);
+			_bSingle.setTextPGM(txtButtonRight_P);
+			_bSingle.attachPush(cbRight);
+		}
+		else
+		{
+			_bLeft.setTextPGM(txtButtonLeft_P);
+			_bLeft.attachPush(cbLeft);
+			_bRight.setTextPGM(txtButtonRight_P);
+			_bRight.attachPush(cbRight);
+		}
 	}
 
 	NextionHMI::headerIcon.setPic(icon);
