@@ -27,8 +27,6 @@ namespace StateMenu {
 
 	//Level Build plate menu
 	void ActivateCalibrate(void *ptr=0);
-	void Calibrate_Buildplate(void *ptr);
-	void Calibrate_ZAxis(void *ptr);
 	void CalibrateBack(void *ptr);
 
 };

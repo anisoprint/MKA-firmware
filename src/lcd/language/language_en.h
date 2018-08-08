@@ -55,6 +55,10 @@
   #define MSG_CANCEL                              _UxGT("Cancel")
 #endif
 
+#ifndef MSG_REPEAT
+  #define MSG_REPEAT                              _UxGT("Repeat")
+#endif
+
 #ifndef MSG_NEXT
   #define MSG_NEXT                                _UxGT("Next")
 #endif
@@ -156,7 +160,7 @@
 #endif
 
 #ifndef MSG_BUILD_PLATE
-  #define MSG_BUILD_PLATE                    		_UxGT("Build plate")
+  #define MSG_BUILD_PLATE                    		_UxGT("Buildplate")
 #endif
 
 #ifndef MSG_PRINTHEAD
@@ -196,12 +200,37 @@
 #endif
 
 #ifndef MSG_BP_CALIBR_ST0
-  #define MSG_BP_CALIBR_ST0                    		_UxGT("To calibrate the build plate you will need a\\rsheetof 80gsm paper.\\r\\rPlease be careful during the process. Do not\\rlift the build plate too much or too fast to\\ravoid collision with the printhead, which can\\rdamage your printer.")
+  #define MSG_BP_CALIBR_ST0                    		_UxGT("To calibrate the buildplate you will need a\\rsheet of 80gsm paper.\\r\\rPlease be careful during the process. Do not\\rlift the buildplate too much or too fast to\\ravoid collision with the printhead, which can\\rdamage your printer.")
 #endif
 
-#ifndef MSG_Z_OFFSET_ST1
-  #define MSG_Z_OFFSET_ST1                    		_UxGT("Slide a paper between the buildplate and the\\rnozzle. Move the buildplate with the buttons\\rbelow until you feel some friction while\\rsliding the paper.")
+#ifndef MSG_BP_CALIBR_ST1
+  #define MSG_BP_CALIBR_ST1                    		_UxGT("Move the buildplate with the buttons below\\runtil the nozzle is a millimeter away from\\rthe buildplate.")
 #endif
+
+#ifndef MSG_BP_CALIBR_ST2
+  #define MSG_BP_CALIBR_ST2                    		_UxGT("Turn the left buildplate screw until the\\rnozzle is a millimeter away from the\\rbuildplate.")
+#endif
+
+#ifndef MSG_BP_CALIBR_ST3
+  #define MSG_BP_CALIBR_ST3                    		_UxGT("Turn the right buildplate screw until the\\rnozzle is a millimeter away from the\\rbuildplate.")
+#endif
+
+#ifndef MSG_BP_CALIBR_ST4
+  #define MSG_BP_CALIBR_ST4                    		_UxGT("Repeat the calibration process, but now use\\ra sheet of 80gsm paper to fine-tune the\\rbuildplate level.")
+#endif
+
+#ifndef MSG_BP_CALIBR_ST5
+  #define MSG_BP_CALIBR_ST5                    		_UxGT("Slide a paper between the buildplate and the\\rnozzle. Turn the central screw or move the\\rbuildplate with the buttons below until you\\rfeel some friction while sliding the paper.")
+#endif
+
+#ifndef MSG_BP_CALIBR_ST6
+  #define MSG_BP_CALIBR_ST6                    		_UxGT("Turn the left screw until you feel some\\rfriction while sliding the paper between\\rthe nozzle and the buildplate.")
+#endif
+
+#ifndef MSG_BP_CALIBR_ST7
+  #define MSG_BP_CALIBR_ST7                    		_UxGT("Repeat this for the right corner.")
+#endif
+
 
 #ifndef MSG_COLD_HOTEND
   #define MSG_COLD_HOTEND                    		_UxGT("Hotend is cold")
