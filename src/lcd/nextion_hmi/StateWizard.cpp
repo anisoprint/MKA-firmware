@@ -18,6 +18,9 @@
 
 #include "StateWizard.h"
 
+const float filament_change_unload_length[DRIVER_EXTRUDERS] = PAUSE_PARK_UNLOAD_LENGTH,
+        	filament_change_load_length[DRIVER_EXTRUDERS] = PAUSE_PARK_LOAD_LENGTH;
+
 namespace {
 	///////////// Nextion components //////////
 	//Page
@@ -43,7 +46,7 @@ void StateWizard::TouchUpdate() {
 	nexLoop(_listenList);
 }
 
-void StateWizard::ZAxisS0(void* ptr) {
+void StateWizard::ZAxisS1(void* ptr) {
 	//Homing
 	commands.enqueue_and_echo_P(PSTR("T0"));
 	commands.enqueue_and_echo_P(PSTR("G28 Z"));
@@ -51,10 +54,10 @@ void StateWizard::ZAxisS0(void* ptr) {
 
 	BUTTONS(2)
 	NO_PICTURE
-	CAPTION(MSG_Z_OFFSET_ST0)
+	CAPTION(MSG_Z_OFFSET_ST1)
 	HEADER(MSG_HEADER_Z_OFFSET, "1/2", NEX_ICON_MAINTENANCE);
 
-	Init2Buttons(PSTR(MSG_CANCEL), ZAxisCancel, PSTR(MSG_NEXT), StateWizardZ::ZOffsetS1);
+	Init2Buttons(PSTR(MSG_CANCEL), ZAxisCancel, PSTR(MSG_NEXT), StateWizardZ::ZOffsetS2);
 }
 
 void StateWizard::ZAxisFinish(void* ptr) {
@@ -91,7 +94,7 @@ inline void StateWizard::Init1Button(const char* txtCenter, NexTouchEventCb cbCe
 	_bC.attachPush(cbCenter);
 }
 
-void StateWizard::BuildPlateS0(void* ptr) {
+void StateWizard::BuildPlateS1(void* ptr) {
 	//Homing
 	commands.enqueue_and_echo_P(PSTR("T0"));
 	commands.enqueue_and_echo_P(PSTR("G28 Z"));
@@ -99,10 +102,10 @@ void StateWizard::BuildPlateS0(void* ptr) {
 
 	BUTTONS(2)
 	NO_PICTURE
-	CAPTION(MSG_BP_CALIBR_ST0)
+	CAPTION(MSG_BP_CALIBR_ST1)
 	HEADER(MSG_HEADER_BP_CALIBR, "1/8", NEX_ICON_MAINTENANCE);
 
-	Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS1);
+	Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS2);
 }
 
 void StateWizard::BuildPlateFinish(void* ptr) {
@@ -123,7 +126,7 @@ void StateWizard::BuildPlateCancel(void* ptr) {
 	StateStatus::Activate();
 }
 
-void StateWizard::BuildPlateS2(void* ptr) {
+void StateWizard::BuildPlateS3(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to left position
@@ -137,14 +140,14 @@ void StateWizard::BuildPlateS2(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST2)
+		CAPTION(MSG_BP_CALIBR_ST3)
 		HEADER(MSG_HEADER_BP_CALIBR, "3/8", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS3);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS4);
 	}
 }
 
-void StateWizard::BuildPlateS3(void* ptr) {
+void StateWizard::BuildPlateS4(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to right position
@@ -158,14 +161,14 @@ void StateWizard::BuildPlateS3(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST3)
+		CAPTION(MSG_BP_CALIBR_ST4)
 		HEADER(MSG_HEADER_BP_CALIBR, "4/8", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS4);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS5);
 	}
 }
 
-void StateWizard::BuildPlateS4(void* ptr) {
+void StateWizard::BuildPlateS5(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to center position
@@ -179,14 +182,14 @@ void StateWizard::BuildPlateS4(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST4)
+		CAPTION(MSG_BP_CALIBR_ST5)
 		HEADER(MSG_HEADER_BP_CALIBR, "5/8", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS5);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS6);
 	}
 }
 
-void StateWizard::BuildPlateS6(void* ptr) {
+void StateWizard::BuildPlateS7(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to left position
@@ -200,14 +203,14 @@ void StateWizard::BuildPlateS6(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST6)
+		CAPTION(MSG_BP_CALIBR_ST7)
 		HEADER(MSG_HEADER_BP_CALIBR, "7/8", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS7);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS8);
 	}
 }
 
-void StateWizard::BuildPlateS7(void* ptr) {
+void StateWizard::BuildPlateS8(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to right position
@@ -221,10 +224,10 @@ void StateWizard::BuildPlateS7(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST7)
+		CAPTION(MSG_BP_CALIBR_ST8)
 		HEADER(MSG_HEADER_BP_CALIBR, "8/8", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_REPEAT), StateWizardZ::BuildPlateS5, PSTR(MSG_FINISH), StateWizard::BuildPlateFinish);
+		Init2Buttons(PSTR(MSG_REPEAT), StateWizardZ::BuildPlateS6, PSTR(MSG_FINISH), StateWizard::BuildPlateFinish);
 	}
 }
 

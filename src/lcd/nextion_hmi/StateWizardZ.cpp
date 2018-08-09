@@ -14,7 +14,7 @@
 #include "StateWizardZ.h"
 
 namespace {
-	///////////// Nextion components //////////
+	///////////// Nextion components /////////////
 	//Page
 	NexObject _page = NexObject(PAGE_WIZARDZ,  0,  "wizardz");
 
@@ -41,8 +41,7 @@ namespace {
 			&_bMovement3, &_bMovement4, &_bMovement5,
 			&_bMovement6, &_bLeft, &_bRight, NULL };
 
-}
-;
+};
 
 void StateWizardZ::Movement_Push(void* ptr) {
 	if (planner.movesplanned()<4)
@@ -69,7 +68,7 @@ void StateWizardZ::TouchUpdate() {
 	nexLoop(_listenList);
 }
 
-void StateWizardZ::ZOffsetS1(void* ptr) {
+void StateWizardZ::ZOffsetS2(void* ptr) {
 	SERIAL_VAL(planner.movesplanned());
 	SERIAL_EOL();
 
@@ -91,7 +90,7 @@ void StateWizardZ::ZOffsetS1(void* ptr) {
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_Z_OFFSET));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 		_txtHeader.setTextPGM(PSTR(MSG_HEADER_Z_OFFSET ": 2/2"));
-		_txtCaption.setTextPGM(PSTR(MSG_Z_OFFSET_ST1));
+		_txtCaption.setTextPGM(PSTR(MSG_Z_OFFSET_ST2));
 
 		_bLeft.setTextPGM(PSTR(MSG_CANCEL));
 		_bRight.setTextPGM(PSTR(MSG_FINISH));
@@ -105,7 +104,7 @@ void StateWizardZ::ZOffsetS1(void* ptr) {
 
 }
 
-void StateWizardZ::BuildPlateS1(void* ptr) {
+void StateWizardZ::BuildPlateS2(void* ptr) {
 	//SERIAL_VAL(planner.movesplanned());
 	//SERIAL_EOL();
 	if (!planner.movesplanned())
@@ -126,13 +125,13 @@ void StateWizardZ::BuildPlateS1(void* ptr) {
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 		_txtHeader.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR ": 2/8"));
-		_txtCaption.setTextPGM(PSTR(MSG_BP_CALIBR_ST1));
+		_txtCaption.setTextPGM(PSTR(MSG_BP_CALIBR_ST2));
 
 		_bLeft.setTextPGM(PSTR(MSG_CANCEL));
 		_bRight.setTextPGM(PSTR(MSG_NEXT));
 
 		_bLeft.attachPush(StateWizard::BuildPlateCancel);
-		_bRight.attachPush(StateWizard::BuildPlateS2);
+		_bRight.attachPush(StateWizard::BuildPlateS3);
 
 		DrawUpdate();
 
@@ -146,7 +145,7 @@ void StateWizardZ::DrawUpdate() {
 	_txtZ.setText(strTemp.c_str());
 }
 
-void StateWizardZ::BuildPlateS5(void* ptr) {
+void StateWizardZ::BuildPlateS6(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		NextionHMI::ActivateState(PAGE_WIZARDZ);
@@ -161,7 +160,7 @@ void StateWizardZ::BuildPlateS5(void* ptr) {
 		_bRight.setTextPGM(PSTR(MSG_NEXT));
 
 		_bLeft.attachPush(StateWizard::BuildPlateCancel);
-		_bRight.attachPush(StateWizard::BuildPlateS6);
+		_bRight.attachPush(StateWizard::BuildPlateS7);
 
 		DrawUpdate();
 

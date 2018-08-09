@@ -98,8 +98,8 @@ void StateMenu::ActivateCalibrate(void* ptr) {
 	_b2.setTextPGM(PSTR(MSG_Z_AXIS));
 	_b3.setTextPGM(PSTR(MSG_PRINTHEAD));
 
-	_b1.attachPush(StateWizard::BuildPlateS0);
-	_b2.attachPush(StateWizard::ZAxisS0);
+	_b1.attachPush(StateWizard::BuildPlateS1);
+	_b2.attachPush(StateWizard::ZAxisS1);
 	_b3.attachPush(0);
 
 	_bBack.attachPush(CalibrateBack);

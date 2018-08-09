@@ -85,7 +85,6 @@ void NextionHMI::Init() {
 	Status_Activate();*/
 
 	StateStatus::Init();
-	StateTemperature::Init();
 	StateFiles::Init();
 	StateFileinfo::Init();
 	StatePrinting::Init();

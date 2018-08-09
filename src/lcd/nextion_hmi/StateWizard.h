@@ -23,23 +23,25 @@
 
 #define LEVELING_OFFSET 0.1
 
+extern const float filament_change_unload_length[DRIVER_EXTRUDERS], filament_change_load_length[DRIVER_EXTRUDERS];
+
 
 namespace StateWizard {
 
 	void TouchUpdate();
 
 	//Build plate calibration
-	void BuildPlateS0(void *ptr=0);
-	void BuildPlateS2(void *ptr=0);
+	void BuildPlateS1(void *ptr=0);
 	void BuildPlateS3(void *ptr=0);
 	void BuildPlateS4(void *ptr=0);
-	void BuildPlateS6(void *ptr=0);
+	void BuildPlateS5(void *ptr=0);
 	void BuildPlateS7(void *ptr=0);
+	void BuildPlateS8(void *ptr=0);
 	void BuildPlateFinish(void *ptr=0);
 	void BuildPlateCancel(void *ptr=0);
 
 	//Z offset calibration
-	void ZAxisS0(void *ptr=0);
+	void ZAxisS1(void *ptr=0);
 	void ZAxisFinish(void *ptr=0);
 	void ZAxisCancel(void *ptr=0);
 

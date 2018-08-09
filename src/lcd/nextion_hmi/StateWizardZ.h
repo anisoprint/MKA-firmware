@@ -23,9 +23,9 @@ namespace StateWizardZ {
 
   	void Init();
   	void DrawUpdate();
-	void ZOffsetS1(void *ptr=0);
-	void BuildPlateS1(void *ptr=0);
-	void BuildPlateS5(void *ptr=0);
+	void ZOffsetS2(void *ptr=0);
+	void BuildPlateS2(void *ptr=0);
+	void BuildPlateS6(void *ptr=0);
 
 	void TouchUpdate();
 

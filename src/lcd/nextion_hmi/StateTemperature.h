@@ -19,8 +19,8 @@ namespace StateTemperature {
   	void Set_Push(void *ptr);
   	void Cancel_Push(void *ptr);
 
-	void Init();
 	void Activate(uint16_t autoTemp, uint8_t hotend);
+	void Activate(uint16_t autoTemp, uint8_t heater, NexTouchEventCb cbOK, NexTouchEventCb cbCancel);
 	void DrawUpdate();
 	void TouchUpdate();
 
