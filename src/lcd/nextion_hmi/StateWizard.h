@@ -21,6 +21,9 @@
 #define BED_RIGHT_ADJUST_X (X_MAX_POS - 10)
 #define BED_RIGHT_ADJUST_Y 20
 
+#define MATERIAL_CHANGE_X (X_MAX_POS/2)
+#define MATERIAL_CHANGE_Y (Y_MAX_POS/3)
+
 #define LEVELING_OFFSET 0.1
 
 extern const float filament_change_unload_length[DRIVER_EXTRUDERS], filament_change_load_length[DRIVER_EXTRUDERS];
@@ -29,6 +32,7 @@ extern const float filament_change_unload_length[DRIVER_EXTRUDERS], filament_cha
 namespace StateWizard {
 
 	void TouchUpdate();
+	void DrawUpdate();
 
 	//Build plate calibration
 	void BuildPlateS1(void *ptr=0);
@@ -39,6 +43,21 @@ namespace StateWizard {
 	void BuildPlateS8(void *ptr=0);
 	void BuildPlateFinish(void *ptr=0);
 	void BuildPlateCancel(void *ptr=0);
+
+	//Material load
+	void MaterialLoadS1(void *ptr=0);
+	void MaterialLoadS1a(void *ptr=0);
+	void MaterialLoadS2(void *ptr=0);
+	void MaterialLoadS2DrawUpdate(void *ptr=0);
+	void MaterialLoadS2a(void *ptr=0);
+	void MaterialLoadS3(void *ptr=0);
+	void MaterialLoadS3a(void *ptr=0);
+	void MaterialLoadS4(void *ptr=0);
+	void MaterialLoadS5(void *ptr=0);
+	void MaterialLoadS5a(void *ptr=0);
+	void MaterialLoadS6(void *ptr=0);
+	void MaterialLoadFinish(void *ptr=0);
+	void MaterialLoadCancel(void *ptr=0);
 
 	//Z offset calibration
 	void ZAxisS1(void *ptr=0);

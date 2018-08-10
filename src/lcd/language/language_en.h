@@ -199,8 +199,12 @@
   #define MSG_LOAD_MATERIAL_ST2                    	_UxGT("Please wait while printhead is heating for\\rmaterial loading.")
 #endif
 
+#ifndef MSG_LOAD_MATERIAL_ST2A
+  #define MSG_LOAD_MATERIAL_ST2A                    _UxGT("The current printhead temperature is too low\\rto perform the material loading procedure,\\rplease press Next and set new printhead\\rtemperature.\\r")
+#endif
+
 #ifndef MSG_LOAD_MATERIAL_ST3
-  #define MSG_LOAD_MATERIAL_ST3                    	_UxGT("Push new material into the feeder on the\\rrear of your Composer.")
+  #define MSG_LOAD_MATERIAL_ST3                    	_UxGT("Push new material into the feeder on the\\rrear of your Composer and press Next.")
 #endif
 
 #ifndef MSG_LOAD_MATERIAL_ST4

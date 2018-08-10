@@ -19,7 +19,7 @@ namespace NextionHMI {
 	extern NexObject sdText;
 	extern NexObject sdIcon;
 
-	extern uint8_t pageState;
+	extern uint8_t wizardData;
 	extern uint8_t pageData;
 
     extern uint16_t autoPreheatTempHotend;

@@ -35,7 +35,6 @@ namespace {
 };
 
 void StateStatus::Temperature_Push(void* ptr) {
-	SERIAL_MSG("SHOW T \n");
 	uint8_t heater;
 	if (ptr==&_bBuildPlate)
 	{

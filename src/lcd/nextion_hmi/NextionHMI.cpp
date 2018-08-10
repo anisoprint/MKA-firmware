@@ -24,7 +24,7 @@ uint16_t NextionHMI::autoPreheatTempHotend = PREHEAT_1_TEMP_HOTEND;
 uint16_t NextionHMI::autoPreheatTempBed = PREHEAT_1_TEMP_BED;
 uint8_t  NextionHMI::lcdBrightness = 90;
 
-uint8_t NextionHMI::pageState = 0;
+uint8_t NextionHMI::wizardData = 0;
 uint8_t NextionHMI::pageData = 0;
 
 HMIevent NextionHMI::lastEvent = HMIevent::NONE;
@@ -134,7 +134,7 @@ void NextionHMI::DrawUpdate() {
 	         break;
 	    case PAGE_CHANGE :
 	         break;
-	    case PAGE_WIZARD :
+	    case PAGE_WIZARD : StateWizard::DrawUpdate();
 	         break;
 	    case PAGE_MENU : //Maintenance_DrawUpdate();
 	         break;
