@@ -15,6 +15,7 @@
 #include "NextionConstants.h"
 
 #define MESSAGE_DIALOG 5
+#define MESSAGE_WARNING 10
 #define MESSAGE_ERROR 200
 #define MESSAGE_CRITICAL_ERROR 255
 

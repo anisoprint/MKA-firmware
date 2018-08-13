@@ -60,9 +60,9 @@ void StateMenu::ActivateMaintenance(void* ptr) {
 	_b4.setTextPGM(PSTR(MSG_SETTINGS));
 	_b5.setTextPGM(PSTR(MSG_ABOUT_PRINTER));
 
-	_b1.attachPush(0);
+	_b1.attachPush(ActivateMaterials);
 	_b2.attachPush(Maintenance_Move);
-	_b3.attachPush(Maintenance_Calibrate);
+	_b3.attachPush(ActivateCalibrate);
 	_b4.attachPush(0);
 	_b5.attachPush(0);
 
@@ -77,13 +77,10 @@ void StateMenu::Maintenance_Move(void* ptr) {
 	StateMovement::Activate(MODE_MOVE_AXIS);
 }
 
-void StateMenu::Maintenance_Calibrate(void* ptr) {
-	ActivateCalibrate();
-}
 
 /*********************************************************************************
 *
-* Level Build plate
+* Calibrate
 *
 *********************************************************************************/
 
@@ -102,14 +99,64 @@ void StateMenu::ActivateCalibrate(void* ptr) {
 	_b2.attachPush(StateWizard::ZAxisS1);
 	_b3.attachPush(0);
 
-	_bBack.attachPush(CalibrateBack);
+	_bBack.attachPush(ActivateMaintenance);
 }
 
-void StateMenu::CalibrateBack(void* ptr) {
-	StateMenu::ActivateMaintenance();
+/*********************************************************************************
+*
+* Materials
+*
+*********************************************************************************/
+
+void StateMenu::ActivateMaterials(void* ptr) {
+	NextionHMI::ActivateState(PAGE_MENU);
+	_count.setValue(3);
+	_page.show();
+	NextionHMI::headerText.setTextPGM(PSTR(MSG_MATERIALS));
+	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
+
+	_b1.setTextPGM(PSTR(MSG_PLASTIC));
+	_b2.setTextPGM(PSTR(MSG_COMP_PLASTIC));
+	_b3.setTextPGM(PSTR(MSG_COMP_FIBER));
+
+	_b1.attachPush(Materials_Plastic);
+	_b2.attachPush(Materials_CompPlastic);
+	_b3.attachPush(Materials_CompFiber);
+
+	_bBack.attachPush(ActivateMaintenance);
+}
+
+void StateMenu::Materials_Plastic(void* ptr) {
+	NextionHMI::wizardData = E_AXIS;
+	ActivateLoadUnload();
+}
+
+void StateMenu::Materials_CompPlastic(void* ptr) {
+	NextionHMI::wizardData = V_AXIS;
+	ActivateLoadUnload();
+}
+
+void StateMenu::Materials_CompFiber(void* ptr) {
+	NextionHMI::wizardData = U_AXIS;
+	ActivateLoadUnload();
 }
 
 
+void StateMenu::ActivateLoadUnload(void* ptr) {
+	NextionHMI::ActivateState(PAGE_MENU);
+	_count.setValue(2);
+	_page.show();
+	NextionHMI::headerText.setTextPGM(PSTR(MSG_MATERIALS));
+	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
+
+	_b1.setTextPGM(PSTR(MSG_LOAD));
+	_b2.setTextPGM(PSTR(MSG_UNLOAD));
+
+	_b1.attachPush(StateWizard::MaterialLoadS1);
+	_b2.attachPush(0);
+
+	_bBack.attachPush(ActivateMaterials);
+}
 
 #endif
 

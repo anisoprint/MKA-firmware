@@ -32,6 +32,8 @@ namespace {
 	NexObject _bCancel = NexObject(PAGE_TEMPERATURE,  7,  "bCancel");
 
 	NexObject *_listenList[] = {&_bSet, &_bCancel, NULL};
+
+	NexTouchEventCb cbSetReturn = 0;
 }
 
 
@@ -40,7 +42,8 @@ void StateTemperature::Set_Push(void* ptr) {
 	targetTemp = _vTargetTemp.getValue();
 	if (targetTemp<=21) targetTemp=0;
 	heaters[NextionHMI::pageData].setTarget(targetTemp);
-	StateStatus::Activate();
+	if (cbSetReturn!=NULL ) cbSetReturn(0);
+	else StateStatus::Activate();
 }
 
 void StateTemperature::Cancel_Push(void* ptr) {
@@ -48,7 +51,8 @@ void StateTemperature::Cancel_Push(void* ptr) {
 }
 
 void StateTemperature::Activate(uint16_t autoTemp, uint8_t heater, NexTouchEventCb cbOK, NexTouchEventCb cbCancel) {
-	_bSet.attachPush(cbOK);
+	cbSetReturn = cbOK;
+	_bSet.attachPush(Set_Push);
 	_bCancel.attachPush(cbCancel);
 	NextionHMI::ActivateState(PAGE_TEMPERATURE);
 	_page.show();
@@ -85,7 +89,7 @@ void StateTemperature::Activate(uint16_t autoTemp, uint8_t heater, NexTouchEvent
 }
 
 void StateTemperature::Activate(uint16_t autoTemp, uint8_t heater) {
-	Activate(autoTemp, heater, Set_Push, Cancel_Push);
+	Activate(autoTemp, heater, 0, Cancel_Push);
 }
 
 void StateTemperature::DrawUpdate() {

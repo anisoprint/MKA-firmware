@@ -159,6 +159,22 @@
   #define MSG_MATERIALS                     		_UxGT("Materials")
 #endif
 
+#ifndef MSG_COMP_PLASTIC
+  #define MSG_COMP_PLASTIC                     		_UxGT("Comp.plastic")
+#endif
+
+#ifndef MSG_COMP_FIBER
+  #define MSG_COMP_FIBER                     		_UxGT("Comp.fiber")
+#endif
+
+#ifndef MSG_LOAD
+  #define MSG_LOAD                   				_UxGT("Load")
+#endif
+
+#ifndef MSG_UNLOAD
+  #define MSG_UNLOAD                   				_UxGT("Unload")
+#endif
+
 #ifndef MSG_BUILD_PLATE
   #define MSG_BUILD_PLATE                    		_UxGT("Buildplate")
 #endif
@@ -196,7 +212,7 @@
 #endif
 
 #ifndef MSG_LOAD_MATERIAL_ST2
-  #define MSG_LOAD_MATERIAL_ST2                    	_UxGT("Please wait while printhead is heating for\\rmaterial loading.")
+  #define MSG_LOAD_MATERIAL_ST2                    	_UxGT("Please wait while printhead is heating for\\rmaterial loading")
 #endif
 
 #ifndef MSG_LOAD_MATERIAL_ST2A

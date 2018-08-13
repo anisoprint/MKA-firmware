@@ -22,12 +22,17 @@ namespace StateMenu {
 	//Maintenance menu
 	void ActivateMaintenance(void *ptr=0);
 	void Maintenance_Move(void *ptr);
-	void Maintenance_Calibrate(void *ptr);
 	void MaintenanceBack(void *ptr);
 
-	//Level Build plate menu
+	//Calibrate menu
 	void ActivateCalibrate(void *ptr=0);
-	void CalibrateBack(void *ptr);
+
+	//Materials menu
+	void ActivateMaterials(void *ptr=0);
+	void Materials_Plastic(void *ptr=0);
+	void Materials_CompPlastic(void *ptr=0);
+	void Materials_CompFiber(void *ptr=0);
+	void ActivateLoadUnload(void *ptr=0);
 
 };
 
