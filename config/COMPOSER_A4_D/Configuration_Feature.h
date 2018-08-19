@@ -151,9 +151,9 @@
 // Or put 7 for controller fan
 // -1 disables auto mode.
 // Default fan 1 is auto fan for Hotend 0
-#define AUTO_FAN { -1, -1, -1, -1, -1, -1 }
+#define AUTO_FAN { 0, -1, -1, -1, -1, -1 }
 // Parameters for Hotend Fan
-#define HOTEND_AUTO_FAN_TEMPERATURE  50
+#define HOTEND_AUTO_FAN_TEMPERATURE  0
 #define HOTEND_AUTO_FAN_SPEED       255 // 255 = full speed
 #define HOTEND_AUTO_FAN_MIN_SPEED     0
 // Parameters for Controller Fan
@@ -440,6 +440,10 @@
  *  - M206 and M428 are enabled.                                          *
  **************************************************************************/
 //#define WORKSPACE_OFFSETS
+
+//Simplified home offsets
+#define HOME_OFFSETS
+
 /**************************************************************************/
 
 
@@ -1031,10 +1035,15 @@
  * Uncomment EEPROM FLASH for use writing EEPROM on Flash Memory (Only for DUE)                                         *
  *                                                                                                                      *
  ************************************************************************************************************************/
-//#define EEPROM_SETTINGS
+#define EEPROM_SETTINGS
 
-//#define EEPROM_CHITCHAT // Uncomment this to enable EEPROM Serial responses.
+//Compact settings for Anisoprint Composer 3D printers
+#define EEPROM_LITE
+
+#define EEPROM_CHITCHAT // Uncomment this to enable EEPROM Serial responses.
 //#define EEPROM_SD
+#define EEPROM_I2C
+#define WIRE Wire1
 //#define EEPROM_FLASH
 //#define DISABLE_M503
 /************************************************************************************************************************/
@@ -1051,7 +1060,7 @@
 //#define SD_EXTENDED_DIR     // Show extended directory including file length. Don't use this with Pronterface
 
 // Decomment this if you have external SD without DETECT_PIN
-//#define SD_DISABLED_DETECT
+#define SD_DISABLED_DETECT
 // Some RAMPS and other boards don't detect when an SD card is inserted. You can work
 // around this by connecting a push button or single throw switch to the pin defined
 // as SD_DETECT_PIN in your board's pins definitions.
@@ -1090,16 +1099,16 @@
  *  - SDSORT_CACHE_NAMES will retain the sorted file listing in RAM. (Expensive!)
  *  - SDSORT_DYNAMIC_RAM only uses RAM when the SD menu is visible. (Use with caution!)
  */
-//#define SDCARD_SORT_ALPHA
+#define SDCARD_SORT_ALPHA
 
 // SD Card Sorting options
-#define SDSORT_LIMIT       40     // Maximum number of sorted items (10-256). Costs 27 bytes each.
+#define SDSORT_LIMIT       128     // Maximum number of sorted items (10-256). Costs 27 bytes each.
 #define FOLDER_SORTING     -1     // -1=above  0=none  1=below
-#define SDSORT_GCODE       false  // Allow turning sorting on/off with LCD and M36 g-code.
-#define SDSORT_USES_RAM    false  // Pre-allocate a static array for faster pre-sorting.
-#define SDSORT_USES_STACK  false  // Prefer the stack for pre-sorting to give back some SRAM. (Negated by next 2 options.)
-#define SDSORT_CACHE_NAMES false  // Keep sorted items in RAM longer for speedy performance. Most expensive option.
-#define SDSORT_DYNAMIC_RAM false  // Use dynamic allocation (within SD menus). Least expensive option. Set SDSORT_LIMIT before use!
+//#define SDSORT_GCODE       false  // Allow turning sorting on/off with LCD and M36 g-code.
+#define SDSORT_USES_RAM    true  // Pre-allocate a static array for faster pre-sorting.
+//#define SDSORT_USES_STACK  false  // Prefer the stack for pre-sorting to give back some SRAM. (Negated by next 2 options.)
+//#define SDSORT_CACHE_NAMES false  // Keep sorted items in RAM longer for speedy performance. Most expensive option.
+//#define SDSORT_DYNAMIC_RAM false  // Use dynamic allocation (within SD menus). Least expensive option. Set SDSORT_LIMIT before use!
 #define SDSORT_CACHE_VFATS 2      // Maximum number of 13-byte VFAT entries to use for sorting.
                                   // Note: Only affects SCROLL_LONG_FILENAMES with SDSORT_CACHE_NAMES but not SDSORT_DYNAMIC_RAM.
 
@@ -2066,15 +2075,23 @@
 #define PAUSE_PARK_RETRACT_FEEDRATE 20      // (mm/s) Initial retract feedrate.
 #define PAUSE_PARK_RETRACT_LENGTH 5         // (mm) Initial retract.
                                             // This short retract is done immediately, before parking the nozzle.
-#define PAUSE_PARK_UNLOAD_FEEDRATE 50       // (mm/s) Unload filament feedrate. This can be pretty fast.
+#define PAUSE_PARK_UNLOAD_FEEDRATE 40       // (mm/s) Unload filament feedrate. This can be pretty fast.
+
+#if ENABLED(NEXTION_HMI)	      //For nextion HMI material loading/unloading wizard
+#define PAUSE_PARK_UNLOAD_LENGTH {650, 650, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+#define PAUSE_PARK_LOAD_LENGTH {650, 650, 650}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+#else
 #define PAUSE_PARK_UNLOAD_LENGTH 100        // (mm) The length of filament for a complete unload.
                                             //   For Bowden, the full length of the tube and nozzle.
                                             //   For direct drive, the full length of the nozzle.
                                             //   Set to 0 for manual unloading.
-#define PAUSE_PARK_LOAD_FEEDRATE 50         // (mm/s) Load filament feedrate. This can be pretty fast.
 #define PAUSE_PARK_LOAD_LENGTH 100          // (mm) Load length of filament, from extruder gear to nozzle.
                                             //   For Bowden, the full length of the tube and nozzle.
                                             //   For direct drive, the full length of the nozzle.
+#endif
+
+#define PAUSE_PARK_LOAD_FEEDRATE 40         // (mm/s) Load filament feedrate. This can be pretty fast.
+
 #define PAUSE_PARK_EXTRUDE_FEEDRATE 5       // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
 #define PAUSE_PARK_EXTRUDE_LENGTH 50        // (mm) Length to extrude after loading.
                                             //   Set to 0 for manual extrusion.
@@ -2086,7 +2103,7 @@
 #define FILAMENT_UNLOAD_DELAY 5000          // (ms) Delay for the filament to cool after retract.
 #define FILAMENT_UNLOAD_PURGE_LENGTH 8      // (mm) An unretract is done, then this length is purged.
 
-#define PAUSE_PARK_NOZZLE_TIMEOUT 45        // (seconds) Time limit before the nozzle is turned off for safety.
+#define PAUSE_PARK_NOZZLE_TIMEOUT 60        // (seconds) Time limit before the nozzle is turned off for safety.
 #define PAUSE_PARK_PRINTER_OFF 5            // (minute) Time limit before turn off printer if user doesn't change filament.
 #define PAUSE_PARK_NUMBER_OF_ALERT_BEEPS 10 // Number of alert beeps before printer goes quiet
 #define PAUSE_PARK_NO_STEPPER_TIMEOUT       // Enable for XYZ steppers to stay powered on during filament change.

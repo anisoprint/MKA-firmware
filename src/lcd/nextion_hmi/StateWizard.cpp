@@ -227,8 +227,6 @@ void StateWizard::MaterialLoadS3(void* ptr) {
 	Init2Buttons(PSTR(MSG_CANCEL), MaterialLoadCancel, PSTR(MSG_NEXT), MaterialLoadS3a);
 
 
-8uuhh
-
     //LOOP_HOTEND()
     //  heaters[h].start_idle_timer(nozzle_timeout);
 
