@@ -188,6 +188,8 @@ void StateFiles::FFile_Push(void* ptr) {
     else if (ptr == &_tFName6)
     	_tFName6.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
 
+    Serial.print(NextionHMI::buffer);
+    if (card.isFileOpen()) card.closeFile();
     card.selectFile(NextionHMI::buffer);
     StateFileinfo::Activate();
 }
