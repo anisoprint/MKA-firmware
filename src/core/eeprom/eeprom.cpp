@@ -2182,7 +2182,7 @@ void EEPROM::Factory_Settings() {
     #if HOTENDS > 1
       CONFIG_MSG_START(" Hotend offset (mm):");
       for (int8_t h = 1; h < HOTENDS; h++) {
-        SERIAL_SMV(CFG, "  M218 H", h);
+        SERIAL_SMV(CFG, "  M218 T", h);
         SERIAL_MV(" X", LINEAR_UNIT(tools.hotend_offset[X_AXIS][h]), 3);
         SERIAL_MV(" Y", LINEAR_UNIT(tools.hotend_offset[Y_AXIS][h]), 3);
         SERIAL_EMV(" Z", LINEAR_UNIT(tools.hotend_offset[Z_AXIS][h]), 3);

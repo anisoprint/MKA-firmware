@@ -93,11 +93,13 @@
       workspace_plane = PLANE_XY;
     #endif
 
-    // Always home with tool 0 active
-    #if HOTENDS > 1
-      const uint8_t old_tool_index = tools.active_extruder;
-      tools.change(0, 0, true);
-    #endif
+	#if DISABLED(EG6_EXTRUDER)
+      // Always home with tool 0 active
+		#if HOTENDS > 1
+		  const uint8_t old_tool_index = tools.active_extruder;
+		  tools.change(0, 0, true);
+		#endif
+	#endif
 
     #if ENABLED(DUAL_X_CARRIAGE)
       hotend_duplication_enabled = false;
@@ -214,10 +216,50 @@
 
     stepper.synchronize();
 
-    // Restore the active tool after homing
-    #if HOTENDS > 1
-      tools.change(old_tool_index, 0, true);
-    #endif
+
+	#if DISABLED(EG6_EXTRUDER)
+		#if HOTENDS > 1
+		  tools.change(old_tool_index, 0, true);
+		#endif
+	#else
+	#if HOTENDS > 1
+          if (!mechanics.axis_unhomed_error(homeX, homeY, homeZ) && printer.isRunning()) {
+        	  float x_diff = 0, y_diff = 0, z_diff = 0;
+        	  if ((home_all || homeX) && tools.active_extruder!=HOME_X_TOOL)
+        			 x_diff = tools.hotend_offset[X_AXIS][tools.active_extruder] - tools.hotend_offset[X_AXIS][HOME_X_TOOL];
+        	  if ((home_all || homeY) && tools.active_extruder!=HOME_Y_TOOL)
+        			 y_diff = tools.hotend_offset[Y_AXIS][tools.active_extruder] - tools.hotend_offset[Y_AXIS][HOME_Y_TOOL];
+        	  if ((home_all || homeZ) && tools.active_extruder!=HOME_Z_TOOL)
+        			 z_diff = tools.hotend_offset[Z_AXIS][tools.active_extruder] - tools.hotend_offset[Z_AXIS][HOME_Z_TOOL];
+        	  if (x_diff!=0 || y_diff !=0 || z_diff!=0)
+        	  {
+                  mechanics.set_destination_to_current();
+                  // After homing we are actually at...
+                  mechanics.current_position[X_AXIS] += x_diff;
+                  mechanics.current_position[Y_AXIS] += y_diff;
+                  mechanics.current_position[Z_AXIS] += z_diff;
+
+                  // Tell the planner the new "current position"
+                  mechanics.sync_plan_position_mech_specific();
+
+                  // Do a small lift to avoid the workpiece in the move back (below)
+                  if (mechanics.current_position[Z_AXIS]+1.0<base_max_pos[Z_AXIS] && printer.isZHomed())
+                  {
+                      mechanics.current_position[Z_AXIS] += 1.0;
+                      planner.buffer_line_kinematic(mechanics.current_position, mechanics.max_feedrate_mm_s[Z_AXIS], tools.active_extruder);
+                  }
+                  // Move back to the original (or tweaked) position
+                  mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.destination[Z_AXIS]);
+        	  }
+          }
+          else
+          {
+            SERIAL_EM("No move on toolchange");
+          }
+
+
+	#endif
+	#endif
 
     lcd_refresh();
 

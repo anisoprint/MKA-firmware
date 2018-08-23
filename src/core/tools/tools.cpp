@@ -109,7 +109,8 @@
             #endif
 
             const float x_diff = hotend_offset[X_AXIS][tmp_extruder] - hotend_offset[X_AXIS][active_extruder],
-                        y_diff = hotend_offset[Y_AXIS][tmp_extruder] - hotend_offset[Y_AXIS][active_extruder];
+                        y_diff = hotend_offset[Y_AXIS][tmp_extruder] - hotend_offset[Y_AXIS][active_extruder],
+            			z_diff = hotend_offset[Z_AXIS][tmp_extruder] - hotend_offset[Z_AXIS][active_extruder];
 
             #if ENABLED(DEBUG_LEVELING_FEATURE)
               if (printer.debugLeveling()) {
@@ -119,9 +120,10 @@
               }
             #endif
 
-            // The newly-selected extruder XY is actually at...
+            // The newly-selected extruder XYZ is actually at...
             mechanics.current_position[X_AXIS] += x_diff;
             mechanics.current_position[Y_AXIS] += y_diff;
+            mechanics.current_position[Z_AXIS] += z_diff;
 
             // Set the new active extruder
             previous_extruder = active_extruder;
