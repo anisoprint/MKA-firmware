@@ -61,7 +61,7 @@ void StateMovement::Back_Push(void* ptr) {
 }
 
 void StateMovement::Movement_Push(void* ptr) {
-	if (_moveMode==MODE_MOVE_EXTRUDERS && ptr==&_bMovementBact)
+	if (_moveMode==MODE_MOVE_EXTRUDERS && ptr==&_bMovementCact)
 	{
 		//cut
 		commands.enqueue_and_echo_P(PSTR("M280 P0 S160 "));

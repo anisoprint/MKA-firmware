@@ -61,7 +61,7 @@
     int Tools::lpq_len = 20;
   #endif
 
-  void Tools::change(const uint8_t tmp_extruder, const float fr_mm_s/*=0.0*/, bool no_move/*=false*/) {
+  void Tools::change(const uint8_t tmp_extruder, const float fr_mm_s/*=0.0*/, bool no_move/*=false*/, bool force /*=false*/) {
 
     #if ENABLED(COLOR_MIXING_EXTRUDER) && MIXING_VIRTUAL_TOOLS > 1
 
@@ -78,7 +78,7 @@
 
         mechanics.feedrate_mm_s = fr_mm_s > 0.0 ? fr_mm_s : XY_PROBE_FEEDRATE_MM_S;
 
-        if (tmp_extruder != active_extruder) {
+        if ((tmp_extruder != active_extruder) || force) {
           if (!no_move && mechanics.axis_unhomed_error()) {
             SERIAL_EM("No move on toolchange");
             no_move = true;
@@ -165,7 +165,59 @@
               if (printer.debugLeveling()) DEBUG_POS("Move back", mechanics.destination);
             #endif
             // Move back to the original (or tweaked) position
-            mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.destination[Z_AXIS]);
+
+            #if ENABLED(EG6_EXTRUDER)
+				#define T0_PREPARE_X 	40
+				#define T0_PREPARE_Y 	10
+				#define T0_START_X 		40
+				#define T0_START_Y  	0
+				#define T0_SWITCH_X 	60
+				#define T0_SWITCH_Y  	0
+				#define T0_FINISH_X 	60
+				#define T0_FINISH_Y  	10
+
+				#define T1_PREPARE_X 	80
+				#define T1_PREPARE_Y 	10
+				#define T1_START_X 		80
+				#define T1_START_Y  	0
+				#define T1_SWITCH_X 	50
+				#define T1_SWITCH_Y  	0
+				#define T1_FINISH_X 	50
+				#define T1_FINISH_Y  	10
+
+              	//Apply extruder offset
+              	//mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.current_position[Z_AXIS]);
+                //Making moves to physically switch extruder
+				switch (active_extruder)
+				{
+				case 0:
+					//Prepare position
+					mechanics.do_blocking_move_to(T0_PREPARE_X, T0_PREPARE_Y, mechanics.current_position[Z_AXIS]);
+					//Start switch position
+					mechanics.do_blocking_move_to(T0_START_X, T0_START_Y, 	  mechanics.current_position[Z_AXIS]);
+					//Switch
+					mechanics.do_blocking_move_to(T0_SWITCH_X, T0_SWITCH_Y,   mechanics.current_position[Z_AXIS]);
+					//Go to finish position
+					mechanics.do_blocking_move_to(T0_FINISH_X, T0_FINISH_Y,   mechanics.current_position[Z_AXIS]);
+					break;
+				case 1:
+					//Prepare position
+					mechanics.do_blocking_move_to(T1_PREPARE_X, T1_PREPARE_Y, mechanics.current_position[Z_AXIS]);
+					//Start switch position
+					mechanics.do_blocking_move_to(T1_START_X, T1_START_Y, 	  mechanics.current_position[Z_AXIS]);
+					//Switch
+					mechanics.do_blocking_move_to(T1_SWITCH_X, T1_SWITCH_Y,   mechanics.current_position[Z_AXIS]);
+					//Go to finish position
+					mechanics.do_blocking_move_to(T1_FINISH_X, T1_FINISH_Y,   mechanics.current_position[Z_AXIS]);
+					break;
+				}
+				//Returning to original position
+				mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.current_position[Z_AXIS]);
+				mechanics.do_blocking_move_to_z(mechanics.destination[Z_AXIS], mechanics.max_feedrate_mm_s[Z_AXIS]);
+			#else
+				mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.destination[Z_AXIS]);
+			#endif
+
           }
           #if HAS_DONDOLO
             else {
@@ -173,7 +225,13 @@
               mechanics.do_blocking_move_to_z(destination[Z_AXIS], planner.max_feedrate_mm_s[Z_AXIS]);
             }
           #endif
+
+
+
         } // (tmp_extruder != active_extruder)
+
+
+
 
         stepper.synchronize();
 

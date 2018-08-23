@@ -72,7 +72,7 @@
 
     public: /** Public Function */
 
-      static void change(const uint8_t tmp_extruder, const float fr_mm_s=0.0, bool no_move=false);
+      static void change(const uint8_t tmp_extruder, const float fr_mm_s=0.0, bool no_move=false, bool force=false);
 
       FORCE_INLINE static void refresh_e_factor(const uint8_t e) {
         e_factor[e] =  (flow_percentage[e] * 0.01
