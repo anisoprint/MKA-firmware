@@ -330,9 +330,9 @@
 #define INVERT_X_DIR false
 #define INVERT_Y_DIR false
 #define INVERT_Z_DIR true
-#define INVERT_E0_DIR false
-#define INVERT_E1_DIR true
-#define INVERT_E2_DIR false
+#define INVERT_E0_DIR true
+#define INVERT_E1_DIR false
+#define INVERT_E2_DIR true
 #define INVERT_E3_DIR false
 #define INVERT_E4_DIR false
 #define INVERT_E5_DIR false
@@ -584,7 +584,7 @@
  *                                                                                       *
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 1600, 427.5, 99.77, 427.5, 625} //XYZEUV 1/16
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 1600, 95.5, 97.813, 95.5, 625} //XYZEUV 1/16
 /*****************************************************************************************/
 
 
@@ -667,9 +667,9 @@
  * For the other hotends it is their distance from the hotend 0.                         *
  *                                                                                       *
  *****************************************************************************************/
-#define HOTEND_OFFSET_X {0.0, 15.0, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the X axis
+#define HOTEND_OFFSET_X {0.0, 17.5, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the X axis
 #define HOTEND_OFFSET_Y {0.0, 0.0, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Y axis
-#define HOTEND_OFFSET_Z {0.0, 5.0, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Z axis
+#define HOTEND_OFFSET_Z {0.0, 2.5, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Z axis
 /*****************************************************************************************/
 
 #endif /* _CONFIGURATION_CORE_H_ */

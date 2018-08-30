@@ -1684,6 +1684,17 @@ void Planner::check_axes_activity() {
       } \
     }while(0)
 
+
+
+/*		if (AXIS == Z_AXIS && dz!=0) { \
+	  SERIAL_MV(" STEPS:", block->steps[AXIS]); \
+    SERIAL_MV(" MAXA:", mechanics.max_acceleration_steps_per_s2[AXIS]); \
+    SERIAL_MV(" A:", accel); \
+    SERIAL_MV(" COMP:", accel * block->steps[AXIS] > (mechanics.max_acceleration_steps_per_s2[AXIS] * block->step_event_count)); \
+    SERIAL_MV(" RES:", mechanics.max_acceleration_steps_per_s2[AXIS] * block->step_event_count / block->steps[AXIS]); \
+    SERIAL_EOL(); \
+	  } \*/
+
     // Start with print or travel acceleration
     accel = CEIL((extruder_moves ? mechanics.acceleration : mechanics.travel_acceleration) * steps_per_mm);
 
@@ -1728,8 +1739,11 @@ void Planner::check_axes_activity() {
       }
     #endif
 
+
+   uint32_t cutoff_long_accel = 4294967295UL / accel;
+
     // Limit acceleration per axis
-    if (block->step_event_count <= cutoff_long) {
+    if (block->step_event_count <= cutoff_long && block->step_event_count <=cutoff_long_accel) {
     	LOOP_XYZE(i) LIMIT_ACCEL_LONG(i);
     }
     else {
@@ -1852,6 +1866,17 @@ void Planner::check_axes_activity() {
   // the reverse and forward planners, the corresponding block junction speed will always be at the
   // the maximum junction speed and may always be ignored for any speed reduction checks.
   block->flag |= block->nominal_speed <= v_allowable ? BLOCK_FLAG_RECALCULATE | BLOCK_FLAG_NOMINAL_LENGTH : BLOCK_FLAG_RECALCULATE;
+
+
+  if (dz!=0)
+  {
+      SERIAL_MV(" NS:", block->nominal_speed);
+      SERIAL_MV(" ES:", block->entry_speed);
+      SERIAL_MV(" A:", block->acceleration);
+      SERIAL_EOL();
+
+  }
+
 
   // Update previous path unit_vector and nominal speed
   COPY_ARRAY(previous_speed, current_speed);

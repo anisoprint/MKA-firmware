@@ -72,10 +72,19 @@ void StateWizard::TouchUpdate() {
 
 void StateWizard::ZAxisS1(void* ptr) {
 	_wizardCancelled = false;
-	//Homing
-	commands.enqueue_and_echo_P(PSTR("T0"));
+
+	//Homing if not homed
+	if (mechanics.axis_unhomed_error())
+	{
+		commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+	}
 	commands.enqueue_and_echo_P(PSTR("G28 Z"));
-	commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+
+	//Changing tool
+	if (tools.active_extruder!=0)
+	{
+		commands.enqueue_and_echo_P(PSTR("T0"));
+	}
 
 	BUTTONS(2)
 	NO_PICTURE
@@ -104,8 +113,6 @@ void StateWizard::ZAxisCancel(void* ptr) {
 	StateStatus::Activate();
 }
 
-
-
 inline void StateWizard::Init1Button(const char* txtCenter, NexTouchEventCb cbCenter) {
 	_bC.setTextPGM(txtCenter);
 	_bC.attachPush(cbCenter);
@@ -123,10 +130,25 @@ inline void StateWizard::Init2Buttons(const char* txtLeft, NexTouchEventCb cbLef
 
 void StateWizard::MaterialLoadS1(void* ptr) {
 	_wizardCancelled = false;
-	//Homing
-	commands.enqueue_and_echo_P(PSTR("T0"));
+	//Homing if not homed
+	if (mechanics.axis_unhomed_error())
+	{
+		commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+	}
 	commands.enqueue_and_echo_P(PSTR("G28 Z"));
-	commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+
+	//Changing tool
+	if (NextionHMI::wizardData==E_AXIS && tools.active_extruder!=0)
+	{
+		commands.enqueue_and_echo_P(PSTR("T0"));
+	}
+	else
+	{
+		if ((NextionHMI::wizardData==U_AXIS || NextionHMI::wizardData==V_AXIS) && tools.active_extruder!=1)
+		{
+			commands.enqueue_and_echo_P(PSTR("T1"));
+		}
+	}
 
 	sprintf_P(NextionHMI::buffer, PSTR("G1 F%i X%i Y%i"), (int)(mechanics.homing_feedrate_mm_s[X_AXIS]*60), int(MATERIAL_CHANGE_X), int(MATERIAL_CHANGE_Y));
 	commands.enqueue_and_echo(NextionHMI::buffer);
@@ -140,18 +162,19 @@ void StateWizard::MaterialLoadS1(void* ptr) {
 }
 
 void StateWizard::MaterialLoadS1a(void* ptr) {
-
-	uint8_t heater;
-	if (NextionHMI::wizardData==E_AXIS)
+	if (!planner.movesplanned())
 	{
-		heater = HOT0_INDEX;
+		uint8_t heater;
+		if (NextionHMI::wizardData==E_AXIS)
+		{
+			heater = HOT0_INDEX;
+		}
+		else
+		{
+			if (NextionHMI::wizardData==U_AXIS || NextionHMI::wizardData==V_AXIS) heater = HOT1_INDEX;
+		}
+		StateTemperature::Activate(NextionHMI::autoPreheatTempHotend, heater, MaterialLoadS2, MaterialLoadCancel);
 	}
-	else
-	{
-		if (NextionHMI::wizardData==U_AXIS || NextionHMI::wizardData==V_AXIS) heater = HOT1_INDEX;
-	}
-	StateTemperature::Activate(NextionHMI::autoPreheatTempHotend, heater, MaterialLoadS2, MaterialLoadCancel);
-
 }
 
 void StateWizard::MaterialLoadS2(void* ptr) {
@@ -231,7 +254,7 @@ void StateWizard::MaterialLoadS3(void* ptr) {
     //  heaters[h].start_idle_timer(nozzle_timeout);
 
 	//waiting for 90 seconds
-	int max_extrude_length = (1.5*PAUSE_PARK_EXTRUDE_FEEDRATE);
+	int max_extrude_length = (90*PAUSE_PARK_EXTRUDE_FEEDRATE);
 
 	_loopStopped = false;
 	int extrude_length = 0;
@@ -378,10 +401,19 @@ void StateWizard::MaterialLoadCancel(void* ptr) {
 
 void StateWizard::BuildPlateS1(void* ptr) {
 	_wizardCancelled = false;
-	//Homing
-	commands.enqueue_and_echo_P(PSTR("T0"));
+
+	//Homing if not homed
+	if (mechanics.axis_unhomed_error())
+	{
+		commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+	}
 	commands.enqueue_and_echo_P(PSTR("G28 Z"));
-	commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+
+	//Changing tool
+	if (tools.active_extruder!=0)
+	{
+		commands.enqueue_and_echo_P(PSTR("T0"));
+	}
 
 	BUTTONS(2)
 	NO_PICTURE
@@ -510,7 +542,7 @@ void StateWizard::BuildPlateS8(void* ptr) {
 		CAPTION(MSG_BP_CALIBR_ST8)
 		HEADER(MSG_HEADER_BP_CALIBR, "8/8", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_REPEAT), StateWizardZ::BuildPlateS6, PSTR(MSG_FINISH), StateWizard::BuildPlateFinish);
+		Init2Buttons(PSTR(MSG_REPEAT), StateWizard::BuildPlateS5, PSTR(MSG_FINISH), StateWizard::BuildPlateFinish);
 	}
 }
 

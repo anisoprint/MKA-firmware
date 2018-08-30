@@ -299,6 +299,9 @@ void Printer::setup() {
 
   #if ENABLED(DELTA_HOME_ON_POWER) || ENABLED(HOME_ON_POWER)
     mechanics.home();
+	#if ENABLED(EG6_EXTRUDER)
+    	tools.change(0, 0, false, true);
+	#endif
   #endif
 
   #if ENABLED(NEXTION_HMI)

@@ -243,7 +243,7 @@
                   mechanics.sync_plan_position_mech_specific();
 
                   // Do a small lift to avoid the workpiece in the move back (below)
-                  if (mechanics.current_position[Z_AXIS]+1.0<base_max_pos[Z_AXIS] && printer.isZHomed())
+                  if (mechanics.current_position[Z_AXIS]+1.0<endstops.soft_endstop_max[Z_AXIS] && printer.isZHomed())
                   {
                       mechanics.current_position[Z_AXIS] += 1.0;
                       planner.buffer_line_kinematic(mechanics.current_position, mechanics.max_feedrate_mm_s[Z_AXIS], tools.active_extruder);
@@ -620,6 +620,7 @@
 
 	#if ENABLED(HOME_OFFSETS)
 	  current_position[axis] = base_home_pos[axis] + home_offset[axis];
+	  endstops.update_software_endstops(axis);
 	#else
 	  current_position[axis] = base_home_pos[axis];
 	#endif

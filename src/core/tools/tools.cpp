@@ -120,6 +120,9 @@
               }
             #endif
 
+             //Serial.println("Before toolchange");
+              //Serial.println(mechanics.current_position[Z_AXIS]);
+
             // The newly-selected extruder XYZ is actually at...
             mechanics.current_position[X_AXIS] += x_diff;
             mechanics.current_position[Y_AXIS] += y_diff;
@@ -154,12 +157,26 @@
             constexpr bool safe_to_move = true;
           #endif
 
+          //Serial.println("After toolchange");
+          //Serial.println(mechanics.current_position[Z_AXIS]);
+          //Serial.println(mechanics.destination[Z_AXIS]);
+          //Serial.println(endstops.soft_endstop_max[Z_AXIS]);
+
           // Raise, move, and lower again
           if (safe_to_move && !no_move && printer.isRunning()) {
             #if !HAS_DONDOLO
               // Do a small lift to avoid the workpiece in the move back (below)
-              mechanics.current_position[Z_AXIS] += 1.0;
-              planner.buffer_line_kinematic(mechanics.current_position, mechanics.max_feedrate_mm_s[Z_AXIS], active_extruder);
+        	  float additional_z_lift = 1.5;
+			  if (mechanics.destination[Z_AXIS]+additional_z_lift>(endstops.soft_endstop_max[Z_AXIS])) additional_z_lift = 0;
+
+        	  if (mechanics.destination[Z_AXIS]>mechanics.current_position[Z_AXIS])
+        	  {
+        		  mechanics.do_blocking_move_to_z(mechanics.destination[Z_AXIS]+additional_z_lift, mechanics.max_feedrate_mm_s[Z_AXIS]);
+        	  }
+        	  else
+        	  {
+        		  mechanics.do_blocking_move_to_z(mechanics.current_position[Z_AXIS]+additional_z_lift, mechanics.max_feedrate_mm_s[Z_AXIS]);
+        	  }
             #endif
             #if ENABLED(DEBUG_LEVELING_FEATURE)
               if (printer.debugLeveling()) DEBUG_POS("Move back", mechanics.destination);
@@ -167,23 +184,23 @@
             // Move back to the original (or tweaked) position
 
             #if ENABLED(EG6_EXTRUDER)
-				#define T0_PREPARE_X 	40
-				#define T0_PREPARE_Y 	10
-				#define T0_START_X 		40
+				#define T0_PREPARE_X 	108
+				#define T0_PREPARE_Y 	20
+				#define T0_START_X 		108
 				#define T0_START_Y  	0
-				#define T0_SWITCH_X 	60
+				#define T0_SWITCH_X 	126.8
 				#define T0_SWITCH_Y  	0
-				#define T0_FINISH_X 	60
-				#define T0_FINISH_Y  	10
+				#define T0_FINISH_X 	126.8
+				#define T0_FINISH_Y  	20
 
-				#define T1_PREPARE_X 	80
-				#define T1_PREPARE_Y 	10
-				#define T1_START_X 		80
+				#define T1_PREPARE_X 	170
+				#define T1_PREPARE_Y 	20
+				#define T1_START_X 		170
 				#define T1_START_Y  	0
-				#define T1_SWITCH_X 	50
+				#define T1_SWITCH_X 	151
 				#define T1_SWITCH_Y  	0
-				#define T1_FINISH_X 	50
-				#define T1_FINISH_Y  	10
+				#define T1_FINISH_X 	151
+				#define T1_FINISH_Y  	20
 
               	//Apply extruder offset
               	//mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.current_position[Z_AXIS]);
