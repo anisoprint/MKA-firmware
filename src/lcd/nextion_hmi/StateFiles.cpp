@@ -38,6 +38,8 @@ namespace {
 	NexObject _bFUp = NexObject(PAGE_FILES,  32,  "up");
 	NexObject _bFDown = NexObject(PAGE_FILES,  33,  "dn");
 
+	NexObject _tLoading = NexObject(PAGE_FILES,  34,  "tL");
+
 	NexObject _bFUpIcon = NexObject(PAGE_FILES,  17,  "pUP");
 	NexObject _bFDownIcon = NexObject(PAGE_FILES,  18,  "pDN");
 
@@ -213,15 +215,19 @@ void StateFiles::FFolder_Push(void* ptr) {
     else if (ptr == &_tFName6)
     	_tFName6.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
 
+	_tLoading.SetVisibility(true);
     card.chdir(NextionHMI::buffer);
     _listPosition = 0;
     Files_PopulateFileList(_listPosition);
+	_tLoading.SetVisibility(false);
 }
 
 void StateFiles::FFolderUp_Push(void* ptr) {
 	card.updir();
 	_listPosition = 0;
+	_tLoading.SetVisibility(true);
     Files_PopulateFileList(_listPosition);
+	_tLoading.SetVisibility(false);
 }
 
 void StateFiles::FilesCancel_Push(void* ptr) {
@@ -237,13 +243,14 @@ void StateFiles::Init() {
 void StateFiles::Activate() {
     _listPosition = 0;
     _insideDir = false;
-    StateMessage::ActivatePGM(0, NEX_ICON_FILES, PSTR(MSG_READING_SD), PSTR(MSG_READING_SD), 0, "", 0, "", 0, 0);
+    //StateMessage::ActivatePGM(0, NEX_ICON_FILES, PSTR(MSG_READING_SD), PSTR(MSG_READING_SD), 0, "", 0, "", 0, 0);
+    NextionHMI::ActivateState(PAGE_FILES);
+    _page.show();
     card.mount();
     if (card.cardOK)
     {
-      NextionHMI::ActivateState(PAGE_FILES);
-     _page.show();
 	  Files_PopulateFileList(_listPosition);
+	  _tLoading.SetVisibility(false);
     }
     else
     {

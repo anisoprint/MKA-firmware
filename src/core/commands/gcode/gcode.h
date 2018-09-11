@@ -98,6 +98,7 @@
 
 // EEPROM Commands
 #include "eeprom/m500_m503.h"             // Eeprom read write and print
+#include "eeprom/m1001_m1002.h"             // Eeprom read write and print
 
 // Feature Commands
 #include "feature/g12.h"

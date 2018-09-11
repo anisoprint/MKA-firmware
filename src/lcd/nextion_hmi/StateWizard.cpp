@@ -173,7 +173,7 @@ void StateWizard::MaterialLoadS1a(void* ptr) {
 		{
 			if (NextionHMI::wizardData==U_AXIS || NextionHMI::wizardData==V_AXIS) heater = HOT1_INDEX;
 		}
-		StateTemperature::Activate(NextionHMI::autoPreheatTempHotend, heater, MaterialLoadS2, MaterialLoadCancel);
+		StateTemperature::Activate(heater, MaterialLoadS2, MaterialLoadCancel);
 	}
 }
 

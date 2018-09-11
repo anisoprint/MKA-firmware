@@ -42,6 +42,24 @@ void StateTemperature::Set_Push(void* ptr) {
 	targetTemp = _vTargetTemp.getValue();
 	if (targetTemp<=21) targetTemp=0;
 	heaters[NextionHMI::pageData].setTarget(targetTemp);
+
+	if (NextionHMI::pageData == BED_INDEX)
+	{
+		if (targetTemp != NextionHMI::autoPreheatTempBed)
+		{
+			NextionHMI::autoPreheatTempBed = targetTemp;
+			eeprom.Store_Settings();
+		}
+	}
+	else
+	{
+		if (targetTemp != NextionHMI::autoPreheatTempHotend)
+		{
+			NextionHMI::autoPreheatTempHotend = targetTemp;
+			eeprom.Store_Settings();
+		}
+	}
+
 	if (cbSetReturn!=NULL ) cbSetReturn(0);
 	else StateStatus::Activate();
 }
@@ -50,7 +68,7 @@ void StateTemperature::Cancel_Push(void* ptr) {
 	StateStatus::Activate();
 }
 
-void StateTemperature::Activate(uint16_t autoTemp, uint8_t heater, NexTouchEventCb cbOK, NexTouchEventCb cbCancel) {
+void StateTemperature::Activate(uint8_t heater, NexTouchEventCb cbOK, NexTouchEventCb cbCancel) {
 	cbSetReturn = cbOK;
 	_bSet.attachPush(Set_Push);
 	_bCancel.attachPush(cbCancel);
@@ -61,6 +79,7 @@ void StateTemperature::Activate(uint16_t autoTemp, uint8_t heater, NexTouchEvent
 
 	_vMaxTemp.setValue(heaters[heater].maxtemp);
 
+	int16_t auto_temp;
 	int16_t target_temp = heaters[heater].target_temperature;
 	if (target_temp<20) target_temp=20;
 
@@ -68,18 +87,27 @@ void StateTemperature::Activate(uint16_t autoTemp, uint8_t heater, NexTouchEvent
 	if (heater == BED_INDEX)
 	{
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_BUILDPLATE_TEMP));
+		auto_temp = NextionHMI::autoPreheatTempBed;
 	}
 	else
 	{
-		if (heater == HOT0_INDEX) NextionHMI::headerText.setTextPGM(PSTR(MSG_PLASTIC_EXTRUDER_TEMP));
-		if (heater == HOT1_INDEX) NextionHMI::headerText.setTextPGM(PSTR(MSG_COMPOSITE_EXTRUDER_TEMP));
+		if (heater == HOT0_INDEX)
+			{
+				NextionHMI::headerText.setTextPGM(PSTR(MSG_PLASTIC_EXTRUDER_TEMP));
+				auto_temp = NextionHMI::autoPreheatTempHotend;
+			}
+		if (heater == HOT1_INDEX)
+			{
+				NextionHMI::headerText.setTextPGM(PSTR(MSG_COMPOSITE_EXTRUDER_TEMP));
+				auto_temp = NextionHMI::autoPreheatTempHotend;
+			}
 	}
 #else
 	if (heater == HOT0_INDEX) NextionHMI::headerText.setTextPGM(PSTR(PLASTIC_EXTRUDER_TEMP));
 	if (heater == HOT1_INDEX) NextionHMI::headerText.setTextPGM(PSTR(COMPOSITE_EXTRUDER_TEMP));
 #endif
 
-	_vAutoTemp.setValue(autoTemp);
+	_vAutoTemp.setValue(auto_temp);
 
 	String str = String(target_temp) + "\370C";
 	_tTargetTemperatureValue.setText(str.c_str());
@@ -88,8 +116,8 @@ void StateTemperature::Activate(uint16_t autoTemp, uint8_t heater, NexTouchEvent
 	DrawUpdate();
 }
 
-void StateTemperature::Activate(uint16_t autoTemp, uint8_t heater) {
-	Activate(autoTemp, heater, 0, Cancel_Push);
+void StateTemperature::Activate(uint8_t heater) {
+	Activate(heater, 0, Cancel_Push);
 }
 
 void StateTemperature::DrawUpdate() {

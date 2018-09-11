@@ -206,6 +206,7 @@ void Printer::setup() {
 
   // Load data from EEPROM if available (or use defaults)
   // This also updates variables in the planner, elsewhere
+  eeprom.Load_Const();
   const bool eeprom_loaded = eeprom.Load_Settings();
 
   #if ENABLED(WORKSPACE_OFFSETS)

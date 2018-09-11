@@ -38,10 +38,23 @@
 
 #include "../../../MK4duo.h"
 
+#define CONST_OFFSET 	32000
+#define CONFIG_OFFSET 	0
+
 #if ENABLED(EEPROM_LITE)
 	#define EEPROM_VERSION "MKA11"
+
 /**
- * MKA10 EEPROM Layout:
+ *
+ *
+ * MKA11 EEPROM Layout:
+ *
+ * ****************************** CONST *********************************
+ *  Serial Number												(char x10)
+ *  Printer version												(char x6)
+ *
+ *
+ * ****************************** CONFIG *********************************
  *
  *  Version                                                     (char x6)
  *  EEPROM Checksum                                             (uint16_t)
@@ -233,6 +246,9 @@
 
 EEPROM eeprom;
 
+char    EEPROM::printerSN[17] = "";   // max. 16 chars + 0
+char    EEPROM::printerVersion[9] = "";   // max. 8 chars + 0
+
 #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
   float new_z_fade_height;
 #endif
@@ -322,8 +338,8 @@ void EEPROM::Postprocess() {
 	  #define EEPROM_READ_START()   int eeprom_index = EEPROM_OFFSET; eeprom_error = access_start(O_READ)
 	  #define EEPROM_WRITE_START()  int eeprom_index = EEPROM_OFFSET; eeprom_error = access_start(O_CREAT | O_WRITE | O_TRUNC | O_SYNC)
 	#else
-	  #define EEPROM_READ_START()   int eeprom_index = EEPROM_OFFSET; eeprom_error = false
-	  #define EEPROM_WRITE_START()  int eeprom_index = EEPROM_OFFSET; eeprom_error = false
+	  #define EEPROM_READ_START(VAR)   int eeprom_index = EEPROM_OFFSET + VAR; eeprom_error = false
+	  #define EEPROM_WRITE_START(VAR)  int eeprom_index = EEPROM_OFFSET + VAR; eeprom_error = false
 	#endif
   #define EEPROM_FINISH()       access_finish()
   #define EEPROM_SKIP(VAR)      eeprom_index += sizeof(VAR)
@@ -338,8 +354,55 @@ void EEPROM::Postprocess() {
     int16_t EEPROM::meshes_begin = 0;
   #endif
 
+bool EEPROM::Store_Const() {
+
+  uint16_t working_crc = 0;
+
+  EEPROM_WRITE_START(CONST_OFFSET);
+
+  EEPROM_WRITE(printerSN);
+  EEPROM_WRITE(printerVersion);
+
+  if (!eeprom_error) {
+      const int eeprom_size = eeprom_index;
+
+      // Report storage size
+      #if ENABLED(EEPROM_CHITCHAT)
+         SERIAL_SMV(ECHO, "Const data stored (", eeprom_size - (EEPROM_OFFSET) - CONST_OFFSET);
+         SERIAL_EM(")");
+      #endif
+   }
+
+   EEPROM_FINISH();
+
+   return !eeprom_error;
+}
+
+bool EEPROM::Load_Const() {
+
+  uint16_t  working_crc = 0,
+            stored_crc  = 0;
+
+  char stored_ver[6];
+
+  EEPROM_READ_START(CONFIG_OFFSET);
+
+  EEPROM_READ(printerSN);
+  EEPROM_READ(printerVersion);
+
+  #if ENABLED(EEPROM_CHITCHAT)
+	Print_Settings();
+  #endif
+
+  EEPROM_FINISH();
+
+  return !eeprom_error;
+}
+
 
 #if ENABLED(EEPROM_LITE)
+
+
     /**
      * M500 - Store Configuration
      */
@@ -348,7 +411,7 @@ void EEPROM::Postprocess() {
 
       uint16_t working_crc = 0;
 
-      EEPROM_WRITE_START();
+      EEPROM_WRITE_START(CONFIG_OFFSET);
 
       #if HAS_EEPROM_FLASH
         EEPROM_SKIP(ver);         // Flash doesn't allow rewriting without erase
@@ -399,7 +462,7 @@ void EEPROM::Postprocess() {
 
         // Report storage size
         #if ENABLED(EEPROM_CHITCHAT)
-          SERIAL_SMV(ECHO, "Settings Stored (", eeprom_size - (EEPROM_OFFSET));
+          SERIAL_SMV(ECHO, "Settings Stored (", eeprom_size - (EEPROM_OFFSET) - CONFIG_OFFSET);
           SERIAL_MV(" bytes; crc ", final_crc);
           SERIAL_EM(")");
         #endif
@@ -420,7 +483,7 @@ void EEPROM::Postprocess() {
 
       char stored_ver[6];
 
-      EEPROM_READ_START();
+      EEPROM_READ_START(CONFIG_OFFSET);
 
       #if HAS_EEPROM_SD
         EEPROM_READ(stored_ver);
@@ -954,7 +1017,7 @@ void EEPROM::Postprocess() {
 
     char stored_ver[6];
 
-    EEPROM_READ_START();
+    EEPROM_READ_START(0);
 
     #if HAS_EEPROM_SD
       EEPROM_READ(stored_ver);

@@ -31,6 +31,9 @@ class EEPROM {
 
   public: /** Public Parameters */
 
+    static char     printerSN[17];  // max. 16 chars + 0
+    static char     printerVersion[9];  // max. 8 chars + 0
+
   private: /** Private Parameters */
 
     #if HAS_EEPROM
@@ -65,6 +68,9 @@ class EEPROM {
 
     static void Factory_Settings();
     static bool Store_Settings();
+
+    static bool Store_Const();
+    static bool Load_Const();
 
     #if HAS_EEPROM
       static bool Load_Settings();  // Return 'true' if data was loaded ok
