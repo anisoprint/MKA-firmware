@@ -26,7 +26,7 @@
 
 #if ENABLED(SUPPORT_MAX31865)
 
-static SPISettings max31865_spisettings = SPISettings(500000, MSBFIRST, SPI_MODE1);
+static SPISettings max31865_spisettings = SPISettings(200000, MSBFIRST, SPI_MODE1);
 
 namespace {
 

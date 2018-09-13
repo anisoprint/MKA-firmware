@@ -3179,6 +3179,7 @@ bool Sd2Card::init(uint8_t sckRateID, uint8_t chipSelectPin) {
   arg = type() == SD_CARD_TYPE_SD2 ? 0x40000000 : 0;
   while ((status_ = cardAcmd(ACMD41, arg)) != R1_READY_STATE) {
     // check for timeout
+	  delayMicroseconds(50);
     if (((uint16_t)millis() - t0) > SD_INIT_TIMEOUT) {
       error(SD_CARD_ERROR_ACMD41);
       goto FAIL;

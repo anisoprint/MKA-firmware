@@ -155,7 +155,7 @@
   void HAL::spiBegin() {
     if (!spiInitMaded) {
       SPI.begin();
-      spiInit(1);
+      spiInit(SPI_SPEED);
       spiInitMaded = true;
     }
   }

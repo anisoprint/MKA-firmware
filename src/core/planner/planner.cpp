@@ -1868,15 +1868,6 @@ void Planner::check_axes_activity() {
   block->flag |= block->nominal_speed <= v_allowable ? BLOCK_FLAG_RECALCULATE | BLOCK_FLAG_NOMINAL_LENGTH : BLOCK_FLAG_RECALCULATE;
 
 
-  if (dz!=0)
-  {
-      SERIAL_MV(" NS:", block->nominal_speed);
-      SERIAL_MV(" ES:", block->entry_speed);
-      SERIAL_MV(" A:", block->acceleration);
-      SERIAL_EOL();
-
-  }
-
 
   // Update previous path unit_vector and nominal speed
   COPY_ARRAY(previous_speed, current_speed);

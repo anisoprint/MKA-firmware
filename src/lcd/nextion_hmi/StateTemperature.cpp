@@ -45,7 +45,7 @@ void StateTemperature::Set_Push(void* ptr) {
 
 	if (NextionHMI::pageData == BED_INDEX)
 	{
-		if (targetTemp != NextionHMI::autoPreheatTempBed)
+		if (targetTemp != NextionHMI::autoPreheatTempBed && targetTemp>=150)
 		{
 			NextionHMI::autoPreheatTempBed = targetTemp;
 			eeprom.Store_Settings();
@@ -53,7 +53,7 @@ void StateTemperature::Set_Push(void* ptr) {
 	}
 	else
 	{
-		if (targetTemp != NextionHMI::autoPreheatTempHotend)
+		if (targetTemp != NextionHMI::autoPreheatTempHotend && targetTemp>=30)
 		{
 			NextionHMI::autoPreheatTempHotend = targetTemp;
 			eeprom.Store_Settings();

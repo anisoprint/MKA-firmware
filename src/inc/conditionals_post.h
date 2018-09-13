@@ -503,6 +503,17 @@
 #define HAS_EEPROM_FLASH    (ENABLED(EEPROM_SETTINGS) && ENABLED(EEPROM_FLASH))
 #define HAS_EEPROM          (ENABLED(EEPROM_SETTINGS))
 
+/**
+ * SPI_SPEED
+ */
+#if ENABLED(SDEXTRASLOW)
+  #define SPI_SPEED 3
+#elif ENABLED(SDSLOW)
+  #define SPI_SPEED 2
+#else
+  #define SPI_SPEED 1
+#endif
+
 // SD support
 #define HAS_SDSUPPORT       (ENABLED(SDSUPPORT))
 #if ENABLED(SDSUPPORT)
