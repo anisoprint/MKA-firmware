@@ -79,11 +79,14 @@
         mechanics.feedrate_mm_s = fr_mm_s > 0.0 ? fr_mm_s : XY_PROBE_FEEDRATE_MM_S;
 
         if ((tmp_extruder != active_extruder) || force) {
-          if (!no_move && mechanics.axis_unhomed_error()) {
-            SERIAL_EM("No move on toolchange");
-            no_move = true;
-          }
+          if (!no_move) {
+        	 if (mechanics.axis_unhomed_error())
+        	 {
+                 SERIAL_EM("Homing before toolchange");
+                 mechanics.home(true, true, true);
+        	 }
 
+          }
           // Save current position to mechanics.destination, for use later
           mechanics.set_destination_to_current();
 
@@ -184,23 +187,29 @@
             // Move back to the original (or tweaked) position
 
             #if ENABLED(EG6_EXTRUDER)
-				#define T0_PREPARE_X 	108
-				#define T0_PREPARE_Y 	20
-				#define T0_START_X 		108
-				#define T0_START_Y  	0
-				#define T0_SWITCH_X 	126.8
-				#define T0_SWITCH_Y  	0
-				#define T0_FINISH_X 	126.8
-				#define T0_FINISH_Y  	20
+                //M218 T1 X17.300 Y-1.950 Z2.050
 
-				#define T1_PREPARE_X 	170
-				#define T1_PREPARE_Y 	20
-				#define T1_START_X 		170
-				#define T1_START_Y  	0
-				#define T1_SWITCH_X 	151
-				#define T1_SWITCH_Y  	0
-				#define T1_FINISH_X 	151
-				#define T1_FINISH_Y  	20
+                #define T0_PREPARE_X 	127    - hotend_offset[X_AXIS][1]
+				#define T0_PREPARE_Y 	20     //- hotend_offset[Y_AXIS][1]
+				#define T0_PREPARE2_X 	127    - hotend_offset[X_AXIS][1]
+				#define T0_PREPARE2_Y  	0      //- hotend_offset[Y_AXIS][1]
+				#define T0_START_X 		132    - hotend_offset[X_AXIS][1]
+				#define T0_START_Y  	0      //- hotend_offset[Y_AXIS][1]
+				#define T0_SWITCH_X 	144.8  - hotend_offset[X_AXIS][1]
+				#define T0_SWITCH_Y  	0      //- hotend_offset[Y_AXIS][1]
+				#define T0_FINISH_X 	144.8  - hotend_offset[X_AXIS][1]
+				#define T0_FINISH_Y  	20     //- hotend_offset[Y_AXIS][1]
+
+				#define T1_PREPARE_X 	170    - hotend_offset[X_AXIS][0]
+				#define T1_PREPARE_Y 	20     - hotend_offset[Y_AXIS][0]
+				#define T1_PREPARE2_X 	170    - hotend_offset[X_AXIS][0]
+				#define T1_PREPARE2_Y  	0      - hotend_offset[Y_AXIS][0]
+				#define T1_START_X 		164    - hotend_offset[X_AXIS][0]
+				#define T1_START_Y  	0      - hotend_offset[Y_AXIS][0]
+				#define T1_SWITCH_X 	151    - hotend_offset[X_AXIS][0]
+				#define T1_SWITCH_Y  	0      - hotend_offset[Y_AXIS][0]
+				#define T1_FINISH_X 	151    - hotend_offset[X_AXIS][0]
+				#define T1_FINISH_Y  	20     - hotend_offset[Y_AXIS][0]
 
               	//Apply extruder offset
               	//mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.current_position[Z_AXIS]);
@@ -210,20 +219,24 @@
 				case 0:
 					//Prepare position
 					mechanics.do_blocking_move_to(T0_PREPARE_X, T0_PREPARE_Y, mechanics.current_position[Z_AXIS]);
+					//Prepare 2 position
+					mechanics.do_blocking_move_to(T0_PREPARE2_X, T0_PREPARE2_Y, mechanics.current_position[Z_AXIS]);
 					//Start switch position
 					mechanics.do_blocking_move_to(T0_START_X, T0_START_Y, 	  mechanics.current_position[Z_AXIS]);
 					//Switch
-					mechanics.do_blocking_move_to(T0_SWITCH_X, T0_SWITCH_Y,   mechanics.current_position[Z_AXIS]);
+					mechanics.do_blocking_move_to(T0_SWITCH_X, T0_SWITCH_Y,   mechanics.current_position[Z_AXIS], mechanics.homing_feedrate_mm_s[X_AXIS]);
 					//Go to finish position
 					mechanics.do_blocking_move_to(T0_FINISH_X, T0_FINISH_Y,   mechanics.current_position[Z_AXIS]);
 					break;
 				case 1:
 					//Prepare position
 					mechanics.do_blocking_move_to(T1_PREPARE_X, T1_PREPARE_Y, mechanics.current_position[Z_AXIS]);
+					//Prepare 2 position
+					mechanics.do_blocking_move_to(T1_PREPARE2_X, T1_PREPARE2_Y, mechanics.current_position[Z_AXIS]);
 					//Start switch position
 					mechanics.do_blocking_move_to(T1_START_X, T1_START_Y, 	  mechanics.current_position[Z_AXIS]);
 					//Switch
-					mechanics.do_blocking_move_to(T1_SWITCH_X, T1_SWITCH_Y,   mechanics.current_position[Z_AXIS]);
+					mechanics.do_blocking_move_to(T1_SWITCH_X, T1_SWITCH_Y,   mechanics.current_position[Z_AXIS], mechanics.homing_feedrate_mm_s[X_AXIS]);
 					//Go to finish position
 					mechanics.do_blocking_move_to(T1_FINISH_X, T1_FINISH_Y,   mechanics.current_position[Z_AXIS]);
 					break;

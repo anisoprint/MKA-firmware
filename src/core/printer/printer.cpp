@@ -180,8 +180,11 @@ void Printer::setup() {
   // Init Watchdog
   watchdog.init();
 
+  eeprom.Load_Const();
+  SERIAL_LM(ECHO, CUSTOM_MACHINE_NAME);
+  SERIAL_LMV(ECHO, PSTR("VER:"), eeprom.printerVersion);
+  SERIAL_LMV(ECHO, PSTR("SN:"), eeprom.printerSN);
   SERIAL_LM(ECHO, BUILD_VERSION);
-
   #if ENABLED(STRING_DISTRIBUTION_DATE) && ENABLED(STRING_CONFIG_H_AUTHOR)
     SERIAL_LM(ECHO, MSG_CONFIGURATION_VER STRING_DISTRIBUTION_DATE MSG_AUTHOR STRING_CONFIG_H_AUTHOR);
     SERIAL_LM(ECHO, MSG_COMPILED __DATE__);
@@ -206,8 +209,10 @@ void Printer::setup() {
 
   // Load data from EEPROM if available (or use defaults)
   // This also updates variables in the planner, elsewhere
-  eeprom.Load_Const();
+
   const bool eeprom_loaded = eeprom.Load_Settings();
+
+
 
   #if ENABLED(WORKSPACE_OFFSETS)
     // Initialize current position based on home_offset

@@ -385,14 +385,10 @@ bool EEPROM::Load_Const() {
 
   char stored_ver[6];
 
-  EEPROM_READ_START(CONFIG_OFFSET);
+  EEPROM_READ_START(CONST_OFFSET);
 
   EEPROM_READ(printerSN);
   EEPROM_READ(printerVersion);
-
-  #if ENABLED(EEPROM_CHITCHAT)
-	Print_Settings();
-  #endif
 
   EEPROM_FINISH();
 

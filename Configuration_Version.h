@@ -23,11 +23,11 @@
 #ifndef _CONFIGURATION_VERSION_H_
 #define _CONFIGURATION_VERSION_H_
 
-#define FIRMWARE_NAME "MK4duo"
-#define SHORT_BUILD_VERSION "4.3.6"
+#define FIRMWARE_NAME "MKA"
+#define SHORT_BUILD_VERSION "1.436.1"
 #define BUILD_VERSION FIRMWARE_NAME "_" SHORT_BUILD_VERSION
 #define STRING_DISTRIBUTION_DATE __DATE__ " " __TIME__    // build date and time
 // It might also be appropriate to define a location where additional information can be found
-#define FIRMWARE_URL  "marlinkimbra.it"
+#define FIRMWARE_URL  "anisoprint.com"
 
 #endif /* _CONFIGURATION_VERSION_H_ */
