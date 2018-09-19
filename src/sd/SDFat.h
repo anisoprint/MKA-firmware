@@ -437,7 +437,12 @@
    * SPI init rate for SD initialization commands. Must be 10 (F_CPU/64)
    * or greater
    */
+#if ENABLED(__arm__)
+  #define SPI_SD_INIT_RATE 4
+#else
   #define SPI_SD_INIT_RATE 11
+#endif
+
   //------------------------------------------------------------------------------
   /**
    * Set the SS pin high for hardware SPI.  If SS is chip select for another SPI

@@ -63,15 +63,7 @@
     cardOK = false;
     if (root.isOpen()) root.close();
 
-    #if ENABLED(SDEXTRASLOW)
-      #define SPI_SPEED SPI_QUARTER_SPEED
-    #elif ENABLED(SDSLOW)
-      #define SPI_SPEED SPI_HALF_SPEED
-    #else
-      #define SPI_SPEED SPI_FULL_SPEED
-    #endif
-
-    if (!fat.begin(SDSS, SPI_SPEED)
+    if (!fat.begin(SDSS, SD_SPI_SPEED)
       #if ENABLED(LCD_SDSS) && (LCD_SDSS != SDSS)
         && !fat.begin(LCD_SDSS, SPI_SPEED)
       #endif

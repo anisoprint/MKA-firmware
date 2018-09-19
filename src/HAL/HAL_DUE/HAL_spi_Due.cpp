@@ -148,21 +148,25 @@
   // --------------------------------------------------------------------------
   // hardware SPI
   // --------------------------------------------------------------------------
-  // 8.4 MHz, 4 MHz, 2 MHz, 1 MHz, 0.5 MHz, 0.329 MHz, 0.329 MHz
-  int spiDueDividors[] = { 10, 21, 42, 84, 168, 255, 255 };
+  // 4 MHz, 2 MHz, 1 MHz, 0.8 MHz, 0.4 MHz, 0.329 MHz, 0.329 MHz
+  int spiDueDividors[] = { 21, 42, 84, 105, 210, 255, 255 };
   static bool spiInitMaded = false;
 
   void HAL::spiBegin() {
     if (!spiInitMaded) {
-      SPI.begin();
-      spiInit(SPI_SPEED);
+      SPI.begin(); //???
+      spiInit(SPI_CHAN, SPI_SD_INIT_RATE);
+#if ENABLED(SUPPORT_MAX31865)
+      spiInit(MAX_31865_CHANNEL, 0);
+#endif
       spiInitMaded = true;
+      SPI_Enable(SPI0);
     }
   }
 
-  void HAL::spiInit(uint8_t spiRate) {
-    if (spiInitMaded == false) {
+  void HAL::spiInit(uint8_t channel, uint8_t spiRate) {
       if (spiRate > 6) spiRate = 1;
+
 
       #if MB(ALLIGATOR) || MB(ALLIGATOR_V3)
         // Set SPI mode 1, clock, select not active after transfer, with delay between transfers
@@ -173,15 +177,35 @@
         SPI_ConfigureNPCS(SPI0, SPI_CHAN_EEPROM1, SPI_CSR_NCPHA |
                           SPI_CSR_CSAAT | SPI_CSR_SCBR(spiDueDividors[spiRate]) |
                           SPI_CSR_DLYBCT(1));
-      #endif // MB(ALLIGATOR) || MB(ALLIGATOR_V3)
+	  #else // MB(ALLIGATOR) || MB(ALLIGATOR_V3)
+      switch (channel)
+      {
+      	  case SPI_CHAN: //SD CARD
+      	      // Set SPI mode 0, clock, select active after transfer, with delay between transfers
+      	      SPI_ConfigureNPCS(SPI0, SPI_CHAN, SPI_CSR_NCPHA |
+      	                        SPI_CSR_CSAAT | SPI_CSR_SCBR(spiDueDividors[spiRate]) |
+      	                        SPI_CSR_DLYBCT(1));
+      		  break;
+		  #if ENABLED(SUPPORT_MAX31865)
+      	  case MAX_31865_CHANNEL: //MAX_31865
+      	      // Set SPI mode 1, clock, select active after transfer, with delay between transfers
+      	      SPI_ConfigureNPCS(SPI0, MAX_31865_CHANNEL,
+      	                        SPI_CSR_CSAAT | SPI_CSR_SCBR(spiDueDividors[spiRate]) |
+      	                        SPI_CSR_DLYBCT(1));
+      		  break;
+		  #endif
+      	  default:
+      	      // Set SPI mode 0, clock, select active after transfer, with delay between transfers
+      	      SPI_ConfigureNPCS(SPI0, channel, SPI_CSR_NCPHA |
+      	                        SPI_CSR_CSAAT | SPI_CSR_SCBR(spiDueDividors[spiRate]) |
+      	                        SPI_CSR_DLYBCT(1));
+      		  break;
 
-      // Set SPI mode 0, clock, select not active after transfer, with delay between transfers
-      SPI_ConfigureNPCS(SPI0, SPI_CHAN, SPI_CSR_NCPHA |
-                        SPI_CSR_CSAAT | SPI_CSR_SCBR(spiDueDividors[spiRate]) |
-                        SPI_CSR_DLYBCT(1));
 
-      SPI_Enable(SPI0);
-    }
+      }
+	  #endif
+
+
   }
 
   // Write single byte to SPI

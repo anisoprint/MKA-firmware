@@ -401,7 +401,7 @@ class HAL {
     #else
       // Hardware setup
       static void spiBegin();
-      static void spiInit(uint8_t spiRate);
+      static void spiInit(uint8_t channel, uint8_t spiRate);
       // Write single byte to SPI
       static void spiSend(byte b);
       static void spiSend(const uint8_t* buf, size_t n);

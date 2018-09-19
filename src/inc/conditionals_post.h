@@ -506,12 +506,13 @@
 /**
  * SPI_SPEED
  */
+
 #if ENABLED(SDEXTRASLOW)
-  #define SPI_SPEED 3
+  #define SD_SPI_SPEED 3
 #elif ENABLED(SDSLOW)
-  #define SPI_SPEED 2
+  #define SD_SPI_SPEED 2
 #else
-  #define SPI_SPEED 1
+  #define SD_SPI_SPEED 1
 #endif
 
 // SD support

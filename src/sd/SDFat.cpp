@@ -3050,7 +3050,7 @@ void Sd2Card::chipDeselect() {
 }
 //------------------------------------------------------------------------------
 void Sd2Card::chipSelect() {
-  HAL::spiInit(spiRate_);
+  HAL::spiInit(SPI_CHAN, spiRate_);
   HAL::digitalWrite(chipSelectPin_, LOW);
 }
 
@@ -3138,8 +3138,9 @@ bool Sd2Card::init(uint8_t sckRateID, uint8_t chipSelectPin) {
   HAL::spiBegin();
 
   // set SCK rate for initialization commands
+
   spiRate_ = SPI_SD_INIT_RATE;
-  HAL::spiInit(spiRate_);
+  HAL::spiInit(SPI_CHAN, spiRate_);
 
   // must supply min of 74 clock cycles with CS high.
   for (uint8_t i = 0; i < 20; i++) HAL::spiSend(0xFF);

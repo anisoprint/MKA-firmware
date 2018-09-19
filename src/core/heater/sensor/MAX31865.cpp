@@ -24,9 +24,11 @@
 
 #include "../../../../MK4duo.h"
 
+
+
 #if ENABLED(SUPPORT_MAX31865)
 
-static SPISettings max31865_spisettings = SPISettings(200000, MSBFIRST, SPI_MODE1);
+//static SPISettings max31865_spisettings = SPISettings(200000, MSBFIRST, SPI_MODE1);
 
 namespace {
 
@@ -36,14 +38,15 @@ void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin
   HAL::spiBegin();
   HAL::digitalWrite(cs_pin, LOW); // enable TT_MAX31855
 
-  SPI.beginTransaction(max31865_spisettings);
+  //SPI.beginTransaction(max31865_spisettings);
 
-  SPI.transfer(addr);
+  HAL::spiSend(MAX_31865_CHANNEL, addr);
 
   //Serial.print("$"); Serial.print(addr, HEX); Serial.print(": ");
   while (n--) {
-    buffer[0] = SPI.transfer(0xFF);
-    //Serial.print(" 0x"); Serial.print(buffer[0], HEX);
+    //buffer[0] = SPI.transfer(0xFF);
+	  buffer[0] = HAL::spiReceive();
+	  //Serial.print(" 0x"); Serial.print(buffer[0], HEX);
     buffer++;
   }
 
@@ -55,7 +58,7 @@ void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin
     asm("nop"); // 50ns on 20Mhz, 62.5ns on 16Mhz
   #endif
 
-  SPI.endTransaction();
+  //SPI.endTransaction();
   //Serial.println();
 
   HAL::digitalWrite(cs_pin, HIGH); // disable TT_MAX31855
@@ -85,10 +88,14 @@ void writeRegister8(uint8_t addr, uint8_t data, const pin_t cs_pin) {
   HAL::spiBegin();
   HAL::digitalWrite(cs_pin, LOW); // enable TT_MAX31855
 
-  SPI.beginTransaction(max31865_spisettings);
-  SPI.transfer(addr | 0x80);
-  SPI.transfer(data);
-  SPI.endTransaction();
+  //SPI.beginTransaction(max31865_spisettings);
+  //SPI.transfer(addr | 0x80);
+  //SPI.transfer(data);
+  //SPI.endTransaction();
+
+  HAL::spiSend(MAX_31865_CHANNEL, addr | 0x80);
+  HAL::spiSend(MAX_31865_CHANNEL, data);
+
 
   // ensure 100ns delay - a bit extra is fine
   #if ENABLED(ARDUINO_ARCH_SAM)
@@ -173,7 +180,6 @@ bool readRTD (uint16_t &rtd, const pin_t cs_pin) {
 bool MAX31865::Initialize(max31865_numwires_t wires, const pin_t cs_pin) {
 	HAL::pinMode(cs_pin, OUTPUT_HIGH);
 	//start hardware SPI
-
 	HAL::spiBegin();
 
 	  /*setWires(wires, cs_pin);
