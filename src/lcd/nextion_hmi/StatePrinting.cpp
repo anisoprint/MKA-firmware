@@ -22,7 +22,8 @@ namespace {
 	//Plastic
 	NexObject _pFileIcon  = NexObject(PAGE_PRINTING,  7,  "ico");
 	NexObject _tFileName  = NexObject(PAGE_PRINTING,  4,  "fnm");
-	NexObject _tStatus  = NexObject(PAGE_PRINTING,  5,  "sta");
+	NexObject _tStatus1  = NexObject(PAGE_PRINTING,  5,  "st1");
+	NexObject _tStatus2  = NexObject(PAGE_PRINTING,  5,  "st2");
 	NexObject _tProgress  = NexObject(PAGE_PRINTING,  11,  "perc");
 	NexObject _pbProgressBar = NexObject(PAGE_PRINTING,  10,  "prb");
 	//Buttons
@@ -33,6 +34,7 @@ namespace {
 	NexObject *_listenList[] = { &_bCancel, &_bPause, NULL };
 
 	int8_t _previousPercentDone = -1;
+	int32_t _previousLayer = -1;
 }
 
 void StatePrinting::Cancel_Push(void* ptr) {
@@ -68,7 +70,7 @@ void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
 	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), PSTR(MSG_DONE), 2, PSTR(MSG_OK), DoneMessage_OK, PSTR(MSG_PRINT_AGAIN), DoneMessage_Again, NEX_ICON_DONE);
 	        break;
 	    default:
-	    	_tStatus.setTextPGM(PSTR(MSG_PRINTING));
+	    	_tStatus1.setTextPGM(PSTR(MSG_PRINTING));
 	}
 }
 
@@ -84,11 +86,12 @@ void StatePrinting::Activate() {
 	_tFileName.setText(card.fileName);
 	const char* auraString = PSTR("Aura");
 	_previousPercentDone = -1;
+	_previousLayer = -1;
 	if (strstr_P(card.generatedBy, auraString) != NULL)
 	{
 		_pFileIcon.setPic(NEX_ICON_FILE_GCODE_AURA);
 	}
-	_tStatus.setTextPGM(PSTR(MSG_PRINTING));
+	_tStatus1.setTextPGM(PSTR(MSG_PRINTING));
 	DrawUpdate();
 }
 
@@ -98,7 +101,7 @@ void StatePrinting::DrawUpdate() {
     	    case HMIevent::HEATING_STARTED_BUILDPLATE :
     	    	 ZERO(NextionHMI::buffer);
     	    	 sprintf_P(NextionHMI::buffer, PSTR("%s (%d/%d\370C)"), MSG_BUILDPLATE_HEATING, (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
-    		     _tStatus.setText(NextionHMI::buffer);
+    		     _tStatus1.setText(NextionHMI::buffer);
     	    	 break;
     	    case HMIevent::HEATING_STARTED_EXTRUDER :
     			 if (NextionHMI::lastEventArg == HOT0_INDEX)
@@ -114,12 +117,19 @@ void StatePrinting::DrawUpdate() {
 						sprintf_P(NextionHMI::buffer, PSTR("%s (%d/%d\370C)"), MSG_COMPOSITE_EXTRUDER_HEATING, (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
 					}
 				 }
-   	    	     _tStatus.setText(NextionHMI::buffer);
+   	    	     _tStatus1.setText(NextionHMI::buffer);
     	         break;
     	}
-        if (_previousPercentDone != card.percentDone()) {
+        if (_previousPercentDone != card.percentDone() || _previousLayer!=print_job_counter.current_layer) {
         	  ZERO(NextionHMI::buffer);
-			  sprintf_P(NextionHMI::buffer, PSTR("%d%%"), card.percentDone());
+        	  if (print_job_counter.current_layer>0)
+			  {
+        		  sprintf_P(NextionHMI::buffer, PSTR("Layer: %d - %d%%"), print_job_counter.current_layer, card.percentDone());
+			  }
+        	  else
+        	  {
+        		  sprintf_P(NextionHMI::buffer, PSTR("%d%%"), card.percentDone());
+        	  }
 			  _tProgress.setText(NextionHMI::buffer);
 			  // Progress bar solid part
 			  _pbProgressBar.setValue(card.percentDone());

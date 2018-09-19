@@ -31,6 +31,11 @@ const uint16_t  PrintCounter::updateInterval  = 10,
 
 millis_t PrintCounter::lastDuration;
 bool PrintCounter::loaded = false;
+int32_t PrintCounter::current_layer = -1;
+
+void PrintCounter::incLayer() {
+	current_layer++;
+}
 
 millis_t PrintCounter::deltaDuration() {
   #if ENABLED(DEBUG_PRINTCOUNTER)
@@ -174,7 +179,12 @@ void PrintCounter::reset() {
   #endif
 
   super::reset();
+  current_layer = -1;
   lastDuration = 0;
+}
+
+void PrintCounter::setLayer(int32_t number) {
+	current_layer = number;
 }
 
 #if ENABLED(DEBUG_PRINTCOUNTER)

@@ -49,6 +49,8 @@ class PrintCounter: public Stopwatch {
      */
     static bool loaded;
 
+    static int32_t current_layer;
+
   private: /** Private Parameters */
 
     typedef Stopwatch super;
@@ -95,6 +97,18 @@ class PrintCounter: public Stopwatch {
      * periodically save the statistical data to SDCARD and do time keeping.
      */
     static void tick();
+
+    /**
+     * @brief Increases layer number
+     * @details Increases layer number
+     */
+    static void incLayer();
+
+    /**
+     * @brief Sets layer number
+     * @details Sets layer number
+     */
+    static void setLayer(int32_t number);
 
     /**
      * The following functions are being overridden

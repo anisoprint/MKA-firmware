@@ -154,7 +154,7 @@
 
   void HAL::spiBegin() {
     if (!spiInitMaded) {
-      SPI.begin(); //???
+      SPI.begin();
       spiInit(SPI_CHAN, SPI_SD_INIT_RATE);
 #if ENABLED(SUPPORT_MAX31865)
       spiInit(MAX_31865_CHANNEL, 0);
