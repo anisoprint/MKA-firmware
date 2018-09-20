@@ -157,7 +157,7 @@
       SPI.begin();
       spiInit(SPI_CHAN, SPI_SD_INIT_RATE);
 #if ENABLED(SUPPORT_MAX31865)
-      spiInit(MAX_31865_CHANNEL, 0);
+      spiInit(MAX_31865_CHANNEL, 2);
 #endif
       spiInitMaded = true;
       SPI_Enable(SPI0);
