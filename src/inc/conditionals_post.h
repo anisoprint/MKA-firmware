@@ -512,7 +512,7 @@
 #elif ENABLED(SDSLOW)
   #define SD_SPI_SPEED 2
 #else
-  #define SD_SPI_SPEED 1
+  #define SD_SPI_SPEED 0
 #endif
 
 // SD support

@@ -59,8 +59,9 @@
  ************************************** Thermistor type **********************************************
  *****************************************************************************************************
  *                                                                                                   *
- * Please choose the one that matches your setup and set to TEMP_SENSOR_.                            *
- *                                                                                                   *
+ * Please choose the one that matches your setup and set to TEMP_SENSOR_.
+ *                           *
+ *  -4 is PT100 with MAX31865 (e.g. Adafruit RTD Sensor with MAX31865) (only Hotends)				 *                                                                                                 *
  *  -3 is thermocouple with MAX31855 (only Hotends)                                                  *
  *  -2 is thermocouple with MAX6675 (only Hotends)                                                   *
  *  -1 is thermocouple with AD595 or AD597                                                           *
@@ -82,8 +83,8 @@
  * 999 : Dummy Table that ALWAYS reads 100 degC or the temperature defined below.                    *
  *                                                                                                   *
  *****************************************************************************************************/
-#define TEMP_SENSOR_0 1
-#define TEMP_SENSOR_1 1
+#define TEMP_SENSOR_0 -4
+#define TEMP_SENSOR_1 -4
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_BED 1

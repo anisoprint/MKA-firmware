@@ -88,6 +88,9 @@
 
     card.startFileprint();
     print_job_counter.start();
+
+
+
     #if HAS_POWER_CONSUMPTION_SENSOR
       powerManager.startpower = powerManager.consumption_hour;
     #endif
@@ -169,6 +172,7 @@
       mechanics.feedrate_percentage = 100;  // 100% mechanics.feedrate_mm_s
       card.startFileprint();
       print_job_counter.start();
+
       #if HAS_POWER_CONSUMPTION_SENSOR
         powerManager.startpower = powerManager.consumption_hour;
       #endif

@@ -36,10 +36,12 @@ void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin
   addr &= 0x7F; // make sure top bit is not set
 
   HAL::spiBegin();
+
   HAL::digitalWrite(cs_pin, LOW); // enable TT_MAX31855
 
   //SPI.beginTransaction(max31865_spisettings);
 
+  HAL::spiInit(MAX_31865_CHANNEL, SPI_MAX_31865_RATE);
   HAL::spiSend(MAX_31865_CHANNEL, addr);
 
   //Serial.print("$"); Serial.print(addr, HEX); Serial.print(": ");
@@ -92,6 +94,8 @@ void writeRegister8(uint8_t addr, uint8_t data, const pin_t cs_pin) {
   //SPI.transfer(addr | 0x80);
   //SPI.transfer(data);
   //SPI.endTransaction();
+
+  HAL::spiInit(MAX_31865_CHANNEL, SPI_MAX_31865_RATE);
 
   HAL::spiSend(MAX_31865_CHANNEL, addr | 0x80);
   HAL::spiSend(MAX_31865_CHANNEL, data);

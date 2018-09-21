@@ -191,6 +191,26 @@
 
 
 /***********************************************************************
+ **************************** EG-6 extruder ****************************
+ ***********************************************************************
+ *                                                                     *
+ * Anisoprint EG-6 extruder											   *
+ *                                                                     *
+ ***********************************************************************/
+#define EG6_EXTRUDER
+
+// Defines which tools will be at zero (or max) position after homing each axis
+// If the homing is performed while other tool is active, a movement will
+// be done to set active tool to zero (or max) position according to
+// Hotend offset
+#define HOME_X_TOOL 1
+#define HOME_Y_TOOL 0
+#define HOME_Z_TOOL 0
+
+/***********************************************************************/
+
+
+/***********************************************************************
  **************************** Single nozzle ****************************
  ***********************************************************************
  *                                                                     *
@@ -1053,7 +1073,7 @@
  *************************************** SDCARD *******************************************
  ****************************************************************************************/
 #define SDSUPPORT
-
+//#define DEBUG_SD_ERROR
 //#define SDSLOW              // Use slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
 //#define SDEXTRASLOW         // Use even slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
 //#define SD_CHECK_AND_RETRY  // Use CRC checks and retries on the SD communication
@@ -1074,7 +1094,7 @@
 //#define MENU_ADDAUTOSTART
 
 // Enable this option to scroll long filenames in the SD card menu
-//#define SCROLL_LONG_FILENAMES
+#define SCROLL_LONG_FILENAMES
 
 /**
  * Sort SD file listings in alphabetical order.
@@ -1109,7 +1129,7 @@
 //#define SDSORT_USES_STACK  false  // Prefer the stack for pre-sorting to give back some SRAM. (Negated by next 2 options.)
 //#define SDSORT_CACHE_NAMES false  // Keep sorted items in RAM longer for speedy performance. Most expensive option.
 //#define SDSORT_DYNAMIC_RAM false  // Use dynamic allocation (within SD menus). Least expensive option. Set SDSORT_LIMIT before use!
-#define SDSORT_CACHE_VFATS 2      // Maximum number of 13-byte VFAT entries to use for sorting.
+#define SDSORT_CACHE_VFATS 3      // Maximum number of 13-byte VFAT entries to use for sorting.
                                   // Note: Only affects SCROLL_LONG_FILENAMES with SDSORT_CACHE_NAMES but not SDSORT_DYNAMIC_RAM.
 
 // This function enable the firmware write restart.bin file for restart print when power loss
@@ -2078,8 +2098,8 @@
 #define PAUSE_PARK_UNLOAD_FEEDRATE 40       // (mm/s) Unload filament feedrate. This can be pretty fast.
 
 #if ENABLED(NEXTION_HMI)	      //For nextion HMI material loading/unloading wizard
-#define PAUSE_PARK_UNLOAD_LENGTH {650, 650, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
-#define PAUSE_PARK_LOAD_LENGTH {650, 650, 650}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+	#define PAUSE_PARK_UNLOAD_LENGTH {521+35, 535+55, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+	#define PAUSE_PARK_LOAD_LENGTH {650, 650, 650}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
 #else
 #define PAUSE_PARK_UNLOAD_LENGTH 100        // (mm) The length of filament for a complete unload.
                                             //   For Bowden, the full length of the tube and nozzle.

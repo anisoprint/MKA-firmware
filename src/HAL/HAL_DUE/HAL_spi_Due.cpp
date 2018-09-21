@@ -148,8 +148,8 @@
   // --------------------------------------------------------------------------
   // hardware SPI
   // --------------------------------------------------------------------------
-  // 4 MHz, 2 MHz, 1 MHz, 0.8 MHz, 0.4 MHz, 0.329 MHz, 0.329 MHz
-  int spiDueDividors[] = { 21, 42, 84, 105, 210, 255, 255 };
+  // 4 MHz, 2 MHz, 1 MHz, 0.8 MHz, 0.4 MHz, 0.329 MHz, 7 MHz
+  int spiDueDividors[] = { 21, 42, 84, 105, 210, 255, 12 };
   static bool spiInitMaded = false;
 
   void HAL::spiBegin() {
@@ -157,7 +157,7 @@
       SPI.begin();
       spiInit(SPI_CHAN, SPI_SD_INIT_RATE);
 #if ENABLED(SUPPORT_MAX31865)
-      spiInit(MAX_31865_CHANNEL, 2);
+      spiInit(MAX_31865_CHANNEL, SPI_MAX_31865_RATE);
 #endif
       spiInitMaded = true;
       SPI_Enable(SPI0);

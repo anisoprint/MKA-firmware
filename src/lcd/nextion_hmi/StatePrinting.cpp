@@ -120,11 +120,12 @@ void StatePrinting::DrawUpdate() {
    	    	     _tStatus1.setText(NextionHMI::buffer);
     	         break;
     	}
-        if (_previousPercentDone != card.percentDone() || _previousLayer!=print_job_counter.current_layer) {
+        if (_previousPercentDone != card.percentDone() || _previousLayer!=printer.currentLayer) {
         	  ZERO(NextionHMI::buffer);
-        	  if (print_job_counter.current_layer>0)
+
+        	  if (printer.currentLayer>0 && printer.maxLayer>0)
 			  {
-        		  sprintf_P(NextionHMI::buffer, PSTR("Layer: %d - %d%%"), print_job_counter.current_layer, card.percentDone());
+        		  sprintf_P(NextionHMI::buffer, PSTR("Layer: %d/%d - %d%%"), printer.currentLayer, printer.maxLayer, card.percentDone());
 			  }
         	  else
         	  {
@@ -134,6 +135,7 @@ void StatePrinting::DrawUpdate() {
 			  // Progress bar solid part
 			  _pbProgressBar.setValue(card.percentDone());
 			  _previousPercentDone = card.percentDone();
+			  _previousLayer = printer.currentLayer;
         }
     }
 
