@@ -47,7 +47,7 @@ void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin
   //Serial.print("$"); Serial.print(addr, HEX); Serial.print(": ");
   while (n--) {
     //buffer[0] = SPI.transfer(0xFF);
-	  buffer[0] = HAL::spiReceive();
+	  buffer[0] = HAL::spiReceive(MAX_31865_CHANNEL);
 	  //Serial.print(" 0x"); Serial.print(buffer[0], HEX);
     buffer++;
   }
@@ -164,9 +164,16 @@ bool readRTD (uint16_t &rtd, const pin_t cs_pin) {
   if ((rtd & 1) != 0)										// if fault bit set
   {
 	  uint8_t f = readFault(cs_pin);
-	  if (f & 0x04) SERIAL_EM("MAX31856 error - over/undervoltage");
-	  else if (f & 0x13) SERIAL_EM("MAX31856 error - open circuit");
-	  else SERIAL_EM("MAX31856 hardware error");
+	  Serial.print("R0:");
+	  Serial.println(r0, HEX);
+	  Serial.print("RTD:");
+	  Serial.println(rtd, HEX);
+	  Serial.print("F:");
+	  Serial.println(f, HEX);
+	  if (f & 0x04) SERIAL_LV(PSTR("MAX31856 error - over/undervoltage - "), cs_pin);
+	  else if (f & 0x13) SERIAL_LV(PSTR("MAX31856 error - open circuit - "), cs_pin);
+	  else if (f & 0x40) SERIAL_LV(PSTR("MAX31856 error - RDT low resistance - "), cs_pin);
+	  else SERIAL_LV(PSTR("MAX31856 hardware error - "), cs_pin);
 	  clearFault(cs_pin);
 	  rtd >>= 1;
 	  return true;

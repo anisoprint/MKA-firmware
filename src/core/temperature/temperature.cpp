@@ -231,7 +231,12 @@ void Temperature::spin() {
     act->updateCurrentTemperature();
 
     if (act->isON() && act->current_temperature > act->maxtemp) max_temp_error(act->ID);
-    if (act->isON() && act->current_temperature < act->mintemp) min_temp_error(act->ID);
+    if (act->isON() && act->current_temperature < act->mintemp)
+    	{
+    		Serial.println(act->current_temperature);
+    		min_temp_error(act->ID);
+
+    	}
 
     // Check for thermal runaway
     #if HAS_THERMALLY_PROTECTED_HEATER
