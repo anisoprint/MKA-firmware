@@ -153,7 +153,7 @@ void StateMenu::ActivateLoadUnload(void* ptr) {
 	_b2.setTextPGM(PSTR(MSG_UNLOAD));
 
 	_b1.attachPush(StateWizard::MaterialLoadS1);
-	_b2.attachPush(0);
+	_b2.attachPush(StateWizard::MaterialUnloadS1);
 
 	_bBack.attachPush(ActivateMaterials);
 }

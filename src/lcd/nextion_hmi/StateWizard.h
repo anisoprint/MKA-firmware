@@ -34,6 +34,8 @@ namespace StateWizard {
 	void TouchUpdate();
 	void DrawUpdate();
 
+	void DoPauseExtruderMove(AxisEnum axis, const float &length, const float fr);
+
 	//Build plate calibration
 	void BuildPlateS1(void *ptr=0);
 	void BuildPlateS3(void *ptr=0);
@@ -43,6 +45,17 @@ namespace StateWizard {
 	void BuildPlateS8(void *ptr=0);
 	void BuildPlateFinish(void *ptr=0);
 	void BuildPlateCancel(void *ptr=0);
+
+	//Material unload
+	void MaterialUnloadS1(void *ptr=0);
+	void MaterialUnloadS1a(void *ptr=0);
+	void MaterialUnloadS2(void *ptr=0);
+	void MaterialUnloadS2DrawUpdate(void *ptr=0);
+	void MaterialUnloadS2a(void *ptr=0);
+	void MaterialUnloadS3(void *ptr=0);
+	void MaterialUnloadS4(void *ptr=0);
+	void MaterialUnloadFinish(void *ptr=0);
+	void MaterialUnloadCancel(void *ptr=0);
 
 	//Material load
 	void MaterialLoadS1(void *ptr=0);

@@ -203,6 +203,30 @@
   #define MSG_HEADER_Z_OFFSET                    	_UxGT("Z axis calibration")
 #endif
 
+#ifndef MSG_HEADER_UNLOAD_MATERIAL
+  #define MSG_HEADER_UNLOAD_MATERIAL                _UxGT("Unload material")
+#endif
+
+#ifndef MSG_UNLOAD_MATERIAL_ST1
+  #define MSG_UNLOAD_MATERIAL_ST1                   _UxGT("To start the material unloading procedure,\\rplease press Next and set the printhead\\rtemperature, as the printhead should be\\rheated for material unloading.")
+#endif
+
+#ifndef MSG_UNLOAD_MATERIAL_ST2
+  #define MSG_UNLOAD_MATERIAL_ST2                   _UxGT("Please wait while printhead is heating for\\rmaterial unloading (%d/%d\370C)\\rUnloading will be performed automatically\\rafter that.")
+#endif
+
+#ifndef MSG_UNLOAD_MATERIAL_ST2A
+  #define MSG_UNLOAD_MATERIAL_ST2A                  _UxGT("The current printhead temperature is too low\\rto perform the material unloading procedure,\\rplease press Next and set new printhead\\rtemperature.\\r")
+#endif
+
+#ifndef MSG_UNLOAD_MATERIAL_ST3
+  #define MSG_UNLOAD_MATERIAL_ST3               	_UxGT("Unloading material, please wait...")
+#endif
+
+#ifndef MSG_UNLOAD_MATERIAL_ST4
+  #define MSG_UNLOAD_MATERIAL_ST4                   _UxGT("Material unloading complete. Please remove\\rthe excessive material from the nozzle with\\rtwizzers or pliers\\r")
+#endif
+
 #ifndef MSG_HEADER_LOAD_MATERIAL
   #define MSG_HEADER_LOAD_MATERIAL                  _UxGT("Load material")
 #endif
@@ -212,7 +236,7 @@
 #endif
 
 #ifndef MSG_LOAD_MATERIAL_ST2
-  #define MSG_LOAD_MATERIAL_ST2                    	_UxGT("Please wait while printhead is heating for\\rmaterial loading")
+  #define MSG_LOAD_MATERIAL_ST2                    	_UxGT("Please wait while printhead is heating for\\rmaterial loading (%d/%d\370C)")
 #endif
 
 #ifndef MSG_LOAD_MATERIAL_ST2A
@@ -223,12 +247,20 @@
   #define MSG_LOAD_MATERIAL_ST3                    	_UxGT("Push new material into the feeder on the\\rrear of your Composer and press Next.")
 #endif
 
+#ifndef MSG_LOAD_MATERIAL_ST3_TIMEOUT
+  #define MSG_LOAD_MATERIAL_ST3_TIMEOUT             _UxGT("Printer was waiting for too long and material\\rloading wizard was stopped. To restart the\\rloading process please press Repeat.")
+#endif
+
 #ifndef MSG_LOAD_MATERIAL_ST4
   #define MSG_LOAD_MATERIAL_ST4                    	_UxGT("Loading material...")
 #endif
 
 #ifndef MSG_LOAD_MATERIAL_ST5
   #define MSG_LOAD_MATERIAL_ST5                    	_UxGT("When material exits from the nozzle press\\rNext")
+#endif
+
+#ifndef MSG_LOAD_MATERIAL_ST5_TIMEOUT
+  #define MSG_LOAD_MATERIAL_ST5_TIMEOUT             _UxGT("Printer was waiting for too long and material\\rloading wizard was stopped. If the material\\rdidn't come out of the nozzle, please check\\rthat material passed successfully through the\\rfeeder and the nozzle isn't clogged.\\r")
 #endif
 
 #ifndef MSG_LOAD_MATERIAL_ST6

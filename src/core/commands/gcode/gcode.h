@@ -98,9 +98,6 @@
 
 // EEPROM Commands
 #include "eeprom/m500_m503.h"             // Eeprom read write and print
-#include "eeprom/m1001_m1002.h"             // Eeprom read write and print
-
-// Feature Commands
 #include "feature/g12.h"
 #include "feature/g27.h"
 #include "feature/g60.h"
@@ -229,9 +226,13 @@
 #include "units/m83.h"
 #include "units/m149.h"
 
+//Composer
+#include "eeprom/m1003_m1004.h"
+
 // Table for G and M code
 #include "table_gcode.h"
 #include "table_mcode.h"
 
 // Include m44 post define table for debugging
 #include "debug/m44_post_table.h"
+

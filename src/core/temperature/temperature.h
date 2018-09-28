@@ -123,13 +123,13 @@ class Temperature {
         #if HOTENDS <= 1
           UNUSED(e);
         #endif
-        return tooCold(heaters[extruder_driver_to_hotend(e)].current_temperature);
+        return tooCold(heaters[Tools::extruder_driver_to_extruder(e)].current_temperature);
       }
       FORCE_INLINE static bool targetTooColdToExtrude(const uint8_t e) {
         #if HOTENDS == 1
           UNUSED(e);
         #endif
-        return tooCold(heaters[extruder_driver_to_hotend(e)].target_temperature);
+        return tooCold(heaters[Tools::extruder_driver_to_extruder(e)].target_temperature);
       }
     #else
       FORCE_INLINE static bool tooColdToExtrude(const uint8_t h) { UNUSED(h); return false; }
@@ -141,7 +141,6 @@ class Temperature {
 
   private:
 
-    static uint8_t extruder_driver_to_hotend(uint8_t extruder_driver);
 
     #if HAS_FILAMENT_SENSOR
       static float analog2widthFil(); // Convert raw Filament Width to millimeters
