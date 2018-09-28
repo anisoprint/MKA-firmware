@@ -85,14 +85,6 @@ void StateWizard::TouchUpdate() {
 	nexLoop(_listenList);
 }
 
-void StateWizard::DoPauseExtruderMove(AxisEnum axis, const float &length, const float fr) {
-  mechanics.set_destination_to_current();
-  mechanics.destination[axis] += length;
-  planner.buffer_line_kinematic(mechanics.destination, fr, tools.active_extruder);
-  stepper.synchronize();
-  mechanics.set_current_to_destination();
-}
-
 
 void StateWizard::ZAxisS1(void* ptr) {
 	_wizardCancelled = false;
@@ -226,16 +218,16 @@ void StateWizard::MaterialUnloadS3(void* ptr) {
 	if (Tools::extruder_driver_is_plastic((AxisEnum)NextionHMI::wizardData)) //Unload plastic
 	{
 	    // Retract filament
-		DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -FILAMENT_UNLOAD_RETRACT_LENGTH, PAUSE_PARK_RETRACT_FEEDRATE);
+		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -FILAMENT_UNLOAD_RETRACT_LENGTH, PAUSE_PARK_RETRACT_FEEDRATE);
 	    // Wait for filament to cool
 	    printer.safe_delay(FILAMENT_UNLOAD_DELAY);
 	    // Quickly purge
-	    DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, FILAMENT_UNLOAD_RETRACT_LENGTH + FILAMENT_UNLOAD_PURGE_LENGTH, mechanics.max_feedrate_mm_s[(AxisEnum)NextionHMI::wizardData]);
+	    PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, FILAMENT_UNLOAD_RETRACT_LENGTH + FILAMENT_UNLOAD_PURGE_LENGTH, mechanics.max_feedrate_mm_s[(AxisEnum)NextionHMI::wizardData]);
 
 	}
 
     // Unload filament
-    DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -filament_change_unload_length[NextionHMI::wizardData-E_AXIS], PAUSE_PARK_UNLOAD_FEEDRATE);
+	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -filament_change_unload_length[NextionHMI::wizardData-E_AXIS], PAUSE_PARK_UNLOAD_FEEDRATE);
 
     MaterialUnloadS4();
 }

@@ -40,6 +40,39 @@ void StateMenu::TouchUpdate() {
 	nexLoop(_listenList);
 }
 
+/*********************************************************************************
+ *
+ * PrintControl
+ *
+ *********************************************************************************/
+
+void StateMenu::ActivatePrintControl(void* ptr) {
+	NextionHMI::ActivateState(PAGE_MENU);
+	_count.setValue(5);
+	_page.show();
+	NextionHMI::headerText.setTextPGM(PSTR(MSG_MAINTENANCE));
+	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
+
+	_b1.setTextPGM(PSTR(MSG_MATERIALS));
+	_b2.setTextPGM(PSTR(MSG_MOVE));
+	_b3.setTextPGM(PSTR(MSG_CALIBRATE));
+	_b4.setTextPGM(PSTR(MSG_SETTINGS));
+	_b5.setTextPGM(PSTR(MSG_ABOUT_PRINTER));
+
+	_b1.attachPush(ActivateMaterials);
+	_b2.attachPush(Maintenance_Move);
+	_b3.attachPush(ActivateCalibrate);
+	_b4.attachPush(0);
+	_b5.attachPush(0);
+
+	_bBack.attachPush(MaintenanceBack);
+}
+
+void StateMenu::PrintControlBack(void* ptr) {
+	StateStatus::Activate();
+}
+
+
 
 /*********************************************************************************
  *

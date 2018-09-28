@@ -364,13 +364,28 @@ bool Tools::extruder_driver_is_plastic(const AxisEnum driver_extruder) {
 	return (plastic_extruders[driver_extruder-E_AXIS] == 1);
 }
 
-uint8_t Tools::extruder_driver_to_extruder(uint8_t extruder_driver) {
+int8_t Tools::extruder_driver_to_extruder(uint8_t extruder_driver) {
 	const uint8_t hotends[] = DRIVER_EXTRUDERS_HOTENDS;
 	if (extruder_driver<DRIVER_EXTRUDERS)
 	{
 		return hotends[extruder_driver];
 	}
-	return 0;
+	return -1;
+}
+
+int8_t Tools::plastic_driver_of_extruder(uint8_t e) {
+	const uint8_t extruders[] = DRIVER_EXTRUDERS_HOTENDS;
+	const uint8_t plastic_extruders[] = PLASTIC_DRIVER_EXTRUDERS;
+	LOOP_EXTRUDERS(drv_ext)
+	{
+		if (extruders[drv_ext]==e && plastic_extruders[drv_ext] == 1)
+		{
+			return drv_ext;
+		}
+	}
+    SERIAL_SMV(ER, "T", (int)e);
+    SERIAL_EM(" " MSG_INVALID_EXTRUDER);
+	return -1;
 }
 
 

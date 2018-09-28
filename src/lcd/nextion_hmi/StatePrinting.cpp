@@ -27,11 +27,11 @@ namespace {
 	NexObject _tProgress  = NexObject(PAGE_PRINTING,  11,  "perc");
 	NexObject _pbProgressBar = NexObject(PAGE_PRINTING,  10,  "prb");
 	//Buttons
-	NexObject _bCancel = NexObject(PAGE_PRINTING,  14,  "cc");
-	NexObject _bPause = NexObject(PAGE_PRINTING,  6,  "p");
+	NexObject _bControl = NexObject(PAGE_PRINTING,  6,  "c");
+	NexObject _bPause = NexObject(PAGE_PRINTING,  14,  "p");
 
 
-	NexObject *_listenList[] = { &_bCancel, &_bPause, NULL };
+	NexObject *_listenList[] = { &_bControl, &_bPause, NULL };
 
 	int8_t _previousPercentDone = -1;
 	int32_t _previousLayer = -1;
@@ -75,7 +75,7 @@ void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
 }
 
 void StatePrinting::Init() {
-	_bCancel.attachPush(Cancel_Push);
+	_bControl.attachPush(Cancel_Push);
 	_bPause.attachPush(Pause_Push);
 }
 
@@ -156,6 +156,10 @@ void StatePrinting::CancelMessage_No(void* ptr) {
 
 void StatePrinting::DoneMessage_OK(void* ptr) {
 	StateStatus::Activate();
+}
+
+void StatePrinting::Control_Push(void* ptr) {
+	StateMenu::ActivatePrintControl();
 }
 
 void StatePrinting::DoneMessage_Again(void* ptr) {

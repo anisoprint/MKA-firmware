@@ -82,14 +82,16 @@
       card.delete_restart_file();
     #endif
 
-    #if ENABLED(PARK_HEAD_ON_PAUSE)
+    #if ENABLED(PARK_HEAD_ON_PAUSE) && ENABLED(ADVANCED_PAUSE_FEATURE)
       resume_print();
     #endif
 
+	#if ENABLED(PARK_HEAD_ON_PAUSE) && ENABLED(NEXTION_HMI)
+	  PrintPause::ResumePrint();
+	#endif
+
     card.startFileprint();
     print_job_counter.start();
-
-
 
     #if HAS_POWER_CONSUMPTION_SENSOR
       powerManager.startpower = powerManager.consumption_hour;

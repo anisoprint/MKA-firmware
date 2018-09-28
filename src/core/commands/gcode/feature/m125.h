@@ -72,6 +72,12 @@
       const bool job_running = print_job_counter.isRunning();
     #endif
 
+
+	#if ENABLED(NEXTION_HMI)
+	  PrintPause::PausePrint(retract, park_point);
+	#endif
+
+	#if ENABLED(ADVANCED_PAUSE_FEATURE)
     if (pause_print(retract, park_point)) {
       #if DISABLED(SDSUPPORT)
         // Wait for lcd click or M108
@@ -83,6 +89,7 @@
         if (job_running) print_job_counter.start();
       #endif
     }
+	#endif
   }
 
 #endif // ENABLED(PARK_HEAD_ON_PAUSE)

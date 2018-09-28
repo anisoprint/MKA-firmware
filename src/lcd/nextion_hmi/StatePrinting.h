@@ -17,8 +17,10 @@
 
 namespace StatePrinting {
 
-	void Cancel_Push(void *ptr);
+	void Control_Push(void *ptr);
 	void Pause_Push(void *ptr);
+
+	void Cancel_Push(void *ptr);
 
   	void OnEvent(HMIevent event, uint8_t eventArg);
 

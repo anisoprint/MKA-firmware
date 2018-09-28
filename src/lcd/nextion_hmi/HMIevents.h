@@ -20,7 +20,8 @@ enum HMIevent {					//Eventarg
   HEATING_STARTED_EXTRUDER, 	//Heater number
   HEATING_STARTED_BUILDPLATE,	//Heater number
   HEATING_FINISHED,				//
-  SD_PRINT_FINISHED				//-
+  SD_PRINT_FINISHED,			//-
+  PRINT_PAUSED					//-
 };
 
 #endif

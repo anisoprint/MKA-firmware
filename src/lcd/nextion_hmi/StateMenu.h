@@ -19,6 +19,10 @@ namespace StateMenu {
 
 	void TouchUpdate();
 
+	//Print control menu
+	void ActivatePrintControl(void *ptr=0);
+	void PrintControlBack(void *ptr);
+
 	//Maintenance menu
 	void ActivateMaintenance(void *ptr=0);
 	void Maintenance_Move(void *ptr);

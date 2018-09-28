@@ -34,8 +34,6 @@ namespace StateWizard {
 	void TouchUpdate();
 	void DrawUpdate();
 
-	void DoPauseExtruderMove(AxisEnum axis, const float &length, const float fr);
-
 	//Build plate calibration
 	void BuildPlateS1(void *ptr=0);
 	void BuildPlateS3(void *ptr=0);

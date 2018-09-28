@@ -50,7 +50,7 @@
     #error "DEPENDENCY ERROR: Missing setting PAUSE_PARK_PRINTER_OFF."
   #endif
 #else
-  #if ENABLED(PARK_HEAD_ON_PAUSE)
+  #if ENABLED(PARK_HEAD_ON_PAUSE) && DISABLED(NEXTION_HMI)
     #error "DEPENDENCY ERROR: PARK_HEAD_ON_PAUSE currently requires ADVANCED_PAUSE_FEATURE."
   #endif
 #endif

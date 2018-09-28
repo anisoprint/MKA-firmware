@@ -195,6 +195,14 @@
   #define MSG_Z_AXIS                    			_UxGT("Z axis")
 #endif
 
+#ifndef MSG_CANCEL_PRINT
+  #define MSG_CANCEL_PRINT                    		_UxGT("Cancel print")
+#endif
+
+#ifndef MSG_LIVE_TUNE
+  #define MSG_LIVE_TUNE                    			_UxGT("Live tune")
+#endif
+
 #ifndef RESTART_TO_CONTINUE
   #define RESTART_TO_CONTINUE                     	_UxGT("To reset printer please turn it off")
 #endif
