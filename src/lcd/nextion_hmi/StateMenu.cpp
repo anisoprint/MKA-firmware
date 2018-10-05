@@ -47,31 +47,51 @@ void StateMenu::TouchUpdate() {
  *********************************************************************************/
 
 void StateMenu::ActivatePrintControl(void* ptr) {
+
 	NextionHMI::ActivateState(PAGE_MENU);
-	_count.setValue(5);
-	_page.show();
-	NextionHMI::headerText.setTextPGM(PSTR(MSG_MAINTENANCE));
-	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 
-	_b1.setTextPGM(PSTR(MSG_MATERIALS));
-	_b2.setTextPGM(PSTR(MSG_MOVE));
-	_b3.setTextPGM(PSTR(MSG_CALIBRATE));
-	_b4.setTextPGM(PSTR(MSG_SETTINGS));
-	_b5.setTextPGM(PSTR(MSG_ABOUT_PRINTER));
+	if (PrintPause::Status == Paused) //Control menu while paused
+	{
+		_count.setValue(2);
+		_page.show();
+		NextionHMI::headerText.setTextPGM(PSTR(MSG_CONTROL));
+		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 
-	_b1.attachPush(ActivateMaterials);
-	_b2.attachPush(Maintenance_Move);
-	_b3.attachPush(ActivateCalibrate);
-	_b4.attachPush(0);
-	_b5.attachPush(0);
+		_b1.setTextPGM(PSTR(MSG_CANCEL_PRINT));
+		_b2.setTextPGM(PSTR(MSG_MATERIALS));
 
-	_bBack.attachPush(MaintenanceBack);
+		_b1.attachPush(Control_CancelPrint);
+		_b2.attachPush(ActivateMaterials);
+	}
+	else //Control menu while printing
+	{
+		_count.setValue(1);
+		_page.show();
+		NextionHMI::headerText.setTextPGM(PSTR(MSG_CONTROL));
+		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
+
+		_b1.setTextPGM(PSTR(MSG_CANCEL_PRINT));
+
+		_b1.attachPush(Control_CancelPrint);
+	}
+
+
+	_bBack.attachPush(PrintControlBack);
 }
 
 void StateMenu::PrintControlBack(void* ptr) {
-	StateStatus::Activate();
+	StatePrinting::Activate();
 }
 
+void StateMenu::Control_CancelPrint(void* ptr) {
+	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_CANCEL_PRINTING), PSTR(MSG_CONFIRM_CANCEL_PRINTING), 2, PSTR(MSG_NO), ActivatePrintControl, PSTR(MSG_YES), Control_CancelPrint_Yes);
+}
+
+void StateMenu::Control_CancelPrint_Yes(void* ptr) {
+	StatePrinting::Activate();
+	printer.setWaitForUser(false);
+	printer.setAbortSDprinting(true);
+}
 
 
 /*********************************************************************************
@@ -97,7 +117,7 @@ void StateMenu::ActivateMaintenance(void* ptr) {
 	_b2.attachPush(Maintenance_Move);
 	_b3.attachPush(ActivateCalibrate);
 	_b4.attachPush(0);
-	_b5.attachPush(0);
+	_b5.attachPush(Maintenance_About);
 
 	_bBack.attachPush(MaintenanceBack);
 }
@@ -108,6 +128,10 @@ void StateMenu::MaintenanceBack(void* ptr) {
 
 void StateMenu::Maintenance_Move(void* ptr) {
 	StateMovement::Activate(MODE_MOVE_AXIS);
+}
+
+void StateMenu::Maintenance_About(void* ptr) {
+	StateAbout::Activate();
 }
 
 
@@ -156,7 +180,10 @@ void StateMenu::ActivateMaterials(void* ptr) {
 	_b2.attachPush(Materials_CompPlastic);
 	_b3.attachPush(Materials_CompFiber);
 
-	_bBack.attachPush(ActivateMaintenance);
+	if (PrintPause::Status == Paused)
+		_bBack.attachPush(ActivatePrintControl);
+	else
+		_bBack.attachPush(ActivateMaintenance);
 }
 
 void StateMenu::Materials_Plastic(void* ptr) {

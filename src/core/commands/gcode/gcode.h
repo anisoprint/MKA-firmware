@@ -227,6 +227,7 @@
 #include "units/m149.h"
 
 //Composer
+#include "control/m1001_m1002.h" // Start/end fiber printing
 #include "eeprom/m1003_m1004.h"
 
 // Table for G and M code

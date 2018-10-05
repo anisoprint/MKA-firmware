@@ -90,6 +90,7 @@ void NextionHMI::Init() {
 	StatePrinting::Init();
 	StateMovement::Init();
 	StateWizardZ::Init();
+	StateAbout::Init();
 
 
 }
@@ -179,7 +180,7 @@ void NextionHMI::TouchUpdate() {
 	         break;
 	    case PAGE_SETTINGS :
 	         break;
-	    case PAGE_ABOUT :
+	    case PAGE_ABOUT : StateAbout::TouchUpdate();
 	         break;
 	    case PAGE_WIZARDZ : StateWizardZ::TouchUpdate();
 	         break;
@@ -221,7 +222,7 @@ void NextionHMI::ShowState(uint8_t state_id) {
 		         break;
 		    case PAGE_SETTINGS :
 		         break;
-		    case PAGE_ABOUT :
+		    case PAGE_ABOUT : StateAbout::Activate();
 		         break;
 		    case PAGE_WIZARDZ :
 		         break;

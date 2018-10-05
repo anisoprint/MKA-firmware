@@ -29,8 +29,6 @@ namespace StatePrinting {
 	void DrawUpdate();
 	void TouchUpdate();
 
-  	void CancelMessage_Yes(void* ptr);
-  	void CancelMessage_No(void* ptr);
   	void DoneMessage_OK(void* ptr);
   	void DoneMessage_Again(void* ptr);
 

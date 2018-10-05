@@ -14,6 +14,10 @@ namespace {
 	static uint8_t resume_tool;
 }
 
+bool PrintPause::CanPauseNow = true;
+bool PrintPause::SdPrintingPaused = false;
+PrintPauseStatus PrintPause::Status = NotPaused;
+
   // public function
 
 void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const float fr) {
@@ -29,39 +33,47 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
    *
    * - Abort if already paused
    * - Send host action for pause, if configured
-   * - Abort if TARGET temperature is too low
-   * - Display "wait for start of filament change" (if a length was specified)
    * - Initial retract, if current temperature is hot enough
    * - Park the nozzle at the given position
-   * - Call unload_filament (if a length was specified)
    *
    * Returns 'true' if pause was completed, 'false' for abort
    */
-  uint8_t did_pause_print = 0;
 
-  bool PrintPause::PausePrint(const float &retract, const point_t &park_point) {
+  bool PrintPause::PausePrint(const float &retract) {
 
-    if (did_pause_print) return false; // already paused
+    if (Status!=NotPaused) return false; // already paused
+
+    //Printing with fiber, can't pause now
+    if (CanPauseNow == false)
+    {
+    	Status = WaitingToPause;
+    	NextionHMI::RaiseEvent(PRINT_PAUSE_SCHEDULED);
+    	return false;
+    }
 
     SERIAL_STR(PAUSE);
     SERIAL_EOL();
 
-    NextionHMI::RaiseEvent(HMIevent::PRINT_PAUSED);
-
-    // Indicate that the printer is paused
-    ++did_pause_print;
-
     // Pause the print job and timer
     #if HAS_SDSUPPORT
-      if (card.sdprinting) {
+      if (IS_SD_PRINTING) {
         card.pauseSDPrint();
-        ++did_pause_print;
+        SdPrintingPaused = true;
       }
     #endif
     print_job_counter.pause();
+    Status = Pausing;
+    NextionHMI::RaiseEvent(PRINT_PAUSING);
 
     // Wait for synchronize steppers
-    stepper.synchronize();
+    while ((planner.has_blocks_queued() || stepper.cleaning_buffer_counter) && !printer.isAbortSDprinting()) {
+      printer.idle();
+      printer.keepalive(InProcess);
+    }
+    memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
+
+    // Handle cancel
+    if (printer.isAbortSDprinting()) return false;
 
     // Save current position
     COPY_ARRAY(resume_position, mechanics.current_position);
@@ -76,35 +88,57 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     }
 
     // Park the nozzle by moving up by z_lift and then moving to (x_pos, y_pos)
+    const point_t park_point = NOZZLE_PARK_POINT;
     Nozzle::park(2, park_point);
+
+    // Handle cancel
+    if (printer.isAbortSDprinting()) return false;
+
+    // Start the heater idle timers
+    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+    const millis_t bed_timeout    = (millis_t)(PAUSE_PARK_PRINTER_OFF) * 60000UL;
+
+    LOOP_HOTEND()
+      heaters[h].start_idle_timer(nozzle_timeout);
+
+    #if HAS_TEMP_BED && PAUSE_PARK_PRINTER_OFF > 0
+      heaters[BED_INDEX].start_idle_timer(bed_timeout);
+    #endif
+
+    // Indicate that the printer is paused
+    Status = Paused;
+    NextionHMI::RaiseEvent(PRINT_PAUSED);
+
+    printer.keepalive(PausedforUser);
+    printer.setWaitForUser(true);
+    while (printer.isWaitForUser() && Status==Paused) {
+    	printer.idle(true);
+    }
+
+    printer.keepalive(InHandler);
 
     return true;
 }
 
-
   /**
     * Resume or Start print procedure
-    *
-    * - Abort if not paused
-    * - Reset heater idle timers
-    * - Load filament if specified, but only if:
-    *   - a nozzle timed out, or
-    *   - the nozzle is already heated.
-    * - Display "wait for print to resume"
-    * - Re-prime the nozzle...
-    *   -  FWRETRACT: Recover/prime from the prior G10.
-    *   - !FWRETRACT: Retract by resume_position[E], if negative.
-    *                 Not sure how this logic comes into use.
-    * - Move the nozzle back to resume_position
-    * - Sync the planner E to resume_position[E]
-    * - Send host action for resume, if configured
-    * - Resume the current SD print job, if any
     */
 
-void PrintPause::ResumePrint(const float& load_length,
-		const float& purge_length, const int8_t max_beep_count) {
+void PrintPause::ResumePrint(const float& purge_length) {
 
-   if (!did_pause_print) return;
+   if (Status==WaitingToPause)
+   {
+	   Status = NotPaused;
+	   NextionHMI::RaiseEvent(PRINT_PAUSE_UNSCHEDULED);
+	   return;
+   };
+   if (Status!=Paused) return; // already paused
+
+   Status = Resuming;
+   NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMING);
+
+   //Switching to previously active extruder
+	if (resume_tool!=tools.active_extruder) tools.change(resume_tool, 0, false, false);
 
    // Re-enable the heaters if they timed out
    bool  nozzle_timed_out  = false,
@@ -120,24 +154,27 @@ void PrintPause::ResumePrint(const float& load_length,
      heaters[h].reset_idle_timer();
    }
 
-   if (nozzle_timed_out || thermalManager.hotEnoughToExtrude(TARGET_EXTRUDER)) {
-     // Load the new filament
-     load_filament(load_length, purge_length, max_beep_count, true, nozzle_timed_out);
+   if (bed_timed_out)
+   {
+	  NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_BUILDPLATE, BED_INDEX);
+	  Temperature::wait_heater(&heaters[BED_INDEX], false);
    }
 
-   #if HAS_LCD
-     // "Wait for print to resume"
-     lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_RESUME);
-   #endif
+   if (nozzle_timed_out)
+   {
+	   LOOP_HOTEND() {
+		   NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_EXTRUDER, h);
+		   Temperature::wait_heater(&heaters[h], false);
+	   }
+   }
 
-   // Intelligent resuming
-   #if ENABLED(FWRETRACT)
-     // If retracted before goto pause
-     if (fwretract.retracted[tools.active_extruder])
-       do_pause_e_move(-fwretract.retract_length, fwretract.retract_feedrate_mm_s);
-   #endif
-   // If resume_position is negative
-   if (resume_position[E_AXIS] < 0) do_pause_e_move(resume_position[E_AXIS], PAUSE_PARK_RETRACT_FEEDRATE);
+   // Purging plastic
+   if (purge_length && !thermalManager.tooColdToExtrude(tools.active_extruder))
+   {
+   	//get plastic driver of current extruder
+   	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
+   	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), purge_length, PAUSE_PARK_RETRACT_FEEDRATE);
+   }
 
    // Move XY to starting position, then Z
    mechanics.do_blocking_move_to_xy(resume_position[X_AXIS], resume_position[Y_AXIS], NOZZLE_PARK_XY_FEEDRATE);
@@ -147,30 +184,23 @@ void PrintPause::ResumePrint(const float& load_length,
 
    // Now all extrusion positions are resumed and ready to be confirmed
    // Set extruder to saved position
-   planner.set_e_position_mm(mechanics.destination[E_AXIS] = mechanics.current_position[E_AXIS] = resume_position[E_AXIS]);
+   LOOP_EUVW(e) planner.set_position_mm((AxisEnum)e, mechanics.destination[e] = mechanics.current_position[e] = resume_position[e]);
 
    printer.setFilamentOut(false);
-
-   #if HAS_LCD
-     // Show status screen
-     lcd_advanced_pause_show_message(ADVANCED_PAUSE_MESSAGE_STATUS);
-   #endif
-
-   #if ENABLED(NEXTION) && ENABLED(NEXTION_GFX)
-     mechanics.Nextion_gfx_clear();
-   #endif
 
    SERIAL_STR(RESUME);
    SERIAL_EOL();
 
-   --did_pause_print;
-
    #if HAS_SDSUPPORT
-     if (did_pause_print) {
+     if (SdPrintingPaused) {
        card.startFileprint();
-       --did_pause_print;
+       SdPrintingPaused=false;
      }
    #endif
+
+   Status = NotPaused;
+   printer.setWaitForUser(false);
+   NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMED);
 
  }
 

@@ -189,26 +189,27 @@
             #if ENABLED(EG6_EXTRUDER)
                 //M218 T1 X17.300 Y-1.950 Z2.050
 
-                #define T0_PREPARE_X 	127    - hotend_offset[X_AXIS][1]
+              //To t1
+                #define T0_PREPARE_X 	128    - hotend_offset[X_AXIS][1]
 				#define T0_PREPARE_Y 	20     //- hotend_offset[Y_AXIS][1]
-				#define T0_PREPARE2_X 	127    - hotend_offset[X_AXIS][1]
+				#define T0_PREPARE2_X 	128    - hotend_offset[X_AXIS][1]
 				#define T0_PREPARE2_Y  	0      //- hotend_offset[Y_AXIS][1]
-				#define T0_START_X 		132    - hotend_offset[X_AXIS][1]
+				#define T0_START_X 		133.5  - hotend_offset[X_AXIS][1]
 				#define T0_START_Y  	0      //- hotend_offset[Y_AXIS][1]
-				#define T0_SWITCH_X 	144.8  - hotend_offset[X_AXIS][1]
+				#define T0_SWITCH_X 	153    - hotend_offset[X_AXIS][1]
 				#define T0_SWITCH_Y  	0      //- hotend_offset[Y_AXIS][1]
-				#define T0_FINISH_X 	144.8  - hotend_offset[X_AXIS][1]
+				#define T0_FINISH_X 	153    - hotend_offset[X_AXIS][1]
 				#define T0_FINISH_Y  	20     //- hotend_offset[Y_AXIS][1]
 
-				#define T1_PREPARE_X 	170    - hotend_offset[X_AXIS][0]
+				#define T1_PREPARE_X 	167    - hotend_offset[X_AXIS][0]
 				#define T1_PREPARE_Y 	20     - hotend_offset[Y_AXIS][0]
-				#define T1_PREPARE2_X 	170    - hotend_offset[X_AXIS][0]
+				#define T1_PREPARE2_X 	167    - hotend_offset[X_AXIS][0]
 				#define T1_PREPARE2_Y  	0      - hotend_offset[Y_AXIS][0]
-				#define T1_START_X 		164    - hotend_offset[X_AXIS][0]
+				#define T1_START_X 		160    - hotend_offset[X_AXIS][0]
 				#define T1_START_Y  	0      - hotend_offset[Y_AXIS][0]
-				#define T1_SWITCH_X 	151    - hotend_offset[X_AXIS][0]
+				#define T1_SWITCH_X 	145    - hotend_offset[X_AXIS][0]
 				#define T1_SWITCH_Y  	0      - hotend_offset[Y_AXIS][0]
-				#define T1_FINISH_X 	151    - hotend_offset[X_AXIS][0]
+				#define T1_FINISH_X 	145    - hotend_offset[X_AXIS][0]
 				#define T1_FINISH_Y  	20     - hotend_offset[Y_AXIS][0]
 
               	//Apply extruder offset

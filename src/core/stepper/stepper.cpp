@@ -2307,7 +2307,9 @@ void Stepper::synchronize() {
     printer.idle();
     printer.keepalive(InProcess);
   }
+  memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
 }
+
 
 /**
  * Set the stepper positions directly in steps

@@ -199,8 +199,12 @@
         break;
 
       case 2: // Raise by Z-park height
+    	  //TODO Zmaxpos
         mechanics.do_blocking_move_to_z(min(mechanics.current_position[Z_AXIS] + park.z, Z_MAX_POS), fr_z);
         break;
+
+      case 3: //do only xy
+    	  break;
 
       default: // Raise to Z-park height if lower
         mechanics.do_blocking_move_to_z(max(park.z, mechanics.current_position[Z_AXIS]), fr_z);

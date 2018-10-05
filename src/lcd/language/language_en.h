@@ -39,6 +39,10 @@
   #define CHARSIZE 1
 #endif
 
+#ifndef MSG_PRINTER_FULL_NAME
+  #define MSG_PRINTER_FULL_NAME                   _UxGT("Anisoprint %s v%s")
+#endif
+
 #ifndef MSG_YES
   #define MSG_YES                           	  _UxGT("Yes")
 #endif
@@ -103,6 +107,10 @@
   #define MSG_PRINTING              				_UxGT("Printing...")
 #endif
 
+#ifndef MSG_PAUSED
+  #define MSG_PAUSED              					_UxGT("Paused")
+#endif
+
 #ifndef MSG_CONFIRM_CANCEL_PRINTING
   #define MSG_CONFIRM_CANCEL_PRINTING              	_UxGT("Do you really want to cancel printing?")
 #endif
@@ -139,12 +147,32 @@
   #define MSG_PAUSE                           		_UxGT("Pause")
 #endif
 
+#ifndef MSG_CANCEL_PAUSE
+  #define MSG_CANCEL_PAUSE                    		_UxGT("Cancel pause")
+#endif
+
+#ifndef MSG_CANCELLING
+  #define MSG_CANCELLING                    		_UxGT("Canceling...")
+#endif
+
 #ifndef MSG_RESUME
   #define MSG_RESUME                           		_UxGT("Resume")
 #endif
 
+#ifndef MSG_PAUSING
+  #define MSG_PAUSING                           	_UxGT("Pausing...")
+#endif
+
+#ifndef MSG_RESUMING
+  #define MSG_RESUMING                           	_UxGT("Resuming...")
+#endif
+
 #ifndef MSG_MAINTENANCE
   #define MSG_MAINTENANCE                           _UxGT("Maintenance")
+#endif
+
+#ifndef MSG_CONTROL
+  #define MSG_CONTROL                           	_UxGT("Control")
 #endif
 
 #ifndef MSG_CALIBRATE
@@ -319,6 +347,13 @@
   #define MSG_BP_CALIBR_ST8                    		_UxGT("Repeat this for the right corner.")
 #endif
 
+#ifndef MSG_PAUSE_DURING_FIBER
+  #define MSG_PAUSE_DURING_FIBER                    _UxGT("Print can't be paused during fiber\\rprinting. Pause will be made after the\\rcurrent fiber reinforced path.")
+#endif
+
+#ifndef MSG_WAITING_FOR_PAUSE
+  #define MSG_WAITING_FOR_PAUSE                    _UxGT("Waiting for pause...")
+#endif
 
 #ifndef MSG_COLD_HOTEND
   #define MSG_COLD_HOTEND                    		_UxGT("Hotend is cold")

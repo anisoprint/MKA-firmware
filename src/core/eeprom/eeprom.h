@@ -69,11 +69,13 @@ class EEPROM {
     static void Factory_Settings();
     static bool Store_Settings();
 
-    static bool Store_Const();
-    static bool Load_Const();
+
 
     #if HAS_EEPROM
       static bool Load_Settings();  // Return 'true' if data was loaded ok
+
+      static bool Store_Const();
+      static bool Load_Const();
 
       #if ENABLED(AUTO_BED_LEVELING_UBL) // Eventually make these available if any leveling system
                                          // That can store is enabled
@@ -89,6 +91,7 @@ class EEPROM {
       #endif
     #else
       FORCE_INLINE static bool Load_Settings() { Factory_Settings(); Print_Settings(); return true; }
+      FORCE_INLINE static bool Load_Const() { return true; }
     #endif
 
     #if DISABLED(DISABLE_M503)

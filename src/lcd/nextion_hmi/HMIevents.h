@@ -21,7 +21,14 @@ enum HMIevent {					//Eventarg
   HEATING_STARTED_BUILDPLATE,	//Heater number
   HEATING_FINISHED,				//
   SD_PRINT_FINISHED,			//-
-  PRINT_PAUSED					//-
+  PRINT_PAUSING,				//-
+  PRINT_PAUSED,					//-
+  PRINT_PAUSE_SCHEDULED,		//-
+  PRINT_PAUSE_UNSCHEDULED,		//-
+  PRINT_PAUSE_RESUMING,			//-
+  PRINT_PAUSE_RESUMED,			//-
+  PRINT_CANCELLING,				//-
+  PRINT_CANCELLED				//-
 };
 
 #endif

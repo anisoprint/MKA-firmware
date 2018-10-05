@@ -329,6 +329,7 @@ void Commands::get_serial() {
     }
 
     printer.progress = card.percentDone();
+
   }
 
 #endif // SDSUPPORT

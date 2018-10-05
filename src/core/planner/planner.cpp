@@ -1958,7 +1958,7 @@ void Planner::buffer_segment(const float dest[XYZE], const float &fr_mm_s, const
     #endif
   }
 
-  /* <-- add a slash to enable
+  /*= <-- add a slash to enable
     SERIAL_MV("  buffer_segment FR:", fr_mm_s);
     #if IS_KINEMATIC
       SERIAL_MV(" A:", a);

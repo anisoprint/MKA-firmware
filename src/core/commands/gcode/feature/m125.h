@@ -74,7 +74,7 @@
 
 
 	#if ENABLED(NEXTION_HMI)
-	  PrintPause::PausePrint(retract, park_point);
+	  PrintPause::PausePrint(retract);
 	#endif
 
 	#if ENABLED(ADVANCED_PAUSE_FEATURE)

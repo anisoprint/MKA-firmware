@@ -37,26 +37,41 @@ namespace {
 	int32_t _previousLayer = -1;
 }
 
-void StatePrinting::Cancel_Push(void* ptr) {
-	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_CANCEL_PRINTING), PSTR(MSG_CONFIRM_CANCEL_PRINTING), 2, PSTR(MSG_NO), CancelMessage_No, PSTR(MSG_YES), CancelMessage_Yes);
-}
 
 void StatePrinting::Pause_Push(void* ptr) {
     UNUSED(ptr);
 
     if (card.cardOK && card.isFileOpen()) {
-      if (IS_SD_PRINTING) {
+
+    	const float retract = PAUSE_PARK_RETRACT_LENGTH;
+
+    	switch (PrintPause::Status)
+    	{
+			case NotPaused:
+				PrintPause::PausePrint(retract);
+				break;
+			case WaitingToPause:
+				PrintPause::ResumePrint();
+				break;
+			case Paused:
+				PrintPause::ResumePrint(retract);
+				break;
+    	}
+
+
+      /*if (IS_SD_PRINTING) {
         card.pauseSDPrint();
         print_job_counter.pause();
         SERIAL_STR(PAUSE);
         SERIAL_EOL();
         _bPause.setTextPGM(PSTR(MSG_RESUME));
+
       }
       else {
         card.startFileprint();
         print_job_counter.start();
         _bPause.setTextPGM(PSTR(MSG_PAUSE));
-      }
+      }*/
     }
 }
 
@@ -69,13 +84,50 @@ void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
 	    case HMIevent::SD_PRINT_FINISHED :
 	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), PSTR(MSG_DONE), 2, PSTR(MSG_OK), DoneMessage_OK, PSTR(MSG_PRINT_AGAIN), DoneMessage_Again, NEX_ICON_DONE);
 	        break;
+	    case HMIevent::PRINT_PAUSING :
+			_bPause.setTextPGM(PSTR(MSG_PAUSING));
+			_tStatus1.setTextPGM(PSTR(MSG_PAUSING));
+			_tStatus2.setTextPGM(PSTR(""));
+	    	break;
+	    case HMIevent::PRINT_PAUSED :
+	    	_bPause.setTextPGM(PSTR(MSG_RESUME));
+	    	_tStatus1.setTextPGM(PSTR(MSG_PAUSED));
+	    	_tStatus2.setTextPGM(PSTR(""));
+	    	break;
+	    case HMIevent::PRINT_PAUSE_SCHEDULED :
+	    	_bPause.setTextPGM(PSTR(MSG_CANCEL_PAUSE));
+	    	_tStatus1.setTextPGM(PSTR(MSG_WAITING_FOR_PAUSE));
+	    	_tStatus2.setTextPGM(PSTR(MSG_PAUSE_DURING_FIBER));
+	    	break;
+	    case HMIevent::PRINT_PAUSE_UNSCHEDULED :
+			_bPause.setTextPGM(PSTR(MSG_PAUSE));
+			_tStatus1.setTextPGM(PSTR(MSG_PRINTING));
+			_tStatus2.setTextPGM(PSTR(""));
+			break;
+	    case HMIevent::PRINT_PAUSE_RESUMING :
+			_bPause.setTextPGM(PSTR(MSG_RESUMING));
+			_tStatus1.setTextPGM(PSTR(MSG_RESUMING));
+			_tStatus2.setTextPGM(PSTR(""));
+	    	break;
+	    case HMIevent::PRINT_PAUSE_RESUMED :
+			_bPause.setTextPGM(PSTR(MSG_PAUSE));
+			_tStatus1.setTextPGM(PSTR(MSG_PRINTING));
+			_tStatus2.setTextPGM(PSTR(""));
+	    	break;
+	    case HMIevent::PRINT_CANCELLING :
+			_bPause.setTextPGM(PSTR(MSG_CANCELLING));
+			_tStatus1.setTextPGM(PSTR(MSG_CANCELLING));
+	    	break;
+	    case HMIevent::PRINT_CANCELLED:
+	    	StateStatus::Activate();
+	    	break;
 	    default:
 	    	_tStatus1.setTextPGM(PSTR(MSG_PRINTING));
 	}
 }
 
 void StatePrinting::Init() {
-	_bControl.attachPush(Cancel_Push);
+	_bControl.attachPush(Control_Push);
 	_bPause.attachPush(Pause_Push);
 }
 
@@ -91,8 +143,9 @@ void StatePrinting::Activate() {
 	{
 		_pFileIcon.setPic(NEX_ICON_FILE_GCODE_AURA);
 	}
-	_tStatus1.setTextPGM(PSTR(MSG_PRINTING));
+	OnEvent(NextionHMI::lastEvent, NextionHMI::lastEventArg);
 	DrawUpdate();
+
 }
 
 void StatePrinting::DrawUpdate() {
@@ -145,20 +198,12 @@ void StatePrinting::TouchUpdate() {
 	nexLoop(_listenList);
 }
 
-void StatePrinting::CancelMessage_Yes(void* ptr) {
-	printer.setAbortSDprinting(true);
-	StateStatus::Activate();
-}
-
-void StatePrinting::CancelMessage_No(void* ptr) {
-	StatePrinting::Activate();
-}
-
 void StatePrinting::DoneMessage_OK(void* ptr) {
 	StateStatus::Activate();
 }
 
 void StatePrinting::Control_Push(void* ptr) {
+	if (PrintPause::Status!=Resuming)
 	StateMenu::ActivatePrintControl();
 }
 

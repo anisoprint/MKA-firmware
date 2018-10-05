@@ -136,7 +136,7 @@
 // When first starting the main fan, run it at full speed for the
 // given number of milliseconds.  This gets the fan spinning reliably
 // before setting a PWM value.
-//#define FAN_KICKSTART_TIME 200
+#define FAN_KICKSTART_TIME 400
 
 // This defines the minimal speed for the main fan
 // set minimal speed for reliable running (1-255)
@@ -553,7 +553,7 @@
 
 // Servo deactivation
 // With this option servos are powered only during movement, then turned off to prevent jitter.
-//#define SET_SERVO_NEUTRAL_AT_STARTUP
+#define SET_SERVO_NEUTRAL_AT_STARTUP
 #define NEUTRAL_SERVO_ANGLE 90
 
 // Delay (in milliseconds) before turning the servo off. This depends on the servo speed.
@@ -2092,13 +2092,13 @@
  **************************************************************************/
 //#define ADVANCED_PAUSE_FEATURE
 
-#define PAUSE_PARK_RETRACT_FEEDRATE 30      // (mm/s) Initial retract feedrate.
-#define PAUSE_PARK_RETRACT_LENGTH 5         // (mm) Initial retract.
+#define PAUSE_PARK_RETRACT_FEEDRATE 30      //+ (mm/s) Initial retract feedrate.
+#define PAUSE_PARK_RETRACT_LENGTH 5         //+ (mm) Initial retract.
                                             // This short retract is done immediately, before parking the nozzle.
 #define PAUSE_PARK_UNLOAD_FEEDRATE 40       // (mm/s) Unload filament feedrate. This can be pretty fast.
 
 #if ENABLED(NEXTION_HMI)	      //For nextion HMI material loading/unloading wizard
-	#define PAUSE_PARK_UNLOAD_LENGTH {521+35, 535+55, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+	#define PAUSE_PARK_UNLOAD_LENGTH {65, 535+55, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
 	#define PAUSE_PARK_LOAD_LENGTH {650, 650, 650}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
 #else
 #define PAUSE_PARK_UNLOAD_LENGTH 100        // (mm) The length of filament for a complete unload.
@@ -2123,7 +2123,7 @@
 #define FILAMENT_UNLOAD_DELAY 5000          // (ms) Delay for the filament to cool after retract.
 #define FILAMENT_UNLOAD_PURGE_LENGTH 8      // (mm) An unretract is done, then this length is purged.
 
-#define PAUSE_PARK_NOZZLE_TIMEOUT 60        // (seconds) Time limit before the nozzle is turned off for safety.
+#define PAUSE_PARK_NOZZLE_TIMEOUT 120       // (seconds) Time limit before the nozzle is turned off for safety.
 #define PAUSE_PARK_PRINTER_OFF 5            // (minute) Time limit before turn off printer if user doesn't change filament.
 #define PAUSE_PARK_NUMBER_OF_ALERT_BEEPS 10 // Number of alert beeps before printer goes quiet
 #define PAUSE_PARK_NO_STEPPER_TIMEOUT       // Enable for XYZ steppers to stay powered on during filament change.

@@ -10,12 +10,19 @@
 
 #if ENABLED(NEXTION_HMI)
 
+
+enum PrintPauseStatus {NotPaused, WaitingToPause, Pausing, Paused, Resuming };
+
 namespace PrintPause {
+
+  extern bool CanPauseNow;
+  extern bool SdPrintingPaused;
+  extern PrintPauseStatus Status;
 
   void DoPauseExtruderMove(AxisEnum axis, const float &length, const float fr);
 
-  bool PausePrint(const float &retract, const point_t &park_point);
-  void ResumePrint(const float &load_length=0, const float &purge_length=PAUSE_PARK_EXTRUDE_LENGTH, const int8_t max_beep_count=0);
+  bool PausePrint(const float &retract);
+  void ResumePrint(const float& purge_length=0);
 
 }
 

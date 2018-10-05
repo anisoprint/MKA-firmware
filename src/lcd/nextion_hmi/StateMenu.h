@@ -22,10 +22,14 @@ namespace StateMenu {
 	//Print control menu
 	void ActivatePrintControl(void *ptr=0);
 	void PrintControlBack(void *ptr);
+	void Control_CancelPrint(void *ptr);
+	void Control_CancelPrint_Yes(void *ptr);
+
 
 	//Maintenance menu
 	void ActivateMaintenance(void *ptr=0);
 	void Maintenance_Move(void *ptr);
+	void Maintenance_About(void* ptr);
 	void MaintenanceBack(void *ptr);
 
 	//Calibrate menu

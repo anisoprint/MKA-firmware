@@ -182,8 +182,8 @@ void Printer::setup() {
 
   eeprom.Load_Const();
   SERIAL_LM(ECHO, CUSTOM_MACHINE_NAME);
-  SERIAL_LMV(ECHO, PSTR("VER:"), eeprom.printerVersion);
-  SERIAL_LMV(ECHO, PSTR("SN:"), eeprom.printerSN);
+  SERIAL_LMV(ECHO, "VER:", eeprom.printerVersion);
+  SERIAL_LMV(ECHO, "SN:", eeprom.printerSN);
   SERIAL_LM(ECHO, BUILD_VERSION);
   #if ENABLED(STRING_DISTRIBUTION_DATE) && ENABLED(STRING_CONFIG_H_AUTHOR)
     SERIAL_LM(ECHO, MSG_CONFIGURATION_VER STRING_DISTRIBUTION_DATE MSG_AUTHOR STRING_CONFIG_H_AUTHOR);
@@ -349,6 +349,11 @@ void Printer::loop() {
     if (isAbortSDprinting()) {
       setAbortSDprinting(false);
 
+	  #if ENABLED(NEXTION_HMI)
+    	  PrintPause::Status = Resuming; //to prevent pausing
+      	  NextionHMI::RaiseEvent(PRINT_CANCELLING);
+	  #endif
+
       #if HAS_SD_RESTART
         // Save Job for restart
         if (card.cardOK && IS_SD_PRINTING) restart.save_data(true);
@@ -378,6 +383,12 @@ void Printer::loop() {
 
       // Stop printer job timer
       print_job_counter.stop();
+	  #if ENABLED(NEXTION_HMI)
+		NextionHMI::RaiseEvent(PRINT_CANCELLED);
+		PrintPause::Status = NotPaused;
+		PrintPause::SdPrintingPaused = false;
+		NextionHMI::RaiseEvent(NONE);
+	  #endif
     }
 
   #endif // HAS_SDSUPPORT
@@ -404,6 +415,11 @@ void Printer::check_periodical_actions() {
     HAL::execute_100ms = false;
     planner.check_axes_activity();
     thermalManager.spin();
+
+    //Serial.print("Commands:");
+    //Serial.print(commands.buffer_lenght);
+    //Serial.print(" - Moves:");
+    //Serial.println(planner.movesplanned());
 
     // Event 1.0 Second
     if (--cycle_1000ms == 0) {
@@ -639,11 +655,15 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
 
   #endif // ENABLED(FLOWMETER_SENSOR)
 
-  // Prevent steppers timing-out in the middle of M600
+  // Prevent steppers timing-out in the middle of M6003
   #if ENABLED(ADVANCED_PAUSE_FEATURE) && ENABLED(PAUSE_PARK_NO_STEPPER_TIMEOUT)
     #define MOVE_AWAY_TEST !did_pause_print
   #else
-    #define MOVE_AWAY_TEST true
+	#if ENABLED(NEXTION_HMI)
+      #define MOVE_AWAY_TEST (PrintPause::Status==NotPaused)
+	#else
+      #define MOVE_AWAY_TEST true
+	#endif
   #endif
 
   if (stepper.move_watch.stopwatch) {
