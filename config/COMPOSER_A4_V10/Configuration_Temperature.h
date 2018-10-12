@@ -83,8 +83,8 @@
  * 999 : Dummy Table that ALWAYS reads 100 degC or the temperature defined below.                    *
  *                                                                                                   *
  *****************************************************************************************************/
-#define TEMP_SENSOR_0 -4
-#define TEMP_SENSOR_1 -4
+#define TEMP_SENSOR_0 999
+#define TEMP_SENSOR_1 999
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_BED 1
@@ -111,7 +111,7 @@
 
 // Use it for Testing or Development purposes. NEVER for production machine.
 #define DUMMY_THERMISTOR_998_VALUE 25
-#define DUMMY_THERMISTOR_999_VALUE 25
+#define DUMMY_THERMISTOR_999_VALUE 100
 /*****************************************************************************************/
 
 

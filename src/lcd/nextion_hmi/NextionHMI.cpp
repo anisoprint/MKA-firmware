@@ -35,7 +35,7 @@ NexObject NextionHMI::headerIcon = NexObject(0,  0,  "iH");
 NexObject NextionHMI::sdText = NexObject(0,  0,  "tSD");
 NexObject NextionHMI::sdIcon = NexObject(0,  0,  "iSD");
 
-char NextionHMI::buffer[70] = {0};
+char NextionHMI::buffer[256] = {0};
 
 void NextionHMI::Init() {
 

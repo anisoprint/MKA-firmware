@@ -93,7 +93,7 @@
       workspace_plane = PLANE_XY;
     #endif
 
-	#if DISABLED(EG6_EXTRUDER)
+	#if DISABLED(EG6_EXTRUDER) && DISABLED(EG5_EXTRUDER)
       // Always home with tool 0 active
 		#if HOTENDS > 1
 		  const uint8_t old_tool_index = tools.active_extruder;
@@ -217,7 +217,7 @@
     stepper.synchronize();
 
 
-	#if DISABLED(EG6_EXTRUDER)
+	#if DISABLED(EG6_EXTRUDER) && DISABLED(EG5_EXTRUDER)
 		#if HOTENDS > 1
 		  tools.change(old_tool_index, 0, true);
 		#endif

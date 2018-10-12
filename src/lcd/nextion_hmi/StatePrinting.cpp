@@ -76,6 +76,7 @@ void StatePrinting::Pause_Push(void* ptr) {
 }
 
 void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
+
 	switch(event) {
 	    case HMIevent::HEATING_STARTED_BUILDPLATE :
 	    case HMIevent::HEATING_STARTED_EXTRUDER :
@@ -83,7 +84,8 @@ void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
 	    	break;
 	    case HMIevent::SD_PRINT_FINISHED :
 	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), PSTR(MSG_DONE), 2, PSTR(MSG_OK), DoneMessage_OK, PSTR(MSG_PRINT_AGAIN), DoneMessage_Again, NEX_ICON_DONE);
-	        break;
+	        NextionHMI::RaiseEvent(NONE);
+	    	break;
 	    case HMIevent::PRINT_PAUSING :
 			_bPause.setTextPGM(PSTR(MSG_PAUSING));
 			_tStatus1.setTextPGM(PSTR(MSG_PAUSING));
@@ -149,30 +151,30 @@ void StatePrinting::Activate() {
 }
 
 void StatePrinting::DrawUpdate() {
-    if (IS_SD_PRINTING) {
     	switch(NextionHMI::lastEvent) {
     	    case HMIevent::HEATING_STARTED_BUILDPLATE :
     	    	 ZERO(NextionHMI::buffer);
-    	    	 sprintf_P(NextionHMI::buffer, PSTR("%s (%d/%d\370C)"), MSG_BUILDPLATE_HEATING, (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
+    	    	 sprintf_P(NextionHMI::buffer, PSTR(MSG_BUILDPLATE_HEATING), (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
     		     _tStatus1.setText(NextionHMI::buffer);
     	    	 break;
     	    case HMIevent::HEATING_STARTED_EXTRUDER :
     			 if (NextionHMI::lastEventArg == HOT0_INDEX)
     			 {
     				ZERO(NextionHMI::buffer);
-    				sprintf_P(NextionHMI::buffer, PSTR("%s (%d/%d\370C)"), MSG_PLASTIC_EXTRUDER_HEATING, (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
+    				sprintf_P(NextionHMI::buffer, PSTR(MSG_PLASTIC_EXTRUDER_HEATING), (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
     			 }
 				 else
 				 {
 					if (NextionHMI::lastEventArg == HOT1_INDEX)
 					{
 						ZERO(NextionHMI::buffer);
-						sprintf_P(NextionHMI::buffer, PSTR("%s (%d/%d\370C)"), MSG_COMPOSITE_EXTRUDER_HEATING, (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
+						sprintf_P(NextionHMI::buffer, PSTR(MSG_COMPOSITE_EXTRUDER_HEATING), (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
 					}
 				 }
    	    	     _tStatus1.setText(NextionHMI::buffer);
     	         break;
     	}
+        //if (IS_SD_PRINTING) {
         if (_previousPercentDone != card.percentDone() || _previousLayer!=printer.currentLayer) {
         	  ZERO(NextionHMI::buffer);
 
@@ -190,7 +192,7 @@ void StatePrinting::DrawUpdate() {
 			  _previousPercentDone = card.percentDone();
 			  _previousLayer = printer.currentLayer;
         }
-    }
+    //}
 
 }
 

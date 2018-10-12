@@ -29,7 +29,7 @@ namespace NextionHMI {
 	extern HMIevent lastEvent;
 	extern uint8_t  lastEventArg;
 
-	extern char buffer[70];
+	extern char buffer[256];
 
 	void Init();
 	void DrawUpdate();

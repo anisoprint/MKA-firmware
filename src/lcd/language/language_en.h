@@ -92,15 +92,15 @@
 #endif
 
 #ifndef MSG_BUILDPLATE_HEATING
-  #define MSG_BUILDPLATE_HEATING                    _UxGT("Build plate heating")
+  #define MSG_BUILDPLATE_HEATING                    _UxGT("Build plate heating (%d/%d\370C)")
 #endif
 
 #ifndef MSG_COMPOSITE_EXTRUDER_HEATING
-  #define MSG_COMPOSITE_EXTRUDER_HEATING            _UxGT("Composite extruder heating")
+  #define MSG_COMPOSITE_EXTRUDER_HEATING            _UxGT("Composite extruder heating (%d/%d\370C)")
 #endif
 
 #ifndef MSG_PLASTIC_EXTRUDER_HEATING
-  #define MSG_PLASTIC_EXTRUDER_HEATING              _UxGT("Plastic extruder heating")
+  #define MSG_PLASTIC_EXTRUDER_HEATING              _UxGT("Plastic extruder heating (%d/%d\370C)")
 #endif
 
 #ifndef MSG_PRINTING

@@ -23,6 +23,8 @@ namespace PrintPause {
 
   bool PausePrint(const float &retract);
   void ResumePrint(const float& purge_length=0);
+  void RestoreTemperatures();
+
 
 }
 

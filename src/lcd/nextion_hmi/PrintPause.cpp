@@ -11,6 +11,7 @@
   // private:
 namespace {
 	static float resume_position[XYZE];
+	static int16_t resume_temperatures[HOTENDS];
 	static uint8_t resume_tool;
 }
 
@@ -79,6 +80,13 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     COPY_ARRAY(resume_position, mechanics.current_position);
     resume_tool = tools.active_extruder;
 
+    //Save current temperatures
+    LOOP_HOTEND()
+	{
+    	resume_temperatures[h] = heaters[h].target_temperature;
+	}
+
+
     // Initial retract before move to park position
     if (retract && !thermalManager.tooColdToExtrude(tools.active_extruder))
     {
@@ -144,6 +152,8 @@ void PrintPause::ResumePrint(const float& purge_length) {
    bool  nozzle_timed_out  = false,
          bed_timed_out     = false;
 
+   RestoreTemperatures();
+
    #if HAS_TEMP_BED && PAUSE_PARK_PRINTER_OFF > 0
      bed_timed_out |= heaters[BED_INDEX].isIdle();
      heaters[BED_INDEX].reset_idle_timer();
@@ -158,6 +168,7 @@ void PrintPause::ResumePrint(const float& purge_length) {
    {
 	  NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_BUILDPLATE, BED_INDEX);
 	  Temperature::wait_heater(&heaters[BED_INDEX], false);
+	  NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
    }
 
    if (nozzle_timed_out)
@@ -165,8 +176,11 @@ void PrintPause::ResumePrint(const float& purge_length) {
 	   LOOP_HOTEND() {
 		   NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_EXTRUDER, h);
 		   Temperature::wait_heater(&heaters[h], false);
+		   NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
 	   }
    }
+
+   printer.setWaitForHeatUp(false);
 
    // Purging plastic
    if (purge_length && !thermalManager.tooColdToExtrude(tools.active_extruder))
@@ -182,9 +196,10 @@ void PrintPause::ResumePrint(const float& purge_length) {
    // Set Z_AXIS to saved position
    mechanics.do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
 
-   // Now all extrusion positions are resumed and ready to be confirmed
-   // Set extruder to saved position
-   LOOP_EUVW(e) planner.set_position_mm((AxisEnum)e, mechanics.destination[e] = mechanics.current_position[e] = resume_position[e]);
+   // Now all positions are resumed and ready to be confirmed
+   // Set all to saved position
+   COPY_ARRAY(mechanics.current_position, resume_position);
+   COPY_ARRAY(mechanics.destination, resume_position);
 
    printer.setFilamentOut(false);
 
@@ -202,6 +217,31 @@ void PrintPause::ResumePrint(const float& purge_length) {
    printer.setWaitForUser(false);
    NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMED);
 
- }
+}
+
+void PrintPause::RestoreTemperatures() {
+	if (Status!=Paused && Status!=Resuming) return;
+
+    //Restore current temperatures
+    LOOP_HOTEND()
+	{
+/*		Serial.print("N ");
+		Serial.print(h);
+		Serial.print(" CUR:");
+		Serial.println(heaters[h].target_temperature);
+		Serial.print(" RESUME:");
+		Serial.println(resume_temperatures[h]);*/
+
+    	if (resume_temperatures[h] != heaters[h].target_temperature)
+    		{
+/*    			Serial.print("Restore ");
+    			Serial.print(h);
+    			Serial.print(" to ");
+    			Serial.println(resume_temperatures[h]);*/
+    			heaters[h].setTarget(resume_temperatures[h]);
+
+    		}
+	}
+}
 
 #endif

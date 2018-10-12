@@ -89,6 +89,14 @@ void StateMenu::Control_CancelPrint(void* ptr) {
 
 void StateMenu::Control_CancelPrint_Yes(void* ptr) {
 	StatePrinting::Activate();
+
+	#if HAS_TEMP_BED && PAUSE_PARK_PRINTER_OFF > 0
+	  heaters[BED_INDEX].reset_idle_timer();
+	#endif
+
+	LOOP_HOTEND() {
+	  heaters[h].reset_idle_timer();
+	}
 	printer.setWaitForUser(false);
 	printer.setAbortSDprinting(true);
 }

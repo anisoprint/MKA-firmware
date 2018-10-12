@@ -180,6 +180,13 @@
 
 //================================= FEATURE ==================================
 
+
+//###SERVO
+#define SERVO0_PIN            ORIG_SERVO0_PIN
+#define SERVO1_PIN            ORIG_SERVO1_PIN
+#define SERVO2_PIN            ORIG_SERVO2_PIN
+#define SERVO3_PIN            ORIG_SERVO3_PIN
+
 #if ENABLED(MKR4)
   #define E0E1_CHOICE_PIN NoPin
   #define E0E2_CHOICE_PIN NoPin

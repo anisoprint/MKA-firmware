@@ -2098,7 +2098,7 @@
 #define PAUSE_PARK_UNLOAD_FEEDRATE 40       // (mm/s) Unload filament feedrate. This can be pretty fast.
 
 #if ENABLED(NEXTION_HMI)	      //For nextion HMI material loading/unloading wizard
-	#define PAUSE_PARK_UNLOAD_LENGTH {65, 535+55, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+	#define PAUSE_PARK_UNLOAD_LENGTH {650, 535+55, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
 	#define PAUSE_PARK_LOAD_LENGTH {650, 650, 650}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
 #else
 #define PAUSE_PARK_UNLOAD_LENGTH 100        // (mm) The length of filament for a complete unload.
@@ -2124,7 +2124,7 @@
 #define FILAMENT_UNLOAD_PURGE_LENGTH 8      // (mm) An unretract is done, then this length is purged.
 
 #define PAUSE_PARK_NOZZLE_TIMEOUT 120       // (seconds) Time limit before the nozzle is turned off for safety.
-#define PAUSE_PARK_PRINTER_OFF 5            // (minute) Time limit before turn off printer if user doesn't change filament.
+#define PAUSE_PARK_PRINTER_OFF 0           // (minute) Time limit before turn off printer if user doesn't change filament.
 #define PAUSE_PARK_NUMBER_OF_ALERT_BEEPS 10 // Number of alert beeps before printer goes quiet
 #define PAUSE_PARK_NO_STEPPER_TIMEOUT       // Enable for XYZ steppers to stay powered on during filament change.
 

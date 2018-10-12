@@ -49,6 +49,10 @@
 	#endif
 
     thermalManager.wait_heater(&heaters[BED_INDEX], no_wait_for_cooling);
+
+	#if ENABLED(NEXTION_HMI)
+		if (printer.isWaitForHeatUp()) NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
+	#endif
   }
 
 #endif // HAS_TEMP_BED

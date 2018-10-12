@@ -327,6 +327,7 @@ void Printer::setup() {
   #if HAS_SD_RESTART
     restart.do_print_job();
   #endif
+
 }
 
 /**
@@ -416,10 +417,12 @@ void Printer::check_periodical_actions() {
     planner.check_axes_activity();
     thermalManager.spin();
 
-    //Serial.print("Commands:");
-    //Serial.print(commands.buffer_lenght);
-    //Serial.print(" - Moves:");
-    //Serial.println(planner.movesplanned());
+    /*Serial.print("Commands:");
+    Serial.print(commands.buffer_lenght);
+    Serial.print(" - Moves:");
+    Serial.print(planner.movesplanned());
+    Serial.print(" - Pause:");
+    Serial.println(PrintPause::Status);*/
 
     // Event 1.0 Second
     if (--cycle_1000ms == 0) {

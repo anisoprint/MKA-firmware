@@ -73,6 +73,10 @@
     #endif
 
     thermalManager.wait_heater(&heaters[TRG_EXTRUDER_IDX], no_wait_for_cooling);
+
+	#if ENABLED(NEXTION_HMI)
+    	if (printer.isWaitForHeatUp()) NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
+	#endif
   }
 
 #endif // HAS_TEMP_HOTEND

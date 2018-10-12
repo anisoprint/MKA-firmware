@@ -137,10 +137,10 @@
 #define ORIG_FAN3_PIN              NoPin
 
 //###SERVO
-#define SERVO0_PIN                 11
-#define SERVO1_PIN                 12
-#define SERVO2_PIN                 NoPin
-#define SERVO3_PIN                 NoPin
+#define ORIG_SERVO0_PIN            11
+#define ORIG_SERVO1_PIN            12
+#define ORIG_SERVO2_PIN            NoPin
+#define ORIG_SERVO3_PIN            NoPin
 
 //###MISC
 #define ORIG_PS_ON_PIN             32
