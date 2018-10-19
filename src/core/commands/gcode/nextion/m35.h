@@ -39,5 +39,27 @@
       UploadNewFirmware();
     }
   #endif
+#elif ENABLED(NEXTION_HMI)
+
+
+  #if HAS_SDSUPPORT
+
+    #define CODE_M35
+
+    /**
+     * M35: Upload Firmware to Nextion from SD or serial
+     */
+    inline void gcode_M35(void) {
+
+      if (parser.seen('S')) {
+    	  uint32_t tftSize = parser.value_ulong();
+    	  NextionHMI::UploadFirmwareFromSerial(tftSize);
+      }
+      else
+      {
+    	  NextionHMI::UploadFirmwareFromSD();
+      }
+    }
+  #endif
 
 #endif // ENABLED(NEXTION)

@@ -79,6 +79,11 @@
   #define MSG_PLASTIC                             _UxGT("Plastic")
 #endif
 
+#ifndef MSG_PLEASE_WAIT
+  #define MSG_PLEASE_WAIT                         _UxGT("Please wait...")
+#endif
+
+
 #ifndef MSG_COMPOSITE_EXTRUDER_TEMP
   #define MSG_COMPOSITE_EXTRUDER_TEMP             _UxGT("Composite extruder temperature")
 #endif

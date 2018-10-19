@@ -493,6 +493,29 @@
       SERIAL_EM("upload ok");
     }
 
+    void NexUpload::uploadFromSerial(uint32_t tftSize) {
+      _unuploadByte = tftSize;
+      if (_getBaudrate() == 0) {
+        SERIAL_LM(ER, "baudrate error");
+        return;
+      }
+      if (!_setUploadBaudrate(_upload_baudrate)) {
+        SERIAL_LM(ER, "modify baudrate error");
+        return;
+      }
+      else
+      {
+    	  MKSERIAL.flush();
+    	  SERIAL_L("ok");
+      }
+
+      if (!_uploadTftFromSerial()) {
+        SERIAL_LM(ER, "upload file error");
+        return;
+      }
+      SERIAL_EM("upload ok");
+    }
+
     uint16_t NexUpload::_getBaudrate(void) {
       const uint32_t baudrate_array[7] = { 115200, 57600, 38400, 19200, 9600, 4800, 2400 };
       for (uint8_t i = 0; i < 7; i++) {
@@ -605,6 +628,54 @@
         else
           return false;
 
+        --send_timer;
+      }
+
+      return true;
+    }
+
+    bool NexUpload::_uploadTftFromSerial(void) {
+      uint8_t c;
+      uint16_t send_timer = 0;
+      uint16_t last_send_num = 0;
+      String string = String("");
+      send_timer = _unuploadByte / 4096 + 1;
+      last_send_num = _unuploadByte % 4096;
+
+      while(send_timer) {
+        if (send_timer == 1) {
+          //Last portion
+          uint16_t counter_last = 1;
+          while(counter_last<=last_send_num)
+          {
+          	if (HAL::serialByteAvailable())
+          	{
+          		c = (uint8_t)MKSERIAL.read();
+          		nexSerial.write(c);
+          		counter_last++;
+          	}
+          }
+        }
+        else {
+          uint16_t counter = 1;
+          while(counter<=4096)
+          {
+          	if (HAL::serialByteAvailable())
+          	{
+          		c = (uint8_t)MKSERIAL.read();
+          		nexSerial.write(c);
+          		counter++;
+          	}
+          }
+        }
+
+        this->recvRetString(string, 500, true);
+        if (string.indexOf(0x05) != -1)
+          string = "";
+        else
+          return false;
+
+        SERIAL_L("ok");
         --send_timer;
       }
 

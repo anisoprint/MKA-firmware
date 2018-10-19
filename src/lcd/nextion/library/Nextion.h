@@ -395,6 +395,11 @@ class NexObject {
        */
       void startUpload(void);
 
+      /**
+       * start upload from serial.
+       */
+      void uploadFromSerial(uint32_t tftSize);
+
     private:
 
       /**
@@ -436,6 +441,14 @@ class NexObject {
        * @return none.
        */
       bool _uploadTftFile(void);
+
+      /**
+       * start upload tft file to nextion from serial connection.
+       *
+       * @return none.
+       */
+      bool _uploadTftFromSerial(void);
+
 
       /**
        * Receive string data.

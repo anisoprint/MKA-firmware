@@ -76,7 +76,8 @@ void StateWizardZ::ZOffsetS2(void* ptr) {
 	{
 		//Going to center adjust position
 		ZERO(NextionHMI::buffer);
-		sprintf_P(NextionHMI::buffer, PSTR("G1 F%i X%i Y%i"), (int)(mechanics.homing_feedrate_mm_s[X_AXIS]*60), int(BED_CENTER_ADJUST_X), int(BED_CENTER_ADJUST_Y));
+
+		sprintf_P(NextionHMI::buffer, PSTR("G1 F%i X%i Y%i"), (int)(mechanics.homing_feedrate_mm_s[X_AXIS]*60), int(BED_CENTER_X), int(BED_CENTER_Y));
 		commands.enqueue_and_echo(NextionHMI::buffer);
 
 		//Going to Z adjust position

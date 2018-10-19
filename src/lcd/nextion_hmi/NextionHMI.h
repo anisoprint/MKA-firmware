@@ -41,6 +41,11 @@ namespace NextionHMI {
 	void UpdateSDIcon();
 	#endif
 
+	#if HAS_SDSUPPORT
+	void UploadFirmwareFromSD();
+	#endif
+
+	void UploadFirmwareFromSerial(uint32_t tftSize);
 
 	uint8_t GetActiveState();
 

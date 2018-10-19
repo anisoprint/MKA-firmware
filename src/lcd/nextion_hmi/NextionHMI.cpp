@@ -18,6 +18,11 @@ namespace {
 	bool _nextionOn = false;
 	uint8_t _pageID = 0;
 	bool _sdInserted = false;
+
+#if HAS_SDSUPPORT
+  NexUpload Firmware(NEXTION_FIRMWARE_FILE, 57600);
+#endif
+
 }
 
 uint16_t NextionHMI::autoPreheatTempHotend = PREHEAT_1_TEMP_HOTEND;
@@ -290,6 +295,21 @@ void NextionHMI::WaitOk_Push(void* ptr) {
     printer.setWaitForUser(false);
     StateMessage::ReturnToLastState(ptr);
 }
+
+void NextionHMI::UploadFirmwareFromSD() {
+  if (IS_SD_INSERTED || card.cardOK) {
+    Firmware.startUpload();
+    nexSerial.end();
+    Init();
+  }
+}
+
+void NextionHMI::UploadFirmwareFromSerial(uint32_t tftSize) {
+    Firmware.uploadFromSerial(tftSize);
+    nexSerial.end();
+    Init();
+}
+
 
 #if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
 void NextionHMI::UpdateSDIcon() {

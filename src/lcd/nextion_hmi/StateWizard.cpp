@@ -139,9 +139,12 @@ void StateWizard::MaterialUnloadS1(void* ptr) {
 		//Homing if not homed
 		if (mechanics.axis_unhomed_error())
 		{
-			commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+			mechanics.home(true, true, true);
 		}
-		commands.enqueue_and_echo_P(PSTR("G28 Z"));
+		else
+		{
+			mechanics.home(false, false, true);
+		}
 	}
 	else
 	{
@@ -154,11 +157,8 @@ void StateWizard::MaterialUnloadS1(void* ptr) {
 	const uint8_t extruder_id = Tools::extruder_driver_to_extruder(NextionHMI::wizardData - E_AXIS);
 	if (extruder_id!=tools.active_extruder) tools.change(extruder_id, 0, false, false);
 
-
 	// Move XY to change position
 	mechanics.do_blocking_move_to_xy(int(MATERIAL_CHANGE_X), int(MATERIAL_CHANGE_Y), NOZZLE_PARK_XY_FEEDRATE);
-
-	commands.enqueue_and_echo(NextionHMI::buffer);
 
 	BUTTONS(2)
 	NO_PICTURE
@@ -271,6 +271,12 @@ void StateWizard::MaterialUnloadS4(void* ptr) {
 }
 
 void StateWizard::MaterialUnloadFinish(void* ptr) {
+
+	BUTTONS(0)
+	NO_PICTURE
+	CAPTION(MSG_PLEASE_WAIT)
+	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "Finishing", NEX_ICON_MAINTENANCE);
+
 	uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
 
 	if (PrintPause::Status==Paused)
@@ -287,8 +293,10 @@ void StateWizard::MaterialUnloadFinish(void* ptr) {
 	else
 	{
 		heaters[heater].setTarget(0);
-		commands.enqueue_and_echo_P(PSTR("G28 Z"));
-		commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+		heaters[heater].reset_idle_timer();
+
+		mechanics.home(true, true, true);
+
 	}
 
 	StateMenu::ActivateLoadUnload();
@@ -309,9 +317,12 @@ void StateWizard::MaterialLoadS1(void* ptr) {
 		//Homing if not homed
 		if (mechanics.axis_unhomed_error())
 		{
-			commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+			mechanics.home(true, true, true);
 		}
-		commands.enqueue_and_echo_P(PSTR("G28 Z"));
+		else
+		{
+			mechanics.home(false, false, true);
+		}
 	}
 	else
 	{
@@ -549,7 +560,15 @@ void StateWizard::MaterialLoadS6(void* ptr) {
 }
 
 void StateWizard::MaterialLoadFinish(void* ptr) {
+	BUTTONS(0)
+	NO_PICTURE
+	CAPTION(MSG_PLEASE_WAIT)
+	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "Finishing", NEX_ICON_MAINTENANCE);
+
+
 	uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
+
+
 
 	if (PrintPause::Status==Paused)
 	{
@@ -565,8 +584,8 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
 	else
 	{
 		heaters[heater].setTarget(0);
-		commands.enqueue_and_echo_P(PSTR("G28 Z"));
-		commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+		heaters[heater].reset_idle_timer();
+		mechanics.home(true, true, true);
 	};
 	StateMenu::ActivateLoadUnload();
 }
