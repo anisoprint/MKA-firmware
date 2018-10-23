@@ -506,6 +506,7 @@
       else
       {
     	  MKSERIAL.flush();
+    	  SERIAL_EMV("RESULT:", "ok");
     	  SERIAL_L("ok");
       }
 
@@ -675,7 +676,7 @@
         else
           return false;
 
-        SERIAL_L("ok");
+        SERIAL_EMV("RESULT:", "ok");
         --send_timer;
       }
 
