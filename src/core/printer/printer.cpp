@@ -182,7 +182,7 @@ void Printer::setup() {
 
   eeprom.Load_Const();
   SERIAL_LM(ECHO, CUSTOM_MACHINE_NAME);
-  SERIAL_LMV(ECHO, "VER:", eeprom.printerVersion);
+  SERIAL_LMV(ECHO, "VER:", MACHINE_VERSION);
   SERIAL_LMV(ECHO, "SN:", eeprom.printerSN);
   SERIAL_LM(ECHO, BUILD_VERSION);
   #if ENABLED(STRING_DISTRIBUTION_DATE) && ENABLED(STRING_CONFIG_H_AUTHOR)

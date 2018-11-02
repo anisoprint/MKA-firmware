@@ -247,7 +247,6 @@
 EEPROM eeprom;
 
 char    EEPROM::printerSN[17] = "";   // max. 16 chars + 0
-char    EEPROM::printerVersion[9] = "";   // max. 8 chars + 0
 
 #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
   float new_z_fade_height;
@@ -361,7 +360,6 @@ bool EEPROM::Store_Const() {
   EEPROM_WRITE_START(CONST_OFFSET);
 
   EEPROM_WRITE(printerSN);
-  EEPROM_WRITE(printerVersion);
 
   if (!eeprom_error) {
       const int eeprom_size = eeprom_index;
@@ -388,7 +386,6 @@ bool EEPROM::Load_Const() {
   EEPROM_READ_START(CONST_OFFSET);
 
   EEPROM_READ(printerSN);
-  EEPROM_READ(printerVersion);
 
   EEPROM_FINISH();
 

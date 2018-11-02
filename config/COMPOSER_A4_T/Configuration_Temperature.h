@@ -404,8 +404,8 @@
 #define THERMAL_PROTECTION_CHAMBER false
 #define THERMAL_PROTECTION_COOLER false
 
-#define THERMAL_PROTECTION_PERIOD     60     // Seconds
-#define THERMAL_PROTECTION_HYSTERESIS 15     // Degrees Celsius
+#define THERMAL_PROTECTION_PERIOD     40     // Seconds
+#define THERMAL_PROTECTION_HYSTERESIS 6     // Degrees Celsius
 
 /**
  * When ever increases the target temperature the firmware will wait for the
