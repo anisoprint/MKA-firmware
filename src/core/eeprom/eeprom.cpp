@@ -1589,6 +1589,7 @@ void EEPROM::Factory_Settings() {
       externaldac.motor_current[i] = tmp13[i < COUNT(tmp13) ? i : COUNT(tmp13) - 1];
   #endif
 
+
   LOOP_XYZE_N(i) {
     mechanics.axis_steps_per_mm[i]          = pgm_read_float(&tmp1[i < COUNT(tmp1) ? i : COUNT(tmp1) - 1]);
     mechanics.max_feedrate_mm_s[i]          = pgm_read_float(&tmp2[i < COUNT(tmp2) ? i : COUNT(tmp2) - 1]);
@@ -1607,6 +1608,7 @@ void EEPROM::Factory_Settings() {
   LOOP_XYZ(i) {
     LOOP_HOTEND() tools.hotend_offset[i][h] = tmp12[i][h];
   }
+
 
   mechanics.acceleration              = DEFAULT_ACCELERATION;
   mechanics.travel_acceleration       = DEFAULT_TRAVEL_ACCELERATION;

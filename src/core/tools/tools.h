@@ -58,6 +58,10 @@
       // Hotend offset
       static float    hotend_offset[XYZ][HOTENDS];
 
+	  #if ENABLED(EG6_EXTRUDER)
+        static float hotend_switch[HOTENDS][3][CHANGE_MOVES];
+	  #endif
+
       #if HAS_EXT_ENCODER
         static uint8_t  encLastSignal[DRIVER_EXTRUDERS];           // what was the last signal
         static int8_t   encLastDir[DRIVER_EXTRUDERS];

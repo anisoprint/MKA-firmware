@@ -151,7 +151,7 @@
 // Or put 7 for controller fan
 // -1 disables auto mode.
 // Default fan 1 is auto fan for Hotend 0
-#define AUTO_FAN { -1, -1, -1, -1, -1, -1 }
+#define AUTO_FAN { 0, -1, -1, -1, -1, -1 }
 // Parameters for Hotend Fan
 #define HOTEND_AUTO_FAN_TEMPERATURE  0
 #define HOTEND_AUTO_FAN_SPEED       255 // 255 = full speed
@@ -203,9 +203,21 @@
 // If the homing is performed while other tool is active, a movement will
 // be done to set active tool to zero (or max) position according to
 // Hotend offset
-#define HOME_X_TOOL 1
-#define HOME_Y_TOOL 0
-#define HOME_Z_TOOL 0
+//					{X    Y    Z}
+#define HOME_TOOLS  {1,   0,   0}
+
+//Change moves
+#define CHANGE_MOVES 7
+
+//Change to T0 - prepare - prepare_fast - start - switch - finish
+#define CHANGE_T0_X {297.0, 297.0, 315.2, 315.2, 335.0, 335.0, 335.0}
+#define CHANGE_T0_Y {17,    7,     7,     30,     30,   7,     30   }
+#define CHANGE_T0_F {200,   200,   50,    200,   200 ,  200,   200  }
+
+//Change to T1 - prepare - prepare_fast - start - switch - finish
+#define CHANGE_T1_X {335.0, 335.0, 316.2, 335.0, 335.0, 335.0, 335.0}
+#define CHANGE_T1_Y {30,    7,     7,     7,     7,     7,     30   }
+#define CHANGE_T1_F {200,   200,   50,    200,   200,   200,   200  }
 
 /***********************************************************************/
 

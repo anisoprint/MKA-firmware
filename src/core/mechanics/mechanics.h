@@ -117,6 +117,7 @@ enum AxisEnum {
 #define NATIVE_Y_POSITION(POS)  mechanics.logical_to_native(POS, Y_AXIS)
 #define NATIVE_Z_POSITION(POS)  mechanics.logical_to_native(POS, Z_AXIS)
 
+
 /*
 #if PLANNER_LEVELING || ENABLED(ZWOBBLE) || ENABLED(HYSTERESIS)
   #define ARG_X float rx
@@ -232,6 +233,14 @@ class Mechanics {
 		  // Set by M206, M428, or menu item. Saved to EEPROM.
 		  static float home_offset[XYZ];
 	#endif
+
+	#if ENABLED(EG6_EXTRUDER)
+	  static uint8_t home_tool[XYZ];
+	  static float homeCS2toolCS(uint8_t current_tool, float home_coord, uint8_t axis);
+	  static float homeCS2toolCSdelta(uint8_t current_tool, uint8_t axis);
+	  static float toolCS2homeCS(uint8_t current_tool, float tool_coord, uint8_t axis);
+	#endif
+
 
 
 

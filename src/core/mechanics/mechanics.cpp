@@ -88,6 +88,30 @@ millis_t Mechanics::min_segment_time_us = 0;
   int Mechanics::babystepsTodo[XYZ] = { 0 };
 #endif
 
+#if ENABLED(EG6_EXTRUDER)
+  uint8_t Mechanics::home_tool[XYZ] = HOME_TOOLS;
+
+  float Mechanics::homeCS2toolCSdelta(uint8_t current_tool, uint8_t axis)
+  {
+	  return (-Tools::hotend_offset[axis][home_tool[axis]] + Tools::hotend_offset[axis][current_tool]);
+  }
+
+  float Mechanics::homeCS2toolCS(uint8_t current_tool, float home_coord, uint8_t axis)
+  {
+	  return home_coord - Tools::hotend_offset[axis][home_tool[axis]] + Tools::hotend_offset[axis][current_tool];
+  }
+
+  float Mechanics::toolCS2homeCS(uint8_t current_tool, float tool_coord, uint8_t axis)
+  {
+	  return tool_coord + Tools::hotend_offset[axis][home_tool[axis]] - Tools::hotend_offset[axis][current_tool];
+  }
+
+
+
+
+#endif
+
+
 /**
  * Get the stepper positions in the cartesian_position[] array.
  *

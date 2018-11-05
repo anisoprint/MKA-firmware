@@ -203,9 +203,43 @@
 // If the homing is performed while other tool is active, a movement will
 // be done to set active tool to zero (or max) position according to
 // Hotend offset
-#define HOME_X_TOOL 1
-#define HOME_Y_TOOL 0
-#define HOME_Z_TOOL 0
+//					{X    Y    Z}
+#define HOME_TOOLS  {1,   0,   0}
+
+//Change moves
+#define CHANGE_MOVES 5
+
+//Change to T0 - prepare - prepare_fast - start - switch - finish
+#define CHANGE_T0_X {128.0, 128.0, 131.0, 149.9, 149.9}
+#define CHANGE_T0_Y {20,    0,     0,     0,     20   }
+#define CHANGE_T0_F {200,   200,   50,    200,   200  }
+
+//Change to T1 - prepare - prepare_fast - start - switch - finish
+#define CHANGE_T1_X {165.0, 165.0, 158.0, 146.0, 146.0}
+#define CHANGE_T1_Y {20,    0,     0,     0,     20   }
+#define CHANGE_T1_F {200,   200,   50,    200,   200  }
+
+                /*#define T0_PREPARE_X 	128    - hotend_offset[X_AXIS][1]
+				#define T0_PREPARE_Y 	20     //- hotend_offset[Y_AXIS][1]
+				#define T0_PREPARE2_X 	128    - hotend_offset[X_AXIS][1]
+				#define T0_PREPARE2_Y  	0      //- hotend_offset[Y_AXIS][1]
+				#define T0_START_X 		131.0  - hotend_offset[X_AXIS][1]
+				#define T0_START_Y  	0      //- hotend_offset[Y_AXIS][1]
+				#define T0_SWITCH_X 	149.9    - hotend_offset[X_AXIS][1]
+				#define T0_SWITCH_Y  	0      //- hotend_offset[Y_AXIS][1]
+				#define T0_FINISH_X 	149.9    - hotend_offset[X_AXIS][1]
+				#define T0_FINISH_Y  	20     //- hotend_offset[Y_AXIS][1]*/
+
+				/*#define T1_PREPARE_X 	165    - hotend_offset[X_AXIS][0]
+				#define T1_PREPARE_Y 	20     - hotend_offset[Y_AXIS][0]
+				#define T1_PREPARE2_X 	165    - hotend_offset[X_AXIS][0]
+				#define T1_PREPARE2_Y  	0      - hotend_offset[Y_AXIS][0]
+				#define T1_START_X 		158    - hotend_offset[X_AXIS][0]
+				#define T1_START_Y  	0      - hotend_offset[Y_AXIS][0]
+				#define T1_SWITCH_X 	146.0    - hotend_offset[X_AXIS][0]
+				#define T1_SWITCH_Y  	0      - hotend_offset[Y_AXIS][0]
+				#define T1_FINISH_X 	146.0    - hotend_offset[X_AXIS][0]
+				#define T1_FINISH_Y  	20     - hotend_offset[Y_AXIS][0]*/
 
 /***********************************************************************/
 

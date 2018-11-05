@@ -255,12 +255,12 @@
 	#if HOTENDS > 1
 		  if (!mechanics.axis_unhomed_error(homeX, homeY, homeZ) && printer.isRunning()) {
 			  float x_diff = 0, y_diff = 0, z_diff = 0;
-			  if ((home_all || homeX) && tools.active_extruder!=HOME_X_TOOL)
-					 x_diff = tools.hotend_offset[X_AXIS][tools.active_extruder] - tools.hotend_offset[X_AXIS][HOME_X_TOOL];
-			  if ((home_all || homeY) && tools.active_extruder!=HOME_Y_TOOL)
-					 y_diff = tools.hotend_offset[Y_AXIS][tools.active_extruder] - tools.hotend_offset[Y_AXIS][HOME_Y_TOOL];
-			  if ((home_all || homeZ) && tools.active_extruder!=HOME_Z_TOOL)
-					 z_diff = tools.hotend_offset[Z_AXIS][tools.active_extruder] - tools.hotend_offset[Z_AXIS][HOME_Z_TOOL];
+        	  if ((home_all || homeX))
+        			 x_diff = homeCS2toolCSdelta(tools.active_extruder, X_AXIS);
+        	  if ((home_all || homeY))
+        			 y_diff = homeCS2toolCSdelta(tools.active_extruder, Y_AXIS);;
+        	  if ((home_all || homeZ))
+        			 z_diff = homeCS2toolCSdelta(tools.active_extruder, Z_AXIS);
 			  if (x_diff!=0 || y_diff !=0 || z_diff!=0)
 			  {
 				  mechanics.set_destination_to_current();

@@ -332,7 +332,7 @@
 #define INVERT_Y_DIR false
 #define INVERT_Z_DIR true
 #define INVERT_E0_DIR false
-#define INVERT_E1_DIR false
+#define INVERT_E1_DIR true
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
 #define INVERT_E4_DIR false
@@ -363,11 +363,11 @@
  * Travel limits after homing (units are in mm)                                          *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MAX_POS 320
+#define X_MAX_POS 300
 #define X_MIN_POS 0
 #define Y_MAX_POS 210
 #define Y_MIN_POS 0
-#define Z_MAX_POS 139.65
+#define Z_MAX_POS 145
 #define Z_MIN_POS 0
 #define E_MIN_POS 0
 /*****************************************************************************************/
@@ -670,7 +670,7 @@
  *****************************************************************************************/
 #define HOTEND_OFFSET_X {0.0, 17.1, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the X axis
 #define HOTEND_OFFSET_Y {0.0, -2.2, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Y axis
-#define HOTEND_OFFSET_Z {0.0, 1.09, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Z axis
+#define HOTEND_OFFSET_Z {0.0, 1.51, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Z axis
 /*****************************************************************************************/
 
 #endif /* _CONFIGURATION_CORE_H_ */
