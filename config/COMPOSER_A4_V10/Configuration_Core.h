@@ -614,9 +614,9 @@
 //  Maximum acceleration in mm/s^2 for retracts   E0... (per extruder)
 #define DEFAULT_RETRACT_ACCELERATION          {10000, 10000, 10000, 10000}
 //  X, Y, Z and E* maximum acceleration in mm/s^2 for printing moves
-#define DEFAULT_ACCELERATION          3000
+#define DEFAULT_ACCELERATION          2000
 //  X, Y, Z acceleration in mm/s^2 for travel (non printing) moves
-#define DEFAULT_TRAVEL_ACCELERATION   3000
+#define DEFAULT_TRAVEL_ACCELERATION   2000
 /*****************************************************************************************/
 
 
@@ -670,7 +670,7 @@
  *****************************************************************************************/
 #define HOTEND_OFFSET_X {0.0, 17.1, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the X axis
 #define HOTEND_OFFSET_Y {0.0, -2.2, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Y axis
-#define HOTEND_OFFSET_Z {0.0, 1.51, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Z axis
+#define HOTEND_OFFSET_Z {0.0, 1.65, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Z axis
 /*****************************************************************************************/
 
 #endif /* _CONFIGURATION_CORE_H_ */

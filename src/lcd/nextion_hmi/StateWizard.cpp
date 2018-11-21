@@ -538,7 +538,17 @@ void StateWizard::MaterialLoadS6(void* ptr) {
 	{
 		//Cut fiber
 		stepper.synchronize();
-		MOVE_SERVO(0, 160);
+
+		//cut
+		if (MACHINE_VERSION != "1.0")
+		{
+			MOVE_SERVO(0, 160);
+		}
+		else
+		{
+			MOVE_SERVO(0, 30);
+		}
+
 		millis_t dwell_ms = 0;
 		while (PENDING(millis(), dwell_ms)) {
 		  printer.keepalive(InProcess);
@@ -563,7 +573,7 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
 	BUTTONS(0)
 	NO_PICTURE
 	CAPTION(MSG_PLEASE_WAIT)
-	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "Finishing", NEX_ICON_MAINTENANCE);
+	HEADER(MSG_HEADER_LOAD_MATERIAL, "Finishing", NEX_ICON_MAINTENANCE);
 
 
 	uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);

@@ -207,17 +207,18 @@
 #define HOME_TOOLS  {1,   0,   0}
 
 //Change moves
-#define CHANGE_MOVES 7
+#define CHANGE_MOVES 9
 
 //Change to T0 - prepare - prepare_fast - start - switch - finish
-#define CHANGE_T0_X {297.0, 297.0, 315.2, 315.2, 335.0, 335.0, 335.0}
-#define CHANGE_T0_Y {17,    7,     7,     30,     30,   7,     30   }
-#define CHANGE_T0_F {200,   200,   50,    200,   200 ,  200,   200  }
+#define CHANGE_T0_X {297.0, 297.0, 315.2, 315.2, 335.0, 335.0, 335.0, 335.0, 335.0}
+#define CHANGE_T0_Y {17,    7,     7,     30,     30,   7,     30,    7,     30   }
+#define CHANGE_T0_F {200,   200,   50,    200,   200 ,  50,    50,    50,    50  }
 
 //Change to T1 - prepare - prepare_fast - start - switch - finish
-#define CHANGE_T1_X {335.0, 335.0, 316.2, 335.0, 335.0, 335.0, 335.0}
-#define CHANGE_T1_Y {30,    7,     7,     7,     7,     7,     30   }
-#define CHANGE_T1_F {200,   200,   50,    200,   200,   200,   200  }
+
+#define CHANGE_T1_X {335.0, 335.0, 335.0, 335.0, 313.2, 335.0, 335.0, 335.0, 335.0}
+#define CHANGE_T1_Y {30,    7,    30,     7,     7,     7,     30,     7,    30   }
+#define CHANGE_T1_F {200,   50,   50,     50,    50,    200,   50,   50,    50  }
 
 /***********************************************************************/
 
