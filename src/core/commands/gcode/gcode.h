@@ -228,12 +228,10 @@
 
 //Composer
 #include "control/m1001_m1002.h" // Start/end fiber printing
-#include "eeprom/m1003_m1007.h"
-
-// Table for G and M code
 #include "table_gcode.h"
 #include "table_mcode.h"
 
 // Include m44 post define table for debugging
 #include "debug/m44_post_table.h"
+#include "eeprom/m1003_m1007.h"
 
