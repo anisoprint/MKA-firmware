@@ -136,17 +136,11 @@ void NextionHMI::DrawUpdate() {
 	         break;
 	    case PAGE_MESSAGE : //Nothing to update
 	         break;
-	    case PAGE_PAUSE :
-	         break;
-	    case PAGE_CHANGE :
-	         break;
 	    case PAGE_WIZARD : StateWizard::DrawUpdate();
 	         break;
 	    case PAGE_MENU : //Maintenance_DrawUpdate();
 	         break;
 	    case PAGE_MOVEMENT :StateMovement::DrawUpdate();
-	         break;
-	    case PAGE_EXTRUDERS :
 	         break;
 	    case PAGE_SETTINGS :
 	         break;
@@ -171,17 +165,11 @@ void NextionHMI::TouchUpdate() {
 	         break;
 	    case PAGE_MESSAGE : StateMessage::TouchUpdate();
 	         break;
-	    case PAGE_PAUSE :
-	         break;
-	    case PAGE_CHANGE :
-	         break;
 	    case PAGE_WIZARD : StateWizard::TouchUpdate();
 	         break;
 	    case PAGE_MENU : StateMenu::TouchUpdate();
 	         break;
 	    case PAGE_MOVEMENT : StateMovement::TouchUpdate();
-	         break;
-	    case PAGE_EXTRUDERS :
 	         break;
 	    case PAGE_SETTINGS :
 	         break;
@@ -213,17 +201,11 @@ void NextionHMI::ShowState(uint8_t state_id) {
 		         break;
 		    case PAGE_MESSAGE :
 		         break;
-		    case PAGE_PAUSE :
-		         break;
-		    case PAGE_CHANGE :
-		         break;
 		    case PAGE_WIZARD :
 		         break;
 		    case PAGE_MENU :
 		         break;
 		    case PAGE_MOVEMENT : StateMovement::Activate(MODE_MOVE_AXIS);
-		         break;
-		    case PAGE_EXTRUDERS :
 		         break;
 		    case PAGE_SETTINGS :
 		         break;
@@ -266,17 +248,11 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventM
 	         break;
 	    case PAGE_MESSAGE :
 	         break;
-	    case PAGE_PAUSE :
-	         break;
-	    case PAGE_CHANGE :
-	         break;
 	    case PAGE_WIZARD :
 	         break;
 	    case PAGE_MENU :
 	         break;
 	    case PAGE_MOVEMENT :
-	         break;
-	    case PAGE_EXTRUDERS :
 	         break;
 	    case PAGE_SETTINGS :
 	         break;
