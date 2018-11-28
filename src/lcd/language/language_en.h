@@ -368,6 +368,23 @@
   #define MSG_COLD_HOTEND_TEXT                    	_UxGT("Please heat the hotend before extruding or\\rretracting the filament")
 #endif
 
+//Settings
+#ifndef MSG_COMP_EXTRUDER
+  #define MSG_COMP_EXTRUDER                  _UxGT("Composite extruder")
+#endif
+
+#ifndef MSG_X_OFFSET
+  #define MSG_X_OFFSET                  		_UxGT("X offset (mm)")
+#endif
+
+#ifndef MSG_Y_OFFSET
+  #define MSG_Y_OFFSET                  		_UxGT("Y offset (mm)")
+#endif
+
+#ifndef MSG_Z_OFFSET
+  #define MSG_Z_OFFSET                  		_UxGT("Z offset (mm)")
+#endif
+
 #ifndef WELCOME_MSG
   #define WELCOME_MSG                         MACHINE_NAME _UxGT(" ready")
 #endif

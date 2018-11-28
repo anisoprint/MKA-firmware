@@ -17,6 +17,17 @@
 
 namespace StateSettings {
 
+enum SettingType {HEADER, FLOAT, INT};
+
+	struct SettingDefinition
+	{
+		const char *caption;
+		SettingType type;
+		void* setting;
+		double minValue;
+		double maxValue;
+	};
+
 	void FUp_Push(void *ptr);
 	void FDown_Push(void *ptr);
 	void FRow_Push(void *ptr);

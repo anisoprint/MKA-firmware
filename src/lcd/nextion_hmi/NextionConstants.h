@@ -23,6 +23,7 @@
 #define PAGE_SETTINGS 10
 #define PAGE_ABOUT 11
 #define PAGE_WIZARDZ 12
+#define PAGE_C_NUMBER 13
 
 //Icons
 #define NEX_ICON_READY 1

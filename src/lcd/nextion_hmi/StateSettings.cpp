@@ -14,6 +14,14 @@
 
 namespace {
 
+	//Settings Array
+	StateSettings::SettingDefinition _settings[] = {
+			{MSG_COMP_EXTRUDER, StateSettings::SettingType::HEADER, nullptr, 0, 0},
+			{MSG_X_OFFSET, StateSettings::SettingType::FLOAT, &tools.hotend_offset[X_AXIS][1], -50, 50},
+			{MSG_Y_OFFSET, StateSettings::SettingType::FLOAT, &tools.hotend_offset[Y_AXIS][1], -50, 50},
+			{MSG_Z_OFFSET, StateSettings::SettingType::FLOAT, &tools.hotend_offset[Z_AXIS][1], -10, 10},
+	};
+
 	///////////// Nextion components //////////
 	//Page
 	NexObject _page  = NexObject(PAGE_SETTINGS,  0,  "settings");
@@ -44,107 +52,61 @@ namespace {
 	NexObject _bFUpIcon = NexObject(PAGE_SETTINGS,  14,  "pUP");
 	NexObject _bFDownIcon = NexObject(PAGE_SETTINGS,  15,  "pDN");
 
-	NexObject _bOK = NexObject(PAGE_SETTINGS,  9,  "ok");
+	NexObject _bOK = NexObject(PAGE_SETTINGS, 9, "ok");
 
 	NexObject *_listenList[] = { &_rRows[0],&_rRows[1],&_rRows[2],&_rRows[3],&_rRows[4],&_rRows[5],&_rRows[6],
 								 &_rValues[0],&_rValues[1],&_rValues[2],&_rValues[3],&_rValues[4],&_rValues[5],&_rValues[6],
 								 &_bFUp, &_bFDown, &_bOK, NULL };
 
 
+	//Page_number
+	NexObject _pageNumber  = NexObject(PAGE_C_NUMBER,  0,  "c_num");
+	NexObject _pageNumberInput = NexObject(PAGE_C_NUMBER,  0,  "c_num.input");
+	NexObject _pageNumberSetting = NexObject(PAGE_C_NUMBER,  0,  "c_num.setid");
+
 
 	uint32_t _listPosition = 0;
 	bool _insideDir = false;
 
-	void PopulateRow(uint32_t row, type isDir, const char* filename) {
+	void PopulateRow(uint8_t row, StateSettings::SettingDefinition setting) {
 
-		auto a = typeof(_bOK);
+		_rRows[row].setTextPGM(PSTR(setting.caption), 0);
 
-		NexObject* rowText;
-		NexObject* rowIcon;
+		switch(setting.type)
+		{
+			case StateSettings::SettingType::HEADER:
+				_rRows[row].Set_font_color_pco(1048);
+				break;
+			case StateSettings::SettingType::FLOAT:
+				float* float_val = setting.setting;
+				_rValues[row].setText(String(*float_val).c_str());
+				_rRows[row].Set_font_color_pco(0);
+				break;
+			case StateSettings::SettingType::INT:
+				int* int_val = setting.setting;
+				_rValues[row].setText(String(*int_val).c_str());
+				_rRows[row].Set_font_color_pco(0);
+				break;
 
-		switch(row) {
-		    case 0 :
-		    	 rowText = &_tFName0;
-		    	 rowIcon = &_tFIcon0;
-		         break;
-		    case 1 :
-		    	 rowText = &_tFName1;
-		    	 rowIcon = &_tFIcon1;
-		         break;
-		    case 2 :
-		    	 rowText = &_tFName2;
-		    	 rowIcon = &_tFIcon2;
-		         break;
-		    case 3 :
-		    	 rowText = &_tFName3;
-		    	 rowIcon = &_tFIcon3;
-		         break;
-		    case 4 :
-		    	 rowText = &_tFName4;
-		    	 rowIcon = &_tFIcon4;
-		         break;
-		    case 5 :
-		    	 rowText = &_tFName5;
-		    	 rowIcon = &_tFIcon5;
-		         break;
-		    case 6 :
-		    	 rowText = &_tFName6;
-		    	 rowIcon = &_tFIcon6;
-		         break;
 		}
 
-	    if (isDir) {
-	    	rowIcon->setPic(NEX_ICON_FILE_FOLDER);
-	    	rowText->attachPush(StateFiles::FFolder_Push, rowText);
-	    }
-	    else
-	    {
-	    	rowIcon->setPic(NEX_ICON_FILE_BLANK);
-	    	if (filename == "") {
-	        	rowText->detachPush();
-	    	}
-	    	else
-	    	{
-	        	rowText->attachPush(StateFiles::FFile_Push, rowText);
-	    	}
-
-	    }
-	    rowText->setText(filename);
 	}
 
-	void Files_PopulateFileList(uint32_t number) {
+	void PopulateSettingsList(uint32_t number) {
 
-	    uint16_t fileCnt = card.getnrfilenames();
+	    uint16_t set_count = sizeof(_settings)/sizeof(_settings[0]);
 	    uint32_t i = number;
-	    card.getWorkDirName();
+
 	    uint8_t start_row = 0;
-		  //serial_print(card.fileName);
-		  //serial_print("\n>>>>>>>>>>>>\n");
-	    if (card.fileName[0] != '/') {
-	    	_tFName0.setText("..");
-	    	_tFIcon0.setPic(NEX_ICON_FILE_BACK);
-	    	_tFName0.attachPush(StateFiles::FFolderUp_Push);
-	    	start_row = 1;
-	    	_insideDir = true;
-	    }
-	    else
-	    {
-	    	_insideDir = false;
-	    }
 
 	    for (uint8_t row = start_row; row < 7; row++) {
-	      if (i < fileCnt) {
-			#if ENABLED(SDCARD_SORT_ALPHA)
-			  card.getfilename_sorted(i);
-			#else
-			  card.getfilename(i);
-			#endif
-	        Files_PopulateFileRow(row, card.filenameIsDir, card.fileName);
-
+	      if (i < set_count) {
+	    	PopulateRow(row, _settings[i]);
 	      }
 	      else
 	      {
-	    	  Files_PopulateFileRow(row, false, "");
+	  		_rRows[row].setText("", 0);
+	  		_rValues[row].setText("", 0);
 	      }
 	      i++;
 	    }
@@ -154,7 +116,7 @@ namespace {
 	    else
 	    	_bFUpIcon.setPic(NEX_ICON_FILES_UP_GREY);
 
-	    if ((number + (_insideDir ? 6 : 7)) <fileCnt)
+	    if ((number + 7) < set_count)
 	    	_bFDownIcon.setPic(NEX_ICON_FILES_DOWN);
 	    else
 	    	_bFDownIcon.setPic(NEX_ICON_FILES_DOWN_GREY);
@@ -162,44 +124,61 @@ namespace {
 
 }
 
-void StateFiles::FUp_Push(void* ptr) {
+void StateSettings::FUp_Push(void* ptr) {
 	if (_listPosition>0)
 	{
-		_listPosition -= _insideDir ? 6 : 7;
+		_listPosition -= 7;
 		if (_listPosition<0) _listPosition=0;
-		Files_PopulateFileList(_listPosition);
+		PopulateSettingsList(_listPosition);
 	}
 }
 
-void StateFiles::FDown_Push(void* ptr) {
+void StateSettings::FDown_Push(void* ptr) {
     uint16_t fileCnt = card.getnrfilenames();
-    if ((_listPosition + (_insideDir ? 6 : 7)) <fileCnt)
+    if ((_listPosition + 7) <fileCnt)
     {
-    	_listPosition += _insideDir ? 6 : 7;
-    	Files_PopulateFileList(_listPosition);
+    	_listPosition += 7;
+    	PopulateSettingsList(_listPosition);
     }
 }
 
-void StateFiles::FFile_Push(void* ptr) {
-    ZERO(NextionHMI::buffer);
-    if (ptr == &_tFName0)
-    	_tFName0.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
-    else if (ptr == &_tFName1)
-    	_tFName1.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
-    else if (ptr == &_tFName2)
-    	_tFName2.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
-    else if (ptr == &_tFName3)
-    	_tFName3.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
-    else if (ptr == &_tFName4)
-    	_tFName4.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
-    else if (ptr == &_tFName5)
-    	_tFName5.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
-    else if (ptr == &_tFName6)
-    	_tFName6.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
+void StateSettings::FRow_Push(void* ptr) {
 
-    Serial.print(NextionHMI::buffer);
-    if (card.isFileOpen()) card.closeFile();
-    card.selectFile(NextionHMI::buffer);
+    ZERO(NextionHMI::buffer);
+    int8_t row_index = -1;
+    for (uint8_t row = 0; row<7; row++)
+    {
+        if (ptr == &_rRows[row] || ptr == &_rValues[row])
+        {
+        	row_index = row;
+        	break;
+        }
+    }
+
+    if (row_index>=0)
+    {
+    	uint8_t setting_index =_listPosition + row_index;
+		switch(_settings[setting_index].type)
+		{
+			case StateSettings::SettingType::HEADER:
+				break;
+			case StateSettings::SettingType::FLOAT:
+				float* float_val = _settings[setting_index].setting;
+				_pageNumberInput.setText(String(*float_val).c_str());
+				_pageNumberSetting.setValue(setting_index);
+				break;
+			case StateSettings::SettingType::INT:
+				int* int_val = _settings[setting_index].setting;
+				_pageNumberInput.setText(String(*int_val).c_str());
+				_pageNumberSetting.setValue(setting_index);
+				break;
+
+		}
+
+    }
+
+    loadpageid
+
     StateFileinfo::Activate();
 }
 

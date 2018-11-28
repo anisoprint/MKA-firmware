@@ -57,6 +57,8 @@
 
       // Hotend offset
       static float    hotend_offset[XYZ][HOTENDS];
+      static float    switch_pos_x;
+      static float    switch_pos_y;
 
 	  #if ENABLED(EG6_EXTRUDER)
         static float hotend_switch[HOTENDS][3][CHANGE_MOVES];
