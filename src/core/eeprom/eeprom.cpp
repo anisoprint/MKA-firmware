@@ -42,7 +42,7 @@
 #define CONFIG_OFFSET 	0
 
 #if ENABLED(EEPROM_LITE)
-	#define EEPROM_VERSION "MKA11"
+	#define EEPROM_VERSION "MKA12"
 
 /**
  *
@@ -402,6 +402,8 @@ bool EEPROM::Load_Const() {
      * M500 - Store Configuration
      */
     bool EEPROM::Store_Settings() {
+
+      Serial.println("Store_Settings");
       char ver[6] = "00000";
 
       uint16_t working_crc = 0;

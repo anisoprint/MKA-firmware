@@ -43,9 +43,11 @@ inline void gcode_M1001(void) {
  */
 inline void gcode_M1002(void) {
 #if ENABLED(NEXTION_HMI)
+	Serial.println("M1002");
 	PrintPause::CanPauseNow = true;
 	if (PrintPause::Status==WaitingToPause)
 	{
+		Serial.println("M1002 WaitingToPause");
 	    point_t park_point = NOZZLE_PARK_POINT;
 	    const float retract = PAUSE_PARK_RETRACT_LENGTH;
 	    PrintPause::PausePrint(retract);

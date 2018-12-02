@@ -100,9 +100,11 @@ class EEPROM {
       FORCE_INLINE static void Print_Settings(const bool forReplay=false) { UNUSED(forReplay); }
     #endif
 
+      static void Postprocess();
+
   private: /** Private Function */
 
-    static void Postprocess();
+
 
     #if HAS_EEPROM
       static bool access_start(const uint8_t oflag);

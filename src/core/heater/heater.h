@@ -143,9 +143,6 @@
       FORCE_INLINE bool isHWInverted() { return TEST(HeaterFlag, heater_flag_hardware_inverted); }
 
       FORCE_INLINE void setIdle(const bool onoff) {
-    	SERIAL_EOL();
-    	Serial.print("set idle ");
-    	Serial.println(onoff);
         SET_BIT(HeaterFlag, heater_flag_idle, onoff);
       }
       FORCE_INLINE bool isIdle() { return TEST(HeaterFlag, heater_flag_idle); }

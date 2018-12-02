@@ -161,6 +161,7 @@ typedef int8_t    pin_t;
 // NEXTION HMI modules
 #include "src/lcd/nextion_hmi/HMIevents.h"
 #include "src/lcd/nextion_hmi/NextionHMI.h"
+#include "src/lcd/nextion_hmi/StateSettings.h"
 #include "src/lcd/nextion_hmi/PrintPause.h"
 #include "src/lcd/nextion_hmi/StateMessage.h"
 #include "src/lcd/nextion_hmi/StateStatus.h"
@@ -173,7 +174,7 @@ typedef int8_t    pin_t;
 #include "src/lcd/nextion_hmi/StateWizard.h"
 #include "src/lcd/nextion_hmi/StateWizardZ.h"
 #include "src/lcd/nextion_hmi/StateAbout.h"
-#include "src/lcd/nextion_hmi/StateSettings.h"
+#include "src/lcd/nextion_hmi/StateEditNumber.h"
 
 // SD modules
 #include "src/sd/cardreader.h"

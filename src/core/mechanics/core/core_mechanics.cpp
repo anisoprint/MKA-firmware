@@ -263,7 +263,6 @@
 
     lcd_refresh();
 
-    mechanics.report_current_position();
 
     #if ENABLED(DEBUG_LEVELING_FEATURE)
       if (printer.debugLeveling()) SERIAL_EM("<<< G28");

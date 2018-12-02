@@ -52,27 +52,32 @@ void StateMenu::ActivatePrintControl(void* ptr) {
 
 	if (PrintPause::Status == Paused) //Control menu while paused
 	{
-		_count.setValue(2);
+		_count.setValue(3);
 		_page.show();
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_CONTROL));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 
 		_b1.setTextPGM(PSTR(MSG_CANCEL_PRINT));
 		_b2.setTextPGM(PSTR(MSG_MATERIALS));
+		_b3.setTextPGM(PSTR(MSG_TUNE));
 
 		_b1.attachPush(Control_CancelPrint);
 		_b2.attachPush(ActivateMaterials);
+		_b3.attachPush(Control_Tune);
 	}
 	else //Control menu while printing
 	{
-		_count.setValue(1);
+		_count.setValue(2);
 		_page.show();
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_CONTROL));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 
 		_b1.setTextPGM(PSTR(MSG_CANCEL_PRINT));
+		_b2.setTextPGM(PSTR(MSG_TUNE));
+
 
 		_b1.attachPush(Control_CancelPrint);
+		_b2.attachPush(Control_Tune);
 	}
 
 
@@ -81,6 +86,14 @@ void StateMenu::ActivatePrintControl(void* ptr) {
 
 void StateMenu::PrintControlBack(void* ptr) {
 	StatePrinting::Activate();
+}
+
+void StateMenu::Control_Tune(void* ptr) {
+	StateSettings::Activate(StatePrinting::TuneList, TUNE_LIST_LENGTH, Control_Tune_OK);
+}
+
+void StateMenu::Control_Tune_OK(void* ptr) {
+	StateMenu::ActivatePrintControl();
 }
 
 void StateMenu::Control_CancelPrint(void* ptr) {
@@ -124,7 +137,7 @@ void StateMenu::ActivateMaintenance(void* ptr) {
 	_b1.attachPush(ActivateMaterials);
 	_b2.attachPush(Maintenance_Move);
 	_b3.attachPush(ActivateCalibrate);
-	_b4.attachPush(0);
+	_b4.attachPush(Maintenance_Settings);
 	_b5.attachPush(Maintenance_About);
 
 	_bBack.attachPush(MaintenanceBack);
@@ -141,6 +154,15 @@ void StateMenu::Maintenance_Move(void* ptr) {
 void StateMenu::Maintenance_About(void* ptr) {
 	StateAbout::Activate();
 }
+
+void StateMenu::Maintenance_Settings(void* ptr) {
+	StateSettings::Activate(StateSettings::SettingsList, SETTINGS_LIST_LENGTH, Maintenance_Settings_OK);
+}
+
+void StateMenu::Maintenance_Settings_OK(void* ptr) {
+	StateMenu::ActivateMaintenance();
+}
+
 
 
 /*********************************************************************************
@@ -225,6 +247,8 @@ void StateMenu::ActivateLoadUnload(void* ptr) {
 
 	_bBack.attachPush(ActivateMaterials);
 }
+
+
 
 #endif
 

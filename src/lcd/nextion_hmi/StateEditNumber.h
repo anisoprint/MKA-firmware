@@ -15,10 +15,12 @@
 #include "NextionConstants.h"
 
 namespace StateEditNumber {
-
-	void Activate(StateSettings::SettingDefinition setting);
+	void Activate(const char* input, NexTouchEventCb cbOK, NexTouchEventCb cbCancel);
 	void TouchUpdate();
-	void ReturnToLastState(void* ptr);
+	void GetInputToBuffer();
+
+
+
 };
 
 #endif

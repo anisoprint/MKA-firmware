@@ -61,7 +61,7 @@ void StateMovement::Back_Push(void* ptr) {
 }
 
 void StateMovement::Movement_Push(void* ptr) {
-	if (_moveMode==MODE_MOVE_EXTRUDERS && ptr==&_bMovementCact)
+	if (_moveMode==MODE_MOVE_EXTRUDERS && ptr==&_bMovementBact)
 	{
 		//cut
 		if (MACHINE_VERSION != "1.0")

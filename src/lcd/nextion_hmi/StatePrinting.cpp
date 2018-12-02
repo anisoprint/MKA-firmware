@@ -4,13 +4,35 @@
  *  Created on: 9 θών. 2018 γ.
  *      Author: Azarov
  */
+#ifndef MSG_PLASTIC_FLOW_H
+  #define MSG_PLASTIC_FLOW_H                 _UxGT("Plastic flow")
+#endif
 
+#ifndef MSG_PLASTIC_FLOW
+  #define MSG_PLASTIC_FLOW              	_UxGT("Plastic flow (%)")
+#endif
+
+#ifndef MSG_COMP_PLASTIC_FLOW
+  #define MSG_COMP_PLASTIC_FLOW              _UxGT("Composite plastic flow (%)")
+#endif
 
 #include "../../../MK4duo.h"
 
 #if ENABLED(NEXTION_HMI)
 
 #include "StatePrinting.h"
+
+
+
+//Settings Array
+StateSettings::SettingDefinition StatePrinting::TuneList[] = {
+			{MSG_MOVEMENT_FEEDRATE, StateSettings::SettingType::HEADER, nullptr, 0, 0},
+			{" " MSG_FEEDRATE, StateSettings::SettingType::INT16, &mechanics.feedrate_percentage, 25, 200},
+
+			{MSG_PLASTIC_FLOW_H, StateSettings::SettingType::HEADER, nullptr, 0, 0},
+			{" " MSG_PLASTIC_FLOW, StateSettings::SettingType::INT16, &tools.flow_percentage[E_AXIS-XYZ], 25, 150},
+			{" " MSG_COMP_PLASTIC_FLOW, StateSettings::SettingType::INT16, &tools.flow_percentage[V_AXIS-XYZ], 25, 150},
+	};
 
 
 namespace {

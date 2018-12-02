@@ -198,9 +198,9 @@ bool MAX31865::Initialize(max31865_numwires_t wires, const pin_t cs_pin) {
 	  autoConvert(true, cs_pin);
 	  clearFault(cs_pin);*/
 
-	Serial.print("pin: "); Serial.println(cs_pin);
-	Serial.println("config before: ");
-	Serial.println(readRegister8(MAX31856_CONFIG_REG, cs_pin), HEX);
+	//Serial.print("pin: "); Serial.println(cs_pin);
+	//Serial.println("config before: ");
+	//Serial.println(readRegister8(MAX31856_CONFIG_REG, cs_pin), HEX);
 	//readRegister8(MAX31856_CONFIG_REG, cs_pin);
 
 
@@ -215,7 +215,7 @@ bool MAX31865::Initialize(max31865_numwires_t wires, const pin_t cs_pin) {
 	  //Serial.print("config to set: "); Serial.println(r0, HEX);
 	  writeRegister8(MAX31856_CONFIG_REG, r0, cs_pin);
 
-	Serial.print("config after: "); Serial.println(readRegister8(MAX31856_CONFIG_REG, cs_pin), HEX);
+	//Serial.print("config after: "); Serial.println(readRegister8(MAX31856_CONFIG_REG, cs_pin), HEX);
 	return true;
 }
 

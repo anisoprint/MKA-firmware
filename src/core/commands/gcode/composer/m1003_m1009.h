@@ -34,6 +34,7 @@
 #define CODE_M1006
 #define CODE_M1007
 #define CODE_M1008
+#define CODE_M1009
 
 /**
  * M1003: Set SN
@@ -70,6 +71,15 @@ inline void gcode_M1007(void) {
  */
 inline void gcode_M1008(void) {
 	SERIAL_EMV("MACHINE:", CUSTOM_MACHINE_NAME);
+}
+
+/**
+ * M1008: Display firmware update screen
+ */
+inline void gcode_M1009(void) {
+#if ENABLED(NEXTION_HMI)
+	NextionHMI::ShowStartScreen(MSG_UPDATING_FIRMWARE, MSG_DO_NOT_TURN_OFF);
+#endif
 }
 
 #endif

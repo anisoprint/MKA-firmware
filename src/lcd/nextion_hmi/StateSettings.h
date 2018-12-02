@@ -15,9 +15,12 @@
 #include "NextionConstants.h"
 
 
+
 namespace StateSettings {
 
-enum SettingType {HEADER, FLOAT, INT};
+#define SETTINGS_LIST_LENGTH 18
+
+enum SettingType {HEADER, FLOAT, INT16};
 
 	struct SettingDefinition
 	{
@@ -28,13 +31,21 @@ enum SettingType {HEADER, FLOAT, INT};
 		double maxValue;
 	};
 
+	extern SettingDefinition SettingsList[];
+
+
 	void FUp_Push(void *ptr);
 	void FDown_Push(void *ptr);
 	void FRow_Push(void *ptr);
 	void OK_Push(void *ptr);
 
+  	void EditNumber_OK_Push(void *ptr);
+  	void EditNumber_Cancel_Push(void *ptr);
+  	void EditNumber_MsgOk_Push(void *ptr);
+
 	void Init();
-	void Activate();
+	void Activate(StateSettings::SettingDefinition* settings, uint32_t settingsLength, NexTouchEventCb cbOK);
+	void Activate(uint32_t setting_index);
 	//void DrawUpdate();
 	void TouchUpdate();
 

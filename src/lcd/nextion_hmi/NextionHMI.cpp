@@ -96,6 +96,7 @@ void NextionHMI::Init() {
 	StateMovement::Init();
 	StateWizardZ::Init();
 	StateAbout::Init();
+	StateSettings::Init();
 
 
 }
@@ -148,6 +149,8 @@ void NextionHMI::DrawUpdate() {
 	         break;
 	    case PAGE_WIZARDZ : StateWizardZ::DrawUpdate();
 	         break;
+	    case PAGE_C_NUMBER :
+	         break;
 	}
 }
 
@@ -171,11 +174,13 @@ void NextionHMI::TouchUpdate() {
 	         break;
 	    case PAGE_MOVEMENT : StateMovement::TouchUpdate();
 	         break;
-	    case PAGE_SETTINGS :
+	    case PAGE_SETTINGS : StateSettings::TouchUpdate();
 	         break;
 	    case PAGE_ABOUT : StateAbout::TouchUpdate();
 	         break;
 	    case PAGE_WIZARDZ : StateWizardZ::TouchUpdate();
+	         break;
+	    case PAGE_C_NUMBER : StateEditNumber::TouchUpdate();
 	         break;
 	}
 }
@@ -212,6 +217,8 @@ void NextionHMI::ShowState(uint8_t state_id) {
 		    case PAGE_ABOUT : StateAbout::Activate();
 		         break;
 		    case PAGE_WIZARDZ :
+		         break;
+		    case PAGE_C_NUMBER :
 		         break;
 		}
 }
@@ -260,6 +267,8 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventM
 	         break;
 	    case PAGE_WIZARDZ :
 	         break;
+	    case PAGE_C_NUMBER :
+	         break;
 	}
 }
 
@@ -286,6 +295,14 @@ void NextionHMI::UploadFirmwareFromSerial(uint32_t tftSize) {
     Init();
 }
 
+void NextionHMI::ShowStartScreen(const char* header, const char* message) {
+	NexObject startScreen = NexObject(0,  0,  "start");
+	NexObject startHeader = NexObject(0,  2,  "t1");
+	NexObject startMessage = NexObject(0,  3,  "t2");
+	startScreen.show();
+	startHeader.setText(header);
+	startMessage.setText(message);
+}
 
 #if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
 void NextionHMI::UpdateSDIcon() {

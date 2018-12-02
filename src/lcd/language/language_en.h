@@ -43,6 +43,16 @@
   #define MSG_PRINTER_FULL_NAME                   _UxGT("Anisoprint %s v%s")
 #endif
 
+#ifndef MSG_UPDATING_FIRMWARE
+  #define MSG_UPDATING_FIRMWARE                   _UxGT("Updating firmware...")
+#endif
+
+#ifndef MSG_DO_NOT_TURN_OFF
+  #define MSG_DO_NOT_TURN_OFF                     _UxGT("Please do not turn off your printer")
+#endif
+
+
+
 #ifndef MSG_YES
   #define MSG_YES                           	  _UxGT("Yes")
 #endif
@@ -232,8 +242,12 @@
   #define MSG_CANCEL_PRINT                    		_UxGT("Cancel print")
 #endif
 
-#ifndef MSG_LIVE_TUNE
-  #define MSG_LIVE_TUNE                    			_UxGT("Live tune")
+#ifndef MSG_TUNE
+  #define MSG_TUNE                    				_UxGT("Tune")
+#endif
+
+#ifndef MSG_ADJUST_Z
+  #define MSG_ADJUST_Z                    			_UxGT("Adjust Z")
 #endif
 
 #ifndef RESTART_TO_CONTINUE
@@ -368,9 +382,17 @@
   #define MSG_COLD_HOTEND_TEXT                    	_UxGT("Please heat the hotend before extruding or\\rretracting the filament")
 #endif
 
+#ifndef MSG_INCORRECT_INPUT
+  #define MSG_INCORRECT_INPUT                    	_UxGT("Incorrect input")
+#endif
+
+#ifndef MSG_INPUT_BOUNDS
+  #define MSG_INPUT_BOUNDS                    	_UxGT("The value should be between %.2f and %.2f")
+#endif
+
 //Settings
 #ifndef MSG_COMP_EXTRUDER
-  #define MSG_COMP_EXTRUDER                  _UxGT("Composite extruder")
+  #define MSG_COMP_EXTRUDER                  _UxGT("Composite extruder offset")
 #endif
 
 #ifndef MSG_X_OFFSET
@@ -384,6 +406,65 @@
 #ifndef MSG_Z_OFFSET
   #define MSG_Z_OFFSET                  		_UxGT("Z offset (mm)")
 #endif
+
+#ifndef MSG_FEEDERS_STEPS
+  #define MSG_FEEDERS_STEPS                  _UxGT("Feeders steps per mm")
+#endif
+
+#ifndef MSG_PID_COEFFICIENTS
+  #define MSG_PID_COEFFICIENTS               _UxGT("PID Coefficients")
+#endif
+
+#ifndef MSG_PLASTIC_P
+  #define MSG_PLASTIC_P                  	 _UxGT("Plastic P")
+#endif
+#ifndef MSG_PLASTIC_I
+  #define MSG_PLASTIC_I                  	 _UxGT("Plastic I")
+#endif
+#ifndef MSG_PLASTIC_D
+  #define MSG_PLASTIC_D                  	 _UxGT("Plastic D")
+#endif
+
+#ifndef MSG_COMPOSITE_P
+  #define MSG_COMPOSITE_P                  	 _UxGT("Composite P")
+#endif
+#ifndef MSG_COMPOSITE_I
+  #define MSG_COMPOSITE_I                  	 _UxGT("Composite I")
+#endif
+#ifndef MSG_COMPOSITE_D
+  #define MSG_COMPOSITE_D                  	 _UxGT("Composite D")
+#endif
+
+#ifndef MSG_BUILDPLATE_P
+  #define MSG_BUILDPLATE_P                   _UxGT("Buildplate P")
+#endif
+#ifndef MSG_BUILDPLATE_I
+  #define MSG_BUILDPLATE_I                   _UxGT("Buildplate I")
+#endif
+#ifndef MSG_BUILDPLATE_D
+  #define MSG_BUILDPLATE_D                   _UxGT("Buildplate D")
+#endif
+
+#ifndef MSG_MOVEMENT_FEEDRATE
+  #define MSG_MOVEMENT_FEEDRATE              _UxGT("Movement feedrate")
+#endif
+
+#ifndef MSG_FEEDRATE
+  #define MSG_FEEDRATE              		_UxGT("Feedrate (%)")
+#endif
+
+#ifndef MSG_PLASTIC_FLOW_H
+  #define MSG_PLASTIC_FLOW_H                 _UxGT("Plastic flow")
+#endif
+
+#ifndef MSG_PLASTIC_FLOW
+  #define MSG_PLASTIC_FLOW              	_UxGT("Plastic flow (%)")
+#endif
+
+#ifndef MSG_COMP_PLASTIC_FLOW
+  #define MSG_COMP_PLASTIC_FLOW              _UxGT("Composite plastic flow (%)")
+#endif
+
 
 #ifndef WELCOME_MSG
   #define WELCOME_MSG                         MACHINE_NAME _UxGT(" ready")

@@ -42,7 +42,7 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
 
   bool PrintPause::PausePrint(const float &retract) {
 
-    if (Status!=NotPaused) return false; // already paused
+    if (Status!=NotPaused && Status!=WaitingToPause) return false; // already paused
 
     //Printing with fiber, can't pause now
     if (CanPauseNow == false)
