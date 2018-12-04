@@ -585,9 +585,13 @@ void Printer::Stop() {
   if (isRunning()) {
     setRunning(false);
     SERIAL_LM(ER, MSG_ERR_STOPPED);
+
     SERIAL_STR(PAUSE);
     SERIAL_EOL();
     LCD_MESSAGEPGM(MSG_STOPPED);
+	#if ENABLED(NEXTION_HMI)
+		NextionHMI::RaiseEvent(HMIevent::ERROR, 0, MSG_ERR_STOPPED);
+	#endif
   }
 }
 

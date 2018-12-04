@@ -94,6 +94,12 @@ void StateMenu::Control_Tune(void* ptr) {
 
 void StateMenu::Control_Tune_OK(void* ptr) {
 	StateMenu::ActivatePrintControl();
+	#if ENABLED(VOLUMETRIC_EXTRUSION)
+	  tools.calculate_volumetric_multipliers();
+	#else
+	  for (uint8_t i = COUNT(tools.e_factor); i--;)
+		tools.refresh_e_factor(i);
+	#endif
 }
 
 void StateMenu::Control_CancelPrint(void* ptr) {
@@ -161,6 +167,7 @@ void StateMenu::Maintenance_Settings(void* ptr) {
 
 void StateMenu::Maintenance_Settings_OK(void* ptr) {
 	StateMenu::ActivateMaintenance();
+	EEPROM::Postprocess();
 }
 
 

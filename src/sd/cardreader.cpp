@@ -171,6 +171,9 @@
     gcode_file.write(begin);
     if (gcode_file.writeError) {
       SERIAL_LM(ER, MSG_SD_ERR_WRITE_TO_FILE);
+		#if ENABLED(NEXTION_HMI)
+			NextionHMI::RaiseEvent(HMIevent::SD_ERROR, 0, MSG_SD_ERR_WRITE_TO_FILE);
+		#endif
     }
   }
 
@@ -188,6 +191,9 @@
 
     if (!gcode_file.open(curDir, filename, O_CREAT | O_APPEND | O_WRITE | O_TRUNC)) {
       SERIAL_LMT(ER, MSG_SD_OPEN_FILE_FAIL, filename);
+		#if ENABLED(NEXTION_HMI)
+			NextionHMI::RaiseEvent(HMIevent::SD_ERROR, 0, MSG_SD_OPEN_FILE_FAIL);
+		#endif
     }
     else {
       saving = true;
@@ -386,6 +392,9 @@
     }
     else {
       SERIAL_LMT(ER, MSG_SD_OPEN_FILE_FAIL, fname);
+		#if ENABLED(NEXTION_HMI)
+			NextionHMI::RaiseEvent(HMIevent::SD_ERROR, 0, MSG_SD_OPEN_FILE_FAIL);
+		#endif
       return false;
     }
   }
@@ -427,6 +436,9 @@
 
       if (!restart_file.open(&root, "restart.bin", read ? O_READ : O_CREAT | O_WRITE | O_TRUNC | O_SYNC))
         SERIAL_SM(ER, MSG_SD_OPEN_FILE_FAIL);
+		#if ENABLED(NEXTION_HMI)
+			NextionHMI::RaiseEvent(HMIevent::SD_ERROR, 0, MSG_SD_OPEN_FILE_FAIL);
+		#endif
       else
         SERIAL_MSG(MSG_SD_WRITE_TO_FILE);
 

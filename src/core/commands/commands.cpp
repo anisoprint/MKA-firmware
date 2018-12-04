@@ -193,6 +193,9 @@ void Commands::get_serial() {
             case 3:
               SERIAL_LM(ER, MSG_ERR_STOPPED);
               LCD_MESSAGEPGM(MSG_STOPPED);
+				#if ENABLED(NEXTION_HMI)
+					NextionHMI::RaiseEvent(HMIevent::ERROR, 0, MSG_ERR_STOPPED);
+				#endif
               break;
           }
         }
@@ -301,6 +304,9 @@ void Commands::get_serial() {
         }
         else if (n == -1) {
           SERIAL_LM(ER, MSG_SD_ERR_READ);
+		  #if ENABLED(NEXTION_HMI)
+			NextionHMI::RaiseEvent(HMIevent::SD_ERROR, 0, MSG_SD_ERR_READ);
+		  #endif
         }
         if (sd_char == '#') stop_buffering = true;
 

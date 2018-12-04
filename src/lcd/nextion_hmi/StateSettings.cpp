@@ -254,7 +254,6 @@ void StateSettings::EditNumber_OK_Push(void* ptr) {
 				*float_val = val;
 				eeprom.Store_Settings();
 				StateSettings::Activate(_editedSetting);
-				EEPROM::Postprocess();
 			}
 			else
 			{
@@ -272,7 +271,6 @@ void StateSettings::EditNumber_OK_Push(void* ptr) {
 				*int_val = val;
 				eeprom.Store_Settings();
 				StateSettings::Activate(_editedSetting);
-				EEPROM::Postprocess();
 			}
 			else
 			{

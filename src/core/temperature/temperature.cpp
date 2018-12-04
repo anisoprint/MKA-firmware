@@ -466,6 +466,9 @@ void Temperature::PID_autotune(Heater *act, const float temp, const uint8_t ncyc
     ) {
       SERIAL_LM(ER, MSG_PID_TEMP_TOO_HIGH);
       LCD_ALERTMESSAGEPGM(MSG_PID_TEMP_TOO_HIGH);
+		#if ENABLED(NEXTION_HMI)
+			NextionHMI::RaiseEvent(HMIevent::ERROR, 0, MSG_PID_TEMP_TOO_HIGH);
+		#endif
       pid_pointer = 255;
       break;
     }
@@ -473,6 +476,9 @@ void Temperature::PID_autotune(Heater *act, const float temp, const uint8_t ncyc
       else if (currentTemp < temp + MAX_OVERSHOOT_PID_AUTOTUNE && act->type == IS_COOLER) {
         SERIAL_LM(ER, MSG_PID_TEMP_TOO_LOW);
         LCD_ALERTMESSAGEPGM(MSG_PID_TEMP_TOO_LOW);
+		#if ENABLED(NEXTION_HMI)
+			NextionHMI::RaiseEvent(HMIevent::ERROR, 0, MSG_PID_TEMP_TOO_LOW);
+		#endif
         pid_pointer = 255;
         break;
       }
@@ -485,6 +491,9 @@ void Temperature::PID_autotune(Heater *act, const float temp, const uint8_t ncyc
     if (((time - t1) + (time - t2)) > (MAX_CYCLE_TIME_PID_AUTOTUNE * 60L * 1000L)) {
       SERIAL_LM(ER, MSG_PID_TIMEOUT);
       LCD_ALERTMESSAGEPGM(MSG_PID_TIMEOUT);
+		#if ENABLED(NEXTION_HMI)
+			NextionHMI::RaiseEvent(HMIevent::ERROR, 0, MSG_PID_TIMEOUT);
+		#endif
       pid_pointer = 255;
       break;
     }

@@ -177,6 +177,9 @@ void SdFat::errorHalt_P(PGM_P msg) {
 void SdFat::errorPrint() {
   if (!card_.errorCode()) return;
   SERIAL_LMV(ER, MSG_SD_ERRORCODE, card_.errorCode());
+	#if ENABLED(NEXTION_HMI)
+		NextionHMI::RaiseEvent(HMIevent::SD_ERROR, card_.errorCode(), MSG_SD_ERRORCODE);
+	#endif
 }
 //------------------------------------------------------------------------------
 /** %Print msg, any SD error code.
