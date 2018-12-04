@@ -412,7 +412,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARD_NAM
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARD_NAME/value=Arduino Due (Programming Port)
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/value=COM17
+environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/value=COM27
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.ECLIPSE_LOCATION/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.ECLIPSE_LOCATION/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.ECLIPSE_LOCATION/value=D\:\\Programs\\sloeber4.1\\
