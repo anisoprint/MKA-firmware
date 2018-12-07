@@ -191,9 +191,30 @@ void StateMenu::ActivateCalibrate(void* ptr) {
 
 	_b1.attachPush(StateWizard::BuildPlateS1);
 	_b2.attachPush(StateWizard::ZAxisS1);
-	_b3.attachPush(0);
+	_b3.attachPush(ActivateCalibrateHead);
 
 	_bBack.attachPush(ActivateMaintenance);
+}
+
+/*********************************************************************************
+*
+* Calibrate printhead
+*
+*********************************************************************************/
+
+void StateMenu::ActivateCalibrateHead(void* ptr) {
+	NextionHMI::ActivateState(PAGE_MENU);
+	_count.setValue(1);
+	_page.show();
+	NextionHMI::headerText.setTextPGM(PSTR(MSG_CALIBRATE_PRINTHEAD));
+	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
+
+	_b1.setTextPGM(PSTR(MSG_COMP_Z_OFFSET ));
+
+	_b1.attachPush(StateWizard::CompZOffsetS1);
+
+
+	_bBack.attachPush(ActivateCalibrate);
 }
 
 /*********************************************************************************

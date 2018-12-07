@@ -38,6 +38,9 @@ namespace StateMenu {
 	//Calibrate menu
 	void ActivateCalibrate(void *ptr=0);
 
+	//Calibrate head menu
+	void ActivateCalibrateHead(void *ptr=0);
+
 	//Materials menu
 	void ActivateMaterials(void *ptr=0);
 	void Materials_Plastic(void *ptr=0);

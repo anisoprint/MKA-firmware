@@ -194,6 +194,15 @@
   #define MSG_CALIBRATE                     		_UxGT("Calibrate")
 #endif
 
+#ifndef MSG_CALIBRATE_PRINTHEAD
+  #define MSG_CALIBRATE_PRINTHEAD                   _UxGT("Calibrate printhead")
+#endif
+
+#ifndef MSG_COMP_Z_OFFSET
+  #define MSG_COMP_Z_OFFSET                   		_UxGT("Comp. Z-offset")
+
+#endif
+
 #ifndef MSG_MOVE
   #define MSG_MOVE                    				_UxGT("Move")
 #endif
@@ -256,6 +265,10 @@
 
 #ifndef MSG_HEADER_Z_OFFSET
   #define MSG_HEADER_Z_OFFSET                    	_UxGT("Z axis calibration")
+#endif
+
+#ifndef MSG_HEADER_COMP_Z_OFFSET
+  #define MSG_HEADER_COMP_Z_OFFSET                    _UxGT("Composite Z offset calibration")
 #endif
 
 #ifndef MSG_HEADER_UNLOAD_MATERIAL
@@ -328,6 +341,10 @@
 
 #ifndef MSG_Z_OFFSET_ST2
   #define MSG_Z_OFFSET_ST2                    		_UxGT("Slide a paper between the buildplate and the\\rnozzle. Move the buildplate with the buttons\\rbelow until you feel some friction while\\rsliding the paper.")
+#endif
+
+#ifndef MSG_COMP_Z_OFFSET_ST1
+  #define MSG_COMP_Z_OFFSET_ST1                    	_UxGT("To adjust composite nozzle Z-offset you will\\rneed a sheet of 80gsm paper.\\r\\rPlease be careful during the process. Do not\\rlift the build plate too much or too fast to\\ravoid collision with the printhead.")
 #endif
 
 #ifndef MSG_HEADER_BP_CALIBR

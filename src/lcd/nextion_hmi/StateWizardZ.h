@@ -24,6 +24,7 @@ namespace StateWizardZ {
   	void Init();
   	void DrawUpdate();
 	void ZOffsetS2(void *ptr=0);
+	void CompZOffsetS2(void *ptr=0);
 	void BuildPlateS2(void *ptr=0);
 	void BuildPlateS6(void *ptr=0);
 

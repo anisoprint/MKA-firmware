@@ -85,57 +85,19 @@ void StateWizard::TouchUpdate() {
 	nexLoop(_listenList);
 }
 
-
-void StateWizard::ZAxisS1(void* ptr) {
-	_wizardCancelled = false;
-
-	//Homing if not homed
-	if (mechanics.axis_unhomed_error())
-	{
-		commands.enqueue_and_echo_P(PSTR("G28 X Y"));
-	}
-	commands.enqueue_and_echo_P(PSTR("G28 Z"));
-
-	//Changing tool
-	if (tools.active_extruder!=0)
-	{
-		commands.enqueue_and_echo_P(PSTR("T0"));
-	}
-
-	BUTTONS(2)
-	NO_PICTURE
-	CAPTION(MSG_Z_OFFSET_ST1)
-	HEADER(MSG_HEADER_Z_OFFSET, "1/2", NEX_ICON_MAINTENANCE);
-
-	Init2Buttons(PSTR(MSG_CANCEL), ZAxisCancel, PSTR(MSG_NEXT), StateWizardZ::ZOffsetS2);
-}
-
-void StateWizard::ZAxisFinish(void* ptr) {
+void StateWizard::CompZOffsetS1(void* ptr) {
 	if (!planner.movesplanned())
 	{
-		float dz = mechanics.current_position[Z_AXIS]-LEVELING_OFFSET;
-		mechanics.set_home_offset(Z_AXIS, mechanics.home_offset[Z_AXIS]-dz);
-		commands.enqueue_and_echo_P(PSTR("G28 Z"));
-		commands.enqueue_and_echo_P(PSTR("G28 X Y"));
-		eeprom.Store_Settings();
-		StateStatus::Activate();
-	}
+		_wizardCancelled = false;
 
-}
+		BUTTONS(2)
+		NO_PICTURE
+		CAPTION(MSG_COMP_Z_OFFSET_ST1)
+		HEADER(MSG_HEADER_COMP_Z_OFFSET, "1/2", NEX_ICON_MAINTENANCE);
 
-void StateWizard::ZAxisCancel(void* ptr) {
-	commands.enqueue_and_echo_P(PSTR("G28 Z"));
-	commands.enqueue_and_echo_P(PSTR("G28 X Y"));
-	StateStatus::Activate();
-}
+		Init2Buttons(PSTR(MSG_CANCEL), CompZOffsetCancel, PSTR(MSG_NEXT), StateWizardZ::CompZOffsetS2);
 
 
-//UNLOAD 1 - Home if needed, move to change position, display info about printhead heating
-void StateWizard::MaterialUnloadS1(void* ptr) {
-	_wizardCancelled = false;
-
-	if (PrintPause::Status!=Paused)
-	{
 		//Homing if not homed
 		if (mechanics.axis_unhomed_error())
 		{
@@ -145,27 +107,145 @@ void StateWizard::MaterialUnloadS1(void* ptr) {
 		{
 			mechanics.home(false, false, true);
 		}
+
+		//Changing tool
+		if (tools.active_extruder!=1)
+		{
+			tools.change(1, 0, false, false);
+		}
 	}
-	else
+
+}
+
+void StateWizard::CompZOffsetFinish(void* ptr) {
+	if (!planner.movesplanned())
 	{
-		const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
-	    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
-	    heaters[heater].start_idle_timer(nozzle_timeout);
+
+		BUTTONS(0)
+		NO_PICTURE
+		CAPTION(MSG_PLEASE_WAIT)
+		HEADER(MSG_HEADER_COMP_Z_OFFSET, "Finishing", NEX_ICON_MAINTENANCE);
+
+		float dz = mechanics.current_position[Z_AXIS]-LEVELING_OFFSET;
+		tools.hotend_offset[Z_AXIS][1] = tools.hotend_offset[Z_AXIS][1] - dz;
+		eeprom.Store_Settings();
+		mechanics.home(true, true, true);
+
+		StateMenu::ActivateCalibrate();
+	}
+}
+
+void StateWizard::CompZOffsetCancel(void* ptr) {
+
+	BUTTONS(0)
+	NO_PICTURE
+	CAPTION(MSG_PLEASE_WAIT)
+	HEADER(MSG_HEADER_COMP_Z_OFFSET, "Canceling", NEX_ICON_MAINTENANCE);
+
+	mechanics.home(true, true, true);
+	StateMenu::ActivateCalibrate();
+}
+
+
+void StateWizard::ZAxisS1(void* ptr) {
+	if (!planner.movesplanned())
+	{
+		_wizardCancelled = false;
+		BUTTONS(2)
+		NO_PICTURE
+		CAPTION(MSG_Z_OFFSET_ST1)
+		HEADER(MSG_HEADER_Z_OFFSET, "1/2", NEX_ICON_MAINTENANCE);
+
+		Init2Buttons(PSTR(MSG_CANCEL), ZAxisCancel, PSTR(MSG_NEXT), StateWizardZ::ZOffsetS2);
+
+		//Homing if not homed
+		if (mechanics.axis_unhomed_error())
+		{
+			mechanics.home(true, true, true);
+		}
+		else
+		{
+			mechanics.home(false, false, true);
+		}
+
+		//Changing tool
+		if (tools.active_extruder!=0)
+		{
+			tools.change(0, 0, false, false);
+		}
+
+	}
+}
+
+void StateWizard::ZAxisFinish(void* ptr) {
+	if (!planner.movesplanned())
+	{
+		BUTTONS(0)
+		NO_PICTURE
+		CAPTION(MSG_PLEASE_WAIT)
+		HEADER(MSG_HEADER_Z_OFFSET, "Finishing", NEX_ICON_MAINTENANCE);
+
+		float dz = mechanics.current_position[Z_AXIS]-LEVELING_OFFSET;
+		mechanics.set_home_offset(Z_AXIS, mechanics.home_offset[Z_AXIS] - dz);
+		eeprom.Store_Settings();
+
+		Serial.println(mechanics.home_offset[Z_AXIS]);
+
+		mechanics.home(true, true, true);
+		StateMenu::ActivateCalibrate();
 	}
 
-	//Changing tool
-	const uint8_t extruder_id = Tools::extruder_driver_to_extruder(NextionHMI::wizardData - E_AXIS);
-	if (extruder_id!=tools.active_extruder) tools.change(extruder_id, 0, false, false);
+}
 
-	// Move XY to change position
-	mechanics.do_blocking_move_to_xy(int(MATERIAL_CHANGE_X), int(MATERIAL_CHANGE_Y), NOZZLE_PARK_XY_FEEDRATE);
-
-	BUTTONS(2)
+void StateWizard::ZAxisCancel(void* ptr) {
+	BUTTONS(0)
 	NO_PICTURE
-	CAPTION(MSG_UNLOAD_MATERIAL_ST1)
-	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "1/4", NEX_ICON_MAINTENANCE);
+	CAPTION(MSG_PLEASE_WAIT)
+	HEADER(MSG_HEADER_Z_OFFSET, "Canceling", NEX_ICON_MAINTENANCE);
+	mechanics.home(true, true, true);
+	StateMenu::ActivateCalibrate();
+}
 
-	Init2Buttons(PSTR(MSG_CANCEL), MaterialUnloadCancel, PSTR(MSG_NEXT), MaterialUnloadS1a);
+
+//UNLOAD 1 - Home if needed, move to change position, display info about printhead heating
+void StateWizard::MaterialUnloadS1(void* ptr) {
+	if (!planner.movesplanned())
+	{
+		_wizardCancelled = false;
+
+		BUTTONS(2)
+		NO_PICTURE
+		CAPTION(MSG_UNLOAD_MATERIAL_ST1)
+		HEADER(MSG_HEADER_UNLOAD_MATERIAL, "1/4", NEX_ICON_MAINTENANCE);
+
+		Init2Buttons(PSTR(MSG_CANCEL), MaterialUnloadCancel, PSTR(MSG_NEXT), MaterialUnloadS1a);
+
+		if (PrintPause::Status!=Paused)
+		{
+			//Homing if not homed
+			if (mechanics.axis_unhomed_error())
+			{
+				mechanics.home(true, true, true);
+			}
+			else
+			{
+				mechanics.home(false, false, true);
+			}
+		}
+		else
+		{
+			const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
+			const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+			heaters[heater].start_idle_timer(nozzle_timeout);
+		}
+
+		//Changing tool
+		const uint8_t extruder_id = Tools::extruder_driver_to_extruder(NextionHMI::wizardData - E_AXIS);
+		if (extruder_id!=tools.active_extruder) tools.change(extruder_id, 0, false, false);
+
+		// Move XY to change position
+		mechanics.do_blocking_move_to_xy(int(MATERIAL_CHANGE_X), int(MATERIAL_CHANGE_Y), NOZZLE_PARK_XY_FEEDRATE);
+	}
 }
 
 //UNLOAD 1a - display set temperature screen
@@ -303,6 +383,7 @@ void StateWizard::MaterialUnloadFinish(void* ptr) {
 }
 
 void StateWizard::MaterialUnloadCancel(void* ptr) {
+
 	_wizardCancelled = true;
 	printer.setWaitForHeatUp(false);
 	MaterialUnloadFinish();
@@ -311,6 +392,13 @@ void StateWizard::MaterialUnloadCancel(void* ptr) {
 
 void StateWizard::MaterialLoadS1(void* ptr) {
 	_wizardCancelled = false;
+
+	BUTTONS(2)
+	NO_PICTURE
+	CAPTION(MSG_LOAD_MATERIAL_ST1)
+	HEADER(MSG_HEADER_LOAD_MATERIAL, "1/6", NEX_ICON_MAINTENANCE);
+
+	Init2Buttons(PSTR(MSG_CANCEL), MaterialLoadCancel, PSTR(MSG_NEXT), MaterialLoadS1a);
 
 	if (PrintPause::Status!=Paused)
 	{
@@ -338,12 +426,6 @@ void StateWizard::MaterialLoadS1(void* ptr) {
 	// Move XY to change position
 	mechanics.do_blocking_move_to_xy(int(MATERIAL_CHANGE_X), int(MATERIAL_CHANGE_Y), NOZZLE_PARK_XY_FEEDRATE);
 
-	BUTTONS(2)
-	NO_PICTURE
-	CAPTION(MSG_LOAD_MATERIAL_ST1)
-	HEADER(MSG_HEADER_LOAD_MATERIAL, "1/6", NEX_ICON_MAINTENANCE);
-
-	Init2Buttons(PSTR(MSG_CANCEL), MaterialLoadCancel, PSTR(MSG_NEXT), MaterialLoadS1a);
 }
 
 void StateWizard::MaterialLoadS1a(void* ptr) {
@@ -558,7 +640,7 @@ void StateWizard::MaterialLoadS6(void* ptr) {
 	}
 	else
 	{
-    	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, PAUSE_PARK_RETRACT_LENGTH, PAUSE_PARK_RETRACT_FEEDRATE);
+    	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -PAUSE_PARK_RETRACT_LENGTH, PAUSE_PARK_RETRACT_FEEDRATE);
 	}
 	BUTTONS(1)
 	NO_PICTURE
@@ -607,44 +689,54 @@ void StateWizard::MaterialLoadCancel(void* ptr) {
 }
 
 void StateWizard::BuildPlateS1(void* ptr) {
-	_wizardCancelled = false;
-
-	//Homing if not homed
-	if (mechanics.axis_unhomed_error())
+	if (!planner.movesplanned())
 	{
-		commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+		_wizardCancelled = false;
+		BUTTONS(2)
+		NO_PICTURE
+		CAPTION(MSG_BP_CALIBR_ST1)
+		HEADER(MSG_HEADER_BP_CALIBR, "1/8", NEX_ICON_MAINTENANCE);
+
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS2);
+
+		//Homing if not homed
+		mechanics.home(false, false, true);
+		if (mechanics.axis_unhomed_error())
+		{
+			mechanics.home(true, true, false);
+		}
+
+		//Changing tool
+		if (tools.active_extruder!=0)
+		{
+			tools.change(0, 0, false, false);
+		}
+
 	}
-	commands.enqueue_and_echo_P(PSTR("G28 Z"));
-
-	//Changing tool
-	if (tools.active_extruder!=0)
-	{
-		commands.enqueue_and_echo_P(PSTR("T0"));
-	}
-
-	BUTTONS(2)
-	NO_PICTURE
-	CAPTION(MSG_BP_CALIBR_ST1)
-	HEADER(MSG_HEADER_BP_CALIBR, "1/8", NEX_ICON_MAINTENANCE);
-
-	Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS2);
 }
 
 void StateWizard::BuildPlateFinish(void* ptr) {
 	if (!planner.movesplanned())
 	{
+		BUTTONS(0)
+		NO_PICTURE
+		CAPTION(MSG_PLEASE_WAIT)
+		HEADER(MSG_HEADER_BP_CALIBR, "Finishing", NEX_ICON_MAINTENANCE);
 		float dz = mechanics.current_position[Z_AXIS]-LEVELING_OFFSET;
 		mechanics.set_home_offset(Z_AXIS, mechanics.home_offset[Z_AXIS]-dz);
-		commands.enqueue_and_echo_P(PSTR("G28 Z"));
-		commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+		mechanics.home(true, true, true);
 		eeprom.Store_Settings();
 		StateStatus::Activate();
 	}
 }
 
 void StateWizard::BuildPlateCancel(void* ptr) {
-	commands.enqueue_and_echo_P(PSTR("G28 Z"));
-	commands.enqueue_and_echo_P(PSTR("G28 X Y"));
+	BUTTONS(0)
+	NO_PICTURE
+	CAPTION(MSG_PLEASE_WAIT)
+	HEADER(MSG_HEADER_BP_CALIBR, "Canceling", NEX_ICON_MAINTENANCE);
+
+	mechanics.home(true, true, true);
 	StateStatus::Activate();
 }
 
@@ -760,6 +852,7 @@ void StateWizard::DrawUpdate() {
 		DrawUpdateCallback(NULL);
 	}
 }
+
 
 
 

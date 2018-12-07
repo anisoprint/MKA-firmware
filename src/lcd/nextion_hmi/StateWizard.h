@@ -78,6 +78,11 @@ namespace StateWizard {
 	void ZAxisFinish(void *ptr=0);
 	void ZAxisCancel(void *ptr=0);
 
+	//Z offset calibration
+	void CompZOffsetS1(void *ptr=0);
+	void CompZOffsetFinish(void *ptr=0);
+	void CompZOffsetCancel(void *ptr=0);
+
 	void Init2Buttons(const char *txtLeft, NexTouchEventCb cbLeft, const char *txtRight, NexTouchEventCb cbRight);
 	void Init1Button(const char *txtCenter, NexTouchEventCb cbCenter);
 

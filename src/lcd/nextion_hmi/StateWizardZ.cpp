@@ -52,7 +52,6 @@ void StateWizardZ::Movement_Push(void* ptr) {
         mechanics.current_position[Z_AXIS] += dz;
         planner.buffer_line(mechanics.current_position, mechanics.homing_feedrate_mm_s[Z_AXIS], tools.active_extruder);
 	}
-	mechanics.report_current_position();
 }
 
 void StateWizardZ::Init() {
@@ -69,21 +68,14 @@ void StateWizardZ::TouchUpdate() {
 }
 
 void StateWizardZ::ZOffsetS2(void* ptr) {
-	SERIAL_VAL(planner.movesplanned());
-	SERIAL_EOL();
 
 	if (!planner.movesplanned())
 	{
 		//Going to center adjust position
-		ZERO(NextionHMI::buffer);
-
-		sprintf_P(NextionHMI::buffer, PSTR("G1 F%i X%i Y%i"), (int)(mechanics.homing_feedrate_mm_s[X_AXIS]*60), int(BED_CENTER_X), int(BED_CENTER_Y));
-		commands.enqueue_and_echo(NextionHMI::buffer);
+		mechanics.do_blocking_move_to_xy(int(BED_CENTER_X), int(BED_CENTER_Y), NOZZLE_PARK_XY_FEEDRATE);
 
 		//Going to Z adjust position
-		ZERO(NextionHMI::buffer);
-		sprintf_P(NextionHMI::buffer, PSTR("G1 Z%i F%i"), 10, (int)(mechanics.homing_feedrate_mm_s[Z_AXIS]*60));
-		commands.enqueue_and_echo(NextionHMI::buffer);
+		mechanics.do_blocking_move_to_z(10, mechanics.homing_feedrate_mm_s[Z_AXIS]);
 
 		NextionHMI::ActivateState(PAGE_WIZARDZ);
 
@@ -111,14 +103,10 @@ void StateWizardZ::BuildPlateS2(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to center adjust position
-		ZERO(NextionHMI::buffer);
-		sprintf_P(NextionHMI::buffer, PSTR("G1 F%i X%i Y%i"), (int)(mechanics.homing_feedrate_mm_s[X_AXIS]*60), int(BED_CENTER_ADJUST_X), int(BED_CENTER_ADJUST_Y));
-		commands.enqueue_and_echo(NextionHMI::buffer);
+		mechanics.do_blocking_move_to_xy(int(BED_CENTER_ADJUST_X), int(BED_CENTER_ADJUST_Y), NOZZLE_PARK_XY_FEEDRATE);
 
 		//Going to Z adjust position
-		ZERO(NextionHMI::buffer);
-		sprintf_P(NextionHMI::buffer, PSTR("G1 Z%i F%i"), 10, (int)(mechanics.homing_feedrate_mm_s[Z_AXIS]*60));
-		commands.enqueue_and_echo(NextionHMI::buffer);
+		mechanics.do_blocking_move_to_z(10, mechanics.homing_feedrate_mm_s[Z_AXIS]);
 
 		NextionHMI::ActivateState(PAGE_WIZARDZ);
 
@@ -141,9 +129,11 @@ void StateWizardZ::BuildPlateS2(void* ptr) {
 
 
 void StateWizardZ::DrawUpdate() {
-	String strTemp = String("Z=");
-	strTemp+=ftostr32(LOGICAL_X_POSITION(mechanics.current_position[Z_AXIS]));
-	_txtZ.setText(strTemp.c_str());
+
+	ZERO(NextionHMI::buffer);
+	sprintf_P(NextionHMI::buffer, PSTR("dZ = %.2f"), mechanics.current_position[Z_AXIS]-LEVELING_OFFSET);
+
+	_txtZ.setText(NextionHMI::buffer);
 }
 
 void StateWizardZ::BuildPlateS6(void* ptr) {
@@ -162,6 +152,34 @@ void StateWizardZ::BuildPlateS6(void* ptr) {
 
 		_bLeft.attachPush(StateWizard::BuildPlateCancel);
 		_bRight.attachPush(StateWizard::BuildPlateS7);
+
+		DrawUpdate();
+
+	}
+}
+
+void StateWizardZ::CompZOffsetS2(void* ptr) {
+	if (!planner.movesplanned())
+	{
+		//Going to center adjust position
+		mechanics.do_blocking_move_to_xy(int(BED_CENTER_X), int(BED_CENTER_Y), NOZZLE_PARK_XY_FEEDRATE);
+
+		//Going to Z adjust position
+		mechanics.do_blocking_move_to_z(10, mechanics.homing_feedrate_mm_s[Z_AXIS]);
+
+		NextionHMI::ActivateState(PAGE_WIZARDZ);
+
+		_page.show();
+		NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_COMP_Z_OFFSET));
+		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
+		_txtHeader.setTextPGM(PSTR(MSG_HEADER_COMP_Z_OFFSET ": 2/2"));
+		_txtCaption.setTextPGM(PSTR(MSG_Z_OFFSET_ST2));
+
+		_bLeft.setTextPGM(PSTR(MSG_CANCEL));
+		_bRight.setTextPGM(PSTR(MSG_FINISH));
+
+		_bLeft.attachPush(StateWizard::CompZOffsetCancel);
+		_bRight.attachPush(StateWizard::CompZOffsetFinish);
 
 		DrawUpdate();
 

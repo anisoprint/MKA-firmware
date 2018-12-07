@@ -320,9 +320,9 @@ void Printer::setup() {
 
   if (!eeprom_loaded) lcd_eeprom_allert();
 
-  #if HAS_SDSUPPORT
-    card.checkautostart(false);
-  #endif
+  //#if HAS_SDSUPPORT
+    //card.checkautostart(false);
+  //#endif
 
   #if HAS_SD_RESTART
     restart.do_print_job();
