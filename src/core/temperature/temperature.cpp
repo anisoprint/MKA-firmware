@@ -818,7 +818,7 @@ void Temperature::max_temp_error(const uint8_t h) {
       case TRRunaway:
 #if ENABLED(NEXTION_HMI)
     	char buff[30];
-		sprintf_P(buff, PSTR("T:%d/%d idle:%d"), temperature, target_temperature, heaters[h].isIdle());
+		sprintf_P(buff, PSTR("%s//r T:%.1f/%.1f idle:%d"),MSG_T_THERMAL_RUNAWAY, temperature, target_temperature, heaters[h].isIdle());
     	NextionHMI::RaiseEvent(HMIevent::TEMPERATURE_ERROR, h, buff);
     	heaters[h].setIdle(true);
        // _temp_error(h, PSTR(MSG_T_THERMAL_RUNAWAY), PSTR(MSG_THERMAL_RUNAWAY));

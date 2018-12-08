@@ -210,15 +210,24 @@
 #define CHANGE_MOVES 9
 
 //Change to T0 - prepare - prepare_fast - start - switch - finish
-#define CHANGE_T0_X {297.0, 297.0, 315.2, 315.2, 335.0, 335.0, 335.0, 335.0, 335.0}
-#define CHANGE_T0_Y {17,    7,     7,     30,     30,   7,     30,    7,     30   }
-#define CHANGE_T0_F {200,   200,   50,    200,   200 ,  50,    50,    50,    50  }
+//#define CHANGE_T0_X {297.0, 297.0, 315.2, 315.2, 335.0, 335.0, 335.0, 335.0, 335.0 }
+//#define CHANGE_T0_Y {17,    7,     7,     30,     30,   7,     30,    7,     30    }
+//#define CHANGE_T0_F {200,   200,   50,    200,   200 ,  50,    50,    50,    50    }
 
 //Change to T1 - prepare - prepare_fast - start - switch - finish
+//#define CHANGE_T1_X {335.0, 335.0, 335.0, 335.0, 313.9, 335.0, 335.0, 335.0, 335.0 }
+//#define CHANGE_T1_Y {30,    7,    30,     7,     7,     7,     30,     7,    30    }
+//#define CHANGE_T1_F {200,   50,   50,     50,    50,    200,   50,   50,    50     }
 
-#define CHANGE_T1_X {335.0, 335.0, 335.0, 335.0, 313.9, 335.0, 335.0, 335.0, 335.0}
-#define CHANGE_T1_Y {30,    7,    30,     7,     7,     7,     30,     7,    30   }
-#define CHANGE_T1_F {200,   50,   50,     50,    50,    200,   50,   50,    50  }
+//Change to T0 - prepare - prepare_fast - start - switch - finish
+#define CHANGE_T0_X {296.0, 296.0, 315.2, 304,   304,  336.0,  336.0, 332.0,  332.0}
+#define CHANGE_T0_Y {17,    7,     7,     7,     50,   50,     4,     4,      50   }
+#define CHANGE_T0_F {200,   200,   50,    200,   200 , 200,    34,    200,    34   }
+
+//Change to T1 - prepare - prepare_fast - start - switch - finish
+#define CHANGE_T1_X {296.0, 336.0, 336.0, 313.9, 328.0, 328.0, 298.0, 297.0, 296.0 }
+#define CHANGE_T1_Y {50,    50,    7,     7,     7,     50,    50,    50,    50    }
+#define CHANGE_T1_F {200,   200,   34,    50,    200,   34,    200,   200,   200   }
 
 /***********************************************************************/
 

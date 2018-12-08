@@ -131,16 +131,32 @@ void StateMovement::ActivateExtruders() {
 void StateMovement::DrawUpdate() {
 	if (_moveMode==MODE_MOVE_AXIS)
 	{
-		_tMovementA.setText(ftostr62rj(LOGICAL_X_POSITION(mechanics.current_position[X_AXIS])));
-		_tMovementB.setText(ftostr62rj(LOGICAL_Y_POSITION(mechanics.current_position[Y_AXIS])));
-		_tMovementC.setText(ftostr62rj(LOGICAL_Z_POSITION(mechanics.current_position[Z_AXIS])));
+		ZERO(NextionHMI::buffer);
+		sprintf_P(NextionHMI::buffer, PSTR("%.2f"), LOGICAL_X_POSITION(mechanics.current_position[X_AXIS]));
+		_tMovementA.setText(NextionHMI::buffer);
+
+		ZERO(NextionHMI::buffer);
+		sprintf_P(NextionHMI::buffer, PSTR("%.2f"), LOGICAL_Y_POSITION(mechanics.current_position[Y_AXIS]));
+		_tMovementB.setText(NextionHMI::buffer);
+
+		ZERO(NextionHMI::buffer);
+		sprintf_P(NextionHMI::buffer, PSTR("%.2f"), LOGICAL_Z_POSITION(mechanics.current_position[Z_AXIS]));
+		_tMovementC.setText(NextionHMI::buffer);
 	}
 	else
 	{
-		_tMovementA.setText(ftostr62rj(mechanics.current_position[E_AXIS]));
-		_tMovementB.setText(ftostr62rj(mechanics.current_position[U_AXIS]));
+			ZERO(NextionHMI::buffer);
+			sprintf_P(NextionHMI::buffer, PSTR("%.2f"), mechanics.current_position[E_AXIS]);
+			_tMovementA.setText(NextionHMI::buffer);
+
+			ZERO(NextionHMI::buffer);
+			sprintf_P(NextionHMI::buffer, PSTR("%.2f"), mechanics.current_position[U_AXIS]);
+			_tMovementB.setText(NextionHMI::buffer);
+
 #if DRIVER_EXTRUDERS>2
-		_tMovementC.setText(ftostr62rj(mechanics.current_position[V_AXIS]));
+		ZERO(NextionHMI::buffer);
+		sprintf_P(NextionHMI::buffer, PSTR("%.2f"), mechanics.current_position[V_AXIS]);
+		_tMovementC.setText(NextionHMI::buffer);
 #endif
 	}
 }
