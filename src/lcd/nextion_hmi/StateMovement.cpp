@@ -66,12 +66,14 @@ void StateMovement::Movement_Push(void* ptr) {
 		//cut
 		if (MACHINE_VERSION != "1.0")
 		{
+			stepper.synchronize();
 			commands.enqueue_and_echo_P(PSTR("M280 P0 S160 "));
 			commands.enqueue_and_echo_P(PSTR("G4 P100  "));
 			commands.enqueue_and_echo_P(PSTR("M280 P0 S90 "));
 		}
 		else
 		{
+			stepper.synchronize();
 			commands.enqueue_and_echo_P(PSTR("M280 P0 S30 "));
 			commands.enqueue_and_echo_P(PSTR("G4 P150  "));
 			commands.enqueue_and_echo_P(PSTR("M280 P0 S90 "));

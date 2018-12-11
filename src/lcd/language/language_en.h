@@ -316,7 +316,7 @@
 #endif
 
 #ifndef MSG_LOAD_MATERIAL_ST3_TIMEOUT
-  #define MSG_LOAD_MATERIAL_ST3_TIMEOUT             _UxGT("Printer was waiting for too long and\\rmaterial loading wizard was stopped.\\rTo restart the loading process please press\\rRepeat.")
+  #define MSG_LOAD_MATERIAL_ST3_TIMEOUT             _UxGT("Printer was waiting for too long and\\rmaterial loading wizard was stopped.\\rTo restart the loading process please\\rpress Repeat.")
 #endif
 
 #ifndef MSG_LOAD_MATERIAL_ST4

@@ -14,7 +14,7 @@
 #define NO_PICTURE 					_pic.setValue(0);
 
 #define CAPTION(n) 					_text.setTextPGM(PSTR(n));
-#define HEADER(str, stage, icon) 	_head.setTextPGM(PSTR(str ": " stage));_page.show(); NextionHMI::headerText.setTextPGM(PSTR(str)); NextionHMI::headerIcon.setPic(icon);
+#define HEADER(str, stage, icon) 	if (stage!="") {_head.setTextPGM(PSTR(str ": " stage));} else {_head.setTextPGM(PSTR(str));} _page.show(); NextionHMI::headerText.setTextPGM(PSTR(str)); NextionHMI::headerIcon.setPic(icon);
 
 #include "StateWizard.h"
 
@@ -124,7 +124,7 @@ void StateWizard::CompZOffsetFinish(void* ptr) {
 		BUTTONS(0)
 		NO_PICTURE
 		CAPTION(MSG_PLEASE_WAIT)
-		HEADER(MSG_HEADER_COMP_Z_OFFSET, "Finishing", NEX_ICON_MAINTENANCE);
+		HEADER(MSG_HEADER_COMP_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
 
 		float dz = mechanics.current_position[Z_AXIS]-LEVELING_OFFSET;
 		tools.hotend_offset[Z_AXIS][1] = tools.hotend_offset[Z_AXIS][1] - dz;
@@ -140,7 +140,7 @@ void StateWizard::CompZOffsetCancel(void* ptr) {
 	BUTTONS(0)
 	NO_PICTURE
 	CAPTION(MSG_PLEASE_WAIT)
-	HEADER(MSG_HEADER_COMP_Z_OFFSET, "Canceling", NEX_ICON_MAINTENANCE);
+	HEADER(MSG_HEADER_COMP_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
 
 	mechanics.home(true, true, true);
 	StateMenu::ActivateCalibrate();
@@ -183,7 +183,7 @@ void StateWizard::ZAxisFinish(void* ptr) {
 		BUTTONS(0)
 		NO_PICTURE
 		CAPTION(MSG_PLEASE_WAIT)
-		HEADER(MSG_HEADER_Z_OFFSET, "Finishing", NEX_ICON_MAINTENANCE);
+		HEADER(MSG_HEADER_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
 
 		float dz = mechanics.current_position[Z_AXIS]-LEVELING_OFFSET;
 		mechanics.set_home_offset(Z_AXIS, mechanics.home_offset[Z_AXIS] - dz);
@@ -201,7 +201,7 @@ void StateWizard::ZAxisCancel(void* ptr) {
 	BUTTONS(0)
 	NO_PICTURE
 	CAPTION(MSG_PLEASE_WAIT)
-	HEADER(MSG_HEADER_Z_OFFSET, "Canceling", NEX_ICON_MAINTENANCE);
+	HEADER(MSG_HEADER_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
 	mechanics.home(true, true, true);
 	StateMenu::ActivateCalibrate();
 }
@@ -239,12 +239,12 @@ void StateWizard::MaterialUnloadS1(void* ptr) {
 			heaters[heater].start_idle_timer(nozzle_timeout);
 		}
 
+		// Move XY to change position
+		mechanics.do_blocking_move_to_xy(int(MATERIAL_CHANGE_X), int(MATERIAL_CHANGE_Y), NOZZLE_PARK_XY_FEEDRATE);
+
 		//Changing tool
 		const uint8_t extruder_id = Tools::extruder_driver_to_extruder(NextionHMI::wizardData - E_AXIS);
 		if (extruder_id!=tools.active_extruder) tools.change(extruder_id, 0, false, false);
-
-		// Move XY to change position
-		mechanics.do_blocking_move_to_xy(int(MATERIAL_CHANGE_X), int(MATERIAL_CHANGE_Y), NOZZLE_PARK_XY_FEEDRATE);
 	}
 }
 
@@ -321,6 +321,8 @@ void StateWizard::MaterialUnloadS3(void* ptr) {
 
 	if (Tools::extruder_driver_is_plastic((AxisEnum)NextionHMI::wizardData)) //Unload plastic
 	{
+	    // Push filament
+		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, FILAMENT_UNLOAD_RETRACT_LENGTH/2, PAUSE_PARK_UNLOAD_FEEDRATE);
 	    // Retract filament
 		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -FILAMENT_UNLOAD_RETRACT_LENGTH, PAUSE_PARK_RETRACT_FEEDRATE);
 	    // Wait for filament to cool
@@ -355,7 +357,7 @@ void StateWizard::MaterialUnloadFinish(void* ptr) {
 	BUTTONS(0)
 	NO_PICTURE
 	CAPTION(MSG_PLEASE_WAIT)
-	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "Finishing", NEX_ICON_MAINTENANCE);
+	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "", NEX_ICON_MAINTENANCE);
 
 	uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
 
@@ -419,12 +421,12 @@ void StateWizard::MaterialLoadS1(void* ptr) {
 	    heaters[heater].start_idle_timer(nozzle_timeout);
 	}
 
+	// Move XY to change position
+	mechanics.do_blocking_move_to_xy(int(MATERIAL_CHANGE_X), int(MATERIAL_CHANGE_Y), NOZZLE_PARK_XY_FEEDRATE);
+
 	//Changing tool
 	uint8_t extruder_id = Tools::extruder_driver_to_extruder(NextionHMI::wizardData - E_AXIS);
 	if (extruder_id!=tools.active_extruder) tools.change(extruder_id, 0, false, false);
-
-	// Move XY to change position
-	mechanics.do_blocking_move_to_xy(int(MATERIAL_CHANGE_X), int(MATERIAL_CHANGE_Y), NOZZLE_PARK_XY_FEEDRATE);
 
 }
 
@@ -655,7 +657,7 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
 	BUTTONS(0)
 	NO_PICTURE
 	CAPTION(MSG_PLEASE_WAIT)
-	HEADER(MSG_HEADER_LOAD_MATERIAL, "Finishing", NEX_ICON_MAINTENANCE);
+	HEADER(MSG_HEADER_LOAD_MATERIAL, "", NEX_ICON_MAINTENANCE);
 
 
 	uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
@@ -721,7 +723,7 @@ void StateWizard::BuildPlateFinish(void* ptr) {
 		BUTTONS(0)
 		NO_PICTURE
 		CAPTION(MSG_PLEASE_WAIT)
-		HEADER(MSG_HEADER_BP_CALIBR, "Finishing", NEX_ICON_MAINTENANCE);
+		HEADER(MSG_HEADER_BP_CALIBR, "", NEX_ICON_MAINTENANCE);
 		float dz = mechanics.current_position[Z_AXIS]-LEVELING_OFFSET;
 		mechanics.set_home_offset(Z_AXIS, mechanics.home_offset[Z_AXIS]-dz);
 		mechanics.home(true, true, true);
@@ -734,7 +736,7 @@ void StateWizard::BuildPlateCancel(void* ptr) {
 	BUTTONS(0)
 	NO_PICTURE
 	CAPTION(MSG_PLEASE_WAIT)
-	HEADER(MSG_HEADER_BP_CALIBR, "Canceling", NEX_ICON_MAINTENANCE);
+	HEADER(MSG_HEADER_BP_CALIBR, "", NEX_ICON_MAINTENANCE);
 
 	mechanics.home(true, true, true);
 	StateStatus::Activate();
