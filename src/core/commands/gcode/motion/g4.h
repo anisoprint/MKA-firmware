@@ -39,6 +39,8 @@ inline void gcode_G4(void) {
 
   stepper.synchronize();
 
+  dwell_ms += millis();
+
   if (!lcd_hasstatus()) LCD_MESSAGEPGM(MSG_DWELL);
 
   while (PENDING(millis(), dwell_ms)) {

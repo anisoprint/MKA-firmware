@@ -235,7 +235,7 @@ class Mechanics {
 	#endif
 
 	#if ENABLED(EG6_EXTRUDER)
-	  static uint8_t home_tool[XYZ];
+	  static uint8_t home_tool(uint8_t axis);
 	  static float homeCS2toolCS(uint8_t current_tool, float home_coord, uint8_t axis);
 	  static float homeCS2toolCSdelta(uint8_t current_tool, uint8_t axis);
 	  static float toolCS2homeCS(uint8_t current_tool, float tool_coord, uint8_t axis);

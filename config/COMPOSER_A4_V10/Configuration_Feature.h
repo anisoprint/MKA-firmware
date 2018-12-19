@@ -199,13 +199,6 @@
  ***********************************************************************/
 #define EG6_EXTRUDER
 
-// Defines which tools will be at zero (or max) position after homing each axis
-// If the homing is performed while other tool is active, a movement will
-// be done to set active tool to zero (or max) position according to
-// Hotend offset
-//					{X    Y    Z}
-#define HOME_TOOLS  {1,   0,   0}
-
 //Change moves
 #define CHANGE_MOVES 9
 

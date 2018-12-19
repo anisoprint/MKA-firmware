@@ -136,14 +136,16 @@ void StateWizard::CompZOffsetFinish(void* ptr) {
 }
 
 void StateWizard::CompZOffsetCancel(void* ptr) {
+	if (!planner.movesplanned())
+	{
+		BUTTONS(0)
+		NO_PICTURE
+		CAPTION(MSG_PLEASE_WAIT)
+		HEADER(MSG_HEADER_COMP_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
 
-	BUTTONS(0)
-	NO_PICTURE
-	CAPTION(MSG_PLEASE_WAIT)
-	HEADER(MSG_HEADER_COMP_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
-
-	mechanics.home(true, true, true);
-	StateMenu::ActivateCalibrate();
+		mechanics.home(true, true, true);
+		StateMenu::ActivateCalibrate();
+	}
 }
 
 
@@ -198,12 +200,15 @@ void StateWizard::ZAxisFinish(void* ptr) {
 }
 
 void StateWizard::ZAxisCancel(void* ptr) {
-	BUTTONS(0)
-	NO_PICTURE
-	CAPTION(MSG_PLEASE_WAIT)
-	HEADER(MSG_HEADER_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
-	mechanics.home(true, true, true);
-	StateMenu::ActivateCalibrate();
+	if (!planner.movesplanned())
+	{
+		BUTTONS(0)
+		NO_PICTURE
+		CAPTION(MSG_PLEASE_WAIT)
+		HEADER(MSG_HEADER_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
+		mechanics.home(true, true, true);
+		StateMenu::ActivateCalibrate();
+	}
 }
 
 
@@ -385,10 +390,12 @@ void StateWizard::MaterialUnloadFinish(void* ptr) {
 }
 
 void StateWizard::MaterialUnloadCancel(void* ptr) {
-
-	_wizardCancelled = true;
-	printer.setWaitForHeatUp(false);
-	MaterialUnloadFinish();
+	if (!planner.movesplanned())
+	{
+		_wizardCancelled = true;
+		printer.setWaitForHeatUp(false);
+		MaterialUnloadFinish();
+	}
 }
 
 
@@ -685,9 +692,12 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
 }
 
 void StateWizard::MaterialLoadCancel(void* ptr) {
-	_wizardCancelled = true;
-	printer.setWaitForHeatUp(false);
-	MaterialLoadFinish();
+	if (!planner.movesplanned())
+	{
+		_wizardCancelled = true;
+		printer.setWaitForHeatUp(false);
+		MaterialLoadFinish();
+	}
 }
 
 void StateWizard::BuildPlateS1(void* ptr) {
@@ -733,13 +743,16 @@ void StateWizard::BuildPlateFinish(void* ptr) {
 }
 
 void StateWizard::BuildPlateCancel(void* ptr) {
-	BUTTONS(0)
-	NO_PICTURE
-	CAPTION(MSG_PLEASE_WAIT)
-	HEADER(MSG_HEADER_BP_CALIBR, "", NEX_ICON_MAINTENANCE);
+	if (!planner.movesplanned())
+	{
+		BUTTONS(0)
+		NO_PICTURE
+		CAPTION(MSG_PLEASE_WAIT)
+		HEADER(MSG_HEADER_BP_CALIBR, "", NEX_ICON_MAINTENANCE);
 
-	mechanics.home(true, true, true);
-	StateStatus::Activate();
+		mechanics.home(true, true, true);
+		StateStatus::Activate();
+	}
 }
 
 void StateWizard::BuildPlateS3(void* ptr) {

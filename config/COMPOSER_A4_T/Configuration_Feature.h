@@ -199,13 +199,6 @@
  ***********************************************************************/
 #define EG6_EXTRUDER
 
-// Defines which tools will be at zero (or max) position after homing each axis
-// If the homing is performed while other tool is active, a movement will
-// be done to set active tool to zero (or max) position according to
-// Hotend offset
-//					{X    Y    Z}
-#define HOME_TOOLS  {1,   0,   0}
-
 //Change moves
 #define CHANGE_MOVES 5
 
@@ -1559,7 +1552,7 @@
 // For GFX preview visualization enable NEXTION GFX
 //#define NEXTION_GFX
 // Define name firmware file for Nextion on SD
-#define NEXTION_FIRMWARE_FILE "mk4duo.tft"
+#define NEXTION_FIRMWARE_FILE "MKA.tft"
 
 // Show a progress bar on HD44780 LCDs for SD printing
 //#define LCD_PROGRESS_BAR
@@ -2126,10 +2119,10 @@
  **************************************************************************/
 //#define ADVANCED_PAUSE_FEATURE
 
-#define PAUSE_PARK_RETRACT_FEEDRATE 30      //+ (mm/s) Initial retract feedrate.
+#define PAUSE_PARK_RETRACT_FEEDRATE 10      //+ (mm/s) Initial retract feedrate.
 #define PAUSE_PARK_RETRACT_LENGTH 5         //+ (mm) Initial retract.
                                             // This short retract is done immediately, before parking the nozzle.
-#define PAUSE_PARK_UNLOAD_FEEDRATE 40       // (mm/s) Unload filament feedrate. This can be pretty fast.
+#define PAUSE_PARK_UNLOAD_FEEDRATE 30       // (mm/s) Unload filament feedrate. This can be pretty fast.
 
 #if ENABLED(NEXTION_HMI)	      //For nextion HMI material loading/unloading wizard
 	#define PAUSE_PARK_UNLOAD_LENGTH {650, 535+55, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
@@ -2144,7 +2137,7 @@
                                             //   For direct drive, the full length of the nozzle.
 #endif
 
-#define PAUSE_PARK_LOAD_FEEDRATE 40         // (mm/s) Load filament feedrate. This can be pretty fast.
+#define PAUSE_PARK_LOAD_FEEDRATE 30         // (mm/s) Load filament feedrate. This can be pretty fast.
 
 #define PAUSE_PARK_EXTRUDE_FEEDRATE 5       // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
 #define PAUSE_PARK_EXTRUDE_LENGTH 50        // (mm) Length to extrude after loading.
@@ -2153,7 +2146,7 @@
                                             //   until extrusion is consistent, and to purge old filament.
 
                                             // Filament Unload does a Retract, Delay, and Purge first:
-#define FILAMENT_UNLOAD_RETRACT_LENGTH 10   // (mm) Unload initial retract length.
+#define FILAMENT_UNLOAD_RETRACT_LENGTH 15   // (mm) Unload initial retract length.
 #define FILAMENT_UNLOAD_DELAY 5000          // (ms) Delay for the filament to cool after retract.
 #define FILAMENT_UNLOAD_PURGE_LENGTH 8      // (mm) An unretract is done, then this length is purged.
 
