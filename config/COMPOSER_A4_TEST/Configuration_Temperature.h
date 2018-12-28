@@ -128,11 +128,11 @@
 // This feature exists to protect your hotend from overheating accidentally,
 // but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 275 // (degC)
-#define HEATER_1_MAXTEMP 275 // (degC)
-#define HEATER_2_MAXTEMP 275 // (degC)
-#define HEATER_3_MAXTEMP 275 // (degC)
-#define BED_MAXTEMP      150 // (degC)
+#define HEATER_0_MAXTEMP 475 // (degC)
+#define HEATER_1_MAXTEMP 475 // (degC)
+#define HEATER_2_MAXTEMP 475 // (degC)
+#define HEATER_3_MAXTEMP 475 // (degC)
+#define BED_MAXTEMP      200 // (degC)
 #define CHAMBER_MAXTEMP  100 // (degC)
 #define COOLER_MAXTEMP   35  // (degC) 
 
