@@ -31,8 +31,10 @@ class EEPROM {
 
   public: /** Public Parameters */
 
-    static char     printerSN[17];  // max. 16 chars + 0
-    static char     printerVersion[9];  // max. 8 chars + 0
+	#if ENABLED(EEPROM_MULTIPART)
+      static char     printerSN[17];  // max. 16 chars + 0
+      static char     printerVersion[9];  // max. 8 chars + 0
+	#endif
 
   private: /** Private Parameters */
 
@@ -74,8 +76,12 @@ class EEPROM {
     #if HAS_EEPROM
       static bool Load_Settings();  // Return 'true' if data was loaded ok
 
-      static bool Store_Const();
-      static bool Load_Const();
+	  #if ENABLED(EEPROM_MULTIPART)
+		  static bool Store_Const();
+		  static bool Load_Const();
+		  static bool Store_Sys();
+		  static bool Load_Sys();
+	  #endif
 
       #if ENABLED(AUTO_BED_LEVELING_UBL) // Eventually make these available if any leveling system
                                          // That can store is enabled

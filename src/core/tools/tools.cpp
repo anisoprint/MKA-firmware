@@ -49,8 +49,8 @@
 
   float   Tools::hotend_offset[XYZ][HOTENDS] = { 0.0 };
 
-  float    Tools::switch_pos_x = 0;
-  float    Tools::switch_pos_y = 0;
+  float   Tools::switch_pos_x = 0;
+  float   Tools::switch_pos_y = 0;
 
 
 #if ENABLED(EG6_EXTRUDER)

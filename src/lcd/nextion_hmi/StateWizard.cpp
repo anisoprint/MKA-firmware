@@ -18,9 +18,6 @@
 
 #include "StateWizard.h"
 
-const float filament_change_unload_length[DRIVER_EXTRUDERS] = PAUSE_PARK_UNLOAD_LENGTH,
-        	filament_change_load_length[DRIVER_EXTRUDERS] = PAUSE_PARK_LOAD_LENGTH;
-
 namespace {
 	///////////// Nextion components //////////
 	//Page
@@ -327,9 +324,9 @@ void StateWizard::MaterialUnloadS3(void* ptr) {
 	if (Tools::extruder_driver_is_plastic((AxisEnum)NextionHMI::wizardData)) //Unload plastic
 	{
 	    // Push filament
-		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, FILAMENT_UNLOAD_RETRACT_LENGTH/2, PAUSE_PARK_UNLOAD_FEEDRATE);
+		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, PrintPause::RetractDistance/2, PrintPause::UnloadFeedrate);
 	    // Retract filament
-		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -FILAMENT_UNLOAD_RETRACT_LENGTH, PAUSE_PARK_RETRACT_FEEDRATE);
+		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -PrintPause::RetractDistance, PrintPause::RetractFeedrate);
 	    // Wait for filament to cool
 	    printer.safe_delay(FILAMENT_UNLOAD_DELAY);
 	    // Quickly purge
@@ -338,7 +335,7 @@ void StateWizard::MaterialUnloadS3(void* ptr) {
 	}
 
     // Unload filament
-	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -filament_change_unload_length[NextionHMI::wizardData-E_AXIS], PAUSE_PARK_UNLOAD_FEEDRATE);
+	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -filament_change_unload_length[NextionHMI::wizardData-E_AXIS], PrintPause::UnloadFeedrate);
 
     MaterialUnloadS4();
 }
@@ -522,7 +519,7 @@ void StateWizard::MaterialLoadS3(void* ptr) {
 		if (planner.movesplanned() < 2)
 		{
 			mechanics.current_position[NextionHMI::wizardData] += 0.5;
-			planner.buffer_line(mechanics.current_position, PAUSE_PARK_EXTRUDE_FEEDRATE, tools.active_extruder);
+			planner.buffer_line(mechanics.current_position, PrintPause::ExtrudeFeedrate, tools.active_extruder);
 		}
 		printer.idle();
 		printer.keepalive(InProcess);
@@ -567,7 +564,7 @@ void StateWizard::MaterialLoadS4(void* ptr) {
 		{
 			mechanics.current_position[NextionHMI::wizardData] += 1.0;
 			extrude_length += 1.0;
-			planner.buffer_line(mechanics.current_position, PAUSE_PARK_LOAD_FEEDRATE, tools.active_extruder);
+			planner.buffer_line(mechanics.current_position, PrintPause::LoadFeedrate, tools.active_extruder);
 		}
 		printer.idle();
 		printer.keepalive(InProcess);
@@ -596,7 +593,7 @@ void StateWizard::MaterialLoadS5(void* ptr) {
 		if (planner.movesplanned() < 2)
 		{
 			mechanics.current_position[NextionHMI::wizardData] += 0.5;
-			planner.buffer_line(mechanics.current_position, PAUSE_PARK_EXTRUDE_FEEDRATE, tools.active_extruder);
+			planner.buffer_line(mechanics.current_position, PrintPause::ExtrudeFeedrate, tools.active_extruder);
 		}
 		printer.idle();
 		printer.keepalive(InProcess);
@@ -631,7 +628,7 @@ void StateWizard::MaterialLoadS6(void* ptr) {
 		stepper.synchronize();
 
 		//cut
-		if (MACHINE_VERSION != "1.0")
+		if (eeprom.printerVersion != "1.0")
 		{
 			MOVE_SERVO(0, 160);
 		}
@@ -649,7 +646,7 @@ void StateWizard::MaterialLoadS6(void* ptr) {
 	}
 	else
 	{
-    	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -PAUSE_PARK_RETRACT_LENGTH, PAUSE_PARK_RETRACT_FEEDRATE);
+    	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -PrintPause::RetractDistance, PrintPause::RetractFeedrate);
 	}
 	BUTTONS(1)
 	NO_PICTURE

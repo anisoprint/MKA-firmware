@@ -65,7 +65,7 @@ void StatePrinting::Pause_Push(void* ptr) {
 
     if (card.cardOK && card.isFileOpen()) {
 
-    	const float retract = PAUSE_PARK_RETRACT_LENGTH;
+    	const float retract = PrintPause::RetractDistance;
 
     	switch (PrintPause::Status)
     	{

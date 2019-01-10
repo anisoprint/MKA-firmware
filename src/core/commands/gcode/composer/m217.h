@@ -26,26 +26,20 @@
  * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
-#if HAS_LCD_CONTRAST
+#if ENABLED(EG6_EXTRUDER)
 
-  #define CODE_M250
-
-  /**
-   * M250: Read and optionally set the LCD contrast
+  #define CODE_M217
+  
+  /*
+   * M217: Toolchange Parameters
+   *
+   *  X<xpos> Y<ypos>
+   *
    */
-  inline void gcode_M250(void) {
-    if (parser.seenval('C')) set_lcd_contrast(parser.value_int());
-    SERIAL_EMV("lcd contrast value: ", lcd_contrast);
+  inline void gcode_M217() {
+	  if (parser.seen('X')) Tools::switch_pos_x = parser.value_linear_units();
+	  if (parser.seen('Y')) Tools::switch_pos_y = parser.value_linear_units();
   }
 
-#elif ENABLED(NEXTION_HMI)
-  #define CODE_M250
 
-  /**
-   * M250: Read and optionally set the LCD brightness
-   */
-   inline void gcode_M250(void) {
-	 if (parser.seenval('C')) NextionHMI::SetBrightness(parser.value_int());
-	 SERIAL_EMV("lcd brighness value: ", NextionHMI::lcdBrightness);
-	}
-#endif
+#endif // EG6_EXTRUDER

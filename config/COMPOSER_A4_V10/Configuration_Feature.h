@@ -1072,8 +1072,8 @@
  ************************************************************************************************************************/
 #define EEPROM_SETTINGS
 
-//Compact settings for Anisoprint Composer 3D printers
-#define EEPROM_LITE
+//Settings for Anisoprint Composer 3D printers
+#define EEPROM_MULTIPART
 
 #define EEPROM_CHITCHAT // Uncomment this to enable EEPROM Serial responses.
 //#define EEPROM_SD
@@ -2107,14 +2107,18 @@
  **************************************************************************/
 //#define ADVANCED_PAUSE_FEATURE
 
-#define PAUSE_PARK_RETRACT_FEEDRATE 10      //+ (mm/s) Initial retract feedrate.
-#define PAUSE_PARK_RETRACT_LENGTH 5         //+ (mm) Initial retract.
+//SYS #define PAUSE_PARK_RETRACT_FEEDRATE 10      //+(mm/s) Initial retract feedrate.
+//SYS #define PAUSE_PARK_RETRACT_LENGTH 5         //+(mm) Initial retract.
                                             // This short retract is done immediately, before parking the nozzle.
-#define PAUSE_PARK_UNLOAD_FEEDRATE 30       // (mm/s) Unload filament feedrate. This can be pretty fast.
+
+//SYS #define PAUSE_PARK_UNLOAD_FEEDRATE 30       //+(mm/s) Unload filament feedrate. This can be pretty fast.
+//SYS #define PAUSE_PARK_LOAD_FEEDRATE 30         //+(mm/s) Load filament feedrate. This can be pretty fast.
+
+//SYS #define PAUSE_PARK_EXTRUDE_FEEDRATE 5       //+(mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
 
 #if ENABLED(NEXTION_HMI)	      //For nextion HMI material loading/unloading wizard
-	#define PAUSE_PARK_UNLOAD_LENGTH {740, 900, 850}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
-	#define PAUSE_PARK_LOAD_LENGTH {610, 800, 740}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+//SYS	#define PAUSE_PARK_UNLOAD_LENGTH {740, 900, 850}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+//SYS	#define PAUSE_PARK_LOAD_LENGTH {610, 800, 740}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
 #else
 #define PAUSE_PARK_UNLOAD_LENGTH 100        // (mm) The length of filament for a complete unload.
                                             //   For Bowden, the full length of the tube and nozzle.
@@ -2125,9 +2129,9 @@
                                             //   For direct drive, the full length of the nozzle.
 #endif
 
-#define PAUSE_PARK_LOAD_FEEDRATE 30         // (mm/s) Load filament feedrate. This can be pretty fast.
 
-#define PAUSE_PARK_EXTRUDE_FEEDRATE 5       // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
+
+
 #define PAUSE_PARK_EXTRUDE_LENGTH 50        // (mm) Length to extrude after loading.
                                             //   Set to 0 for manual extrusion.
                                             //   Filament can be extruded repeatedly from the Filament Change menu

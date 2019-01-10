@@ -15,6 +15,12 @@ enum PrintPauseStatus {NotPaused, WaitingToPause, Pausing, Paused, Resuming };
 
 namespace PrintPause {
 
+  extern float LoadDistance[DRIVER_EXTRUDERS];
+  extern float UnloadDistance[DRIVER_EXTRUDERS];
+  extern float RetractDistance, RetractFeedrate;
+  extern float LoadFeedrate, UnloadFeedrate;
+  extern float ExtrudeFeedrate;
+
   extern bool CanPauseNow;
   extern bool SdPrintingPaused;
   extern PrintPauseStatus Status;

@@ -64,7 +64,7 @@ void StateMovement::Movement_Push(void* ptr) {
 	if (_moveMode==MODE_MOVE_EXTRUDERS && ptr==&_bMovementBact)
 	{
 		//cut
-		if (MACHINE_VERSION != "1.0")
+		if (eeprom.printerVersion != "1.0")
 		{
 			stepper.synchronize();
 			commands.enqueue_and_echo_P(PSTR("M280 P0 S160 "));

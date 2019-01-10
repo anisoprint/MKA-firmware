@@ -15,6 +15,16 @@ namespace {
 	static uint8_t resume_tool;
 }
 
+
+float PrintPause::LoadDistance[DRIVER_EXTRUDERS] = { 0.0 };
+float PrintPause::UnloadDistance[DRIVER_EXTRUDERS] = { 0.0 };;
+
+float PrintPause::RetractDistance = 0,
+	  PrintPause::RetractFeedrate = 0,
+      PrintPause::LoadFeedrate = 0,
+	  PrintPause::UnloadFeedrate = 0,
+	  PrintPause::ExtrudeFeedrate = 0;
+
 bool PrintPause::CanPauseNow = true;
 bool PrintPause::SdPrintingPaused = false;
 PrintPauseStatus PrintPause::Status = NotPaused;
@@ -92,7 +102,7 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     {
     	//get plastic driver of current extruder
     	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
-    	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), retract, PAUSE_PARK_RETRACT_FEEDRATE);
+    	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), retract, PrintPause::RetractFeedrate);
     }
 
     // Park the nozzle by moving up by z_lift and then moving to (x_pos, y_pos)
@@ -187,7 +197,7 @@ void PrintPause::ResumePrint(const float& purge_length) {
    {
    	//get plastic driver of current extruder
    	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
-   	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), purge_length, PAUSE_PARK_RETRACT_FEEDRATE);
+   	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), purge_length, PrintPause::RetractFeedrate);
    }
 
    // Move XY to starting position, then Z
