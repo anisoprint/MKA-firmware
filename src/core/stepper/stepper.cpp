@@ -399,7 +399,7 @@ void Stepper::set_directions() {
     SET_STEP_DIR(Z); // C
   #endif
 
-  #if HAS_EXTRUDERS && DISABLED(LIN_ADVANCE)
+  #if HAS_EXTRUDERS && DISABLED(LIN_ADVANCE_DEV)
     if (motor_direction(E_AXIS)) {
       REV_E_DIR();
       count_direction[E_AXIS] = -1;
@@ -458,7 +458,7 @@ void Stepper::set_directions() {
 			count_direction[L_AXIS]=1;
 		}
 	#endif
-  #endif // HAS_EXTRUDERS && DISABLED(LIN_ADVANCE)
+  #endif // HAS_EXTRUDERS && DISABLED(LIN_ADVANCE_DEV)
 
   #if HAS_EXT_ENCODER
 
@@ -1543,7 +1543,7 @@ void Stepper::isr() {
       PULSE_START(Z);
     #endif
 
-    #if ENABLED(LIN_ADVANCE)
+    #if ENABLED(LIN_ADVANCE_DEV)
 
       counter_E += current_block->steps[E_AXIS];
       if (counter_E > 0) {
@@ -1595,7 +1595,7 @@ void Stepper::isr() {
 		#endif
       #endif
 
-    #endif // !LIN_ADVANCE
+    #endif // !LIN_ADVANCE_DEV
 
     #if HAS_EXT_ENCODER
 	TODO: MULTIEXTRUDER
@@ -1670,7 +1670,7 @@ void Stepper::isr() {
       PULSE_STOP(Z);
     #endif
 
-    #if HAS_EXTRUDERS && DISABLED(LIN_ADVANCE)
+    #if HAS_EXTRUDERS && DISABLED(LIN_ADVANCE_DEV)
       #if ENABLED(COLOR_MIXING_EXTRUDER)
         MIXING_STEPPERS_LOOP(j) {
           if (counter_m[j] > 0) {
@@ -1696,7 +1696,7 @@ void Stepper::isr() {
 			PULSE_STOP(L);
 		#endif
       #endif
-    #endif // HAS_EXTRUDERS && DISABLED(LIN_ADVANCE)
+    #endif // HAS_EXTRUDERS && DISABLED(LIN_ADVANCE_DEV)
 
     #if ENABLED(LASER)
       counter_L += current_block->steps_l;
@@ -1769,7 +1769,7 @@ void Stepper::isr() {
 
     acceleration_time += interval;
 
-    #if ENABLED(LIN_ADVANCE)
+    #if ENABLED(LIN_ADVANCE_DEV)
 
       if (current_block->use_advance_lead) {
         if (step_events_completed == step_loops || (e_steps && eISR_Rate != current_block->advance_speed)) {
@@ -1782,7 +1782,7 @@ void Stepper::isr() {
         if (e_steps) nextAdvanceISR = 0;
       }
 
-    #endif // ENABLED(LIN_ADVANCE)
+    #endif // ENABLED(LIN_ADVANCE_DEV)
   }
   else if (step_events_completed > (uint32_t)current_block->decelerate_after) {
     hal_timer_t step_rate;
@@ -1825,7 +1825,7 @@ void Stepper::isr() {
 
     deceleration_time += interval;
 
-    #if ENABLED(LIN_ADVANCE)
+    #if ENABLED(LIN_ADVANCE_DEV)
 
       if (current_block->use_advance_lead) {
         if (step_events_completed <= (uint32_t)current_block->decelerate_after + step_loops || (e_steps && eISR_Rate != current_block->advance_speed)) {
@@ -1838,11 +1838,11 @@ void Stepper::isr() {
         if (e_steps) nextAdvanceISR = 0;
       }
 
-    #endif // ENABLED(LIN_ADVANCE)
+    #endif // ENABLED(LIN_ADVANCE_DEV)
   }
   else {
 
-    #if ENABLED(LIN_ADVANCE)
+    #if ENABLED(LIN_ADVANCE_DEV)
 
       // If we have esteps to execute, fire the next advance_isr "now"
       if (e_steps && eISR_Rate != current_block->advance_speed) nextAdvanceISR = 0;
@@ -1856,7 +1856,7 @@ void Stepper::isr() {
     step_loops = step_loops_nominal;
   }
 
-  #if DISABLED(LIN_ADVANCE)
+  #if DISABLED(LIN_ADVANCE_DEV)
     HAL_timer_restricts(STEPPER_TIMER, STEPPER_TIMER_MIN_INTERVAL * STEPPER_TIMER_TICKS_PER_US);
   #endif
 
@@ -1871,7 +1871,7 @@ void Stepper::isr() {
   }
 }
 
-#if ENABLED(LIN_ADVANCE)
+#if ENABLED(LIN_ADVANCE_DEV)
 
   // Timer interrupt for E. e_steps is set in the main routine;
   void Stepper::advance_isr() {
@@ -2020,7 +2020,7 @@ void Stepper::isr() {
 
   }
 
-#endif // ENABLED(LIN_ADVANCE)
+#endif // ENABLED(LIN_ADVANCE_DEV)
 
 void Stepper::init() {
 
