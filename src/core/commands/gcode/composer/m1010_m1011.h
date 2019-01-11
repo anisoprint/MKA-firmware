@@ -20,14 +20,32 @@
  *
  */
 
-#ifndef _CONFIGURATION_VERSION_H_
-#define _CONFIGURATION_VERSION_H_
+/**
+ * mcode
+ *
+ */
 
-#define FIRMWARE_NAME "MKA"
-#define SHORT_BUILD_VERSION "0.9.2"
-#define BUILD_VERSION FIRMWARE_NAME "_" SHORT_BUILD_VERSION
-#define STRING_DISTRIBUTION_DATE __DATE__ " " __TIME__    // build date and time
-// It might also be appropriate to define a location where additional information can be found
-#define FIRMWARE_URL  "anisoprint.com"
+  #define CODE_M1010
+  #define CODE_M1011
+  
+ /*
+  * M1010: Cut fiber
+  *
+  */
+ inline void gcode_M1010(void) {
+	 tools.cut_fiber();
+ }
 
-#endif /* _CONFIGURATION_VERSION_H_ */
+
+/*
+ * M1011: Fiber cut Parameters
+ *
+ *  S<servo-id> A<cut-angle> B<neutral-angle>
+ *
+ */
+inline void gcode_M1011() {
+	  if (parser.seen('S')) Tools::cut_servo_id = parser.value_byte();
+	  if (parser.seen('A')) Tools::cut_active_angle = parser.value_byte();
+	  if (parser.seen('B')) Tools::cut_neutral_angle = parser.value_byte();
+}
+

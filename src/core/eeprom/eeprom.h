@@ -81,6 +81,8 @@ class EEPROM {
 		  static bool Load_Const();
 		  static bool Store_Sys();
 		  static bool Load_Sys();
+		  static bool Store_Usr();
+		  static bool Load_Usr();
 	  #endif
 
       #if ENABLED(AUTO_BED_LEVELING_UBL) // Eventually make these available if any leveling system

@@ -34,7 +34,11 @@
 /**
  * M500: Store settings in EEPROM
  */
-inline void gcode_M500(void) { (void)eeprom.Store_Settings(); }
+inline void gcode_M500(void) {
+	(void)eeprom.Store_Settings();
+	if (parser.seen('S')) eeprom.Store_Sys();
+
+}
 
 /**
  * M501: Read settings from EEPROM

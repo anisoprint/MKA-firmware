@@ -28,8 +28,6 @@
 
   #define CODE_M704
 
-
-  #define CODE_M705
   
   /*
    * M704: Load/unload filament config
@@ -45,7 +43,7 @@
    *  K[val] - PAUSE_PARK_EXTRUDE_FEEDRATE (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
    *
    */
-  inline void gcode_M706(void) {
+  inline void gcode_M704(void) {
 	  if (parser.seenval('E'))
 	  {
 		  int8_t e =  parser.value_int();
@@ -60,15 +58,3 @@
 
   }
 
-#if ENABLED(EG6_EXTRUDER)
-
-  /**
-   * M702:Toolchange config
-   *
-   */
-  inline void gcode_M702(void) {
-
-
-  }
-
-#endif // EG6_EXTRUDER

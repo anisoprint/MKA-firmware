@@ -300,7 +300,6 @@ void StateWizard::MaterialUnloadS2DrawUpdate(void *ptr) {
 	ZERO(NextionHMI::buffer);
 	sprintf_P(NextionHMI::buffer, PSTR(MSG_UNLOAD_MATERIAL_ST2), (int)heaters[heater].current_temperature, (int)heaters[heater].target_temperature);
 	_text.setText(NextionHMI::buffer);
-
 }
 
 //UNLOAD 2a - Display error if temperature is too low
@@ -335,7 +334,7 @@ void StateWizard::MaterialUnloadS3(void* ptr) {
 	}
 
     // Unload filament
-	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -filament_change_unload_length[NextionHMI::wizardData-E_AXIS], PrintPause::UnloadFeedrate);
+	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -PrintPause::UnloadDistance[NextionHMI::wizardData-E_AXIS], PrintPause::UnloadFeedrate);
 
     MaterialUnloadS4();
 }
@@ -457,9 +456,6 @@ void StateWizard::MaterialLoadS2(void* ptr) {
 	DrawUpdateCallback = MaterialLoadS2DrawUpdate;
 
 	//waiting for heating
-    //printer.setWaitForHeatUp(true);
-    //while (printer.isWaitForHeatUp() && heaters[heater].wait_for_heating()) printer.idle();
-    //printer.setWaitForHeatUp(false);
 	Temperature::wait_heater(&heaters[heater]);
 
     DrawUpdateCallback = NULL;
@@ -502,16 +498,10 @@ void StateWizard::MaterialLoadS3(void* ptr) {
 	Init2Buttons(PSTR(MSG_CANCEL), MaterialLoadCancel, PSTR(MSG_NEXT), MaterialLoadS3a);
 
 
-    //LOOP_HOTEND()
-    //  heaters[h].start_idle_timer(nozzle_timeout);
-
 	//waiting for 120 seconds
 	const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
     const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
     heaters[heater].start_idle_timer(nozzle_timeout);
-
-	//int max_extrude_length = (120*PAUSE_PARK_EXTRUDE_FEEDRATE);
-	//int extrude_length = 0;
 
 	_loopStopped = false;
 	while(!_loopStopped && !_wizardCancelled && !heaters[heater].isIdle())
@@ -558,7 +548,7 @@ void StateWizard::MaterialLoadS4(void* ptr) {
     heaters[heater].reset_idle_timer();
 
 	int extrude_length = 0;
-	while (extrude_length<filament_change_load_length[NextionHMI::wizardData-E_AXIS] && !_wizardCancelled)
+	while (extrude_length<PrintPause::LoadDistance[NextionHMI::wizardData-E_AXIS] && !_wizardCancelled)
 	{
 		if (planner.movesplanned() < 2)
 		{

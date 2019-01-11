@@ -42,10 +42,10 @@
 
 
 #if ENABLED(EEPROM_MULTIPART)
-	#define CONFIG_VERSION "MKA12"
-	#define SYSCFG_VERSION "MKA10"
+	#define USRCFG_VERSION "MKA12"
+	#define SYSCFG_VERSION "SC10"
 
-	#define CONFIG_OFFSET 	0
+	#define USRCFG_OFFSET 	0
 	#define SYSCFG_OFFSET   4096
 	#define CONST_OFFSET 	32000
 
@@ -66,8 +66,8 @@
  *  M92   E0 ...      	  mechanics.axis_steps_per_mm E0 ...    (float x6)
  *  M206  XYZ             mechanics.home_offset                 (float x3)
  *  M218  T   XY          tools.hotend_offset                   (float x6)
- * 	M217 X				  tools.switch_pos_x					(float)
- * 	M217 Y         		  tools.switch_pos_y					(float)
+ * 	M217 A				  tools.switch_offset_x					(float)
+ * 	M217 B         		  tools.switch_offset_y					(float)
  *
  * NEXTION_HMI:
  *  M145  S0  H           NextionHMI::autoPreheatTempHotend     (uint16_t)
@@ -139,8 +139,13 @@
  *  M704 Dx      	  	  PrintPause::UnloadFeedrate         (float)
  *  M704 Kx      	  	  PrintPause::ExtrudeFeedrate        (float)
  *
+ *  CUT:
+ *  M1011 Sx			  tools.cut_servo_id				 (uint8_t)
+ *  M1011 Ax			  tools.cut_active_angle		     (uint8_t)
+ *  M1011 Bx			  tools.cut_neutral_angle			 (uint8_t)
+ *
  *  TOOL_CHANGE:
- *  TODO
+ *  M217         		  tools.switch_tool_path			 (24*(3*float+bool))
  */
 
  char    EEPROM::printerSN[17] = "";   // max. 16 chars + 0
@@ -413,54 +418,14 @@ void EEPROM::Postprocess() {
   #define EEPROM_WRITE(VAR)     eeprom_error = write_data(eeprom_index, (uint8_t*)&VAR, sizeof(VAR), &working_crc)
   #define EEPROM_READ(VAR)      eeprom_error = read_data(eeprom_index, (uint8_t*)&VAR, sizeof(VAR), &working_crc)
 
-  const char version[6] = EEPROM_VERSION;
+  const char usrcfg_version[6] = USRCFG_VERSION;
+  const char syscfg_version[6] = SYSCFG_VERSION;
 
   bool EEPROM::eeprom_error = false;
 
   #if ENABLED(AUTO_BED_LEVELING_UBL)
     int16_t EEPROM::meshes_begin = 0;
   #endif
-
-bool EEPROM::Store_Const() {
-
-  uint16_t working_crc = 0;
-
-  EEPROM_WRITE_START(CONST_OFFSET);
-
-  EEPROM_WRITE(printerSN);
-  EEPROM_WRITE(printerVersion);
-
-  if (!eeprom_error) {
-      const int eeprom_size = eeprom_index;
-
-      // Report storage size
-      #if ENABLED(EEPROM_CHITCHAT)
-         SERIAL_SMV(ECHO, "Const data stored (", eeprom_size - (EEPROM_OFFSET) - CONST_OFFSET);
-         SERIAL_EM(")");
-      #endif
-   }
-
-   EEPROM_FINISH();
-
-   return !eeprom_error;
-}
-
-bool EEPROM::Load_Const() {
-
-  uint16_t  working_crc = 0,
-            stored_crc  = 0;
-
-  char stored_ver[6];
-
-  EEPROM_READ_START(CONST_OFFSET);
-
-  EEPROM_READ(printerSN);
-  EEPROM_READ(printerVersion);
-
-  EEPROM_FINISH();
-
-  return !eeprom_error;
-}
 
 
 #if ENABLED(EEPROM_MULTIPART)
@@ -470,183 +435,540 @@ bool EEPROM::Load_Const() {
      * M500 - Store Configuration
      */
     bool EEPROM::Store_Settings() {
-
-      Serial.println("Store_Settings");
-      char ver[6] = "00000";
-
-      uint16_t working_crc = 0;
-
-      EEPROM_WRITE_START(CONFIG_OFFSET);
-
-      #if HAS_EEPROM_FLASH
-        EEPROM_SKIP(ver);         // Flash doesn't allow rewriting without erase
-        EEPROM_SKIP(working_crc); // Skip the checksum slot
-      #elif HAS_EEPROM_SD
-        EEPROM_WRITE(version);
-      #else
-        EEPROM_WRITE(ver);        // invalidate data first
-        EEPROM_SKIP(working_crc); // Skip the checksum slot
-      #endif
-
-      working_crc = 0; // clear before first "real data"
-
-      LOOP_EUVW(i)
-      {
-          EEPROM_WRITE(mechanics.axis_steps_per_mm[i]);
-      }
-      #if ENABLED(WORKSPACE_OFFSETS) || ENABLED(HOME_OFFSETS)
-        EEPROM_WRITE(mechanics.home_offset);
-      #endif
-      EEPROM_WRITE(tools.hotend_offset);
-
-      EEPROM_WRITE(tools.switch_pos_x);
-      EEPROM_WRITE(tools.switch_pos_y);
-
-
-      #if ENABLED(NEXTION_HMI)
-        EEPROM_WRITE(NextionHMI::autoPreheatTempHotend);
-        EEPROM_WRITE(NextionHMI::autoPreheatTempBed);
-        EEPROM_WRITE(NextionHMI::lcdBrightness);
-      #endif
-
-      #if HEATER_COUNT > 0
-        LOOP_HEATER() {
-          EEPROM_WRITE(heaters[h].Kp);
-          EEPROM_WRITE(heaters[h].Ki);
-          EEPROM_WRITE(heaters[h].Kd);
-        }
-      #endif
-
-      if (!eeprom_error) {
-        const int eeprom_size = eeprom_index;
-
-        const uint16_t final_crc = working_crc;
-
-        // Write the EEPROM header
-        eeprom_index = EEPROM_OFFSET;
-
-        EEPROM_WRITE(version);
-        EEPROM_WRITE(final_crc);
-
-        // Report storage size
-        #if ENABLED(EEPROM_CHITCHAT)
-          SERIAL_SMV(ECHO, "Settings Stored (", eeprom_size - (EEPROM_OFFSET) - CONFIG_OFFSET);
-          SERIAL_MV(" bytes; crc ", final_crc);
-          SERIAL_EM(")");
-        #endif
-      }
-
-      EEPROM_FINISH();
-
-      return !eeprom_error;
+    	EEPROM::Store_Usr();
     }
 
     /**
      * M501 - Load Configuration
      */
     bool EEPROM::Load_Settings() {
+    	eeprom_error = false;
+    	Factory_Settings();
+    	if (Load_Sys() && Load_Usr() )
+    	{
+    		Postprocess();
+    	}
+    	else
+    	{
+    		Factory_Settings();
+    	}
+		#if ENABLED(EEPROM_CHITCHAT)
+		  Print_Settings();
+		#endif
+    }
+
+    bool EEPROM::Store_Const() {
+
+      uint16_t working_crc = 0;
+
+      EEPROM_WRITE_START(CONST_OFFSET);
+
+      EEPROM_WRITE(printerSN);
+      EEPROM_WRITE(printerVersion);
+
+      if (!eeprom_error) {
+          const int eeprom_size = eeprom_index;
+
+          // Report storage size
+          #if ENABLED(EEPROM_CHITCHAT)
+             SERIAL_SMV(ECHO, "Const data stored (", eeprom_size - (EEPROM_OFFSET) - CONST_OFFSET);
+             SERIAL_EM(")");
+          #endif
+       }
+
+       EEPROM_FINISH();
+
+       return !eeprom_error;
+    }
+
+    bool EEPROM::Load_Const() {
 
       uint16_t  working_crc = 0,
                 stored_crc  = 0;
 
       char stored_ver[6];
 
-      EEPROM_READ_START(CONFIG_OFFSET);
+      EEPROM_READ_START(CONST_OFFSET);
 
-      #if HAS_EEPROM_SD
-        EEPROM_READ(stored_ver);
-      #else
-        EEPROM_READ(stored_ver);
-        EEPROM_READ(stored_crc);
-      #endif
-
-      if (strncmp(version, stored_ver, 5) != 0) {
-        if (stored_ver[0] != 'M') {
-          stored_ver[0] = '?';
-          stored_ver[1] = '?';
-          stored_ver[2] = '\0';
-        }
-        #if ENABLED(EEPROM_CHITCHAT)
-          SERIAL_SM(ECHO, "EEPROM version mismatch ");
-          SERIAL_MT("(EEPROM=", stored_ver);
-          SERIAL_EM(" MK4duo=" EEPROM_VERSION ")");
-        #endif
-        Factory_Settings();
-        eeprom_error = true;
-      }
-      else {
-
-    	Factory_Settings();
-
-        float dummy = 0;
-
-        working_crc = 0; // Init to 0. Accumulated by EEPROM_READ
-
-        // version number match
-        LOOP_EUVW(i)
-        {
-        	EEPROM_READ(mechanics.axis_steps_per_mm[i]);
-        }
-
-        #if ENABLED(WORKSPACE_OFFSETS) || ENABLED(HOME_OFFSETS)
-          EEPROM_READ(mechanics.home_offset);
-        #endif
-        EEPROM_READ(tools.hotend_offset);
-
-        EEPROM_READ(tools.switch_pos_x);
-        EEPROM_READ(tools.switch_pos_y);
-
-
-		#if ENABLED(NEXTION_HMI)
-        	EEPROM_READ(NextionHMI::autoPreheatTempHotend);
-        	EEPROM_READ(NextionHMI::autoPreheatTempBed);
-        	EEPROM_READ(NextionHMI::lcdBrightness);
-		#endif
-
-        #if HEATER_COUNT > 0
-          LOOP_HEATER() {
-            EEPROM_READ(heaters[h].Kp);
-            EEPROM_READ(heaters[h].Ki);
-            EEPROM_READ(heaters[h].Kd);
-          }
-        #endif
-
-        #if HAS_EEPROM_SD
-          // Read last two field
-          uint16_t temp_crc;
-          read_data(eeprom_index, (uint8_t*)&stored_ver, sizeof(stored_ver), &temp_crc);
-          read_data(eeprom_index, (uint8_t*)&stored_crc, sizeof(stored_crc), &temp_crc);
-        #endif
-
-        if (working_crc == stored_crc) {
-          #if ENABLED(EEPROM_CHITCHAT)
-            SERIAL_VAL(version);
-            SERIAL_MV(" stored settings retrieved (", eeprom_index - (EEPROM_OFFSET));
-            SERIAL_MV(" bytes; crc ", working_crc);
-            SERIAL_EM(")");
-          #endif
-          Postprocess();
-        }
-        else {
-          eeprom_error = true;
-          #if ENABLED(EEPROM_CHITCHAT)
-            SERIAL_SMV(ER, "EEPROM CRC mismatch - (stored) ", stored_crc);
-            SERIAL_MV(" != ", working_crc);
-            SERIAL_EM(" (calculated)!");
-          #endif
-          Factory_Settings();
-        }
-
-      }
-
-      #if ENABLED(EEPROM_CHITCHAT)
-        Print_Settings();
-      #endif
+      EEPROM_READ(printerSN);
+      EEPROM_READ(printerVersion);
 
       EEPROM_FINISH();
 
       return !eeprom_error;
     }
+
+    bool EEPROM::Store_Sys() {
+        char ver[6] = "00000";
+
+        uint16_t working_crc = 0;
+
+        EEPROM_WRITE_START(SYSCFG_OFFSET);
+    	#if HAS_EEPROM_FLASH
+    	  EEPROM_SKIP(ver);         // Flash doesn't allow rewriting without erase
+    	  EEPROM_SKIP(working_crc); // Skip the checksum slot
+    	#elif HAS_EEPROM_SD
+    	  EEPROM_WRITE(version);
+    	#else
+    	  EEPROM_WRITE(ver);        // invalidate data first
+    	  EEPROM_SKIP(working_crc); // Skip the checksum slot
+    	#endif
+
+        working_crc = 0; // clear before first "real data"
+
+        //
+        // Mechanics settings
+        //
+        LOOP_XYZ(i)
+        {
+            EEPROM_WRITE(mechanics.axis_steps_per_mm[i]);
+        }
+        EEPROM_WRITE(mechanics.max_feedrate_mm_s);
+        EEPROM_WRITE(mechanics.max_acceleration_mm_per_s2);
+        EEPROM_WRITE(mechanics.acceleration);
+        EEPROM_WRITE(mechanics.retract_acceleration);
+        EEPROM_WRITE(mechanics.travel_acceleration);
+        EEPROM_WRITE(mechanics.min_feedrate_mm_s);
+        EEPROM_WRITE(mechanics.min_travel_feedrate_mm_s);
+        EEPROM_WRITE(mechanics.min_segment_time_us);
+        EEPROM_WRITE(mechanics.max_jerk);
+        //
+        // Endstops bit
+        //
+        EEPROM_WRITE(endstops.logic_bits);
+        EEPROM_WRITE(endstops.pullup_bits);
+        //
+        // Heaters and sensors
+        //
+    	#if HEATER_COUNT > 0
+    	  LOOP_HEATER() {
+    		EEPROM_WRITE(heaters[h].type);
+    		EEPROM_WRITE(heaters[h].pin);
+    		EEPROM_WRITE(heaters[h].ID);
+    		EEPROM_WRITE(heaters[h].pidDriveMin);
+    		EEPROM_WRITE(heaters[h].pidDriveMax);
+    		EEPROM_WRITE(heaters[h].pidMax);
+    		EEPROM_WRITE(heaters[h].mintemp);
+    		EEPROM_WRITE(heaters[h].maxtemp);
+    		EEPROM_WRITE(heaters[h].Kc);
+    		EEPROM_WRITE(heaters[h].HeaterFlag);
+    		EEPROM_WRITE(heaters[h].sensor.pin);
+    		EEPROM_WRITE(heaters[h].sensor.type);
+    		EEPROM_WRITE(heaters[h].sensor.adcLowOffset);
+    		EEPROM_WRITE(heaters[h].sensor.adcHighOffset);
+    		EEPROM_WRITE(heaters[h].sensor.r25);
+    		EEPROM_WRITE(heaters[h].sensor.beta);
+    		EEPROM_WRITE(heaters[h].sensor.pullupR);
+    		EEPROM_WRITE(heaters[h].sensor.shC);
+    		#if HEATER_USES_AD595
+    		  EEPROM_WRITE(heaters[h].sensor.ad595_offset);
+    		  EEPROM_WRITE(heaters[h].sensor.ad595_gain);
+    		#endif
+    	  }
+    	#endif
+    	//
+    	// Fans
+    	//
+    	#if FAN_COUNT > 0
+    	  LOOP_FAN() {
+    		EEPROM_WRITE(fans[f].pin);
+    		EEPROM_WRITE(fans[f].freq);
+    		EEPROM_WRITE(fans[f].min_Speed);
+    		EEPROM_WRITE(fans[f].autoMonitored);
+    		EEPROM_WRITE(fans[f].FanFlag);
+    	  }
+    	#endif
+    	#if ENABLED(LIN_ADVANCE)
+    	  EEPROM_WRITE(planner.extruder_advance_K);
+    	#else
+    	  float k=0.0;
+    	  EEPROM_WRITE(k);
+    	#endif
+
+    	//
+    	// Filament change
+    	//
+    #if ENABLED(NEXTION_HMI)
+    	EEPROM_WRITE(PrintPause::LoadDistance);
+    	EEPROM_WRITE(PrintPause::UnloadDistance);
+    	EEPROM_WRITE(PrintPause::RetractDistance);
+    	EEPROM_WRITE(PrintPause::RetractFeedrate);
+    	EEPROM_WRITE(PrintPause::LoadFeedrate);
+    	EEPROM_WRITE(PrintPause::UnloadFeedrate);
+    	EEPROM_WRITE(PrintPause::ExtrudeFeedrate);
+    #endif
+
+    	//
+    	// Cut
+    	//
+    	EEPROM_WRITE(tools.cut_servo_id);
+    	EEPROM_WRITE(tools.cut_active_angle);
+    	EEPROM_WRITE(tools.cut_neutral_angle);
+
+    #if ENABLED(EG6_EXTRUDER)
+    	EEPROM_WRITE(tools.hotend_switch_path);
+    #endif
+
+        if (!eeprom_error) {
+          const int eeprom_size = eeprom_index;
+
+          const uint16_t final_crc = working_crc;
+
+          // Write the EEPROM header
+          eeprom_index = EEPROM_OFFSET + SYSCFG_OFFSET;
+
+          EEPROM_WRITE(syscfg_version);
+          EEPROM_WRITE(final_crc);
+
+          // Report storage size
+          #if ENABLED(EEPROM_CHITCHAT)
+            SERIAL_SMV(ECHO, "System Settings Stored (", eeprom_size - (EEPROM_OFFSET) - SYSCFG_OFFSET);
+            SERIAL_MV(" bytes; crc ", final_crc);
+            SERIAL_EM(")");
+          #endif
+        }
+
+        EEPROM_FINISH();
+
+        return !eeprom_error;
+    }
+
+
+    bool EEPROM::Load_Sys() {
+        uint16_t  working_crc = 0,
+                  stored_crc  = 0;
+
+        char stored_ver[6];
+
+        EEPROM_READ_START(SYSCFG_OFFSET);
+
+        #if HAS_EEPROM_SD
+          EEPROM_READ(stored_ver);
+        #else
+          EEPROM_READ(stored_ver);
+          EEPROM_READ(stored_crc);
+        #endif
+
+        if (strncmp(usrcfg_version, stored_ver, 5) != 0) {
+          if (stored_ver[0] != 'S') {
+            stored_ver[0] = '?';
+            stored_ver[1] = '?';
+            stored_ver[2] = '\0';
+          }
+          #if ENABLED(EEPROM_CHITCHAT)
+            SERIAL_SM(ECHO, "EEPROM system config version mismatch ");
+            SERIAL_MT("(EEPROM=", stored_ver);
+            SERIAL_EM(" Firmware=" SYSCFG_VERSION ")");
+          #endif
+          eeprom_error = true;
+        }
+        else {
+
+            float dummy = 0;
+
+            working_crc = 0; // Init to 0. Accumulated by EEPROM_READ
+            // version number match
+
+            //
+            // Mechanics settings
+            //
+            LOOP_XYZ(i)
+            {
+                EEPROM_READ(mechanics.axis_steps_per_mm[i]);
+            }
+
+            EEPROM_READ(mechanics.max_feedrate_mm_s);
+            EEPROM_READ(mechanics.max_acceleration_mm_per_s2);
+            EEPROM_READ(mechanics.acceleration);
+            EEPROM_READ(mechanics.retract_acceleration);
+            EEPROM_READ(mechanics.travel_acceleration);
+            EEPROM_READ(mechanics.min_feedrate_mm_s);
+            EEPROM_READ(mechanics.min_travel_feedrate_mm_s);
+            EEPROM_READ(mechanics.min_segment_time_us);
+            EEPROM_READ(mechanics.max_jerk);
+
+            //
+            // Endstops bit
+            //
+            EEPROM_READ(endstops.logic_bits);
+            EEPROM_READ(endstops.pullup_bits);
+
+            //
+            // Heaters and sensors
+            //
+			#if HEATER_COUNT > 0
+			  LOOP_HEATER() {
+				EEPROM_READ(heaters[h].type);
+				EEPROM_READ(heaters[h].pin);
+				EEPROM_READ(heaters[h].ID);
+				EEPROM_READ(heaters[h].pidDriveMin);
+				EEPROM_READ(heaters[h].pidDriveMax);
+				EEPROM_READ(heaters[h].pidMax);
+				EEPROM_READ(heaters[h].mintemp);
+				EEPROM_READ(heaters[h].maxtemp);
+				EEPROM_READ(heaters[h].Kc);
+				EEPROM_READ(heaters[h].HeaterFlag);
+				EEPROM_READ(heaters[h].sensor.pin);
+				EEPROM_READ(heaters[h].sensor.type);
+				EEPROM_READ(heaters[h].sensor.adcLowOffset);
+				EEPROM_READ(heaters[h].sensor.adcHighOffset);
+				EEPROM_READ(heaters[h].sensor.r25);
+				EEPROM_READ(heaters[h].sensor.beta);
+				EEPROM_READ(heaters[h].sensor.pullupR);
+				EEPROM_READ(heaters[h].sensor.shC);
+				#if HEATER_USES_AD595
+				  EEPROM_READ(heaters[h].sensor.ad595_offset);
+				  EEPROM_READ(heaters[h].sensor.ad595_gain);
+				  if (heaters[h].sensor.ad595_gain == 0) heaters[h].sensor.ad595_gain = TEMP_SENSOR_AD595_GAIN;
+				#endif
+			  }
+			#endif
+
+	        //
+	        // Fans
+	        //
+			#if FAN_COUNT > 0
+			  LOOP_FAN() {
+				EEPROM_READ(fans[f].pin);
+				EEPROM_READ(fans[f].freq);
+				EEPROM_READ(fans[f].min_Speed);
+				EEPROM_READ(fans[f].autoMonitored);
+				EEPROM_READ(fans[f].FanFlag);
+			  }
+			#endif
+
+		    //
+		    // Linear Advance
+		    //
+		    #if ENABLED(LIN_ADVANCE)
+		      EEPROM_READ(planner.extruder_advance_K);
+			#else
+			  EEPROM_READ(dummy);
+		    #endif
+
+		    //
+		    // Filament change
+		    //
+		    #if ENABLED(NEXTION_HMI)
+			  EEPROM_READ(PrintPause::LoadDistance);
+			  EEPROM_READ(PrintPause::UnloadDistance);
+			  EEPROM_READ(PrintPause::RetractDistance);
+			  EEPROM_READ(PrintPause::RetractFeedrate);
+			  EEPROM_READ(PrintPause::LoadFeedrate);
+			  EEPROM_READ(PrintPause::UnloadFeedrate);
+			  EEPROM_READ(PrintPause::ExtrudeFeedrate);
+		    #endif
+
+		    //
+		    // Cut
+		    //
+		    EEPROM_READ(tools.cut_servo_id);
+		    EEPROM_READ(tools.cut_active_angle);
+		    EEPROM_READ(tools.cut_neutral_angle);
+
+			#if ENABLED(EG6_EXTRUDER)
+				EEPROM_READ(tools.hotend_switch_path);
+			#endif
+
+			#if HAS_EEPROM_SD
+			  // Read last two field
+			  uint16_t temp_crc;
+			  read_data(eeprom_index, (uint8_t*)&stored_ver, sizeof(stored_ver), &temp_crc);
+			  read_data(eeprom_index, (uint8_t*)&stored_crc, sizeof(stored_crc), &temp_crc);
+			#endif
+
+			if (working_crc == stored_crc) {
+			  #if ENABLED(EEPROM_CHITCHAT)
+				SERIAL_VAL(syscfg_version);
+				SERIAL_MV(" stored system settings retrieved (", eeprom_index - (EEPROM_OFFSET) - SYSCFG_OFFSET);
+				SERIAL_MV(" bytes; crc ", working_crc);
+				SERIAL_EM(")");
+			  #endif
+			}
+			else {
+			  eeprom_error = true;
+			  #if ENABLED(EEPROM_CHITCHAT)
+				SERIAL_SMV(ER, "EEPROM usercfg CRC mismatch - (stored) ", stored_crc);
+				SERIAL_MV(" != ", working_crc);
+				SERIAL_EM(" (calculated)!");
+			  #endif
+			}
+
+		}
+
+		EEPROM_FINISH();
+
+		return !eeprom_error;
+
+    }
+
+    bool EEPROM::Store_Usr() {
+        char ver[6] = "00000";
+
+        uint16_t working_crc = 0;
+
+        EEPROM_WRITE_START(USRCFG_OFFSET);
+
+        #if HAS_EEPROM_FLASH
+          EEPROM_SKIP(ver);         // Flash doesn't allow rewriting without erase
+          EEPROM_SKIP(working_crc); // Skip the checksum slot
+        #elif HAS_EEPROM_SD
+          EEPROM_WRITE(version);
+        #else
+          EEPROM_WRITE(ver);        // invalidate data first
+          EEPROM_SKIP(working_crc); // Skip the checksum slot
+        #endif
+
+        working_crc = 0; // clear before first "real data"
+
+        LOOP_EUVW(i)
+        {
+            EEPROM_WRITE(mechanics.axis_steps_per_mm[i]);
+        }
+        #if ENABLED(WORKSPACE_OFFSETS) || ENABLED(HOME_OFFSETS)
+          EEPROM_WRITE(mechanics.home_offset);
+        #endif
+        EEPROM_WRITE(tools.hotend_offset);
+
+        EEPROM_WRITE(tools.switch_offset_x);
+        EEPROM_WRITE(tools.switch_offset_y);
+
+
+        #if ENABLED(NEXTION_HMI)
+          EEPROM_WRITE(NextionHMI::autoPreheatTempHotend);
+          EEPROM_WRITE(NextionHMI::autoPreheatTempBed);
+          EEPROM_WRITE(NextionHMI::lcdBrightness);
+        #endif
+
+        #if HEATER_COUNT > 0
+          LOOP_HEATER() {
+            EEPROM_WRITE(heaters[h].Kp);
+            EEPROM_WRITE(heaters[h].Ki);
+            EEPROM_WRITE(heaters[h].Kd);
+          }
+        #endif
+
+        if (!eeprom_error) {
+          const int eeprom_size = eeprom_index;
+
+          const uint16_t final_crc = working_crc;
+
+          // Write the EEPROM header
+          eeprom_index = EEPROM_OFFSET;
+
+          EEPROM_WRITE(usrcfg_version);
+          EEPROM_WRITE(final_crc);
+
+          // Report storage size
+          #if ENABLED(EEPROM_CHITCHAT)
+            SERIAL_SMV(ECHO, "Settings Stored (", eeprom_size - (EEPROM_OFFSET) - USRCFG_OFFSET);
+            SERIAL_MV(" bytes; crc ", final_crc);
+            SERIAL_EM(")");
+          #endif
+        }
+
+        EEPROM_FINISH();
+
+        return !eeprom_error;
+    }
+
+    bool EEPROM::Load_Usr() {
+        uint16_t  working_crc = 0,
+                  stored_crc  = 0;
+
+        char stored_ver[6];
+
+        EEPROM_READ_START(USRCFG_OFFSET);
+
+        #if HAS_EEPROM_SD
+          EEPROM_READ(stored_ver);
+        #else
+          EEPROM_READ(stored_ver);
+          EEPROM_READ(stored_crc);
+        #endif
+
+        if (strncmp(usrcfg_version, stored_ver, 5) != 0) {
+          if (stored_ver[0] != 'M') {
+            stored_ver[0] = '?';
+            stored_ver[1] = '?';
+            stored_ver[2] = '\0';
+          }
+          #if ENABLED(EEPROM_CHITCHAT)
+            SERIAL_SM(ECHO, "EEPROM user config version mismatch ");
+            SERIAL_MT("(EEPROM=", stored_ver);
+            SERIAL_EM(" Firmware=" USRCFG_VERSION ")");
+          #endif
+          eeprom_error = true;
+        }
+        else {
+
+
+          float dummy = 0;
+
+          working_crc = 0; // Init to 0. Accumulated by EEPROM_READ
+
+          // version number match
+          LOOP_EUVW(i)
+          {
+          	EEPROM_READ(mechanics.axis_steps_per_mm[i]);
+          }
+
+          #if ENABLED(WORKSPACE_OFFSETS) || ENABLED(HOME_OFFSETS)
+            EEPROM_READ(mechanics.home_offset);
+          #endif
+          EEPROM_READ(tools.hotend_offset);
+
+          EEPROM_READ(tools.switch_offset_x);
+          EEPROM_READ(tools.switch_offset_y);
+
+
+    		#if ENABLED(NEXTION_HMI)
+          	EEPROM_READ(NextionHMI::autoPreheatTempHotend);
+          	EEPROM_READ(NextionHMI::autoPreheatTempBed);
+          	EEPROM_READ(NextionHMI::lcdBrightness);
+    		#endif
+
+          #if HEATER_COUNT > 0
+            LOOP_HEATER() {
+              EEPROM_READ(heaters[h].Kp);
+              EEPROM_READ(heaters[h].Ki);
+              EEPROM_READ(heaters[h].Kd);
+            }
+          #endif
+
+          #if HAS_EEPROM_SD
+            // Read last two field
+            uint16_t temp_crc;
+            read_data(eeprom_index, (uint8_t*)&stored_ver, sizeof(stored_ver), &temp_crc);
+            read_data(eeprom_index, (uint8_t*)&stored_crc, sizeof(stored_crc), &temp_crc);
+          #endif
+
+          if (working_crc == stored_crc) {
+            #if ENABLED(EEPROM_CHITCHAT)
+              SERIAL_VAL(usrcfg_version);
+              SERIAL_MV(" stored user settings retrieved (", eeprom_index - (EEPROM_OFFSET) - USRCFG_OFFSET);
+              SERIAL_MV(" bytes; crc ", working_crc);
+              SERIAL_EM(")");
+            #endif
+          }
+          else {
+            eeprom_error = true;
+            #if ENABLED(EEPROM_CHITCHAT)
+              SERIAL_SMV(ER, "EEPROM usercfg CRC mismatch - (stored) ", stored_crc);
+              SERIAL_MV(" != ", working_crc);
+              SERIAL_EM(" (calculated)!");
+            #endif
+          }
+
+        }
+
+        EEPROM_FINISH();
+
+        return !eeprom_error;
+    }
+
+
+
 
 
 #else
@@ -2130,6 +2452,20 @@ void EEPROM::Factory_Settings() {
 
 #endif
 
+#if ENABLED(EG6_EXTRUDER)
+    static const ToolSwitchPos tmp15[] PROGMEM = CHANGE_T0;
+    for (int i=0; i<CHANGE_MOVES; i++) tools.hotend_switch_path[0][i] = tmp15[i];
+
+	#if EXTRUDERS>1
+    	static const ToolSwitchPos tmp16[] PROGMEM = CHANGE_T1;
+        for (int i=0; i<CHANGE_MOVES; i++) tools.hotend_switch_path[1][i] = tmp16[i];
+	#endif
+#endif
+
+  tools.cut_servo_id = CUT_SERVO_ID;
+  tools.cut_active_angle = CUT_ACTIVE_ANGLE;
+  tools.cut_neutral_angle = CUT_NEUTRAL_ANGLE;
+
   watchdog.reset();
 
   Postprocess();
@@ -2344,6 +2680,29 @@ void EEPROM::Factory_Settings() {
 
 		#endif
 
+	CONFIG_MSG_START(" Fiber cut parameters: S<ServoId> A<CutAngle> B<NeutralAngle>");
+	SERIAL_SM(CFG, "  M1011");
+  	SERIAL_MV(" S", tools.cut_servo_id);
+	SERIAL_MV(" A", tools.cut_active_angle);
+	SERIAL_EMV(" B", tools.cut_neutral_angle);
+
+	#if ENABLED(EG6_EXTRUDER)
+		CONFIG_MSG_START(" Tool switch path:");
+		LOOP_EXTRUDERS(t)
+		{
+			for(int i=0; i<CHANGE_MOVES; i++)
+			{
+				SERIAL_SM(CFG, "  M217");
+			  	SERIAL_MV(" T", t);
+				SERIAL_MV(" S", i);
+				SERIAL_MV(" X", tools.hotend_switch_path[t][i].X);
+				SERIAL_MV(" Y", tools.hotend_switch_path[t][i].Y);
+				SERIAL_MV(" V", tools.hotend_switch_path[t][i].Speed);
+				SERIAL_EMV(" K", tools.hotend_switch_path[t][i].SwitchMove);
+			}
+		}
+	#endif
+
     /**
       * User config
       */
@@ -2381,8 +2740,8 @@ void EEPROM::Factory_Settings() {
 	#if ENABLED(EG6_EXTRUDER)
 	  CONFIG_MSG_START(" Tool switch position offset (mm):");
 	  SERIAL_SM(CFG, "  M217");
-	  SERIAL_MV(" X", Tools::switch_pos_x, 3);
-	  SERIAL_EMV(" Y", Tools::switch_pos_y, 3);
+	  SERIAL_MV(" X", Tools::switch_offset_x, 3);
+	  SERIAL_EMV(" Y", Tools::switch_offset_y, 3);
 	#endif
 
 
@@ -2789,6 +3148,8 @@ void EEPROM::Factory_Settings() {
       card.PrintSettings();
     #endif
 
-  }
+}
+
 
 #endif // !DISABLE_M503
+

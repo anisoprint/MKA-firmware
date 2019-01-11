@@ -33,12 +33,28 @@
   /*
    * M217: Toolchange Parameters
    *
-   *  X<xpos> Y<ypos>
+   *  A<x_offset> B<y_offset> T<target_tool> S<step (0-11) X<x_pos> Y<y_pos> V<speed mm/s> K<switch movement 0/1>
    *
    */
   inline void gcode_M217() {
-	  if (parser.seen('X')) Tools::switch_pos_x = parser.value_linear_units();
-	  if (parser.seen('Y')) Tools::switch_pos_y = parser.value_linear_units();
+	  if (parser.seen('A')) Tools::switch_offset_x = parser.value_linear_units();
+	  if (parser.seen('B')) Tools::switch_offset_y = parser.value_linear_units();
+
+	  GET_TARGET_EXTRUDER(217);
+	  if (parser.seen('S'))
+	  {
+		  uint8_t step = parser.value_byte();
+		  if (step>=CHANGE_MOVES)
+		  {
+			  return;
+		  }
+		  if (parser.seen('X')) Tools::hotend_switch_path[TARGET_EXTRUDER][step].X = parser.value_linear_units();
+		  if (parser.seen('Y')) Tools::hotend_switch_path[TARGET_EXTRUDER][step].Y = parser.value_linear_units();
+		  if (parser.seen('V')) Tools::hotend_switch_path[TARGET_EXTRUDER][step].Speed = parser.value_linear_units();
+		  if (parser.seen('K')) Tools::hotend_switch_path[TARGET_EXTRUDER][step].SwitchMove = parser.value_bool();
+
+	  }
+
   }
 
 

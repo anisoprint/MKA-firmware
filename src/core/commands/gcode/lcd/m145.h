@@ -87,7 +87,6 @@ inline void gcode_M145(void) {
         NextionHMI::autoPreheatTempBed = constrain(v, BED_MINTEMP, BED_MAXTEMP - 10);
       }
     #endif
-  }
 }
 
 #endif

@@ -29,9 +29,6 @@
 
 #define LEVELING_OFFSET 0.1
 
-extern const float filament_change_unload_length[DRIVER_EXTRUDERS], filament_change_load_length[DRIVER_EXTRUDERS];
-
-
 namespace StateWizard {
 
 	void TouchUpdate();
