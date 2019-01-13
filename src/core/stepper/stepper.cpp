@@ -399,15 +399,19 @@ void Stepper::set_directions() {
     SET_STEP_DIR(Z); // C
   #endif
 
-  #if HAS_EXTRUDERS && DISABLED(LIN_ADVANCE_DEV)
-    if (motor_direction(E_AXIS)) {
-      REV_E_DIR();
-      count_direction[E_AXIS] = -1;
-    }
-    else {
-      NORM_E_DIR();
-      count_direction[E_AXIS] = 1;
-    }
+  #if HAS_EXTRUDERS
+
+	#if DISABLED(LIN_ADVANCE)
+		if (motor_direction(E_AXIS)) {
+		  REV_E_DIR();
+		  count_direction[E_AXIS] = -1;
+		}
+		else {
+		  NORM_E_DIR();
+		  count_direction[E_AXIS] = 1;
+		}
+	#endif
+
 	#if DRIVER_EXTRUDERS > 1
 		if (motor_direction(U_AXIS)) {  // -direction
 	  REV_U_DIR();
@@ -458,7 +462,7 @@ void Stepper::set_directions() {
 			count_direction[L_AXIS]=1;
 		}
 	#endif
-  #endif // HAS_EXTRUDERS && DISABLED(LIN_ADVANCE_DEV)
+  #endif // HAS_EXTRUDERS
 
   #if HAS_EXT_ENCODER
 
@@ -1376,7 +1380,7 @@ void Stepper::isr() {
     if ((current_block = planner.get_current_block())) {
 
       // Initialize the trapezoid generator from the current block.
-      //static int8_t last_extruder = -1;
+      static int8_t last_extruder = -1;
 
       #if ENABLED(LIN_ADVANCE)
         #if EXTRUDERS > 1
@@ -1395,7 +1399,7 @@ void Stepper::isr() {
 
       if (current_block->direction_bits != last_direction_bits) {
         last_direction_bits = current_block->direction_bits;
-        //last_extruder = current_block->active_extruder;
+        last_extruder = current_block->active_extruder;
         set_directions();
       }
 
@@ -1543,7 +1547,7 @@ void Stepper::isr() {
       PULSE_START(Z);
     #endif
 
-    #if ENABLED(LIN_ADVANCE_DEV)
+    #if ENABLED(LIN_ADVANCE)
 
       counter_E += current_block->steps[E_AXIS];
       if (counter_E > 0) {
@@ -1562,6 +1566,22 @@ void Stepper::isr() {
             motor_direction(E_AXIS) ? --e_steps : ++e_steps;
           }
         }
+	  #else
+		#if DRIVER_EXTRUDERS > 1
+			PULSE_START(U);
+		#endif
+		#if DRIVER_EXTRUDERS > 2
+			PULSE_START(V);
+		#endif
+		#if DRIVER_EXTRUDERS > 3
+			PULSE_START(W);
+		#endif
+		#if DRIVER_EXTRUDERS > 4
+			PULSE_START(K);
+		#endif
+		#if DRIVER_EXTRUDERS > 5
+			PULSE_START(L);
+		#endif
       #endif
 
     #else // !LIN_ADVANCE - use linear interpolation for E also
@@ -1670,16 +1690,20 @@ void Stepper::isr() {
       PULSE_STOP(Z);
     #endif
 
-    #if HAS_EXTRUDERS && DISABLED(LIN_ADVANCE_DEV)
-      #if ENABLED(COLOR_MIXING_EXTRUDER)
-        MIXING_STEPPERS_LOOP(j) {
-          if (counter_m[j] > 0) {
-            counter_m[j] -= current_block->mix_event_count[j];
-            En_STEP_WRITE(j, INVERT_E_STEP_PIN);
-          }
-        }
-      #else // !COLOR_MIXING_EXTRUDER
-        PULSE_STOP(E);
+#if HAS_EXTRUDERS
+	  #if ENABLED(COLOR_MIXING_EXTRUDER)
+		#if DISABLED(LIN_ADVANCE)
+			MIXING_STEPPERS_LOOP(j) {
+			  if (counter_m[j] > 0) {
+				counter_m[j] -= current_block->mix_event_count[j];
+				En_STEP_WRITE(j, INVERT_E_STEP_PIN);
+			  }
+			}
+		#endif
+	  #else // !COLOR_MIXING_EXTRUDER
+		#if DISABLED(LIN_ADVANCE)
+			PULSE_STOP(E);
+		#endif
 		#if DRIVER_EXTRUDERS > 1
 			PULSE_STOP(U);
 		#endif
@@ -1695,8 +1719,8 @@ void Stepper::isr() {
 		#if DRIVER_EXTRUDERS > 5
 			PULSE_STOP(L);
 		#endif
-      #endif
-    #endif // HAS_EXTRUDERS && DISABLED(LIN_ADVANCE_DEV)
+	  #endif
+#endif // HAS_EXTRUDERS
 
     #if ENABLED(LASER)
       counter_L += current_block->steps_l;
@@ -1769,7 +1793,7 @@ void Stepper::isr() {
 
     acceleration_time += interval;
 
-    #if ENABLED(LIN_ADVANCE_DEV)
+    #if ENABLED(LIN_ADVANCE)
 
       if (current_block->use_advance_lead) {
         if (step_events_completed == step_loops || (e_steps && eISR_Rate != current_block->advance_speed)) {
@@ -1782,7 +1806,7 @@ void Stepper::isr() {
         if (e_steps) nextAdvanceISR = 0;
       }
 
-    #endif // ENABLED(LIN_ADVANCE_DEV)
+    #endif // ENABLED(LIN_ADVANCE)
   }
   else if (step_events_completed > (uint32_t)current_block->decelerate_after) {
     hal_timer_t step_rate;
@@ -1825,7 +1849,7 @@ void Stepper::isr() {
 
     deceleration_time += interval;
 
-    #if ENABLED(LIN_ADVANCE_DEV)
+    #if ENABLED(LIN_ADVANCE)
 
       if (current_block->use_advance_lead) {
         if (step_events_completed <= (uint32_t)current_block->decelerate_after + step_loops || (e_steps && eISR_Rate != current_block->advance_speed)) {
@@ -1842,7 +1866,7 @@ void Stepper::isr() {
   }
   else {
 
-    #if ENABLED(LIN_ADVANCE_DEV)
+    #if ENABLED(LIN_ADVANCE)
 
       // If we have esteps to execute, fire the next advance_isr "now"
       if (e_steps && eISR_Rate != current_block->advance_speed) nextAdvanceISR = 0;
@@ -1856,7 +1880,7 @@ void Stepper::isr() {
     step_loops = step_loops_nominal;
   }
 
-  #if DISABLED(LIN_ADVANCE_DEV)
+  #if DISABLED(LIN_ADVANCE)
     HAL_timer_restricts(STEPPER_TIMER, STEPPER_TIMER_MIN_INTERVAL * STEPPER_TIMER_TICKS_PER_US);
   #endif
 
@@ -1871,7 +1895,7 @@ void Stepper::isr() {
   }
 }
 
-#if ENABLED(LIN_ADVANCE_DEV)
+#if ENABLED(LIN_ADVANCE)
 
   // Timer interrupt for E. e_steps is set in the main routine;
   void Stepper::advance_isr() {
@@ -1879,16 +1903,18 @@ void Stepper::isr() {
     #if ENABLED(DUAL_X_CARRIAGE)
       #define SET_E_STEP_DIR(INDEX) do{ if (e_steps) { if (e_steps < 0) REV_E_DIR(); else NORM_E_DIR(); } }while(0)
     #else
-      #define SET_E_STEP_DIR(INDEX) do{ if (e_steps) E## INDEX ##_DIR_WRITE(e_steps < 0 ? INVERT_E## INDEX ##_DIR : !INVERT_E## INDEX ##_DIR); }while(0)
+      #define SET_E_STEP_DIR(INDEX) do{ if (e_steps) { if (e_steps < 0) REV_E_DIR(); else NORM_E_DIR(); } }while(0)
     #endif
 
     #if ENABLED(DUAL_X_CARRIAGE)
       #define START_E_PULSE(INDEX)  do{ if (e_steps) E_STEP_WRITE(!INVERT_E_STEP_PIN); }while(0)
       #define STOP_E_PULSE(INDEX)   do{ if (e_steps) { E_STEP_WRITE(INVERT_E_STEP_PIN); e_steps < 0 ? ++e_steps : --e_steps; } }while(0)
     #else
-      #define START_E_PULSE(INDEX)  do{ if (e_steps) E## INDEX ##_STEP_WRITE(!INVERT_E_STEP_PIN); }while(0)
-      #define STOP_E_PULSE(INDEX)   do{ if (e_steps) { e_steps < 0 ? ++e_steps : --e_steps; E## INDEX ##_STEP_WRITE(INVERT_E_STEP_PIN); } }while(0)
+      #define START_E_PULSE(INDEX)  do{ if (e_steps) E_STEP_WRITE(!INVERT_E_STEP_PIN); }while(0)
+      #define STOP_E_PULSE(INDEX)   do{ if (e_steps) { E_STEP_WRITE(INVERT_E_STEP_PIN); e_steps < 0 ? ++e_steps : --e_steps; } }while(0)
     #endif
+
+
 
     if (use_advance_lead) {
       if (step_events_completed > LA_decelerate_after && current_adv_steps > final_adv_steps) {
@@ -1910,7 +1936,8 @@ void Stepper::isr() {
     else
       nextAdvanceISR = ADV_NEVER;
 
-    switch(LA_active_extruder) {
+    SET_E_STEP_DIR(0);
+    /*switch(LA_active_extruder) {
       case 0: SET_E_STEP_DIR(0); break;
       #if DRIVER_EXTRUDERS > 1
         case 1: SET_E_STEP_DIR(1); break;
@@ -1927,7 +1954,7 @@ void Stepper::isr() {
           #endif // EXTRUDERS > 3
         #endif // EXTRUDERS > 2
       #endif // EXTRUDERS > 1
-    }
+    }*/
 
     // Step E stepper if we have steps
     while (e_steps) {
@@ -1936,7 +1963,9 @@ void Stepper::isr() {
         hal_timer_t pulse_start = HAL_timer_get_current_count(STEPPER_TIMER);
       #endif
 
-      switch(LA_active_extruder) {
+
+      START_E_PULSE(0);
+      /*switch(LA_active_extruder) {
         case 0: START_E_PULSE(0); break;
         #if DRIVER_EXTRUDERS > 1
           case 1: START_E_PULSE(1); break;
@@ -1953,7 +1982,7 @@ void Stepper::isr() {
             #endif // EXTRUDERS > 3
           #endif // EXTRUDERS > 2
         #endif // EXTRUDERS > 1
-      }
+      }*/
 
       // For a minimum pulse time wait before stopping pulses
       #if MINIMUM_STEPPER_PULSE > 0
@@ -1961,7 +1990,8 @@ void Stepper::isr() {
         pulse_start = HAL_timer_get_current_count(STEPPER_TIMER);
       #endif
 
-      switch(LA_active_extruder) {
+      STOP_E_PULSE(0);
+      /*switch(LA_active_extruder) {
         case 0: STOP_E_PULSE(0); break;
         #if DRIVER_EXTRUDERS > 1
           case 1: STOP_E_PULSE(1); break;
@@ -1978,7 +2008,7 @@ void Stepper::isr() {
             #endif // EXTRUDERS > 3
           #endif // EXTRUDERS > 2
         #endif // EXTRUDERS > 1
-      }
+      }*/
 
     // For minimum pulse time wait before looping
     #if MINIMUM_STEPPER_PULSE > 0

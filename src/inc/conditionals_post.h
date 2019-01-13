@@ -764,7 +764,7 @@
  * DOUBLE_STEP_FREQUENCY for Arduino DUE or Mega
  */
 #if ENABLED(ARDUINO_ARCH_SAM)
-  #if ENABLED(LIN_ADVANCE_DEV)
+  #if ENABLED(LIN_ADVANCE)
     constexpr uint32_t DOUBLE_STEP_FREQUENCY = 60000; // 60KHz
   #else
     constexpr uint32_t DOUBLE_STEP_FREQUENCY = 80000; // 80Khz
