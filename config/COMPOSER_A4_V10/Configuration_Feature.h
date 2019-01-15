@@ -2131,7 +2131,7 @@
 
 #if ENABLED(NEXTION_HMI)	      //For nextion HMI material loading/unloading wizard
 	#define PAUSE_PARK_UNLOAD_LENGTH {740, 900, 850}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
-	#define PAUSE_PARK_LOAD_LENGTH {610, 800, 740}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+	#define PAUSE_PARK_LOAD_LENGTH {610, 800, 700}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
 #else
 #define PAUSE_PARK_UNLOAD_LENGTH 100        // (mm) The length of filament for a complete unload.
                                             //   For Bowden, the full length of the tube and nozzle.

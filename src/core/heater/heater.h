@@ -102,7 +102,7 @@
       void setTarget(int16_t celsius);
       void updatePID();
       void get_pid_output(const bool cycle_1s);
-      void print_PID();
+      void print_PID(const bool dump);
       void print_parameters();
       void sensor_print_parameters();
 

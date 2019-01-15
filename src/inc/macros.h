@@ -220,4 +220,8 @@
 #define INCLUDE_BY_PRINTER(P,H)    AS_QUOTEDSTRING(config/P/H)
 #define INCLUDE_BY_PRINTER_UP(P,H)    AS_QUOTEDSTRING(../../config/P/H)
 
+#define CONFIG_MSG_HEADER(str) do{ if (!dump) SERIAL_STR(CFG); else SERIAL_STR(";"); SERIAL_EM(str); }while(0)
+#define CONFIG_MSG() do{ if (!dump) SERIAL_STR(CFG); }while(0)
+
+
 #endif //__MACROS_H

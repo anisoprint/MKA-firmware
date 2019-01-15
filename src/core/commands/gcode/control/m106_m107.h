@@ -51,32 +51,48 @@
 
     if (f < FAN_COUNT) {
 
+      bool config = false;
       Fan *fan = &fans[f];
 
       if (parser.seen('U')) {
         // Put off the fan
-        fan->Speed = 0;
-        fan->pin = parser.value_pin();
-        SERIAL_LM(ECHO, MSG_CHANGE_PIN);
+    	config = true;
+    	pin_t new_pin = parser.value_pin();
+    	if (new_pin!= fan->pin)
+    	{
+            fan->Speed = 0;
+            fan->pin = new_pin;
+            SERIAL_LM(ECHO, MSG_CHANGE_PIN);
+    	}
       }
 
       if (parser.seen('I'))
+      {
         fan->setHWInverted(parser.value_bool());
+        config = true;
+      }
 
       if (parser.seen('H'))
+      {
         fan->SetAutoMonitored(parser.value_int());
+        config = true;
+      }
 
       fan->min_Speed  = parser.byteval('L', fan->min_Speed);
       fan->freq       = parser.ushortval('F', fan->freq);
 
-      #if ENABLED(FAN_KICKSTART_TIME)
-        if (fan->Kickstart == 0 && speed > fan->Speed && speed < 85) {
-          if (fan->Speed) fan->Kickstart = FAN_KICKSTART_TIME / 100;
-          else            fan->Kickstart = FAN_KICKSTART_TIME / 25;
-        }
-      #endif
+      if (!config)
+      {
+		  #if ENABLED(FAN_KICKSTART_TIME)
+			if (fan->Kickstart == 0 && speed > fan->Speed && speed < 85) {
+			  if (fan->Speed) fan->Kickstart = FAN_KICKSTART_TIME / 100;
+			  else            fan->Kickstart = FAN_KICKSTART_TIME / 25;
+			}
+		  #endif
 
-      fan->Speed = fan->min_Speed + (speed * (255 - fan->min_Speed)) / 255;
+
+		  fan->Speed = fan->min_Speed + (speed * (255 - fan->min_Speed)) / 255;
+      }
 
       if (!parser.seen('S')) {
         char response[70];

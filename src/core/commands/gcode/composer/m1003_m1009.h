@@ -46,7 +46,7 @@ inline void gcode_M1003(void) {
 }
 
 /**
- * M1003: Set Printer Version
+ * M1004: Set Printer Version
  */
 inline void gcode_M1004(void) {
   strncpy(eeprom.printerVersion, parser.string_arg, 9);

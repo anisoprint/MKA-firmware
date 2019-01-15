@@ -60,7 +60,7 @@ inline void gcode_M301(void) {
   #endif
 
   heaters[h].updatePID();
-  heaters[h].print_PID();
+  heaters[h].print_PID(false);
   heaters[h].setTuning(true);
 
 }
