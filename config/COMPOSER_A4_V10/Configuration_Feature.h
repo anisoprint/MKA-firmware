@@ -148,18 +148,26 @@
 // AUTO FAN - Fans for cooling Hotend or Controller Fan
 // Put number Hotend in fan to automatically turn on/off when the associated
 // hotend temperature is above/below HOTEND AUTO FAN TEMPERATURE.
-// Or put 7 for controller fan
+// Put 7 for controller fan
+// Put 8 for any hotend (fan is started in any hotend is above defined temperature)
+// Put 9 for chamber cooling fan
 // -1 disables auto mode.
 // Default fan 1 is auto fan for Hotend 0
 #define AUTO_FAN { 0, -1, -1, -1, -1, -1 }
 // Parameters for Hotend Fan
-#define HOTEND_AUTO_FAN_TEMPERATURE  0
+#define HOTEND_AUTO_FAN_TEMPERATURE   0
 #define HOTEND_AUTO_FAN_SPEED       255 // 255 = full speed
 #define HOTEND_AUTO_FAN_MIN_SPEED     0
 // Parameters for Controller Fan
 #define CONTROLLERFAN_SECS           60 // How many seconds, after all motors were disabled, the fan should run
 #define CONTROLLERFAN_SPEED         255 // 255 = full speed
 #define CONTROLLERFAN_MIN_SPEED       0
+// Parameters for Chamber Fan
+#define CHAMBERFAN_SPEED1         	128 // 255 = full speed
+#define CHAMBERFAN_TEMP1         	 40 // 255 = full speed
+#define CHAMBERFAN_SPEED2         	255 // 255 = full speed
+#define CHAMBERFAN_TEMP2         	 50 // 255 = full speed
+#define CHAMBERFAN_MIN_SPEED          0
 /**************************************************************************/
 
 

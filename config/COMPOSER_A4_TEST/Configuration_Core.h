@@ -70,7 +70,6 @@
  *                                                                                       *
  *****************************************************************************************/
 #define CUSTOM_MACHINE_NAME "Composer A4"
-#define MACHINE_VERSION 	"1.0"
 /*****************************************************************************************/
 
 /*****************************************************************************************
@@ -363,7 +362,7 @@
  * Travel limits after homing (units are in mm)                                          *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MAX_POS 320
+#define X_MAX_POS 310
 #define X_MIN_POS 0
 #define Y_MAX_POS 210
 #define Y_MIN_POS 0
@@ -593,7 +592,7 @@
  ********************************** Axis feedrate ****************************************
  *****************************************************************************************/
 //                                       X,   Y, Z,  E0...(per extruder). (mm/sec)
-#define DEFAULT_MAX_FEEDRATE          {500, 500, 30, 100, 100, 100, 100}
+#define DEFAULT_MAX_FEEDRATE          {500, 500, 30, 33, 40, 33, 100}
 // Feedrates for manual moves along        X,     Y,     Z,  E from panel
 #define MANUAL_FEEDRATE               {50*60, 50*60, 10*60, 10*60}
 // Minimum feedrate
@@ -610,7 +609,7 @@
  ******************************** Axis acceleration **************************************
  *****************************************************************************************/
 //  Maximum start speed for accelerated moves.    X,    Y,  Z,   E0...(per extruder)
-#define DEFAULT_MAX_ACCELERATION              {3000, 3000, 50, 800, 1000, 1000, 1000}
+#define DEFAULT_MAX_ACCELERATION              {3000, 3000, 45, 800, 800, 800, 1000}
 //  Maximum acceleration in mm/s^2 for retracts   E0... (per extruder)
 #define DEFAULT_RETRACT_ACCELERATION          {10000, 10000, 10000, 10000}
 //  X, Y, Z and E* maximum acceleration in mm/s^2 for printing moves
@@ -644,9 +643,9 @@
  ************************************ Homing feedrate ************************************
  *****************************************************************************************/
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_X (50*60)
-#define HOMING_FEEDRATE_Y (50*60)
-#define HOMING_FEEDRATE_Z (20*60)
+#define HOMING_FEEDRATE_X (60*60)
+#define HOMING_FEEDRATE_Y (60*60)
+#define HOMING_FEEDRATE_Z (21*60)
 
 // Homing hits each endstop, retracts by these distances, then does a slower bump.
 #define X_HOME_BUMP_MM 5
@@ -654,7 +653,7 @@
 #define Z_HOME_BUMP_MM 2
 
 // Re-Bump Speed Divisor (Divides the Homing Feedrate)
-#define HOMING_BUMP_DIVISOR {5, 5, 4}
+#define HOMING_BUMP_DIVISOR {5, 5, 7}
 /*****************************************************************************************/
 
 
