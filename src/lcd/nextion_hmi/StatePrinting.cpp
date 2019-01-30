@@ -80,20 +80,6 @@ void StatePrinting::Pause_Push(void* ptr) {
 				break;
     	}
 
-
-      /*if (IS_SD_PRINTING) {
-        card.pauseSDPrint();
-        print_job_counter.pause();
-        SERIAL_STR(PAUSE);
-        SERIAL_EOL();
-        _bPause.setTextPGM(PSTR(MSG_RESUME));
-
-      }
-      else {
-        card.startFileprint();
-        print_job_counter.start();
-        _bPause.setTextPGM(PSTR(MSG_PAUSE));
-      }*/
     }
 }
 

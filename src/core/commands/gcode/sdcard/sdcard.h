@@ -89,21 +89,36 @@
 	#if ENABLED(PARK_HEAD_ON_PAUSE) && ENABLED(NEXTION_HMI)
       if (PrintPause::Status==WaitingToPause || PrintPause::Status==Paused)
     	  PrintPause::ResumePrint();
-      else
+      else if (PrintPause::Status==NotPaused)
       {
+    		Printer::currentLayer  = 0,
+    		Printer::maxLayer = -1;
 
+    	    mechanics.feedrate_percentage = 100;  // 100% mechanics.feedrate_mm_s
+    	    tools.flow_percentage[E_AXIS-XYZ] = 100;
+    		#if (DRIVER_EXTRUDERS>2)
+    	      	tools.flow_percentage[V_AXIS-XYZ] = 100;
+    		#endif
+
+    	    card.startFileprint();
+    	    print_job_counter.start();
+
+
+    	    StatePrinting::Activate();
       }
+	#else
+      Printer::currentLayer  = 0,
+      Printer::maxLayer = -1;
 
+      card.startFileprint();
+      print_job_counter.start();
+
+		#if ENABLED(NEXTION_HMI)
+		  StatePrinting::Activate();
+		#endif
 	#endif
 
-	Printer::currentLayer  = 0,
-	Printer::maxLayer = -1;
 
-    card.startFileprint();
-    print_job_counter.start();
-
-
-    StatePrinting::Activate();
 
 
     #if HAS_POWER_CONSUMPTION_SENSOR
@@ -192,9 +207,22 @@
       if (parser.seenval('S')) card.setIndex(parser.value_long());
 
       mechanics.feedrate_mm_s       = 20.0; // 20 units/sec
+
       mechanics.feedrate_percentage = 100;  // 100% mechanics.feedrate_mm_s
+      tools.flow_percentage[E_AXIS-XYZ] = 100;
+	  #if (DRIVER_EXTRUDERS>2)
+      	  tools.flow_percentage[V_AXIS-XYZ] = 100;
+	  #endif
+
+      Printer::currentLayer  = 0,
+      Printer::maxLayer = -1;
+
       card.startFileprint();
       print_job_counter.start();
+
+	  #if ENABLED(NEXTION_HMI)
+		StatePrinting::Activate();
+	  #endif
 
       #if HAS_POWER_CONSUMPTION_SENSOR
         powerManager.startpower = powerManager.consumption_hour;
