@@ -137,8 +137,6 @@
       #if ENABLED(SDCARD_SORT_ALPHA)
         flush_presort();
       #endif
-      Printer::currentLayer  = 0,
-      Printer::maxLayer = -1;
     }
   }
 

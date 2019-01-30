@@ -150,7 +150,7 @@ void PrintPause::ResumePrint(const float& purge_length) {
 	   NextionHMI::RaiseEvent(PRINT_PAUSE_UNSCHEDULED);
 	   return;
    };
-   if (Status!=Paused) return; // already paused
+   if (Status!=Paused) return; // already not paused
 
    Status = Resuming;
    NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMING);
