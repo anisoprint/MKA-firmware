@@ -610,13 +610,13 @@
  ******************************** Axis acceleration **************************************
  *****************************************************************************************/
 //  Maximum start speed for accelerated moves.    X,    Y,  Z,   E0...(per extruder)
-#define DEFAULT_MAX_ACCELERATION              {3000, 3000, 45, 800, 800, 800, 1000}
+#define DEFAULT_MAX_ACCELERATION              {1000, 1000, 45, 800, 800, 800, 1000}
 //  Maximum acceleration in mm/s^2 for retracts   E0... (per extruder)
 #define DEFAULT_RETRACT_ACCELERATION          {10000, 10000, 10000, 10000}
 //  X, Y, Z and E* maximum acceleration in mm/s^2 for printing moves
-#define DEFAULT_ACCELERATION          2000
+#define DEFAULT_ACCELERATION          1000
 //  X, Y, Z acceleration in mm/s^2 for travel (non printing) moves
-#define DEFAULT_TRAVEL_ACCELERATION   2000
+#define DEFAULT_TRAVEL_ACCELERATION   1000
 /*****************************************************************************************/
 
 
