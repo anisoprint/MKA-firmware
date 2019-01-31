@@ -153,9 +153,9 @@
 // Put 9 for chamber cooling fan
 // -1 disables auto mode.
 // Default fan 1 is auto fan for Hotend 0
-#define AUTO_FAN { 0, -1, -1, -1, -1, -1 }
+#define AUTO_FAN { 8, -1, 9, -1, -1, -1 }
 // Parameters for Hotend Fan
-#define HOTEND_AUTO_FAN_TEMPERATURE   0
+#define HOTEND_AUTO_FAN_TEMPERATURE  60
 #define HOTEND_AUTO_FAN_SPEED       255 // 255 = full speed
 #define HOTEND_AUTO_FAN_MIN_SPEED     0
 // Parameters for Controller Fan

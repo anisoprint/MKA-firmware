@@ -66,12 +66,10 @@ typedef int8_t    pin_t;
  * Configuration settings loading
  */
 
-#include "Configuration.h"
 #include "Configuration_Version.h"
 
 #ifndef CONFIGURATION_OVERALL
   #include "Configuration_Basic.h"
-  #include "Configuration.h"
 
   #if IS_CARTESIAN
     #include "Configuration_Cartesian.h"
@@ -105,11 +103,13 @@ typedef int8_t    pin_t;
 
 	#include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Temperature.h)
 
+	#include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Feature.h)
+
 
 #endif
 #endif
 
-#include INCLUDE_BY_PRINTER(PRINTER_TYPE, Configuration_Feature.h)
+
 #if ENABLED(LASER)
   #include "Configuration_Laser.h"
 #endif

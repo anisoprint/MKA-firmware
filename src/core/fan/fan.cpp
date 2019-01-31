@@ -53,10 +53,10 @@
   }
 
   void Fan::SetAutoMonitored(const int8_t h) {
-    if (WITHIN(h, 0, HOTENDS - 1) || h == 7)
-      SBI(autoMonitored, (uint8_t)h);
+    if (WITHIN(h, 0, HOTENDS - 1) || h == 7 || h == 8 || h == 9)
+      autoMonitored = h;
     else      
-      autoMonitored = 0;
+      autoMonitored = -1;
     spin();
   }
 
@@ -64,11 +64,11 @@
 
     static watch_t controller_fan_watch(CONTROLLERFAN_SECS * 1000UL);
 
-    if (autoMonitored == 0) return;
+    if (autoMonitored == -1) return;
 
     // Check for Hotend temperature
     LOOP_HOTEND() {
-      if (TEST(autoMonitored, h)) {
+      if (autoMonitored==h) {
         if (heaters[h].current_temperature > triggerTemperatures) {
           Speed = HOTEND_AUTO_FAN_SPEED;
           break;
@@ -79,7 +79,7 @@
     }
 
     // Check for Controller fan
-    if (TEST(autoMonitored, 7)) {
+    if (autoMonitored==7) {
 
       // Check Heaters
       if (thermalManager.heaters_isON()) controller_fan_watch.start();
@@ -112,6 +112,27 @@
       // Fan off if no steppers or heaters have been enabled for CONTROLLERFAN_SECS seconds
       Speed = controller_fan_watch.elapsed() ? CONTROLLERFAN_MIN_SPEED : CONTROLLERFAN_SPEED;
     }
+
+    // Check for any hotend
+    if (autoMonitored==8) {
+    	Speed = HOTEND_AUTO_FAN_MIN_SPEED;
+    	LOOP_HOTEND() {
+            if (heaters[h].current_temperature > triggerTemperatures) {
+              Speed = HOTEND_AUTO_FAN_SPEED;
+              break;
+            }
+    	}
+    }
+
+    // Check for chamber
+	#if HAS_HEATER_CHAMBER
+		if (autoMonitored==9) {
+			Speed = CHAMBERFAN_MIN_SPEED;
+			if (heaters[CHAMBER_INDEX].current_temperature > CHAMBERFAN_TEMP2) Speed = CHAMBERFAN_SPEED2;
+			else if (heaters[CHAMBER_INDEX].current_temperature > CHAMBERFAN_TEMP1) Speed = CHAMBERFAN_SPEED1;
+		}
+	#endif
+
   }
 
   #if HARDWARE_PWM

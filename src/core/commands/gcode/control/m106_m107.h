@@ -106,11 +106,13 @@
         SERIAL_TXT(response);
 
         // Auto Fan
-        if (fan->autoMonitored) SERIAL_MSG(" Autofan on:");
+        if (fan->autoMonitored!=-1) SERIAL_MSG(" Autofan on:");
         LOOP_HOTEND() {
-          if (TEST(fan->autoMonitored, h)) SERIAL_MV(" H", (int)h);
+          if (fan->autoMonitored==h) SERIAL_MV(" H", (int)h);
         }
-        if (TEST(fan->autoMonitored, 7)) SERIAL_MSG(" Controller");
+        if (fan->autoMonitored==7) SERIAL_MSG(" Controller");
+        if (fan->autoMonitored==8) SERIAL_MSG(" All hotends");
+        if (fan->autoMonitored==9) SERIAL_MSG(" Chamber");
 
         SERIAL_EOL();
       }

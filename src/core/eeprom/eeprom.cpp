@@ -657,7 +657,7 @@ void EEPROM::Postprocess() {
           EEPROM_READ(stored_crc);
         #endif
 
-        if (strncmp(usrcfg_version, stored_ver, 5) != 0) {
+        if (strncmp(syscfg_version, stored_ver, 5) != 0) {
           if (stored_ver[0] != 'S') {
             stored_ver[0] = '?';
             stored_ver[1] = '?';
@@ -2332,7 +2332,7 @@ void EEPROM::Factory_Settings() {
       fan->pin            = (int8_t)pgm_read_byte(&tmp10[f]);
       fan->freq           = 250;
       fan->min_Speed      = FAN_MIN_PWM;
-      fan->autoMonitored  = 0;
+      fan->autoMonitored  = -1;
       fan->FanFlag        = 0;
       fan->SetAutoMonitored((int8_t)pgm_read_byte(&tmp11[f]));
       fan->setHWInverted(FAN_INVERTED);
@@ -2527,14 +2527,19 @@ void EEPROM::Factory_Settings() {
 		if (only_version)
 		{
 			SERIAL_MSG(stored_sys_ver);
+			SERIAL_EOL();
 			SERIAL_VAL(stored_sys_crc);
+			SERIAL_EOL();
 		}
 		else
 		{
 			CONFIG_MSG_HEADER("SYSTEM CONFIG:");
 			CONFIG_MSG();
 			SERIAL_MSG(stored_sys_ver);
+			SERIAL_EOL();
+			CONFIG_MSG();
 			SERIAL_VAL(stored_sys_crc);
+			SERIAL_EOL();
 			CONFIG_MSG_HEADER("Mechanics steps per unit:");
 			CONFIG_MSG();
 			SERIAL_MV("M92 X", LINEAR_UNIT(mechanics.axis_steps_per_mm[X_AXIS]), 3);
@@ -2700,9 +2705,11 @@ void EEPROM::Factory_Settings() {
 				SERIAL_MV(" L", fans[f].min_Speed);
 				SERIAL_MV(" F", fans[f].freq);
 				LOOP_HOTEND() {
-				  if (TEST(fans[f].autoMonitored, h)) SERIAL_MV(" H", (int)h);
+				  if (fans[f].autoMonitored == h) SERIAL_MV(" H", (int)h);
 				}
-				if (TEST(fans[f].autoMonitored, 7)) SERIAL_MSG(" H7");
+				if (fans[f].autoMonitored == 7) SERIAL_MSG(" H7");
+				if (fans[f].autoMonitored == 8) SERIAL_MSG(" H8");
+				if (fans[f].autoMonitored == 9) SERIAL_MSG(" H9");
 				SERIAL_EMV(" I", fans[f].isHWInverted());
 			  }
 			#endif
@@ -2775,13 +2782,19 @@ void EEPROM::Factory_Settings() {
 		if (only_version)
 		{
 			SERIAL_MSG(stored_usr_ver);
+			SERIAL_EOL();
 			SERIAL_VAL(stored_usr_crc);
+			SERIAL_EOL();
 		}
 		else
 		{
 			CONFIG_MSG_HEADER("USER CONFIG:");
+			CONFIG_MSG();
 			SERIAL_MSG(stored_usr_ver);
+			SERIAL_EOL();
+			CONFIG_MSG();
 			SERIAL_VAL(stored_usr_crc);
+			SERIAL_EOL();
 			CONFIG_MSG_HEADER("Extruders steps per unit:");
 			#if DRIVER_EXTRUDERS >= 1
 			  CONFIG_MSG();
