@@ -41,13 +41,18 @@ namespace {
 	//Page
 	NexObject _page = NexObject(PAGE_PRINTING,  0,  "printing");
 
-	//Plastic
 	NexObject _pFileIcon  = NexObject(PAGE_PRINTING,  7,  "ico");
 	NexObject _tFileName  = NexObject(PAGE_PRINTING,  4,  "fnm");
 	NexObject _tStatus1  = NexObject(PAGE_PRINTING,  5,  "st1");
 	NexObject _tStatus2  = NexObject(PAGE_PRINTING,  5,  "st2");
 	NexObject _tProgress  = NexObject(PAGE_PRINTING,  11,  "perc");
 	NexObject _pbProgressBar = NexObject(PAGE_PRINTING,  10,  "prb");
+
+	NexObject _tTempPlastic = NexObject(PAGE_PRINTING,  17,  "tT0");
+	NexObject _tTempComposite = NexObject(PAGE_PRINTING,  19,  "tT1");
+	NexObject _tTempBuildplate = NexObject(PAGE_PRINTING,  21,  "tTB");
+	NexObject _tTempChamber = NexObject(PAGE_PRINTING,  22,  "tTC");
+	NexObject _tFeedPercent = NexObject(PAGE_PRINTING,  25,  "tF");
 	//Buttons
 	NexObject _bControl = NexObject(PAGE_PRINTING,  6,  "c");
 	NexObject _bPause = NexObject(PAGE_PRINTING,  14,  "p");
@@ -200,6 +205,18 @@ void StatePrinting::DrawUpdate() {
 			  _previousPercentDone = card.percentDone();
 			  _previousLayer = printer.currentLayer;
         }
+
+    	auto strTemp = String(round(heaters[HOT0_INDEX].current_temperature)) + "\370C";
+        _tTempPlastic.setText(strTemp.c_str());
+        strTemp = String(round(heaters[HOT1_INDEX].current_temperature)) + "\370C";
+        _tTempComposite.setText(strTemp.c_str());
+        strTemp = String(round(heaters[BED_INDEX].current_temperature)) + "\370C";
+        _tTempBuildplate.setText(strTemp.c_str());
+        strTemp = String(round(heaters[CHAMBER_INDEX].current_temperature)) + "\370C";
+        _tTempChamber.setText(strTemp.c_str());
+        strTemp = String(mechanics.feedrate_percentage) + "\370C";
+        _tFeedPercent.setText(strTemp.c_str());
+
     //}
 
 }
