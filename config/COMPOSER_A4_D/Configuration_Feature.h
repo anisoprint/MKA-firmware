@@ -438,7 +438,7 @@
 //#define LIN_ADVANCE
 
 // Unit: mm compression per 1mm/s extruder speed
-#define LIN_ADVANCE_K 0.22
+#define LIN_ADVANCE_K 0.0
 
 // If enabled, this will generate debug information output over Serial.
 //#define LA_DEBUG
