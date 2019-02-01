@@ -136,7 +136,7 @@
 // When first starting the main fan, run it at full speed for the
 // given number of milliseconds.  This gets the fan spinning reliably
 // before setting a PWM value.
-#define FAN_KICKSTART_TIME 400
+//#define FAN_KICKSTART_TIME 200
 
 // This defines the minimal speed for the main fan
 // set minimal speed for reliable running (1-255)
@@ -153,7 +153,7 @@
 // Default fan 1 is auto fan for Hotend 0
 #define AUTO_FAN { 0, -1, -1, -1, -1, -1 }
 // Parameters for Hotend Fan
-#define HOTEND_AUTO_FAN_TEMPERATURE  0
+#define HOTEND_AUTO_FAN_TEMPERATURE   0
 #define HOTEND_AUTO_FAN_SPEED       255 // 255 = full speed
 #define HOTEND_AUTO_FAN_MIN_SPEED     0
 // Parameters for Controller Fan
@@ -187,53 +187,6 @@
  * Used for Volumetric, Filament Width Sensor, etc.                    *
  ***********************************************************************/
 #define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
-/***********************************************************************/
-
-
-/***********************************************************************
- **************************** EG-6 extruder ****************************
- ***********************************************************************
- *                                                                     *
- * Anisoprint EG-6 extruder											   *
- *                                                                     *
- ***********************************************************************/
-#define EG6_EXTRUDER
-
-//Change moves
-#define CHANGE_MOVES 5
-
-//Change to T0 - prepare - prepare_fast - start - switch - finish
-#define CHANGE_T0_X {128.0, 128.0, 131.0, 149.9, 149.9}
-#define CHANGE_T0_Y {20,    0,     0,     0,     20   }
-#define CHANGE_T0_F {200,   200,   50,    200,   200  }
-
-//Change to T1 - prepare - prepare_fast - start - switch - finish
-#define CHANGE_T1_X {165.0, 165.0, 158.0, 146.0, 146.0}
-#define CHANGE_T1_Y {20,    0,     0,     0,     20   }
-#define CHANGE_T1_F {200,   200,   50,    200,   200  }
-
-                /*#define T0_PREPARE_X 	128    - hotend_offset[X_AXIS][1]
-				#define T0_PREPARE_Y 	20     //- hotend_offset[Y_AXIS][1]
-				#define T0_PREPARE2_X 	128    - hotend_offset[X_AXIS][1]
-				#define T0_PREPARE2_Y  	0      //- hotend_offset[Y_AXIS][1]
-				#define T0_START_X 		131.0  - hotend_offset[X_AXIS][1]
-				#define T0_START_Y  	0      //- hotend_offset[Y_AXIS][1]
-				#define T0_SWITCH_X 	149.9    - hotend_offset[X_AXIS][1]
-				#define T0_SWITCH_Y  	0      //- hotend_offset[Y_AXIS][1]
-				#define T0_FINISH_X 	149.9    - hotend_offset[X_AXIS][1]
-				#define T0_FINISH_Y  	20     //- hotend_offset[Y_AXIS][1]*/
-
-				/*#define T1_PREPARE_X 	165    - hotend_offset[X_AXIS][0]
-				#define T1_PREPARE_Y 	20     - hotend_offset[Y_AXIS][0]
-				#define T1_PREPARE2_X 	165    - hotend_offset[X_AXIS][0]
-				#define T1_PREPARE2_Y  	0      - hotend_offset[Y_AXIS][0]
-				#define T1_START_X 		158    - hotend_offset[X_AXIS][0]
-				#define T1_START_Y  	0      - hotend_offset[Y_AXIS][0]
-				#define T1_SWITCH_X 	146.0    - hotend_offset[X_AXIS][0]
-				#define T1_SWITCH_Y  	0      - hotend_offset[Y_AXIS][0]
-				#define T1_FINISH_X 	146.0    - hotend_offset[X_AXIS][0]
-				#define T1_FINISH_Y  	20     - hotend_offset[Y_AXIS][0]*/
-
 /***********************************************************************/
 
 
@@ -580,7 +533,7 @@
 
 // Servo deactivation
 // With this option servos are powered only during movement, then turned off to prevent jitter.
-#define SET_SERVO_NEUTRAL_AT_STARTUP
+//#define SET_SERVO_NEUTRAL_AT_STARTUP
 #define NEUTRAL_SERVO_ANGLE 90
 
 // Delay (in milliseconds) before turning the servo off. This depends on the servo speed.
@@ -1087,10 +1040,8 @@
 //Compact settings for Anisoprint Composer 3D printers
 #define EEPROM_LITE
 
-#define EEPROM_CHITCHAT // Uncomment this to enable EEPROM Serial responses.
+//#define EEPROM_CHITCHAT // Uncomment this to enable EEPROM Serial responses.
 //#define EEPROM_SD
-#define EEPROM_I2C
-#define WIRE Wire1
 //#define EEPROM_FLASH
 //#define DISABLE_M503
 /************************************************************************************************************************/
@@ -1100,14 +1051,14 @@
  *************************************** SDCARD *******************************************
  ****************************************************************************************/
 #define SDSUPPORT
-//#define DEBUG_SD_ERROR
+
 //#define SDSLOW              // Use slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
 //#define SDEXTRASLOW         // Use even slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
 //#define SD_CHECK_AND_RETRY  // Use CRC checks and retries on the SD communication
 //#define SD_EXTENDED_DIR     // Show extended directory including file length. Don't use this with Pronterface
 
 // Decomment this if you have external SD without DETECT_PIN
-#define SD_DISABLED_DETECT
+//#define SD_DISABLED_DETECT
 // Some RAMPS and other boards don't detect when an SD card is inserted. You can work
 // around this by connecting a push button or single throw switch to the pin defined
 // as SD_DETECT_PIN in your board's pins definitions.
@@ -1121,7 +1072,7 @@
 //#define MENU_ADDAUTOSTART
 
 // Enable this option to scroll long filenames in the SD card menu
-#define SCROLL_LONG_FILENAMES
+//#define SCROLL_LONG_FILENAMES
 
 /**
  * Sort SD file listings in alphabetical order.
@@ -1146,17 +1097,17 @@
  *  - SDSORT_CACHE_NAMES will retain the sorted file listing in RAM. (Expensive!)
  *  - SDSORT_DYNAMIC_RAM only uses RAM when the SD menu is visible. (Use with caution!)
  */
-#define SDCARD_SORT_ALPHA
+//#define SDCARD_SORT_ALPHA
 
 // SD Card Sorting options
-#define SDSORT_LIMIT       128     // Maximum number of sorted items (10-256). Costs 27 bytes each.
+#define SDSORT_LIMIT       40     // Maximum number of sorted items (10-256). Costs 27 bytes each.
 #define FOLDER_SORTING     -1     // -1=above  0=none  1=below
-//#define SDSORT_GCODE       false  // Allow turning sorting on/off with LCD and M36 g-code.
-#define SDSORT_USES_RAM    true  // Pre-allocate a static array for faster pre-sorting.
-//#define SDSORT_USES_STACK  false  // Prefer the stack for pre-sorting to give back some SRAM. (Negated by next 2 options.)
-//#define SDSORT_CACHE_NAMES false  // Keep sorted items in RAM longer for speedy performance. Most expensive option.
-//#define SDSORT_DYNAMIC_RAM false  // Use dynamic allocation (within SD menus). Least expensive option. Set SDSORT_LIMIT before use!
-#define SDSORT_CACHE_VFATS 3      // Maximum number of 13-byte VFAT entries to use for sorting.
+#define SDSORT_GCODE       false  // Allow turning sorting on/off with LCD and M36 g-code.
+#define SDSORT_USES_RAM    false  // Pre-allocate a static array for faster pre-sorting.
+#define SDSORT_USES_STACK  false  // Prefer the stack for pre-sorting to give back some SRAM. (Negated by next 2 options.)
+#define SDSORT_CACHE_NAMES false  // Keep sorted items in RAM longer for speedy performance. Most expensive option.
+#define SDSORT_DYNAMIC_RAM false  // Use dynamic allocation (within SD menus). Least expensive option. Set SDSORT_LIMIT before use!
+#define SDSORT_CACHE_VFATS 2      // Maximum number of 13-byte VFAT entries to use for sorting.
                                   // Note: Only affects SCROLL_LONG_FILENAMES with SDSORT_CACHE_NAMES but not SDSORT_DYNAMIC_RAM.
 
 // This function enable the firmware write restart.bin file for restart print when power loss
@@ -1548,11 +1499,11 @@
 //#define NEXTION
 #define NEXTION_HMI
 // Define Serial it use
-#define NEXTION_SERIAL 2
+#define NEXTION_SERIAL 3
 // For GFX preview visualization enable NEXTION GFX
 //#define NEXTION_GFX
 // Define name firmware file for Nextion on SD
-#define NEXTION_FIRMWARE_FILE "MKA.tft"
+#define NEXTION_FIRMWARE_FILE "mk4duo.tft"
 
 // Show a progress bar on HD44780 LCDs for SD printing
 //#define LCD_PROGRESS_BAR
@@ -2092,7 +2043,7 @@
  *        the machine's limit of Z_MAX_POS.                                             *
  *                                                                                      *
  ****************************************************************************************/
-#define NOZZLE_PARK_FEATURE
+//#define NOZZLE_PARK_FEATURE
 
 // Specify a park position as { X, Y, Z }
 #define NOZZLE_PARK_POINT { 10, 10, 20 }
@@ -2119,26 +2070,18 @@
  **************************************************************************/
 //#define ADVANCED_PAUSE_FEATURE
 
-#define PAUSE_PARK_RETRACT_FEEDRATE 10      //+ (mm/s) Initial retract feedrate.
-#define PAUSE_PARK_RETRACT_LENGTH 5         //+ (mm) Initial retract.
+#define PAUSE_PARK_RETRACT_FEEDRATE 20      // (mm/s) Initial retract feedrate.
+#define PAUSE_PARK_RETRACT_LENGTH 5         // (mm) Initial retract.
                                             // This short retract is done immediately, before parking the nozzle.
-#define PAUSE_PARK_UNLOAD_FEEDRATE 30       // (mm/s) Unload filament feedrate. This can be pretty fast.
-
-#if ENABLED(NEXTION_HMI)	      //For nextion HMI material loading/unloading wizard
-	#define PAUSE_PARK_UNLOAD_LENGTH {650, 535+55, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
-	#define PAUSE_PARK_LOAD_LENGTH {650, 650, 650}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
-#else
+#define PAUSE_PARK_UNLOAD_FEEDRATE 50       // (mm/s) Unload filament feedrate. This can be pretty fast.
 #define PAUSE_PARK_UNLOAD_LENGTH 100        // (mm) The length of filament for a complete unload.
                                             //   For Bowden, the full length of the tube and nozzle.
                                             //   For direct drive, the full length of the nozzle.
                                             //   Set to 0 for manual unloading.
+#define PAUSE_PARK_LOAD_FEEDRATE 50         // (mm/s) Load filament feedrate. This can be pretty fast.
 #define PAUSE_PARK_LOAD_LENGTH 100          // (mm) Load length of filament, from extruder gear to nozzle.
                                             //   For Bowden, the full length of the tube and nozzle.
                                             //   For direct drive, the full length of the nozzle.
-#endif
-
-#define PAUSE_PARK_LOAD_FEEDRATE 30         // (mm/s) Load filament feedrate. This can be pretty fast.
-
 #define PAUSE_PARK_EXTRUDE_FEEDRATE 5       // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
 #define PAUSE_PARK_EXTRUDE_LENGTH 50        // (mm) Length to extrude after loading.
                                             //   Set to 0 for manual extrusion.
@@ -2146,16 +2089,16 @@
                                             //   until extrusion is consistent, and to purge old filament.
 
                                             // Filament Unload does a Retract, Delay, and Purge first:
-#define FILAMENT_UNLOAD_RETRACT_LENGTH 15   // (mm) Unload initial retract length.
+#define FILAMENT_UNLOAD_RETRACT_LENGTH 10   // (mm) Unload initial retract length.
 #define FILAMENT_UNLOAD_DELAY 5000          // (ms) Delay for the filament to cool after retract.
 #define FILAMENT_UNLOAD_PURGE_LENGTH 8      // (mm) An unretract is done, then this length is purged.
 
-#define PAUSE_PARK_NOZZLE_TIMEOUT 120       // (seconds) Time limit before the nozzle is turned off for safety.
-#define PAUSE_PARK_PRINTER_OFF 0           // (minute) Time limit before turn off printer if user doesn't change filament.
+#define PAUSE_PARK_NOZZLE_TIMEOUT 45        // (seconds) Time limit before the nozzle is turned off for safety.
+#define PAUSE_PARK_PRINTER_OFF 5            // (minute) Time limit before turn off printer if user doesn't change filament.
 #define PAUSE_PARK_NUMBER_OF_ALERT_BEEPS 10 // Number of alert beeps before printer goes quiet
 #define PAUSE_PARK_NO_STEPPER_TIMEOUT       // Enable for XYZ steppers to stay powered on during filament change.
 
-#define PARK_HEAD_ON_PAUSE                  // Park the nozzle during pause and filament change.
+//#define PARK_HEAD_ON_PAUSE                // Park the nozzle during pause and filament change.
 //#define HOME_BEFORE_FILAMENT_CHANGE       // Ensure homing has been completed prior to parking for filament change
 
 //#define FILAMENT_LOAD_UNLOAD_GCODES       // Add M701/M702 Load/Unload G-codes, plus Load/Unload in the LCD Prepare menu.
