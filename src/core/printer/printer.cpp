@@ -373,7 +373,7 @@ void Printer::loop() {
       const int plastic_driver_extruders[] = PLASTIC_DRIVER_EXTRUDERS;
       LOOP_EUVW(i)
       {
-    	  if (plastic_driver_extruders[i] == 0 && stepper.current_block->steps[i]>0) move_fiber = true;
+    	  if (plastic_driver_extruders[i-XYZ] == 0 && stepper.current_block->steps[i]>0) move_fiber = true;
       }
       needCut = (moveXY & move_fiber);
 

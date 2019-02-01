@@ -2609,7 +2609,7 @@ void EEPROM::Factory_Settings() {
 			CONFIG_MSG_HEADER("Advanced variables: S<min_feedrate> V<min_travel_feedrate> B<min_segment_time_us> X<max_xy_jerk> Z<max_z_jerk> T* E<max_e_jerk>");
 			CONFIG_MSG();
 			SERIAL_MV("M205 S", LINEAR_UNIT(mechanics.min_feedrate_mm_s), 3);
-			SERIAL_MV(" V", LINEAR_UNIT(mechanics.min_travel_feedrate_mm_s), 3);
+			SERIAL_MV(" T", LINEAR_UNIT(mechanics.min_travel_feedrate_mm_s), 3);
 			SERIAL_MV(" B", mechanics.min_segment_time_us);
 			SERIAL_MV(" X", LINEAR_UNIT(mechanics.max_jerk[X_AXIS]), 3);
 			SERIAL_MV(" Y", LINEAR_UNIT(mechanics.max_jerk[Y_AXIS]), 3);
@@ -2710,6 +2710,7 @@ void EEPROM::Factory_Settings() {
 				if (fans[f].autoMonitored == 7) SERIAL_MSG(" H7");
 				if (fans[f].autoMonitored == 8) SERIAL_MSG(" H8");
 				if (fans[f].autoMonitored == 9) SERIAL_MSG(" H9");
+				if (fans[f].autoMonitored == -1) SERIAL_MSG(" H-1");
 				SERIAL_EMV(" I", fans[f].isHWInverted());
 			  }
 			#endif

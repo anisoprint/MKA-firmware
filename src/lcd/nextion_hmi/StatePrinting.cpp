@@ -167,21 +167,21 @@ void StatePrinting::DrawUpdate() {
     	switch(NextionHMI::lastEvent) {
     	    case HMIevent::HEATING_STARTED_BUILDPLATE :
     	    	 ZERO(NextionHMI::buffer);
-    	    	 sprintf_P(NextionHMI::buffer, PSTR(MSG_BUILDPLATE_HEATING), (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
+    	    	 sprintf_P(NextionHMI::buffer, PSTR(MSG_BUILDPLATE_HEATING), round(heaters[NextionHMI::lastEventArg].current_temperature), (int)heaters[NextionHMI::lastEventArg].target_temperature);
     		     _tStatus1.setText(NextionHMI::buffer);
     	    	 break;
     	    case HMIevent::HEATING_STARTED_EXTRUDER :
     			 if (NextionHMI::lastEventArg == HOT0_INDEX)
     			 {
     				ZERO(NextionHMI::buffer);
-    				sprintf_P(NextionHMI::buffer, PSTR(MSG_PLASTIC_EXTRUDER_HEATING), (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
+    				sprintf_P(NextionHMI::buffer, PSTR(MSG_PLASTIC_EXTRUDER_HEATING), round(heaters[NextionHMI::lastEventArg].current_temperature), (int)heaters[NextionHMI::lastEventArg].target_temperature);
     			 }
 				 else
 				 {
 					if (NextionHMI::lastEventArg == HOT1_INDEX)
 					{
 						ZERO(NextionHMI::buffer);
-						sprintf_P(NextionHMI::buffer, PSTR(MSG_COMPOSITE_EXTRUDER_HEATING), (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
+						sprintf_P(NextionHMI::buffer, PSTR(MSG_COMPOSITE_EXTRUDER_HEATING), round(heaters[NextionHMI::lastEventArg].current_temperature), (int)heaters[NextionHMI::lastEventArg].target_temperature);
 					}
 				 }
    	    	     _tStatus1.setText(NextionHMI::buffer);
@@ -214,7 +214,7 @@ void StatePrinting::DrawUpdate() {
         _tTempBuildplate.setText(strTemp.c_str());
         strTemp = String(round(heaters[CHAMBER_INDEX].current_temperature)) + "\370C";
         _tTempChamber.setText(strTemp.c_str());
-        strTemp = String(mechanics.feedrate_percentage) + "\370C";
+        strTemp = String(mechanics.feedrate_percentage) + "%";
         _tFeedPercent.setText(strTemp.c_str());
 
     //}
