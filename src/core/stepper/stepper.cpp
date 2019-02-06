@@ -93,24 +93,24 @@ uint16_t Stepper::last_direction_bits = 0;        // The next stepping-bits to b
   bool Stepper::locked_z_motor = false, Stepper::locked_z2_motor = false;
 #endif
 
-long  Stepper::counter_X = 0,
+int32_t  Stepper::counter_X = 0,
       Stepper::counter_Y = 0,
       Stepper::counter_Z = 0,
       Stepper::counter_E = 0;
 #if DRIVER_EXTRUDERS > 1
-	long Stepper::counter_U = 0;
+	int32_t Stepper::counter_U = 0;
 #endif
 #if DRIVER_EXTRUDERS > 2
-	long Stepper::counter_V = 0;
+	int32_t Stepper::counter_V = 0;
 #endif
 #if DRIVER_EXTRUDERS > 3
-	long Stepper::counter_W = 0;
+	int32_t Stepper::counter_W = 0;
 #endif
 #if DRIVER_EXTRUDERS > 4
-	long Stepper::counter_K = 0;
+	int32_t Stepper::counter_K = 0;
 #endif
 #if DRIVER_EXTRUDERS > 5
-	long Stepper::counter_L = 0;
+	int32_t Stepper::counter_L = 0;
 #endif
 
 volatile uint32_t Stepper::step_events_completed = 0; // The number of step events executed in the current block
@@ -1394,7 +1394,11 @@ void Stepper::isr() {
           LA_decelerate_after = current_block->decelerate_after;
           final_adv_steps = current_block->final_adv_steps;
           max_adv_steps = current_block->max_adv_steps;
+          //Start the ISR
+          nextAdvanceISR = 0;
+          eISR_Rate = current_block->advance_speed;
         }
+        else eISR_Rate = ADV_NEVER;
       #endif
 
       if (current_block->direction_bits != last_direction_bits) {
@@ -1433,7 +1437,7 @@ void Stepper::isr() {
       #endif
 
       // Initialize Bresenham counters to 1/2 the ceiling
-      counter_X = counter_Y = counter_Z = counter_E = -(current_block->step_event_count >> 1);
+      counter_X = counter_Y = counter_Z = counter_E = -int32_t((current_block->step_event_count + 1) >> 1);
 		#if DRIVER_EXTRUDERS > 1
 			counter_U = counter_X;
 		#endif
@@ -1457,7 +1461,7 @@ void Stepper::isr() {
 
       #if ENABLED(COLOR_MIXING_EXTRUDER)
         MIXING_STEPPERS_LOOP(i)
-          counter_m[i] = -(current_block->mix_event_count[i] >> 1);
+          counter_m[i] = -int32_t((current_block->mix_event_count[i] + 1) >> 1);
       #endif
 
       #if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
@@ -1485,6 +1489,8 @@ void Stepper::isr() {
       return;
     }
   }
+
+  //end pop block
 
   // Update endstops state, if enabled
   #if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
@@ -1519,12 +1525,12 @@ void Stepper::isr() {
     // Advance the Bresenham counter; start a pulse if the axis needs a step
     #define PULSE_START(AXIS) do{ \
       _COUNTER(AXIS) += current_block->steps[_AXIS(AXIS)]; \
-      if (_COUNTER(AXIS) > 0) { _APPLY_STEP(AXIS)(!_INVERT_STEP_PIN(AXIS),0); } \
+      if (_COUNTER(AXIS) >= 0) { _APPLY_STEP(AXIS)(!_INVERT_STEP_PIN(AXIS),0); } \
     }while(0)
 
     // Advance the Bresenham counter; start a pulse if the axis needs a step
     #define STEP_TICK(AXIS) do { \
-      if (_COUNTER(AXIS) > 0) { \
+      if (_COUNTER(AXIS) >= 0) { \
         _COUNTER(AXIS) -= current_block->step_event_count; \
         count_position[_AXIS(AXIS)] += count_direction[_AXIS(AXIS)]; \
       } \
@@ -1550,7 +1556,7 @@ void Stepper::isr() {
     #if ENABLED(LIN_ADVANCE)
 
       counter_E += current_block->steps[E_AXIS];
-      if (counter_E > 0) {
+      if (counter_E >= 0) {
         #if DISABLED(COLOR_MIXING_EXTRUDER)
           // Don't step E here for mixing extruder
           motor_direction(E_AXIS) ? --e_steps : ++e_steps;
@@ -1561,7 +1567,7 @@ void Stepper::isr() {
         // Step mixing steppers proportionally
         MIXING_STEPPERS_LOOP(j) {
           counter_m[j] += current_block->steps[E_AXIS];
-          if (counter_m[j] > 0) {
+          if (counter_m[j] >= 0) {
             counter_m[j] -= current_block->mix_event_count[j];
             motor_direction(E_AXIS) ? --e_steps : ++e_steps;
           }
@@ -1594,7 +1600,7 @@ void Stepper::isr() {
           // Step mixing steppers (proportionally)
           counter_m[j] += current_block->steps[E_AXIS];
           // Step when the counter goes over zero
-          if (counter_m[j] > 0) En_STEP_WRITE(j, !INVERT_E_STEP_PIN);
+          if (counter_m[j] >= 0) En_STEP_WRITE(j, !INVERT_E_STEP_PIN);
         }
       #else // !COLOR_MIXING_EXTRUDER
         PULSE_START(E);
@@ -1619,7 +1625,7 @@ void Stepper::isr() {
 
     #if HAS_EXT_ENCODER
 	TODO: MULTIEXTRUDER
-      if (counter_E > 0) {
+      if (counter_E >= 0) {
         switch(tools.active_extruder) {
           case 0:
             TEST_EXTRUDER_ENC0; break;
@@ -1694,7 +1700,7 @@ void Stepper::isr() {
 	  #if ENABLED(COLOR_MIXING_EXTRUDER)
 		#if DISABLED(LIN_ADVANCE)
 			MIXING_STEPPERS_LOOP(j) {
-			  if (counter_m[j] > 0) {
+			  if (counter_m[j] >= 0) {
 				counter_m[j] -= current_block->mix_event_count[j];
 				En_STEP_WRITE(j, INVERT_E_STEP_PIN);
 			  }
@@ -1724,7 +1730,7 @@ void Stepper::isr() {
 
     #if ENABLED(LASER)
       counter_L += current_block->steps_l;
-      if (counter_L > 0) {
+      if (counter_L >= 0) {
         if (current_block->laser_mode == PULSED && current_block->laser_status == LASER_ON) { // Pulsed Firing Mode
           laser.fire(current_block->laser_intensity);
           if (laser.diagnostics) {
@@ -1796,15 +1802,9 @@ void Stepper::isr() {
     #if ENABLED(LIN_ADVANCE)
 
       if (current_block->use_advance_lead) {
-        if (step_events_completed == step_loops || (e_steps && eISR_Rate != current_block->advance_speed)) {
-          nextAdvanceISR = 0; // Wake up eISR on first acceleration loop and fire ISR if final adv_rate is reached
-          eISR_Rate = current_block->advance_speed;
-        }
+    	if (e_steps && eISR_Rate != current_block->advance_speed) nextAdvanceISR = 0;
       }
-      else {
-        eISR_Rate = ADV_NEVER;
-        if (e_steps) nextAdvanceISR = 0;
-      }
+      else if (e_steps) nextAdvanceISR = 0;
 
     #endif // ENABLED(LIN_ADVANCE)
   }
@@ -1857,10 +1857,7 @@ void Stepper::isr() {
           eISR_Rate = current_block->advance_speed;
         }
       }
-      else {
-        eISR_Rate = ADV_NEVER;
-        if (e_steps) nextAdvanceISR = 0;
-      }
+      else if (e_steps) nextAdvanceISR = 0;
 
     #endif // ENABLED(LIN_ADVANCE_DEV)
   }

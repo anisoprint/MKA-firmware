@@ -1806,7 +1806,7 @@
  *                                                                     *
  ***********************************************************************/
 // (µs) The smallest stepper pulse allowed
-#define MINIMUM_STEPPER_PULSE 0
+#define MINIMUM_STEPPER_PULSE 1
 /***********************************************************************/
 
 
