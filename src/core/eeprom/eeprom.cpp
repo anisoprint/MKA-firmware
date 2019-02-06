@@ -627,6 +627,8 @@ void EEPROM::Postprocess() {
 
           // Report storage size
           #if ENABLED(EEPROM_CHITCHAT)
+          	SERIAL_MSG("RESULT:ok");
+          	SERIAL_EOL();
             SERIAL_SMV(ECHO, "System Settings Stored (", eeprom_size - (EEPROM_OFFSET) - SYSCFG_OFFSET);
             SERIAL_MV(" bytes; crc ", final_crc);
             SERIAL_EM(")");
@@ -2495,7 +2497,7 @@ void EEPROM::Factory_Settings() {
   /**
    * M503 - Print Configuration
    */
-  void EEPROM::Print_Settings(const bool dump, const bool print_sys, const bool print_usr, const bool print_other, const bool only_version) {
+  void EEPROM::Print_Settings(const bool dump, const bool print_sys, const bool print_usr, const bool print_other, const bool only_version, const bool only_CRC) {
     // Always have this function, even with EEPROM_SETTINGS disabled, the current values will be shown
 
 	if (print_other)
@@ -2524,12 +2526,18 @@ void EEPROM::Factory_Settings() {
 		/**
 		 * System config
 		 */
-		if (only_version)
+		if (only_version || only_CRC)
 		{
-			SERIAL_MSG(stored_sys_ver);
-			SERIAL_EOL();
-			SERIAL_VAL(stored_sys_crc);
-			SERIAL_EOL();
+			if (only_version)
+			{
+				SERIAL_MV("VER:", stored_sys_ver);
+				SERIAL_EOL();
+			}
+			if (only_CRC)
+			{
+				SERIAL_MV("CRC:", stored_sys_crc);
+				SERIAL_EOL();
+			}
 		}
 		else
 		{
@@ -2780,12 +2788,18 @@ void EEPROM::Factory_Settings() {
 	      * User config
 	      */
 
-		if (only_version)
+		if (only_version || only_CRC)
 		{
-			SERIAL_MSG(stored_usr_ver);
-			SERIAL_EOL();
-			SERIAL_VAL(stored_usr_crc);
-			SERIAL_EOL();
+			if (only_version)
+			{
+				SERIAL_MV("VER:", stored_usr_ver);
+				SERIAL_EOL();
+			}
+			if (only_CRC)
+			{
+				SERIAL_MV("CRC:", stored_usr_crc);
+				SERIAL_EOL();
+			}
 		}
 		else
 		{
