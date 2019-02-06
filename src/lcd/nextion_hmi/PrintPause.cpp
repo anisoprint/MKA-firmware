@@ -102,7 +102,7 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     {
     	//get plastic driver of current extruder
     	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
-    	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), retract, PrintPause::RetractFeedrate);
+    	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), -retract, PrintPause::RetractFeedrate);
     }
 
     // Park the nozzle by moving up by z_lift and then moving to (x_pos, y_pos)
