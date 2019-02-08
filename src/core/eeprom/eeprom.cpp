@@ -474,6 +474,9 @@ void EEPROM::Postprocess() {
       if (!eeprom_error) {
           const int eeprom_size = eeprom_index;
 
+          SERIAL_MSG("RESULT:ok");
+          SERIAL_EOL();
+
           // Report storage size
           #if ENABLED(EEPROM_CHITCHAT)
              SERIAL_SMV(ECHO, "Const data stored (", eeprom_size - (EEPROM_OFFSET) - CONST_OFFSET);
@@ -625,10 +628,11 @@ void EEPROM::Postprocess() {
           EEPROM_WRITE(syscfg_version);
           EEPROM_WRITE(final_crc);
 
+          SERIAL_MSG("RESULT:ok");
+          SERIAL_EOL();
+
           // Report storage size
           #if ENABLED(EEPROM_CHITCHAT)
-          	SERIAL_MSG("RESULT:ok");
-          	SERIAL_EOL();
             SERIAL_SMV(ECHO, "System Settings Stored (", eeprom_size - (EEPROM_OFFSET) - SYSCFG_OFFSET);
             SERIAL_MV(" bytes; crc ", final_crc);
             SERIAL_EM(")");
@@ -870,6 +874,9 @@ void EEPROM::Postprocess() {
 
           EEPROM_WRITE(usrcfg_version);
           EEPROM_WRITE(final_crc);
+
+          SERIAL_MSG("RESULT:ok");
+          SERIAL_EOL();
 
           // Report storage size
           #if ENABLED(EEPROM_CHITCHAT)
