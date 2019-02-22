@@ -449,14 +449,25 @@ void EEPROM::Postprocess() {
     bool EEPROM::Load_Settings() {
     	eeprom_error = false;
     	Factory_Settings();
-    	if (Load_Sys() && Load_Usr() )
+    	auto sysLoaded=false, userLoaded=false;
+
+    	if (Load_Sys())
     	{
-    		Postprocess();
+    		sysLoaded = true;
     	}
     	else
     	{
     		Factory_Settings();
     	}
+    	if (Load_Usr())
+    	{
+    		userLoaded = true;
+    	}
+    	else
+    	{
+    		Factory_Settings();
+    	}
+    	if (sysLoaded || userLoaded) Postprocess();
 		#if ENABLED(EEPROM_CHITCHAT)
 		  Print_Settings();
 		#endif

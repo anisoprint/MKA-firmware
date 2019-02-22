@@ -118,6 +118,7 @@ void StateMenu::Control_CancelPrint_Yes(void* ptr) {
 	}
 	printer.setWaitForUser(false);
 	printer.setAbortSDprinting(true);
+	printer.setWaitForHeatUp(false);
 }
 
 
