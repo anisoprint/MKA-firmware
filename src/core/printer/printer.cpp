@@ -380,7 +380,7 @@ void Printer::loop() {
       // Stop all stepper
       stepper.quickstop_stepper();
 
-      if(needCut) tools.cut_fiber();
+      //if(needCut) tools.cut_fiber();
 
       // Auto home
       #if Z_HOME_DIR > 0

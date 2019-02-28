@@ -21,11 +21,12 @@
  */
 
 /**
- * Configuration_Cartesian.h
+ * Configuration_Core.h
  *
- * This configuration file contains mechanism settings for cartesian printer.
+ * This configuration file contains mechanism settings for core printer.
  *
  * - Machine name
+ * - Core settings
  * - Endstop pullup resistors
  * - Endstops logic
  * - Endstop Interrupts Feature
@@ -48,7 +49,6 @@
  * - Axis jerk
  * - Homing feedrate
  * - Hotend offset
- * - Cartesian Correction
  *
  * Basic-settings can be found in Configuration_Basic.h
  * Temperature-settings can be found in Configuration_Temperature.h
@@ -56,8 +56,8 @@
  * Pins-settings can be found in "Configuration_Pins.h"
  */
 
-#ifndef _CONFIGURATION_CARTESIAN_H_
-#define _CONFIGURATION_CARTESIAN_H_
+#ifndef _CONFIGURATION_CORE_H_
+#define _CONFIGURATION_CORE_H_
 
 #define KNOWN_MECH
 
@@ -69,7 +69,38 @@
  * Displayed in the LCD "Ready" message.                                                 *
  *                                                                                       *
  *****************************************************************************************/
-#define CUSTOM_MACHINE_NAME "Prusa I3"
+#define CUSTOM_MACHINE_NAME "Composer A4"
+/*****************************************************************************************/
+
+/*****************************************************************************************
+ ***********************************  Home On Power **************************************
+ *****************************************************************************************
+ *                                                                                       *
+ * Home printer on power on.                                                             *
+ *                                                                                       *
+ *****************************************************************************************/
+//#define HOME_ON_POWER
+/*****************************************************************************************/
+
+/*****************************************************************************************
+ ************************************* Core settings *************************************
+ *****************************************************************************************
+ * This define the moltiplicator axis from X to Y or Z in                                *
+ * COREXY - COREYX or COREXZ - COREZX or COREYZ - COREZY                                 *
+ * Example:                                                                              *
+ * COREXY set CORE_FACTOR 1                                                              *
+ * The result is:                                                                        *
+ * X = dX + CORE_FACTOR * dY = dX + 1 * dY = dX + dY                                     *
+ * Y = dX - CORE_FACTOR * dY = dX - 1 * dY = dX - dY                                     *
+ * Z = dZ                                                                                *
+ *                                                                                       *
+ * COREXZ set CORE_FACTOR 3                                                              *
+ * The result is:                                                                        *
+ * X = dX + CORE_FACTOR * dZ = dX + 3 * dZ = dX + 3dZ                                    *
+ * Y = dY                                                                                *
+ * Z = dX - CORE_FACTOR * dZ = dX - 3 * dZ = dX - 3dZ                                    *
+******************************************************************************************/
+#define CORE_FACTOR 1
 /*****************************************************************************************/
 
 
@@ -86,11 +117,7 @@
 #define ENDSTOPPULLUP_XMAX    true
 #define ENDSTOPPULLUP_YMAX    true
 #define ENDSTOPPULLUP_ZMAX    true
-#define ENDSTOPPULLUP_X2MIN   true
-#define ENDSTOPPULLUP_Y2MIN   true
 #define ENDSTOPPULLUP_Z2MIN   true
-#define ENDSTOPPULLUP_X2MAX   true
-#define ENDSTOPPULLUP_Y2MAX   true
 #define ENDSTOPPULLUP_Z2MAX   true
 #define ENDSTOPPULLUP_ZPROBE  true
 /*****************************************************************************************/
@@ -104,19 +131,15 @@
  * uses "false" here (most common setup).                                                *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define X_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define Z_MAX_ENDSTOP_LOGIC   true   // set to true to invert the logic of the endstop.
-#define X2_MIN_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
-#define Y2_MIN_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
-#define Z2_MIN_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
-#define X2_MAX_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
-#define Y2_MAX_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
-#define Z2_MAX_ENDSTOP_LOGIC  true   // set to true to invert the logic of the endstop.
-#define Z_PROBE_ENDSTOP_LOGIC true   // set to true to invert the logic of the probe.
+#define X_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define X_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define Z_MAX_ENDSTOP_LOGIC   false   // set to true to invert the logic of the endstop.
+#define Z2_MIN_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
+#define Z2_MAX_ENDSTOP_LOGIC  false   // set to true to invert the logic of the endstop.
+#define Z_PROBE_ENDSTOP_LOGIC false   // set to true to invert the logic of the probe.
 /*****************************************************************************************/
 
 
@@ -249,7 +272,7 @@
  *****************************************************************************************/
 #define X_HOME_DIR -1
 #define Y_HOME_DIR -1
-#define Z_HOME_DIR -1
+#define Z_HOME_DIR  1
 /*****************************************************************************************/
 
 
@@ -306,9 +329,9 @@
  *****************************************************************************************/
 #define INVERT_X_DIR false
 #define INVERT_Y_DIR false
-#define INVERT_Z_DIR false
+#define INVERT_Z_DIR true
 #define INVERT_E0_DIR false
-#define INVERT_E1_DIR false
+#define INVERT_E1_DIR true
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
 #define INVERT_E4_DIR false
@@ -339,11 +362,11 @@
  * Travel limits after homing (units are in mm)                                          *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MAX_POS 200
+#define X_MAX_POS 330
 #define X_MIN_POS 0
-#define Y_MAX_POS 200
+#define Y_MAX_POS 210
 #define Y_MIN_POS 0
-#define Z_MAX_POS 200
+#define Z_MAX_POS 145
 #define Z_MIN_POS 0
 #define E_MIN_POS 0
 /*****************************************************************************************/
@@ -561,7 +584,7 @@
  *                                                                                       *
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 4000, 93.6, 102, 102, 102}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 1600, 435.34, 99.77, 435.34, 625} //XYZEUV 1/16
 /*****************************************************************************************/
 
 
@@ -569,9 +592,9 @@
  ********************************** Axis feedrate ****************************************
  *****************************************************************************************/
 //                                       X,   Y, Z,  E0...(per extruder). (mm/sec)
-#define DEFAULT_MAX_FEEDRATE          {150, 150, 1.7, 100, 100, 100, 100}
+#define DEFAULT_MAX_FEEDRATE          {500, 500, 30, 33, 40, 33, 100}
 // Feedrates for manual moves along        X,     Y,     Z,  E from panel
-#define MANUAL_FEEDRATE               {50*60, 50*60, 4*60, 10*60}
+#define MANUAL_FEEDRATE               {50*60, 50*60, 10*60, 10*60}
 // Minimum feedrate
 #define DEFAULT_MINIMUMFEEDRATE       0.0
 #define DEFAULT_MINTRAVELFEEDRATE     0.0
@@ -586,13 +609,13 @@
  ******************************** Axis acceleration **************************************
  *****************************************************************************************/
 //  Maximum start speed for accelerated moves.    X,    Y,  Z,   E0...(per extruder)
-#define DEFAULT_MAX_ACCELERATION              {3000, 3000, 50, 1000, 1000, 1000, 1000}
+#define DEFAULT_MAX_ACCELERATION              {3000, 3000, 45, 800, 800, 800, 1000}
 //  Maximum acceleration in mm/s^2 for retracts   E0... (per extruder)
 #define DEFAULT_RETRACT_ACCELERATION          {10000, 10000, 10000, 10000}
 //  X, Y, Z and E* maximum acceleration in mm/s^2 for printing moves
-#define DEFAULT_ACCELERATION          3000
+#define DEFAULT_ACCELERATION          2000
 //  X, Y, Z acceleration in mm/s^2 for travel (non printing) moves
-#define DEFAULT_TRAVEL_ACCELERATION   3000
+#define DEFAULT_TRAVEL_ACCELERATION   1000
 /*****************************************************************************************/
 
 
@@ -620,9 +643,9 @@
  ************************************ Homing feedrate ************************************
  *****************************************************************************************/
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_X (50*60)
-#define HOMING_FEEDRATE_Y (50*60)
-#define HOMING_FEEDRATE_Z (2*60)
+#define HOMING_FEEDRATE_X (60*60)
+#define HOMING_FEEDRATE_Y (60*60)
+#define HOMING_FEEDRATE_Z (21*60)
 
 // Homing hits each endstop, retracts by these distances, then does a slower bump.
 #define X_HOME_BUMP_MM 5
@@ -630,7 +653,7 @@
 #define Z_HOME_BUMP_MM 2
 
 // Re-Bump Speed Divisor (Divides the Homing Feedrate)
-#define HOMING_BUMP_DIVISOR {5, 5, 2}
+#define HOMING_BUMP_DIVISOR {5, 5, 7}
 /*****************************************************************************************/
 
 
@@ -644,45 +667,9 @@
  * For the other hotends it is their distance from the hotend 0.                         *
  *                                                                                       *
  *****************************************************************************************/
-#define HOTEND_OFFSET_X {0.0, 0.0, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the X axis
-#define HOTEND_OFFSET_Y {0.0, 0.0, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the Y axis
-#define HOTEND_OFFSET_Z {0.0, 0.0, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the Z axis
+#define HOTEND_OFFSET_X {0.0, 17.1, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the X axis
+#define HOTEND_OFFSET_Y {0.0, -2.2, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Y axis
+#define HOTEND_OFFSET_Z {0.0, 1.65, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Z axis
 /*****************************************************************************************/
 
-
-/*****************************************************************************************
- ******************************** CARTESIAN CORRECTION ***********************************
- *****************************************************************************************
- *                                                                                       *
- * New functions, Hysteresis and Zwobble.                                                *
- *                                                                                       *
- * Hysteresis:                                                                           *
- * These are the extra distances that are performed when an axis changes direction       *
- * to compensate for any mechanical hysteresis your printer has.                         *
- * Set the parameters width M99 X<in mm> Y<in mm> Z<in mm> E<in mm>                      *
- *                                                                                       *
- * ZWobble:                                                                              *
- * How to use it:                                                                        *
- * Set the parameters with M97 A<Amplitude_in_mm> W<period_in_mm> P<phase_in_degrees>    *
- * KNOWN LIMITATION (by design): if you redefine the Z value during your print           *
- * (with a G92 for example), the correction *will* screw up                              *
- * How does it work?                                                                     *
- * This class compensates for a wobble of the Z axis that makes the translation          *
- * rod movement->bed (extruder) movement nonlinear.                                      *
- * Instead of assuming Zactual = Zrod, the function assumes that                         *
- * Zaxtual = Zrod + A*sin(w*Zrod + phase). Since the user wants to specify Zactual,      *
- * we need to invert the formula to obtain Zrod, which is the value that will serve      *
- * as the input of the motor.                                                            *
- *                                                                                       *
- *****************************************************************************************/
-//#define HYSTERESIS
-//#define ZWOBBLE
-
- // X, Y, Z, E hysteresis in mm.
-#define DEFAULT_HYSTERESIS_MM { 0, 0, 0, 0 }
-
-// A, W, P
-#define DEFAULT_ZWOBBLE       { 0, 0, 0 }
-/*****************************************************************************************/
-
-#endif /* _CONFIGURATION_CARTESIAN_H_ */
+#endif /* _CONFIGURATION_CORE_H_ */

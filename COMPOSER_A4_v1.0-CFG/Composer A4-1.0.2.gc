@@ -1,10 +1,11 @@
 ;SC10
 ;60180
-; Anisoprint Composer A4 version 1.0.0 system configuration
+; Anisoprint Composer A4 version 1.0.2 system configuration
 ; Firmware: MKA 0.9.2
-; 31.01.2019 - Andrey Azarov - Configuration created (MKA 0.9.2dev)
+; 31.01.2019 - Andrey Azarov - Configuration created for 1.0.0 (MKA 0.9.2dev)
+; 28.02.2019 - Andrey Azarov - Configuration forked from 1.0.0 and changed (MKA 0.9.2)
 ;Mechanics steps per unit:
-M92 X100.000 Y100.000 Z1600.000
+M92 X100.000 Y100.000 Z400.000
 ;Maximum feedrates (units/s):
 M203 X500.000 Y500.000 Z30.000
 M203 E33.000 U40.000 V33.000

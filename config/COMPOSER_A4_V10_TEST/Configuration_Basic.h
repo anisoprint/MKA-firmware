@@ -60,14 +60,14 @@
  *
  * 2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000
  */
-#define BAUDRATE 250000
+#define BAUDRATE 115200
 
 /**
  * User-specified version info of this build to display in [Pronterface, etc] terminal window during
  * startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
  * build by the user have been successfully uploaded into firmware.
  */
-#define STRING_CONFIG_H_AUTHOR "(none, default config)"   // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "Anisoprint LLC"   // Who made the changes.
 
 /**
  * Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
@@ -95,12 +95,12 @@
  * enter the serial receive buffer, so they cannot be blocked.
  * Currently handles M108, M112, M410
  */
-//#define EMERGENCY_PARSER
+#define EMERGENCY_PARSER
 
 /**
  * Spend 28 bytes of SRAM to optimize the GCode parser
  */
-//#define FASTER_GCODE_PARSER
+#define FASTER_GCODE_PARSER
 
 /**
  * Host Keepalive
@@ -123,7 +123,7 @@
  * See: https://github.com/MagoKimbra/MK4duo/blob/master/Documentation/Hardware.md *
  *                                                                                       *
  *****************************************************************************************/
-#define MOTHERBOARD BOARD_MKS_13
+#define MOTHERBOARD BOARD_ULTRATRONICS
 /*****************************************************************************************/
 
 
@@ -174,7 +174,7 @@
 // If you don't know what this is leave it.
 #define PS_DEFAULT_OFF false
 // Define delay after power on in seconds
-#define DELAY_AFTER_POWER_ON 5
+#define DELAY_AFTER_POWER_ON 3
 // Define time for automatic power off if not needed in second
 #define POWER_TIMEOUT 30
 /*************************************************************************************/
