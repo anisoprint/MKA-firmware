@@ -35,7 +35,11 @@
  * M500: Store settings in EEPROM
  */
 inline void gcode_M500(void) {
-	if (parser.seen('S')) eeprom.Store_Sys();
+	if (parser.seen('S'))
+	{
+		eeprom.Store_Sys();
+		eeprom.Store_Settings();
+	}
 	else (void)eeprom.Store_Settings();
 
 }
