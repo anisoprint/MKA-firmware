@@ -616,23 +616,8 @@ void StateWizard::MaterialLoadS6(void* ptr) {
 	{
 		//Cut fiber
 		stepper.synchronize();
-
 		//cut
-		if (eeprom.printerVersion != "1.0")
-		{
-			MOVE_SERVO(0, 160);
-		}
-		else
-		{
-			MOVE_SERVO(0, 30);
-		}
-
-		millis_t dwell_ms = 0;
-		while (PENDING(millis(), dwell_ms)) {
-		  printer.keepalive(InProcess);
-		  printer.idle();
-		}
-		MOVE_SERVO(0, 90);
+		tools.cut_fiber();
 	}
 	else
 	{
