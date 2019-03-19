@@ -83,7 +83,7 @@ inline void gcode_M1008(void) {
 }
 
 /**
- * M1008: Display firmware update screen
+ * M1009: Display firmware update screen
  */
 inline void gcode_M1009(void) {
 #if ENABLED(NEXTION_HMI)

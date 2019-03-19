@@ -212,8 +212,10 @@ void StatePrinting::DrawUpdate() {
         _tTempComposite.setText(strTemp.c_str());
         strTemp = String(round(heaters[BED_INDEX].current_temperature)) + "\370C";
         _tTempBuildplate.setText(strTemp.c_str());
+#if HAS_HEATER_CHAMBER
         strTemp = String(round(heaters[CHAMBER_INDEX].current_temperature)) + "\370C";
         _tTempChamber.setText(strTemp.c_str());
+#endif
         strTemp = String(mechanics.feedrate_percentage) + "%";
         _tFeedPercent.setText(strTemp.c_str());
 

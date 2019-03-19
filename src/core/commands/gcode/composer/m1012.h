@@ -20,14 +20,45 @@
  *
  */
 
-#ifndef _CONFIGURATION_VERSION_H_
-#define _CONFIGURATION_VERSION_H_
+/**
+ * mcode
+ *
+ */
 
-#define FIRMWARE_NAME "MKA"
-#define SHORT_BUILD_VERSION "0.9.2a"
-#define BUILD_VERSION FIRMWARE_NAME "_" SHORT_BUILD_VERSION
-#define STRING_DISTRIBUTION_DATE __DATE__ " " __TIME__    // build date and time
-// It might also be appropriate to define a location where additional information can be found
-#define FIRMWARE_URL  "anisoprint.com"
+  #define CODE_M1012
+  
+ /*
+  * M1012: Test switch
+  *
+  */
+ inline void gcode_M1012(void) {
+	StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_WARNING, "Switch Test", "0", 0, 0, 0, 0, 0);
+	#if EXTRUDERS > 1 && HOTENDS > 1
 
-#endif /* _CONFIGURATION_VERSION_H_ */
+	int switchCount = 0;
+
+	Temperature::tempError = false;
+
+	while (!Temperature::tempError)
+	{
+		uint8_t new_extruder = 0;
+		if (tools.active_extruder == 0) new_extruder = 1;
+
+		if (printer.mode == PRINTER_MODE_FFF) {
+			 tools.change(new_extruder);
+		}
+		switchCount++;
+		String str = String(switchCount);
+		StateMessage::UpdateMessage(str.c_str());
+	}
+
+	sprintf_P(NextionHMI::buffer, "Temperature failure. T=%d. Switch number: %d.", (int)heaters[0].current_temperature, switchCount);
+	StateMessage::UpdateMessage(NextionHMI::buffer);
+
+	#endif
+	 //tools.cut_fiber();
+ }
+
+
+
+

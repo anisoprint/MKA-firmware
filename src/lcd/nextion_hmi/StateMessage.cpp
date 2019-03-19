@@ -135,5 +135,9 @@ void StateMessage::ActivatePGM_M(uint8_t priority, uint8_t icon,
 
 }
 
+void StateMessage::UpdateMessage(const char* message) {
+	_tMessage.setText(message);
+}
+
 #endif
 

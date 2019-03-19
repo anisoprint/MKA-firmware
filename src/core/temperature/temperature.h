@@ -35,6 +35,8 @@ class Temperature {
 
   public: /** Public Parameters */
 
+    static bool tempError;
+
     #if HAS_MCU_TEMPERATURE
       static float    mcu_current_temperature,
                       mcu_highest_temperature,

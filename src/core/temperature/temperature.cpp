@@ -31,6 +31,7 @@ Temperature thermalManager;
 constexpr bool      thermal_protection[HEATER_TYPE]   = { THERMAL_PROTECTION_HOTENDS, THERMAL_PROTECTION_BED, THERMAL_PROTECTION_CHAMBER, THERMAL_PROTECTION_COOLER };
 
 // public:
+bool Temperature::tempError = false;
 
 #if HAS_MCU_TEMPERATURE
   float   Temperature::mcu_current_temperature  = 0.0,
@@ -697,6 +698,7 @@ void Temperature::report_temperatures(const bool showRaw/*=false*/) {
 // Temperature Error Handlers
 void Temperature::_temp_error(const uint8_t h, const char * const serial_msg, const char * const lcd_msg) {
   if (!heaters[h].isIdle()) {
+	tempError = true;
     SERIAL_STR(ER);
     SERIAL_PS(serial_msg);
     SERIAL_MSG(MSG_STOPPED_HEATER);
