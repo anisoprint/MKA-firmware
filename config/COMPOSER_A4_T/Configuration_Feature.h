@@ -210,12 +210,15 @@
 //Change moves
 #define CHANGE_MOVES 12
 
+
+
+
 //Change to T0 -          X      Y  Spd  Switch
 #define CHANGE_T0      {{128.0, 20, 200, false},\
-						{128.0,  0, 200,  true},\
-						{131.0,  0,  50,  true},\
-						{149.9,  0, 200, false},\
-						{149.9, 20, 200, false},\
+						{128.0,  0, 200, false},\
+						{140.0,  0, 200,  true},\
+						{150.3,  0,  50,  true},\
+						{150.3, 20, 200, false},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
