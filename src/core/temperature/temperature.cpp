@@ -229,11 +229,21 @@ void Temperature::spin() {
     // Update Current Temperature
     act->updateCurrentTemperature();
 
+	#ifdef COMPOSER_TEST
+    if (act->current_temperature > act->maxtemp) max_temp_error(act->ID);
+    if (act->current_temperature < act->mintemp)
+    	{
+    		min_temp_error(act->ID);
+    	}
+	#else
     if (act->isON() && act->current_temperature > act->maxtemp) max_temp_error(act->ID);
     if (act->isON() && act->current_temperature < act->mintemp)
     	{
     		min_temp_error(act->ID);
     	}
+	#endif
+
+
 
     // Check for thermal runaway
     #if HAS_THERMALLY_PROTECTED_HEATER
