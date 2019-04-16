@@ -313,6 +313,84 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
+		<cconfiguration id="io.sloeber.core.toolChain.release.918675551.460716650.1358060238">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="io.sloeber.core.toolChain.release.918675551.460716650.1358060238" moduleId="org.eclipse.cdt.core.settings" name="COMPOSER_A4_I">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactName="${ProjName}" buildProperties="" description="" id="io.sloeber.core.toolChain.release.918675551.460716650.1358060238" name="COMPOSER_A4_I" parent="org.eclipse.cdt.build.core.emptycfg">
+					<folderInfo id="io.sloeber.core.toolChain.release.918675551.460716650.1358060238." name="/" resourcePath="">
+						<toolChain id="io.sloeber.core.toolChain.release.546152991" name="Arduino Toolchain (Sloeber edition)" superClass="io.sloeber.core.toolChain.release">
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="io.sloeber.targetplatform.730251151" name="Arduino Target" osList="all" superClass="io.sloeber.targetplatform"/>
+							<builder buildPath="${workspace_loc:/MKA}/Release" id="io.sloeber.sketch.builder.1292635553" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Arduino sketch builder" superClass="io.sloeber.sketch.builder"/>
+							<tool id="io.sloeber.tool.sketch.compiler.cpp.1432656281" name="Arduino C++ Compiler" superClass="io.sloeber.tool.sketch.compiler.cpp">
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.cpp.sketch.option.incpath.360464786" name="Include Paths (-I)" superClass="io.sloeber.compiler.cpp.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_I}&quot;"/>
+								</option>
+								<inputType id="io.sloeber.compiler.cpp.sketch.input.763045273" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
+							</tool>
+							<tool id="io.sloeber.tool.compiler.c.253032725" name="Arduino C Compiler" superClass="io.sloeber.tool.compiler.c">
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.c.sketch.option.incpath.732422004" name="Include Paths (-I)" superClass="io.sloeber.compiler.c.sketch.option.incpath" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_I}&quot;"/>
+								</option>
+								<inputType id="io.sloeber.compiler.c.sketch.input.1997848342" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
+							</tool>
+							<tool id="io.sloeber.tool.sketch.compiler.s.160742522" name="Arduino Assembler" superClass="io.sloeber.tool.sketch.compiler.s">
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="io.sloeber.compiler.asm.sketch.option.incpath.261928748" name="Include Paths (-I)" superClass="io.sloeber.compiler.asm.sketch.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_I}&quot;"/>
+								</option>
+								<inputType id="io.sloeber.compiler.S.sketch.input.357822333" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
+							</tool>
+							<tool id="io.sloeber.tool.ar.737428922" name="Arduino archiver" superClass="io.sloeber.tool.ar"/>
+							<tool id="io.sloeber.tool.combine.816918442" name="Arduino combiner" superClass="io.sloeber.tool.combine"/>
+							<tool id="io.sloeber.tool.objcopy.eep.2072493739" name="Arduino tool Create eeprom" superClass="io.sloeber.tool.objcopy.eep"/>
+							<tool id="io.sloeber.tool.size.1016670310" name="Arduino tool Print Size" superClass="io.sloeber.tool.size"/>
+						</toolChain>
+					</folderInfo>
+					<fileInfo id="io.sloeber.core.toolChain.release.918675551.460716650.1358060238.src/lcd/nextion_hmi/StateStatus.h" name="StateStatus.h" rcbsApplicability="disable" resourcePath="src/lcd/nextion_hmi/StateStatus.h" toolsToInvoke=""/>
+					<sourceEntries>
+						<entry excluding="src/lcd/nextion_hmi/StateStatusc.cpp|libraries/?*/**/test*/**|libraries**/._*|libraries/?*/**/third-party/**|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/c*/?*|libraries/?*/d*/?*|src/lcd/nextion_hmi/StateStatusc.h|libraries/?*/D*/?*" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="MKA.null.1601418249" name="MKA"/>
@@ -345,4 +423,5 @@
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

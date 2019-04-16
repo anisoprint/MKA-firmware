@@ -60,7 +60,7 @@
  *
  * 2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000
  */
-#define BAUDRATE 250000
+#define BAUDRATE 115200
 
 /**
  * User-specified version info of this build to display in [Pronterface, etc] terminal window during
@@ -95,12 +95,12 @@
  * enter the serial receive buffer, so they cannot be blocked.
  * Currently handles M108, M112, M410
  */
-//#define EMERGENCY_PARSER
+#define EMERGENCY_PARSER
 
 /**
  * Spend 28 bytes of SRAM to optimize the GCode parser
  */
-//#define FASTER_GCODE_PARSER
+#define FASTER_GCODE_PARSER
 
 /**
  * Host Keepalive
@@ -174,7 +174,7 @@
 // If you don't know what this is leave it.
 #define PS_DEFAULT_OFF false
 // Define delay after power on in seconds
-#define DELAY_AFTER_POWER_ON 5
+#define DELAY_AFTER_POWER_ON 3
 // Define time for automatic power off if not needed in second
 #define POWER_TIMEOUT 30
 /*************************************************************************************/

@@ -154,8 +154,8 @@
 #define HEATER_COOLER_PIN   NoPin
 
 // TEMP pin
-#define TEMP_0_PIN          39//ORIG_TEMP_0_PIN
-#define TEMP_1_PIN          40//ORIG_TEMP_1_PIN
+#define TEMP_0_PIN          44//ORIG_TEMP_0_PIN
+#define TEMP_1_PIN          45//ORIG_TEMP_1_PIN
 #define TEMP_2_PIN          ORIG_TEMP_2_PIN
 #define TEMP_3_PIN          ORIG_TEMP_3_PIN
 #define TEMP_BED_PIN        ORIG_TEMP_BED_PIN
