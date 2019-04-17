@@ -88,16 +88,16 @@
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_BED 1
-#define TEMP_SENSOR_CHAMBER 0
+#define TEMP_SENSOR_CHAMBER 9
 #define TEMP_SENSOR_COOLER 0
 
 // Thermistor series resistor value in Ohms (see on your board)
 #define THERMISTOR_SERIES_RS 4700.0
 
 // User Sensor
-#define T9_NAME   "User Sensor"
-#define T9_R25    100000.0  // Resistance in Ohms @ 25Â°C
-#define T9_BETA     4036.0  // Beta Value (K)
+#define T9_NAME   "NCP21WF104J03RA"
+#define T9_R25    100000.0  // Resistance in Ohms @ 25°C
+#define T9_BETA     4275.0  // Beta Value (K)
 
 // Enable this for support DHT sensor for temperature e Humidity DHT11, DHT21 or DHT22.
 //#define DHT_SENSOR
@@ -149,7 +149,7 @@
 #define COOLER_MINTEMP  10 // (degC) 
 
 // Preheat Constants
-#define PREHEAT_1_TEMP_HOTEND 190
+#define PREHEAT_1_TEMP_HOTEND 230
 #define PREHEAT_1_TEMP_BED     60
 #define PREHEAT_1_FAN_SPEED   255   // Insert Value between 0 and 255
 
@@ -415,7 +415,7 @@
  * If you get false positives for "Heating failed" increase WATCH TEMP PERIOD and/or decrease WATCH TEMP INCREASE
  * WATCH TEMP INCREASE should not be below 2.
  */
-#define WATCH_TEMP_PERIOD  30               // Seconds
+#define WATCH_TEMP_PERIOD  60               // Seconds
 #define WATCH_BED_TEMP_PERIOD 60
 
 #define WATCH_TEMP_INCREASE 2               // Degrees Celsius

@@ -32,17 +32,17 @@
  * M205: Set Advanced Settings
  *
  *    S = Min Feed Rate (units/s)
- *    V = Min Travel Feed Rate (units/s)
+ *    T = Min Travel Feed Rate (units/s)
  *    B = Min Segment Time (µs)
  *    X = Max X Jerk (units/sec^2)
  *    Y = Max Y Jerk (units/sec^2)
  *    Z = Max Z Jerk (units/sec^2)
- *    E = Max E Jerk (units/sec^2)
+ *    E, U, V... = Max E, U, V Jerk (units/sec^2)
  */
 inline void gcode_M205(void) {
 
   if (parser.seen('S')) mechanics.min_feedrate_mm_s = parser.value_linear_units();
-  if (parser.seen('V')) mechanics.min_travel_feedrate_mm_s = parser.value_linear_units();
+  if (parser.seen('T')) mechanics.min_travel_feedrate_mm_s = parser.value_linear_units();
   if (parser.seen('B')) mechanics.min_segment_time_us = parser.value_ulong();
 
   LOOP_XYZE(i) {

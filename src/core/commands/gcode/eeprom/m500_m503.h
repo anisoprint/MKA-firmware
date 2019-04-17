@@ -34,7 +34,15 @@
 /**
  * M500: Store settings in EEPROM
  */
-inline void gcode_M500(void) { (void)eeprom.Store_Settings(); }
+inline void gcode_M500(void) {
+	if (parser.seen('S'))
+	{
+		eeprom.Store_Sys();
+		eeprom.Store_Settings();
+	}
+	else (void)eeprom.Store_Settings();
+
+}
 
 /**
  * M501: Read settings from EEPROM
@@ -48,5 +56,26 @@ inline void gcode_M502(void) { (void)eeprom.Factory_Settings(); }
 
 /**
  * M503: print settings currently in memory
+ * S - print system settings
+ * U - print user settings
+ * V - print only version
+ * R - print only CRC
+ * C - print clean g-code
  */
-inline void gcode_M503(void) { (void)eeprom.Print_Settings(parser.seen('S') && !parser.value_bool()); }
+inline void gcode_M503(void) {
+	const bool only_version = parser.seen('V');
+	const bool only_CRC = parser.seen('R');
+	const bool dump = parser.seen('C');
+	bool print_sys = false,
+		 print_usr = false,
+		 print_other = false;
+	print_sys = parser.seen('S');
+	print_usr = parser.seen('U');
+	if (!print_sys && !print_usr)
+	{
+		print_sys = true;
+		print_usr = true;
+		print_other = true;
+	}
+	eeprom.Print_Settings(dump, print_sys, print_usr, print_other, only_version, only_CRC);
+}

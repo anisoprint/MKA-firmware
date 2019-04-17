@@ -32,8 +32,6 @@ namespace {
 
 void StateFileinfo::Print_Push(void* ptr) {
     commands.enqueue_and_echo_P(PSTR("M24"));
-    StatePrinting::Activate();
-	//Printing_Activate();
 }
 
 void StateFileinfo::Back_Push(void* ptr) {

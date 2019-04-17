@@ -74,6 +74,8 @@ void NextionHMI::Init() {
 		SERIAL_MSG("Nextion LCD NOT connected! \n");
 	}
 
+	SetBrightness(lcdBrightness);
+
 	/*
 	//Init Pages
 	Status_Init();
@@ -315,6 +317,11 @@ void NextionHMI::ShowStartScreen(const char* header, const char* message) {
 	startScreen.show();
 	startHeader.setText(header);
 	startMessage.setText(message);
+}
+
+
+void NextionHMI::SetBrightness(uint8_t brightness) {
+	setCurrentBrightness(brightness);
 }
 
 #if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)

@@ -25,12 +25,9 @@
 #define BED_CENTER_Y (Y_MAX_POS/2)
 
 #define MATERIAL_CHANGE_X (X_MAX_POS/2)
-#define MATERIAL_CHANGE_Y (Y_MAX_POS/3)
+#define MATERIAL_CHANGE_Y (Y_MAX_POS/10)
 
 #define LEVELING_OFFSET 0.1
-
-extern const float filament_change_unload_length[DRIVER_EXTRUDERS], filament_change_load_length[DRIVER_EXTRUDERS];
-
 
 namespace StateWizard {
 

@@ -31,8 +31,10 @@ class EEPROM {
 
   public: /** Public Parameters */
 
-    static char     printerSN[17];  // max. 16 chars + 0
-    static char     printerVersion[9];  // max. 8 chars + 0
+	#if ENABLED(EEPROM_MULTIPART)
+      static char     printerSN[17];  // max. 16 chars + 0
+      static char     printerVersion[9];  // max. 8 chars + 0
+	#endif
 
   private: /** Private Parameters */
 
@@ -74,8 +76,22 @@ class EEPROM {
     #if HAS_EEPROM
       static bool Load_Settings();  // Return 'true' if data was loaded ok
 
-      static bool Store_Const();
-      static bool Load_Const();
+	  #if ENABLED(EEPROM_MULTIPART)
+		  static bool Store_Const();
+		  static bool Load_Const();
+
+		  static bool Store_Sys();
+		  static bool Load_Sys();
+		  static uint16_t stored_sys_crc;
+		  static char stored_sys_ver[6];
+
+		  static bool Store_Usr();
+		  static bool Load_Usr();
+		  static uint16_t stored_usr_crc;
+		  static char stored_usr_ver[6];
+
+
+	  #endif
 
       #if ENABLED(AUTO_BED_LEVELING_UBL) // Eventually make these available if any leveling system
                                          // That can store is enabled
@@ -95,7 +111,8 @@ class EEPROM {
     #endif
 
     #if DISABLED(DISABLE_M503)
-      static void Print_Settings(const bool forReplay=false);
+      static void Print_Settings(const bool dump=false, const bool print_sys=true, const bool print_usr=true, const bool print_other=false, const bool only_version=false, const bool only_CRC=false);
+
     #else
       FORCE_INLINE static void Print_Settings(const bool forReplay=false) { UNUSED(forReplay); }
     #endif

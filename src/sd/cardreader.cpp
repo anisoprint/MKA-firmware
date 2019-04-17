@@ -137,8 +137,6 @@
       #if ENABLED(SDCARD_SORT_ALPHA)
         flush_presort();
       #endif
-      Printer::currentLayer  = 0,
-      Printer::maxLayer = -1;
     }
   }
 
@@ -312,8 +310,9 @@
       SERIAL_SV(CFG, powerManager.consumption_hour);
       SERIAL_EM(" Wh");
     #endif
-
-    print_job_counter.showStats();
+	#if ENABLED(SD_SETTINGS)
+      print_job_counter.showStats();
+	#endif
   }
 
   void CardReader::checkautostart(bool force) {

@@ -31,6 +31,15 @@
 
 #if EXTRUDERS > 0
 
+#if ENABLED(EG6_EXTRUDER)
+	struct ToolSwitchPos
+	{
+		float X,Y,Speed;
+		bool SwitchMove;
+	};
+#endif
+
+
   class Tools {
 
     public: /** Constructor */
@@ -57,11 +66,16 @@
 
       // Hotend offset
       static float    hotend_offset[XYZ][HOTENDS];
-      static float    switch_pos_x;
-      static float    switch_pos_y;
+      static float    switch_offset_x;
+      static float    switch_offset_y;
+
+      static uint8_t   cut_servo_id;
+      static uint8_t   cut_active_angle;
+      static uint8_t   cut_neutral_angle;
+
 
 	  #if ENABLED(EG6_EXTRUDER)
-        static float hotend_switch[HOTENDS][3][CHANGE_MOVES];
+        static ToolSwitchPos hotend_switch_path[HOTENDS][CHANGE_MOVES];
 	  #endif
 
       #if HAS_EXT_ENCODER
@@ -77,6 +91,8 @@
       #endif
 
     public: /** Public Function */
+
+      static void cut_fiber();
 
       static void change(const uint8_t tmp_extruder, const float fr_mm_s=0.0, bool no_move=false, bool force=false);
 

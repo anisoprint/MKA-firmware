@@ -330,9 +330,9 @@
 #define INVERT_X_DIR true
 #define INVERT_Y_DIR true
 #define INVERT_Z_DIR false
-#define INVERT_E0_DIR false
+#define INVERT_E0_DIR true
 #define INVERT_E1_DIR true
-#define INVERT_E2_DIR false
+#define INVERT_E2_DIR true
 #define INVERT_E3_DIR false
 #define INVERT_E4_DIR false
 #define INVERT_E5_DIR false
@@ -609,7 +609,7 @@
  ******************************** Axis acceleration **************************************
  *****************************************************************************************/
 //  Maximum start speed for accelerated moves.    X,    Y,  Z,   E0...(per extruder)
-#define DEFAULT_MAX_ACCELERATION              {800, 800, 50, 800, 1000, 1000, 1000}
+#define DEFAULT_MAX_ACCELERATION              {1000, 1000, 45, 800, 800, 800, 1000}
 //  Maximum acceleration in mm/s^2 for retracts   E0... (per extruder)
 #define DEFAULT_RETRACT_ACCELERATION          {10000, 10000, 10000, 10000}
 //  X, Y, Z and E* maximum acceleration in mm/s^2 for printing moves
@@ -653,7 +653,7 @@
 #define Z_HOME_BUMP_MM 2
 
 // Re-Bump Speed Divisor (Divides the Homing Feedrate)
-#define HOMING_BUMP_DIVISOR {5, 5, 4}
+#define HOMING_BUMP_DIVISOR {5, 5, 7}
 /*****************************************************************************************/
 
 
@@ -667,9 +667,9 @@
  * For the other hotends it is their distance from the hotend 0.                         *
  *                                                                                       *
  *****************************************************************************************/
-#define HOTEND_OFFSET_X {0.0, 0.0, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the X axis
-#define HOTEND_OFFSET_Y {0.0, 0.0, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the Y axis
-#define HOTEND_OFFSET_Z {0.0, 0.0, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the Z axis
+#define HOTEND_OFFSET_X {0.0, 17.1, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the X axis
+#define HOTEND_OFFSET_Y {0.0, -2.2, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Y axis
+#define HOTEND_OFFSET_Z {0.0, 1.65, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Z axis
 /*****************************************************************************************/
 
 #endif /* _CONFIGURATION_CORE_H_ */

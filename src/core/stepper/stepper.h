@@ -82,21 +82,21 @@ class Stepper {
     #endif
 
     // Counter variables for the Bresenham line tracer
-    static long counter_X, counter_Y, counter_Z, counter_E;
+    static int32_t counter_X, counter_Y, counter_Z, counter_E;
 	#if DRIVER_EXTRUDERS > 1
-	  static long counter_U;
+	  static int32_t counter_U;
 	#endif
 	#if DRIVER_EXTRUDERS > 2
-	  static long counter_V;
+	  static int32_t counter_V;
 	#endif
 	#if DRIVER_EXTRUDERS > 3
-	  static long counter_W;
+	  static int32_t counter_W;
 	#endif
 	#if DRIVER_EXTRUDERS > 4
-	  static long counter_K;
+	  static int32_t counter_K;
 	#endif
 	#if DRIVER_EXTRUDERS > 5
-	  static long counter_L;
+	  static int32_t counter_L;
 	#endif
     static volatile uint32_t step_events_completed; // The number of step events executed in the current block
 

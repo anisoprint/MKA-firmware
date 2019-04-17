@@ -49,16 +49,15 @@
 
   float   Tools::hotend_offset[XYZ][HOTENDS] = { 0.0 };
 
-  float    Tools::switch_pos_x = 0;
-  float    Tools::switch_pos_y = 0;
+  float   Tools::switch_offset_x = 0;
+  float   Tools::switch_offset_y = 0;
 
+  uint8_t   Tools::cut_servo_id = 0;
+  uint8_t   Tools::cut_neutral_angle = 0;
+  uint8_t   Tools::cut_active_angle = 0;
 
 #if ENABLED(EG6_EXTRUDER)
-  float Tools::hotend_switch[HOTENDS][3][CHANGE_MOVES] =
-  	  	  {
-		    {CHANGE_T0_X, CHANGE_T0_Y, CHANGE_T0_F},
-			{CHANGE_T1_X, CHANGE_T1_Y, CHANGE_T1_F}
-		  };
+  ToolSwitchPos Tools::hotend_switch_path[HOTENDS][CHANGE_MOVES] = {0.0, 0.0, 0.0, false};
 
 #endif
 
@@ -200,16 +199,20 @@
             // Move back to the original (or tweaked) position
 
             #if ENABLED(EG6_EXTRUDER)
-
+              	float x_target, y_target;
                 //Making moves to physically switch extruder
                 for (uint8_t i=0; i<CHANGE_MOVES; i++)
                 {
-                	mechanics.do_blocking_move_to(
-                			Mechanics::homeCS2toolCS(active_extruder, hotend_switch[active_extruder][0][i], AxisEnum::X_AXIS),
-							Mechanics::homeCS2toolCS(active_extruder, hotend_switch[active_extruder][1][i], AxisEnum::Y_AXIS),
-							mechanics.current_position[Z_AXIS],
-							hotend_switch[active_extruder][2][i]
-							);
+                	if (hotend_switch_path[active_extruder][i].Speed>0)
+                	{
+                		x_target = hotend_switch_path[active_extruder][i].SwitchMove ? hotend_switch_path[active_extruder][i].X + tools.switch_offset_x : hotend_switch_path[active_extruder][i].X;
+                		y_target = hotend_switch_path[active_extruder][i].SwitchMove ? hotend_switch_path[active_extruder][i].Y + tools.switch_offset_y : hotend_switch_path[active_extruder][i].Y;
+						mechanics.do_blocking_move_to(
+								Mechanics::homeCS2toolCS(active_extruder, x_target, AxisEnum::X_AXIS),
+								Mechanics::homeCS2toolCS(active_extruder, y_target, AxisEnum::Y_AXIS),
+								mechanics.current_position[Z_AXIS],
+								hotend_switch_path[active_extruder][i].Speed);
+                	}
                 }
 
 				//Returning to original position
@@ -359,7 +362,11 @@ int8_t Tools::plastic_driver_of_extruder(uint8_t e) {
 	return -1;
 }
 
-
+void Tools::cut_fiber() {
+	stepper.synchronize();
+    MOVE_SERVO(cut_servo_id, cut_active_angle);
+    MOVE_SERVO(cut_servo_id, cut_neutral_angle);
+}
 
   #if ENABLED(VOLUMETRIC_EXTRUSION)
 

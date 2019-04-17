@@ -1046,7 +1046,7 @@ void Planner::check_axes_activity() {
 			if (thermalManager.tooColdToExtrude(ie)) {
 				position[XYZ+ie] = target[XYZ+ie]; // Behave as if the move really took place, but ignore E part
 			  #if ENABLED(LIN_ADVANCE)
-				position_float[XYZ+ie] = target_float_e[XYZ+ie];
+				position_float[XYZ+ie] = target_float[XYZ+ie];
 			  #endif
 			  de[ie] = 0; // no difference
 			  SERIAL_LM(ER, MSG_ERR_COLD_EXTRUDE_STOP);
@@ -1703,13 +1703,13 @@ void Planner::check_axes_activity() {
        *
        * Use LIN_ADVANCE for blocks if all these are true:
        *
-       * esteps             : This is a print move, because we checked for A, B, C steps before.
+       * esteps[0]          : This is a print move, because we checked for A, B, C steps before. Only E is taken into account.
        *
        * extruder_advance_K : There is an advance factor set.
        *
        * de > 0             : Extruder is running forward (e.g., for "Wipe while retracting" (Slic3r) or "Combing" (Cura) moves)
        */
-      block->use_advance_lead =  esteps
+      block->use_advance_lead =  esteps[0]
                               && extruder_advance_K
                               && de > 0;
 
@@ -1757,7 +1757,7 @@ void Planner::check_axes_activity() {
   #endif
   #if ENABLED(LIN_ADVANCE)
     if (block->use_advance_lead) {
-      block->advance_speed = (HAL_TIMER_RATE) / (extruder_advance_K * block->e_D_ratio * block->acceleration * mechanics.axis_steps_per_mm[E_AXIS_N]);
+      block->advance_speed = (HAL_TIMER_RATE) / (extruder_advance_K * block->e_D_ratio * block->acceleration * mechanics.axis_steps_per_mm[E_AXIS]);
       #if ENABLED(LA_DEBUG)
         if (extruder_advance_K * block->e_D_ratio * block->acceleration * 2 < block->nominal_speed * block->e_D_ratio)
           SERIAL_EM("More than 2 steps per eISR loop executed.");
@@ -1927,19 +1927,19 @@ void Planner::buffer_segment(const float dest[XYZE], const float &fr_mm_s, const
   };
 
   #if ENABLED(LIN_ADVANCE)
-    const float target_float[XYZE] = { a, b, c,
+    const float target_float[XYZE] = { dest[X_AXIS], dest[Y_AXIS], dest[Z_AXIS],
 	#if DRIVER_EXTRUDERS == 1
-	e[0]
+    dest[E_AXIS]
 	#elif DRIVER_EXTRUDERS == 2
-	e[0], e[1]
+	dest[E_AXIS], dest[U_AXIS]
 	#elif DRIVER_EXTRUDERS == 3
-	e[0], e[1], e[2]
+	dest[E_AXIS], dest[U_AXIS], dest[V_AXIS]
 	#elif DRIVER_EXTRUDERS == 4
-	e[0], e[1], e[2], e[3]
+	dest[E_AXIS], dest[U_AXIS], dest[V_AXIS], dest[W_AXIS]
 	#elif DRIVER_EXTRUDERS == 5
-	e[0], e[1], e[2], e[3], e[4]
+	dest[E_AXIS], dest[U_AXIS], dest[V_AXIS], dest[W_AXIS], dest[K_AXIS]
 	#elif DRIVER_EXTRUDERS == 6
-	e[0], e[1], e[2], e[3], e[4], e[5]
+	dest[E_AXIS], dest[U_AXIS], dest[V_AXIS], dest[W_AXIS], dest[K_AXIS], dest[L_AXIS]
 	#endif
     };
   #endif
@@ -2114,10 +2114,10 @@ void Planner::_set_position_mm(const float pos[XYZE]) {
 
 
   #if ENABLED(LIN_ADVANCE)
-    position_float[X_AXIS] = a;
-    position_float[Y_AXIS] = b;
-    position_float[Z_AXIS] = c;
-	LOOP_EUVW(ie) position_float[ie] = e[ie-XYZ];
+    LOOP_XYZE(i)
+    {
+    	position_float[i] = pos[i];
+    }
   #endif
 
   stepper.set_position(n);

@@ -41,13 +41,18 @@ namespace {
 	//Page
 	NexObject _page = NexObject(PAGE_PRINTING,  0,  "printing");
 
-	//Plastic
 	NexObject _pFileIcon  = NexObject(PAGE_PRINTING,  7,  "ico");
 	NexObject _tFileName  = NexObject(PAGE_PRINTING,  4,  "fnm");
 	NexObject _tStatus1  = NexObject(PAGE_PRINTING,  5,  "st1");
 	NexObject _tStatus2  = NexObject(PAGE_PRINTING,  5,  "st2");
 	NexObject _tProgress  = NexObject(PAGE_PRINTING,  11,  "perc");
 	NexObject _pbProgressBar = NexObject(PAGE_PRINTING,  10,  "prb");
+
+	NexObject _tTempPlastic = NexObject(PAGE_PRINTING,  17,  "tT0");
+	NexObject _tTempComposite = NexObject(PAGE_PRINTING,  19,  "tT1");
+	NexObject _tTempBuildplate = NexObject(PAGE_PRINTING,  21,  "tTB");
+	NexObject _tTempChamber = NexObject(PAGE_PRINTING,  22,  "tTC");
+	NexObject _tFeedPercent = NexObject(PAGE_PRINTING,  25,  "tF");
 	//Buttons
 	NexObject _bControl = NexObject(PAGE_PRINTING,  6,  "c");
 	NexObject _bPause = NexObject(PAGE_PRINTING,  14,  "p");
@@ -65,7 +70,7 @@ void StatePrinting::Pause_Push(void* ptr) {
 
     if (card.cardOK && card.isFileOpen()) {
 
-    	const float retract = PAUSE_PARK_RETRACT_LENGTH;
+    	const float retract = PrintPause::RetractDistance;
 
     	switch (PrintPause::Status)
     	{
@@ -80,20 +85,6 @@ void StatePrinting::Pause_Push(void* ptr) {
 				break;
     	}
 
-
-      /*if (IS_SD_PRINTING) {
-        card.pauseSDPrint();
-        print_job_counter.pause();
-        SERIAL_STR(PAUSE);
-        SERIAL_EOL();
-        _bPause.setTextPGM(PSTR(MSG_RESUME));
-
-      }
-      else {
-        card.startFileprint();
-        print_job_counter.start();
-        _bPause.setTextPGM(PSTR(MSG_PAUSE));
-      }*/
     }
 }
 
@@ -176,21 +167,21 @@ void StatePrinting::DrawUpdate() {
     	switch(NextionHMI::lastEvent) {
     	    case HMIevent::HEATING_STARTED_BUILDPLATE :
     	    	 ZERO(NextionHMI::buffer);
-    	    	 sprintf_P(NextionHMI::buffer, PSTR(MSG_BUILDPLATE_HEATING), (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
+    	    	 sprintf_P(NextionHMI::buffer, PSTR(MSG_BUILDPLATE_HEATING), round(heaters[NextionHMI::lastEventArg].current_temperature), (int)heaters[NextionHMI::lastEventArg].target_temperature);
     		     _tStatus1.setText(NextionHMI::buffer);
     	    	 break;
     	    case HMIevent::HEATING_STARTED_EXTRUDER :
     			 if (NextionHMI::lastEventArg == HOT0_INDEX)
     			 {
     				ZERO(NextionHMI::buffer);
-    				sprintf_P(NextionHMI::buffer, PSTR(MSG_PLASTIC_EXTRUDER_HEATING), (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
+    				sprintf_P(NextionHMI::buffer, PSTR(MSG_PLASTIC_EXTRUDER_HEATING), round(heaters[NextionHMI::lastEventArg].current_temperature), (int)heaters[NextionHMI::lastEventArg].target_temperature);
     			 }
 				 else
 				 {
 					if (NextionHMI::lastEventArg == HOT1_INDEX)
 					{
 						ZERO(NextionHMI::buffer);
-						sprintf_P(NextionHMI::buffer, PSTR(MSG_COMPOSITE_EXTRUDER_HEATING), (int)heaters[NextionHMI::lastEventArg].current_temperature, (int)heaters[NextionHMI::lastEventArg].target_temperature);
+						sprintf_P(NextionHMI::buffer, PSTR(MSG_COMPOSITE_EXTRUDER_HEATING), round(heaters[NextionHMI::lastEventArg].current_temperature), (int)heaters[NextionHMI::lastEventArg].target_temperature);
 					}
 				 }
    	    	     _tStatus1.setText(NextionHMI::buffer);
@@ -214,6 +205,27 @@ void StatePrinting::DrawUpdate() {
 			  _previousPercentDone = card.percentDone();
 			  _previousLayer = printer.currentLayer;
         }
+
+    	auto strTemp = String(round(heaters[HOT0_INDEX].current_temperature)) + "\370C";
+        _tTempPlastic.setText(strTemp.c_str());
+        strTemp = String(round(heaters[HOT1_INDEX].current_temperature)) + "\370C";
+        _tTempComposite.setText(strTemp.c_str());
+        strTemp = String(round(heaters[BED_INDEX].current_temperature)) + "\370C";
+        _tTempBuildplate.setText(strTemp.c_str());
+#if HAS_HEATER_CHAMBER
+        if (heaters[CHAMBER_INDEX].current_temperature>0)
+		{
+			strTemp = String(round(heaters[CHAMBER_INDEX].current_temperature)) + "\370C";
+		}
+		else
+		{
+			strTemp = String("-");
+		}
+        _tTempChamber.setText(strTemp.c_str());
+#endif
+        strTemp = String(mechanics.feedrate_percentage) + "%";
+        _tFeedPercent.setText(strTemp.c_str());
+
     //}
 
 }

@@ -15,6 +15,16 @@ namespace {
 	static uint8_t resume_tool;
 }
 
+
+float PrintPause::LoadDistance[DRIVER_EXTRUDERS] = { 0.0 };
+float PrintPause::UnloadDistance[DRIVER_EXTRUDERS] = { 0.0 };;
+
+float PrintPause::RetractDistance = 0,
+	  PrintPause::RetractFeedrate = 0,
+      PrintPause::LoadFeedrate = 0,
+	  PrintPause::UnloadFeedrate = 0,
+	  PrintPause::ExtrudeFeedrate = 0;
+
 bool PrintPause::CanPauseNow = true;
 bool PrintPause::SdPrintingPaused = false;
 PrintPauseStatus PrintPause::Status = NotPaused;
@@ -92,7 +102,7 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     {
     	//get plastic driver of current extruder
     	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
-    	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), retract, PAUSE_PARK_RETRACT_FEEDRATE);
+    	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), -retract, PrintPause::RetractFeedrate);
     }
 
     // Park the nozzle by moving up by z_lift and then moving to (x_pos, y_pos)
@@ -140,7 +150,7 @@ void PrintPause::ResumePrint(const float& purge_length) {
 	   NextionHMI::RaiseEvent(PRINT_PAUSE_UNSCHEDULED);
 	   return;
    };
-   if (Status!=Paused) return; // already paused
+   if (Status!=Paused) return; // already not paused
 
    Status = Resuming;
    NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMING);
@@ -182,19 +192,20 @@ void PrintPause::ResumePrint(const float& purge_length) {
 
    printer.setWaitForHeatUp(false);
 
-   // Purging plastic
-   if (purge_length && !thermalManager.tooColdToExtrude(tools.active_extruder))
-   {
-   	//get plastic driver of current extruder
-   	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
-   	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), purge_length, PAUSE_PARK_RETRACT_FEEDRATE);
-   }
 
    // Move XY to starting position, then Z
    mechanics.do_blocking_move_to_xy(resume_position[X_AXIS], resume_position[Y_AXIS], NOZZLE_PARK_XY_FEEDRATE);
 
    // Set Z_AXIS to saved position
    mechanics.do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
+
+   // Purging plastic
+   if (purge_length && !thermalManager.tooColdToExtrude(tools.active_extruder))
+   {
+   	//get plastic driver of current extruder
+   	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
+   	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), purge_length, PrintPause::RetractFeedrate);
+   }
 
    // Now all positions are resumed and ready to be confirmed
    // Set all to saved position

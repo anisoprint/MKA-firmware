@@ -185,13 +185,13 @@
 
   }
 
-  void Heater::print_PID() {
+  void Heater::print_PID(const bool dump) {
 
     if (isUsePid()) {
-      if (type == IS_HOTEND) SERIAL_SMV(CFG, "  M301 H", (int)ID);
-      else if (type == IS_BED) SERIAL_SM(CFG, "  M301 H-1");
-      else if (type == IS_CHAMBER) SERIAL_SM(CFG, "  M301 H-2");
-      else if (type == IS_COOLER) SERIAL_SM(CFG, "  M301 H-3");
+      if (type == IS_HOTEND) { CONFIG_MSG(); SERIAL_MV("M301 H", (int)ID);}
+      else if (type == IS_BED) { CONFIG_MSG(); SERIAL_MSG("M301 H-1");}
+      else if (type == IS_CHAMBER) { CONFIG_MSG(); SERIAL_MSG("M301 H-2");}
+      else if (type == IS_COOLER) { CONFIG_MSG(); SERIAL_MSG("M301 H-3");}
       else return;
 
       SERIAL_MV(" P", Kp);

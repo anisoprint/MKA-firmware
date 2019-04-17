@@ -23,29 +23,29 @@
 /**
  * mcode
  *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
-#if HAS_LCD_CONTRAST
+  #define CODE_M1010
+  #define CODE_M1011
+  
+ /*
+  * M1010: Cut fiber
+  *
+  */
+ inline void gcode_M1010(void) {
+	 tools.cut_fiber();
+ }
 
-  #define CODE_M250
 
-  /**
-   * M250: Read and optionally set the LCD contrast
-   */
-  inline void gcode_M250(void) {
-    if (parser.seenval('C')) set_lcd_contrast(parser.value_int());
-    SERIAL_EMV("lcd contrast value: ", lcd_contrast);
-  }
+/*
+ * M1011: Fiber cut Parameters
+ *
+ *  S<servo-id> A<cut-angle> B<neutral-angle>
+ *
+ */
+inline void gcode_M1011() {
+	  if (parser.seen('S')) Tools::cut_servo_id = parser.value_byte();
+	  if (parser.seen('A')) Tools::cut_active_angle = parser.value_byte();
+	  if (parser.seen('B')) Tools::cut_neutral_angle = parser.value_byte();
+}
 
-#elif ENABLED(NEXTION_HMI)
-  #define CODE_M250
-
-  /**
-   * M250: Read and optionally set the LCD brightness
-   */
-   inline void gcode_M250(void) {
-	 if (parser.seenval('C')) NextionHMI::SetBrightness(parser.value_int());
-	 SERIAL_EMV("lcd brighness value: ", NextionHMI::lcdBrightness);
-	}
-#endif

@@ -229,6 +229,10 @@
 //Composer
 #include "composer/m1001_m1002.h" // Start/end fiber printing
 #include "composer/m1003_m1009.h"
+#include "composer/m1010_m1011.h"
+#include "composer/m1012.h"
+#include "composer/m704.h"
+#include "composer/m217.h"
 
 #include "table_gcode.h"
 #include "table_mcode.h"

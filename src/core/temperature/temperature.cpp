@@ -31,6 +31,7 @@ Temperature thermalManager;
 constexpr bool      thermal_protection[HEATER_TYPE]   = { THERMAL_PROTECTION_HOTENDS, THERMAL_PROTECTION_BED, THERMAL_PROTECTION_CHAMBER, THERMAL_PROTECTION_COOLER };
 
 // public:
+bool Temperature::tempError = false;
 
 #if HAS_MCU_TEMPERATURE
   float   Temperature::mcu_current_temperature  = 0.0,
@@ -228,11 +229,21 @@ void Temperature::spin() {
     // Update Current Temperature
     act->updateCurrentTemperature();
 
+	#ifdef COMPOSER_TEST
+    if (act->current_temperature > act->maxtemp) max_temp_error(act->ID);
+    if (act->current_temperature < act->mintemp)
+    	{
+    		min_temp_error(act->ID);
+    	}
+	#else
     if (act->isON() && act->current_temperature > act->maxtemp) max_temp_error(act->ID);
     if (act->isON() && act->current_temperature < act->mintemp)
     	{
     		min_temp_error(act->ID);
     	}
+	#endif
+
+
 
     // Check for thermal runaway
     #if HAS_THERMALLY_PROTECTED_HEATER
@@ -697,6 +708,7 @@ void Temperature::report_temperatures(const bool showRaw/*=false*/) {
 // Temperature Error Handlers
 void Temperature::_temp_error(const uint8_t h, const char * const serial_msg, const char * const lcd_msg) {
   if (!heaters[h].isIdle()) {
+	tempError = true;
     SERIAL_STR(ER);
     SERIAL_PS(serial_msg);
     SERIAL_MSG(MSG_STOPPED_HEATER);

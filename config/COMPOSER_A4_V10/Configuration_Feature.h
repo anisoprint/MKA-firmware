@@ -148,18 +148,26 @@
 // AUTO FAN - Fans for cooling Hotend or Controller Fan
 // Put number Hotend in fan to automatically turn on/off when the associated
 // hotend temperature is above/below HOTEND AUTO FAN TEMPERATURE.
-// Or put 7 for controller fan
+// Put 7 for controller fan
+// Put 8 for any hotend (fan is started in any hotend is above defined temperature)
+// Put 9 for chamber cooling fan
 // -1 disables auto mode.
 // Default fan 1 is auto fan for Hotend 0
-#define AUTO_FAN { 0, -1, -1, -1, -1, -1 }
+#define AUTO_FAN { 8, -1, 9, -1, -1, -1 }
 // Parameters for Hotend Fan
-#define HOTEND_AUTO_FAN_TEMPERATURE  0
+#define HOTEND_AUTO_FAN_TEMPERATURE  60
 #define HOTEND_AUTO_FAN_SPEED       255 // 255 = full speed
 #define HOTEND_AUTO_FAN_MIN_SPEED     0
 // Parameters for Controller Fan
 #define CONTROLLERFAN_SECS           60 // How many seconds, after all motors were disabled, the fan should run
 #define CONTROLLERFAN_SPEED         255 // 255 = full speed
 #define CONTROLLERFAN_MIN_SPEED       0
+// Parameters for Chamber Fan
+#define CHAMBERFAN_SPEED1         	128 // 255 = full speed
+#define CHAMBERFAN_TEMP1         	 40 // 255 = full speed
+#define CHAMBERFAN_SPEED2         	255 // 255 = full speed
+#define CHAMBERFAN_TEMP2         	 50 // 255 = full speed
+#define CHAMBERFAN_MIN_SPEED          0
 /**************************************************************************/
 
 
@@ -200,27 +208,40 @@
 #define EG6_EXTRUDER
 
 //Change moves
-#define CHANGE_MOVES 9
+#define CHANGE_MOVES 12
 
-//Change to T0 - prepare - prepare_fast - start - switch - finish
-//#define CHANGE_T0_X {297.0, 297.0, 315.2, 315.2, 335.0, 335.0, 335.0, 335.0, 335.0 }
-//#define CHANGE_T0_Y {17,    7,     7,     30,     30,   7,     30,    7,     30    }
-//#define CHANGE_T0_F {200,   200,   50,    200,   200 ,  50,    50,    50,    50    }
+//Change to T0 -          X      Y  Spd  Switch
+#define CHANGE_T0      {{296.0, 17, 200, false},\
+						{296.0,  7, 200,  true},\
+						{315.2,  7,  50,  true},\
+						{304.0,  7, 200, false},\
+						{304.0, 50, 200, false},\
+						{336.0, 50, 200, false},\
+						{336.0,  4,  34, false},\
+						{332.0,  4, 200, false},\
+						{332.0, 50,  34, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false}}
 
-//Change to T1 - prepare - prepare_fast - start - switch - finish
-//#define CHANGE_T1_X {335.0, 335.0, 335.0, 335.0, 313.9, 335.0, 335.0, 335.0, 335.0 }
-//#define CHANGE_T1_Y {30,    7,    30,     7,     7,     7,     30,     7,    30    }
-//#define CHANGE_T1_F {200,   50,   50,     50,    50,    200,   50,   50,    50     }
+//Change to T1 -          X      Y  Spd  Switch
+#define CHANGE_T1      {{296.0, 50, 200, false},\
+						{336.0, 50, 200, false},\
+						{336.0,  7,  34,  true},\
+						{313.9,  7,  50,  true},\
+						{328.0,  7, 200, false},\
+						{328.0, 50,  34, false},\
+						{296.0, 50, 200, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false}}
 
-//Change to T0 - prepare - prepare_fast - start - switch - finish
-#define CHANGE_T0_X {296.0, 296.0, 315.2, 304,   304,  336.0,  336.0, 332.0,  332.0}
-#define CHANGE_T0_Y {17,    7,     7,     7,     50,   50,     4,     4,      50   }
-#define CHANGE_T0_F {200,   200,   50,    200,   200 , 200,    34,    200,    34   }
-
-//Change to T1 - prepare - prepare_fast - start - switch - finish
-#define CHANGE_T1_X {296.0, 336.0, 336.0, 313.9, 328.0, 328.0, 298.0, 297.0, 296.0 }
-#define CHANGE_T1_Y {50,    50,    7,     7,     7,     50,    50,    50,    50    }
-#define CHANGE_T1_F {200,   200,   34,    50,    200,   34,    200,   200,   200   }
+//Cut settings
+#define CUT_SERVO_ID      0
+#define CUT_ACTIVE_ANGLE  30
+#define CUT_NEUTRAL_ANGLE 90
 
 /***********************************************************************/
 
@@ -449,10 +470,10 @@
  * print acceleration will be reduced during the affected moves to keep within the limit.*
  *                                                                                       *
  *****************************************************************************************/
-//#define LIN_ADVANCE
+#define LIN_ADVANCE
 
 // Unit: mm compression per 1mm/s extruder speed
-#define LIN_ADVANCE_K 0.22
+#define LIN_ADVANCE_K 0.0
 
 // If enabled, this will generate debug information output over Serial.
 //#define LA_DEBUG
@@ -1072,8 +1093,8 @@
  ************************************************************************************************************************/
 #define EEPROM_SETTINGS
 
-//Compact settings for Anisoprint Composer 3D printers
-#define EEPROM_LITE
+//Settings for Anisoprint Composer 3D printers
+#define EEPROM_MULTIPART
 
 #define EEPROM_CHITCHAT // Uncomment this to enable EEPROM Serial responses.
 //#define EEPROM_SD
@@ -1785,7 +1806,7 @@
  *                                                                     *
  ***********************************************************************/
 // (µs) The smallest stepper pulse allowed
-#define MINIMUM_STEPPER_PULSE 0
+#define MINIMUM_STEPPER_PULSE 1
 /***********************************************************************/
 
 
@@ -2107,14 +2128,18 @@
  **************************************************************************/
 //#define ADVANCED_PAUSE_FEATURE
 
-#define PAUSE_PARK_RETRACT_FEEDRATE 10      //+ (mm/s) Initial retract feedrate.
-#define PAUSE_PARK_RETRACT_LENGTH 5         //+ (mm) Initial retract.
+#define PAUSE_PARK_RETRACT_FEEDRATE 10      //+(mm/s) Initial retract feedrate.
+#define PAUSE_PARK_RETRACT_LENGTH 5         //+(mm) Initial retract.
                                             // This short retract is done immediately, before parking the nozzle.
-#define PAUSE_PARK_UNLOAD_FEEDRATE 30       // (mm/s) Unload filament feedrate. This can be pretty fast.
+
+#define PAUSE_PARK_UNLOAD_FEEDRATE 30       //+(mm/s) Unload filament feedrate. This can be pretty fast.
+#define PAUSE_PARK_LOAD_FEEDRATE 30         //+(mm/s) Load filament feedrate. This can be pretty fast.
+
+#define PAUSE_PARK_EXTRUDE_FEEDRATE 5       //+(mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
 
 #if ENABLED(NEXTION_HMI)	      //For nextion HMI material loading/unloading wizard
 	#define PAUSE_PARK_UNLOAD_LENGTH {740, 900, 850}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
-	#define PAUSE_PARK_LOAD_LENGTH {610, 800, 740}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+	#define PAUSE_PARK_LOAD_LENGTH {610, 800, 700}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
 #else
 #define PAUSE_PARK_UNLOAD_LENGTH 100        // (mm) The length of filament for a complete unload.
                                             //   For Bowden, the full length of the tube and nozzle.
@@ -2125,9 +2150,9 @@
                                             //   For direct drive, the full length of the nozzle.
 #endif
 
-#define PAUSE_PARK_LOAD_FEEDRATE 30         // (mm/s) Load filament feedrate. This can be pretty fast.
 
-#define PAUSE_PARK_EXTRUDE_FEEDRATE 5       // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
+
+
 #define PAUSE_PARK_EXTRUDE_LENGTH 50        // (mm) Length to extrude after loading.
                                             //   Set to 0 for manual extrusion.
                                             //   Filament can be extruded repeatedly from the Filament Change menu

@@ -23,9 +23,11 @@
 #ifndef _PINS_H_
 #define _PINS_H_
 
-#define AS_QUOTED_STRING(S) #S
-#define INCLUDE_BY_MB(M)    AS_QUOTED_STRING(../boards/M.h)
-#include INCLUDE_BY_MB(MOTHERBOARD)
+#ifdef MOTHERBOARD
+	#define AS_QUOTED_STRING(S) #S
+	#define INCLUDE_BY_MB(M)    AS_QUOTED_STRING(../boards/M.h)
+	#include INCLUDE_BY_MB(MOTHERBOARD)
+#endif
 
 #if DISABLED(BOARD_NAME)
   #define BOARD_NAME "Unknow"
@@ -234,7 +236,7 @@
 
 /****************************************************************************************/
 #ifndef CONFIGURATION_OVERALL
-	#include "../Configuration_Pins.h"
+	#include "Configuration_Pins.h"
 #else
 	#ifdef PRINTER_TYPE
 	    #include INCLUDE_BY_PRINTER_UP(PRINTER_TYPE, Configuration_Pins.h)

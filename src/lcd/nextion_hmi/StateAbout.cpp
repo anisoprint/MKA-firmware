@@ -41,7 +41,7 @@ void StateAbout::Activate() {
 	_page.show();
 
 	ZERO(NextionHMI::buffer);
-	sprintf_P(NextionHMI::buffer, PSTR(MSG_PRINTER_FULL_NAME), PSTR(CUSTOM_MACHINE_NAME), PSTR(MACHINE_VERSION));
+	sprintf_P(NextionHMI::buffer, PSTR(MSG_PRINTER_FULL_NAME), PSTR(CUSTOM_MACHINE_NAME), eeprom.printerVersion);
 	_tName.setText(NextionHMI::buffer);
 	_tSerial.setText(eeprom.printerSN);
 	_tFirmware.setText(FIRMWARE_NAME " " SHORT_BUILD_VERSION);

@@ -182,7 +182,7 @@ void Printer::setup() {
 
   eeprom.Load_Const();
   SERIAL_LM(ECHO, CUSTOM_MACHINE_NAME);
-  SERIAL_LMV(ECHO, "VER:", MACHINE_VERSION);
+  SERIAL_LMV(ECHO, "VER:", eeprom.printerVersion);
   SERIAL_LMV(ECHO, "SN:", eeprom.printerSN);
   SERIAL_LM(ECHO, BUILD_VERSION);
   #if ENABLED(STRING_DISTRIBUTION_DATE) && ENABLED(STRING_CONFIG_H_AUTHOR)
@@ -366,8 +366,21 @@ void Printer::loop() {
       // Clear all command in quee
       commands.clear_queue();
 
+      // Fiber cutting is needed?
+      bool needCut = false;
+      bool moveXY = (stepper.current_block->steps[X_AXIS]>0) || (stepper.current_block->steps[Y_AXIS]>0);
+      bool move_fiber = false;
+      const int plastic_driver_extruders[] = PLASTIC_DRIVER_EXTRUDERS;
+      LOOP_EUVW(i)
+      {
+    	  if (plastic_driver_extruders[i-XYZ] == 0 && stepper.current_block->steps[i]>0) move_fiber = true;
+      }
+      needCut = (moveXY & move_fiber);
+
       // Stop all stepper
       stepper.quickstop_stepper();
+
+      //if(needCut) tools.cut_fiber();
 
       // Auto home
       #if Z_HOME_DIR > 0

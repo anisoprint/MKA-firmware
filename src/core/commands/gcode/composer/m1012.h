@@ -23,29 +23,42 @@
 /**
  * mcode
  *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
-#if HAS_LCD_CONTRAST
+  #define CODE_M1012
+  
+ /*
+  * M1012: Test switch
+  *
+  */
+ inline void gcode_M1012(void) {
+	StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_WARNING, "Switch Test", "0", 0, 0, 0, 0, 0);
+	#if EXTRUDERS > 1 && HOTENDS > 1
 
-  #define CODE_M250
+	int switchCount = 0;
 
-  /**
-   * M250: Read and optionally set the LCD contrast
-   */
-  inline void gcode_M250(void) {
-    if (parser.seenval('C')) set_lcd_contrast(parser.value_int());
-    SERIAL_EMV("lcd contrast value: ", lcd_contrast);
-  }
+	Temperature::tempError = false;
 
-#elif ENABLED(NEXTION_HMI)
-  #define CODE_M250
+	while (!Temperature::tempError)
+	{
+		uint8_t new_extruder = 0;
+		if (tools.active_extruder == 0) new_extruder = 1;
 
-  /**
-   * M250: Read and optionally set the LCD brightness
-   */
-   inline void gcode_M250(void) {
-	 if (parser.seenval('C')) NextionHMI::SetBrightness(parser.value_int());
-	 SERIAL_EMV("lcd brighness value: ", NextionHMI::lcdBrightness);
+		if (printer.mode == PRINTER_MODE_FFF) {
+			 tools.change(new_extruder);
+		}
+		switchCount++;
+		String str = String(switchCount);
+		StateMessage::UpdateMessage(str.c_str());
 	}
-#endif
+
+	sprintf_P(NextionHMI::buffer, "Temperature failure. T=%d. Switch number: %d.", (int)heaters[0].current_temperature, switchCount);
+	StateMessage::UpdateMessage(NextionHMI::buffer);
+
+	#endif
+	 //tools.cut_fiber();
+ }
+
+
+
+

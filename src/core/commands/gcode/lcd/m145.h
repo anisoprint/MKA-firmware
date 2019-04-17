@@ -62,5 +62,31 @@
       #endif
     }
   }
+#elif ENABLED(NEXTION_HMI)
+
+#define CODE_M145
+
+/**
+ * M145: Set the heatup state for a material in the LCD menu
+ *   H<hotend temp>
+ *   B<bed temp>
+ */
+
+inline void gcode_M145(void) {
+    int v;
+    if (parser.seenval('H')) {
+      v = parser.value_int();
+      #if HEATER_0_MAXTEMP
+        NextionHMI::autoPreheatTempHotend = constrain(v, HEATER_0_MINTEMP, HEATER_0_MAXTEMP - 10);
+      #endif
+    }
+
+    #if HAS_TEMP_BED
+      if (parser.seenval('B')) {
+        v = parser.value_int();
+        NextionHMI::autoPreheatTempBed = constrain(v, BED_MINTEMP, BED_MAXTEMP - 10);
+      }
+    #endif
+}
 
 #endif

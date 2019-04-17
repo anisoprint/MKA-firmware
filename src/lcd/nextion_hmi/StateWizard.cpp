@@ -18,9 +18,6 @@
 
 #include "StateWizard.h"
 
-const float filament_change_unload_length[DRIVER_EXTRUDERS] = PAUSE_PARK_UNLOAD_LENGTH,
-        	filament_change_load_length[DRIVER_EXTRUDERS] = PAUSE_PARK_LOAD_LENGTH;
-
 namespace {
 	///////////// Nextion components //////////
 	//Page
@@ -303,7 +300,6 @@ void StateWizard::MaterialUnloadS2DrawUpdate(void *ptr) {
 	ZERO(NextionHMI::buffer);
 	sprintf_P(NextionHMI::buffer, PSTR(MSG_UNLOAD_MATERIAL_ST2), (int)heaters[heater].current_temperature, (int)heaters[heater].target_temperature);
 	_text.setText(NextionHMI::buffer);
-
 }
 
 //UNLOAD 2a - Display error if temperature is too low
@@ -327,9 +323,9 @@ void StateWizard::MaterialUnloadS3(void* ptr) {
 	if (Tools::extruder_driver_is_plastic((AxisEnum)NextionHMI::wizardData)) //Unload plastic
 	{
 	    // Push filament
-		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, FILAMENT_UNLOAD_RETRACT_LENGTH/2, PAUSE_PARK_UNLOAD_FEEDRATE);
+		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, PrintPause::RetractDistance/2, PrintPause::UnloadFeedrate);
 	    // Retract filament
-		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -FILAMENT_UNLOAD_RETRACT_LENGTH, PAUSE_PARK_RETRACT_FEEDRATE);
+		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -PrintPause::RetractDistance, PrintPause::RetractFeedrate);
 	    // Wait for filament to cool
 	    printer.safe_delay(FILAMENT_UNLOAD_DELAY);
 	    // Quickly purge
@@ -338,7 +334,7 @@ void StateWizard::MaterialUnloadS3(void* ptr) {
 	}
 
     // Unload filament
-	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -filament_change_unload_length[NextionHMI::wizardData-E_AXIS], PAUSE_PARK_UNLOAD_FEEDRATE);
+	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -PrintPause::UnloadDistance[NextionHMI::wizardData-E_AXIS], PrintPause::UnloadFeedrate);
 
     MaterialUnloadS4();
 }
@@ -460,9 +456,6 @@ void StateWizard::MaterialLoadS2(void* ptr) {
 	DrawUpdateCallback = MaterialLoadS2DrawUpdate;
 
 	//waiting for heating
-    //printer.setWaitForHeatUp(true);
-    //while (printer.isWaitForHeatUp() && heaters[heater].wait_for_heating()) printer.idle();
-    //printer.setWaitForHeatUp(false);
 	Temperature::wait_heater(&heaters[heater]);
 
     DrawUpdateCallback = NULL;
@@ -505,16 +498,10 @@ void StateWizard::MaterialLoadS3(void* ptr) {
 	Init2Buttons(PSTR(MSG_CANCEL), MaterialLoadCancel, PSTR(MSG_NEXT), MaterialLoadS3a);
 
 
-    //LOOP_HOTEND()
-    //  heaters[h].start_idle_timer(nozzle_timeout);
-
 	//waiting for 120 seconds
 	const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
     const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
     heaters[heater].start_idle_timer(nozzle_timeout);
-
-	//int max_extrude_length = (120*PAUSE_PARK_EXTRUDE_FEEDRATE);
-	//int extrude_length = 0;
 
 	_loopStopped = false;
 	while(!_loopStopped && !_wizardCancelled && !heaters[heater].isIdle())
@@ -522,7 +509,7 @@ void StateWizard::MaterialLoadS3(void* ptr) {
 		if (planner.movesplanned() < 2)
 		{
 			mechanics.current_position[NextionHMI::wizardData] += 0.5;
-			planner.buffer_line(mechanics.current_position, PAUSE_PARK_EXTRUDE_FEEDRATE, tools.active_extruder);
+			planner.buffer_line(mechanics.current_position, PrintPause::ExtrudeFeedrate, tools.active_extruder);
 		}
 		printer.idle();
 		printer.keepalive(InProcess);
@@ -561,13 +548,13 @@ void StateWizard::MaterialLoadS4(void* ptr) {
     heaters[heater].reset_idle_timer();
 
 	int extrude_length = 0;
-	while (extrude_length<filament_change_load_length[NextionHMI::wizardData-E_AXIS] && !_wizardCancelled)
+	while (extrude_length<PrintPause::LoadDistance[NextionHMI::wizardData-E_AXIS] && !_wizardCancelled)
 	{
 		if (planner.movesplanned() < 2)
 		{
 			mechanics.current_position[NextionHMI::wizardData] += 1.0;
 			extrude_length += 1.0;
-			planner.buffer_line(mechanics.current_position, PAUSE_PARK_LOAD_FEEDRATE, tools.active_extruder);
+			planner.buffer_line(mechanics.current_position, PrintPause::LoadFeedrate, tools.active_extruder);
 		}
 		printer.idle();
 		printer.keepalive(InProcess);
@@ -596,7 +583,7 @@ void StateWizard::MaterialLoadS5(void* ptr) {
 		if (planner.movesplanned() < 2)
 		{
 			mechanics.current_position[NextionHMI::wizardData] += 0.5;
-			planner.buffer_line(mechanics.current_position, PAUSE_PARK_EXTRUDE_FEEDRATE, tools.active_extruder);
+			planner.buffer_line(mechanics.current_position, PrintPause::ExtrudeFeedrate, tools.active_extruder);
 		}
 		printer.idle();
 		printer.keepalive(InProcess);
@@ -629,27 +616,12 @@ void StateWizard::MaterialLoadS6(void* ptr) {
 	{
 		//Cut fiber
 		stepper.synchronize();
-
 		//cut
-		if (MACHINE_VERSION != "1.0")
-		{
-			MOVE_SERVO(0, 160);
-		}
-		else
-		{
-			MOVE_SERVO(0, 30);
-		}
-
-		millis_t dwell_ms = 0;
-		while (PENDING(millis(), dwell_ms)) {
-		  printer.keepalive(InProcess);
-		  printer.idle();
-		}
-		MOVE_SERVO(0, 90);
+		tools.cut_fiber();
 	}
 	else
 	{
-    	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -PAUSE_PARK_RETRACT_LENGTH, PAUSE_PARK_RETRACT_FEEDRATE);
+    	PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -PrintPause::RetractDistance, PrintPause::RetractFeedrate);
 	}
 	BUTTONS(1)
 	NO_PICTURE

@@ -87,11 +87,39 @@
     #endif
 
 	#if ENABLED(PARK_HEAD_ON_PAUSE) && ENABLED(NEXTION_HMI)
-	  PrintPause::ResumePrint();
+      if (PrintPause::Status==WaitingToPause || PrintPause::Status==Paused)
+    	  PrintPause::ResumePrint();
+      else if (PrintPause::Status==NotPaused)
+      {
+    		Printer::currentLayer  = 0,
+    		Printer::maxLayer = -1;
+
+    	    mechanics.feedrate_percentage = 100;  // 100% mechanics.feedrate_mm_s
+    	    tools.flow_percentage[E_AXIS-XYZ] = 100;
+    		#if (DRIVER_EXTRUDERS>2)
+    	      	tools.flow_percentage[V_AXIS-XYZ] = 100;
+    		#endif
+
+    	    card.startFileprint();
+    	    print_job_counter.start();
+
+
+    	    StatePrinting::Activate();
+      }
+	#else
+      Printer::currentLayer  = 0,
+      Printer::maxLayer = -1;
+
+      card.startFileprint();
+      print_job_counter.start();
+
+		#if ENABLED(NEXTION_HMI)
+		  StatePrinting::Activate();
+		#endif
 	#endif
 
-    card.startFileprint();
-    print_job_counter.start();
+
+
 
     #if HAS_POWER_CONSUMPTION_SENSOR
       powerManager.startpower = powerManager.consumption_hour;
@@ -102,14 +130,22 @@
    * M25: Pause SD Print
    */
   void gcode_M25(void) {
-    card.pauseSDPrint();
-    print_job_counter.pause();
-    SERIAL_STR(PAUSE);
-    SERIAL_EOL();
 
-    #if ENABLED(PARK_HEAD_ON_PAUSE)
-      commands.enqueue_and_echo_P(PSTR("M125")); // Must be enqueued with pauseSDPrint set to be last in the buffer
-    #endif
+	#if ENABLED(PARK_HEAD_ON_PAUSE) && ENABLED(NEXTION_HMI)
+	  const float retract = PAUSE_PARK_RETRACT_LENGTH;
+	  PrintPause::PausePrint(retract);
+	#else
+	    card.pauseSDPrint();
+	    print_job_counter.pause();
+	    SERIAL_STR(PAUSE);
+	    SERIAL_EOL();
+
+	    #if ENABLED(PARK_HEAD_ON_PAUSE)
+	      commands.enqueue_and_echo_P(PSTR("M125")); // Must be enqueued with pauseSDPrint set to be last in the buffer
+	    #endif
+	#endif
+
+
   }
 
   /**
@@ -171,9 +207,22 @@
       if (parser.seenval('S')) card.setIndex(parser.value_long());
 
       mechanics.feedrate_mm_s       = 20.0; // 20 units/sec
+
       mechanics.feedrate_percentage = 100;  // 100% mechanics.feedrate_mm_s
+      tools.flow_percentage[E_AXIS-XYZ] = 100;
+	  #if (DRIVER_EXTRUDERS>2)
+      	  tools.flow_percentage[V_AXIS-XYZ] = 100;
+	  #endif
+
+      Printer::currentLayer  = 0,
+      Printer::maxLayer = -1;
+
       card.startFileprint();
       print_job_counter.start();
+
+	  #if ENABLED(NEXTION_HMI)
+		StatePrinting::Activate();
+	  #endif
 
       #if HAS_POWER_CONSUMPTION_SENSOR
         powerManager.startpower = powerManager.consumption_hour;

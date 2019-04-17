@@ -136,7 +136,7 @@
 // When first starting the main fan, run it at full speed for the
 // given number of milliseconds.  This gets the fan spinning reliably
 // before setting a PWM value.
-//#define FAN_KICKSTART_TIME 200
+#define FAN_KICKSTART_TIME 400
 
 // This defines the minimal speed for the main fan
 // set minimal speed for reliable running (1-255)
@@ -148,18 +148,26 @@
 // AUTO FAN - Fans for cooling Hotend or Controller Fan
 // Put number Hotend in fan to automatically turn on/off when the associated
 // hotend temperature is above/below HOTEND AUTO FAN TEMPERATURE.
-// Or put 7 for controller fan
+// Put 7 for controller fan
+// Put 8 for any hotend (fan is started in any hotend is above defined temperature)
+// Put 9 for chamber cooling fan
 // -1 disables auto mode.
 // Default fan 1 is auto fan for Hotend 0
-#define AUTO_FAN { -1, -1, -1, -1, -1, -1 }
+#define AUTO_FAN { 8, -1, -1, -1, -1, -1 }
 // Parameters for Hotend Fan
-#define HOTEND_AUTO_FAN_TEMPERATURE  50
+#define HOTEND_AUTO_FAN_TEMPERATURE  60
 #define HOTEND_AUTO_FAN_SPEED       255 // 255 = full speed
 #define HOTEND_AUTO_FAN_MIN_SPEED     0
 // Parameters for Controller Fan
 #define CONTROLLERFAN_SECS           60 // How many seconds, after all motors were disabled, the fan should run
 #define CONTROLLERFAN_SPEED         255 // 255 = full speed
 #define CONTROLLERFAN_MIN_SPEED       0
+// Parameters for Chamber Fan
+#define CHAMBERFAN_SPEED1         	128 // 255 = full speed
+#define CHAMBERFAN_TEMP1         	 40 // 255 = full speed
+#define CHAMBERFAN_SPEED2         	255 // 255 = full speed
+#define CHAMBERFAN_TEMP2         	 50 // 255 = full speed
+#define CHAMBERFAN_MIN_SPEED          0
 /**************************************************************************/
 
 
@@ -199,13 +207,45 @@
  ***********************************************************************/
 #define EG6_EXTRUDER
 
-// Defines which tools will be at zero (or max) position after homing each axis
-// If the homing is performed while other tool is active, a movement will
-// be done to set active tool to zero (or max) position according to
-// Hotend offset
-#define HOME_X_TOOL 1
-#define HOME_Y_TOOL 0
-#define HOME_Z_TOOL 0
+//Change moves
+#define CHANGE_MOVES 12
+
+
+
+
+//Change to T0 -          X      Y  Spd  Switch
+#define CHANGE_T0      {{285.0, 20, 150, false},\
+						{285.0,  1, 150,  true},\
+						{299.9,  1,  50,  true},\
+						{299.9, 20, 150, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false}}
+
+
+//Change to T1 -          X      Y  Spd  Switch
+#define CHANGE_T1      {{330.0, 20, 150, false},\
+						{330.0,  1, 150,  true},\
+						{313.4,  1,  50,  true},\
+						{313.4, 20, 150, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false}}
+
+//Cut settings
+#define CUT_SERVO_ID      0
+#define CUT_ACTIVE_ANGLE  160
+#define CUT_NEUTRAL_ANGLE 90
 
 /***********************************************************************/
 
@@ -434,10 +474,10 @@
  * print acceleration will be reduced during the affected moves to keep within the limit.*
  *                                                                                       *
  *****************************************************************************************/
-//#define LIN_ADVANCE
+#define LIN_ADVANCE
 
 // Unit: mm compression per 1mm/s extruder speed
-#define LIN_ADVANCE_K 0.22
+#define LIN_ADVANCE_K 0.0
 
 // If enabled, this will generate debug information output over Serial.
 //#define LA_DEBUG
@@ -553,7 +593,7 @@
 
 // Servo deactivation
 // With this option servos are powered only during movement, then turned off to prevent jitter.
-//#define SET_SERVO_NEUTRAL_AT_STARTUP
+#define SET_SERVO_NEUTRAL_AT_STARTUP
 #define NEUTRAL_SERVO_ANGLE 90
 
 // Delay (in milliseconds) before turning the servo off. This depends on the servo speed.
@@ -1057,8 +1097,8 @@
  ************************************************************************************************************************/
 #define EEPROM_SETTINGS
 
-//Compact settings for Anisoprint Composer 3D printers
-#define EEPROM_LITE
+//Settings for Anisoprint Composer 3D printers
+#define EEPROM_MULTIPART
 
 #define EEPROM_CHITCHAT // Uncomment this to enable EEPROM Serial responses.
 //#define EEPROM_SD
@@ -1525,7 +1565,7 @@
 // For GFX preview visualization enable NEXTION GFX
 //#define NEXTION_GFX
 // Define name firmware file for Nextion on SD
-#define NEXTION_FIRMWARE_FILE "mk4duo.tft"
+#define NEXTION_FIRMWARE_FILE "MKA.tft"
 
 // Show a progress bar on HD44780 LCDs for SD printing
 //#define LCD_PROGRESS_BAR
@@ -1770,7 +1810,7 @@
  *                                                                     *
  ***********************************************************************/
 // (µs) The smallest stepper pulse allowed
-#define MINIMUM_STEPPER_PULSE 0
+#define MINIMUM_STEPPER_PULSE 1
 /***********************************************************************/
 
 
@@ -2065,7 +2105,7 @@
  *        the machine's limit of Z_MAX_POS.                                             *
  *                                                                                      *
  ****************************************************************************************/
-//#define NOZZLE_PARK_FEATURE
+#define NOZZLE_PARK_FEATURE
 
 // Specify a park position as { X, Y, Z }
 #define NOZZLE_PARK_POINT { 10, 10, 20 }
@@ -2092,13 +2132,17 @@
  **************************************************************************/
 //#define ADVANCED_PAUSE_FEATURE
 
-#define PAUSE_PARK_RETRACT_FEEDRATE 20      // (mm/s) Initial retract feedrate.
-#define PAUSE_PARK_RETRACT_LENGTH 5         // (mm) Initial retract.
+#define PAUSE_PARK_RETRACT_FEEDRATE 10      //+(mm/s) Initial retract feedrate.
+#define PAUSE_PARK_RETRACT_LENGTH 5         //+(mm) Initial retract.
                                             // This short retract is done immediately, before parking the nozzle.
-#define PAUSE_PARK_UNLOAD_FEEDRATE 40       // (mm/s) Unload filament feedrate. This can be pretty fast.
+
+#define PAUSE_PARK_UNLOAD_FEEDRATE 30       //+(mm/s) Unload filament feedrate. This can be pretty fast.
+#define PAUSE_PARK_LOAD_FEEDRATE 30         //+(mm/s) Load filament feedrate. This can be pretty fast.
+
+#define PAUSE_PARK_EXTRUDE_FEEDRATE 5       //+(mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
 
 #if ENABLED(NEXTION_HMI)	      //For nextion HMI material loading/unloading wizard
-	#define PAUSE_PARK_UNLOAD_LENGTH {521+35, 535+55, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+	#define PAUSE_PARK_UNLOAD_LENGTH {650, 535+55, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
 	#define PAUSE_PARK_LOAD_LENGTH {650, 650, 650}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
 #else
 #define PAUSE_PARK_UNLOAD_LENGTH 100        // (mm) The length of filament for a complete unload.
@@ -2110,25 +2154,25 @@
                                             //   For direct drive, the full length of the nozzle.
 #endif
 
-#define PAUSE_PARK_LOAD_FEEDRATE 40         // (mm/s) Load filament feedrate. This can be pretty fast.
 
-#define PAUSE_PARK_EXTRUDE_FEEDRATE 5       // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
+
+
 #define PAUSE_PARK_EXTRUDE_LENGTH 50        // (mm) Length to extrude after loading.
                                             //   Set to 0 for manual extrusion.
                                             //   Filament can be extruded repeatedly from the Filament Change menu
                                             //   until extrusion is consistent, and to purge old filament.
 
                                             // Filament Unload does a Retract, Delay, and Purge first:
-#define FILAMENT_UNLOAD_RETRACT_LENGTH 10   // (mm) Unload initial retract length.
+#define FILAMENT_UNLOAD_RETRACT_LENGTH 15   // (mm) Unload initial retract length.
 #define FILAMENT_UNLOAD_DELAY 5000          // (ms) Delay for the filament to cool after retract.
 #define FILAMENT_UNLOAD_PURGE_LENGTH 8      // (mm) An unretract is done, then this length is purged.
 
-#define PAUSE_PARK_NOZZLE_TIMEOUT 60        // (seconds) Time limit before the nozzle is turned off for safety.
-#define PAUSE_PARK_PRINTER_OFF 5            // (minute) Time limit before turn off printer if user doesn't change filament.
+#define PAUSE_PARK_NOZZLE_TIMEOUT 120       // (seconds) Time limit before the nozzle is turned off for safety.
+#define PAUSE_PARK_PRINTER_OFF 0           // (minute) Time limit before turn off printer if user doesn't change filament.
 #define PAUSE_PARK_NUMBER_OF_ALERT_BEEPS 10 // Number of alert beeps before printer goes quiet
 #define PAUSE_PARK_NO_STEPPER_TIMEOUT       // Enable for XYZ steppers to stay powered on during filament change.
 
-//#define PARK_HEAD_ON_PAUSE                // Park the nozzle during pause and filament change.
+#define PARK_HEAD_ON_PAUSE                  // Park the nozzle during pause and filament change.
 //#define HOME_BEFORE_FILAMENT_CHANGE       // Ensure homing has been completed prior to parking for filament change
 
 //#define FILAMENT_LOAD_UNLOAD_GCODES       // Add M701/M702 Load/Unload G-codes, plus Load/Unload in the LCD Prepare menu.

@@ -37,6 +37,8 @@ namespace NextionHMI {
 	void ActivateState(uint8_t state_id);
 	void ShowState(uint8_t state_id);
 
+	void SetBrightness(uint8_t brightness);
+
 	void ShowStartScreen(const char* header, const char* message);
 
 	#if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)

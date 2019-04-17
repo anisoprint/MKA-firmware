@@ -50,8 +50,8 @@
                 paused_Speed,
                 Kickstart,
                 pwm_pos,
-                autoMonitored,
                 FanFlag;
+      int8_t    autoMonitored;
       uint16_t  freq,
                 triggerTemperatures;
       int16_t   lastpwm;

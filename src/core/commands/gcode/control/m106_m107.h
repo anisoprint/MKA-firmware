@@ -51,32 +51,48 @@
 
     if (f < FAN_COUNT) {
 
+      bool config = false;
       Fan *fan = &fans[f];
 
       if (parser.seen('U')) {
         // Put off the fan
-        fan->Speed = 0;
-        fan->pin = parser.value_pin();
-        SERIAL_LM(ECHO, MSG_CHANGE_PIN);
+    	config = true;
+    	pin_t new_pin = parser.value_pin();
+    	if (new_pin!= fan->pin)
+    	{
+            fan->Speed = 0;
+            fan->pin = new_pin;
+            SERIAL_LM(ECHO, MSG_CHANGE_PIN);
+    	}
       }
 
       if (parser.seen('I'))
+      {
         fan->setHWInverted(parser.value_bool());
+        config = true;
+      }
 
       if (parser.seen('H'))
+      {
         fan->SetAutoMonitored(parser.value_int());
+        config = true;
+      }
 
       fan->min_Speed  = parser.byteval('L', fan->min_Speed);
       fan->freq       = parser.ushortval('F', fan->freq);
 
-      #if ENABLED(FAN_KICKSTART_TIME)
-        if (fan->Kickstart == 0 && speed > fan->Speed && speed < 85) {
-          if (fan->Speed) fan->Kickstart = FAN_KICKSTART_TIME / 100;
-          else            fan->Kickstart = FAN_KICKSTART_TIME / 25;
-        }
-      #endif
+      if (!config)
+      {
+		  #if ENABLED(FAN_KICKSTART_TIME)
+			if (fan->Kickstart == 0 && speed > fan->Speed && speed < 85) {
+			  if (fan->Speed) fan->Kickstart = FAN_KICKSTART_TIME / 100;
+			  else            fan->Kickstart = FAN_KICKSTART_TIME / 25;
+			}
+		  #endif
 
-      fan->Speed = fan->min_Speed + (speed * (255 - fan->min_Speed)) / 255;
+
+		  fan->Speed = fan->min_Speed + (speed * (255 - fan->min_Speed)) / 255;
+      }
 
       if (!parser.seen('S')) {
         char response[70];
@@ -90,11 +106,13 @@
         SERIAL_TXT(response);
 
         // Auto Fan
-        if (fan->autoMonitored) SERIAL_MSG(" Autofan on:");
+        if (fan->autoMonitored!=-1) SERIAL_MSG(" Autofan on:");
         LOOP_HOTEND() {
-          if (TEST(fan->autoMonitored, h)) SERIAL_MV(" H", (int)h);
+          if (fan->autoMonitored==h) SERIAL_MV(" H", (int)h);
         }
-        if (TEST(fan->autoMonitored, 7)) SERIAL_MSG(" Controller");
+        if (fan->autoMonitored==7) SERIAL_MSG(" Controller");
+        if (fan->autoMonitored==8) SERIAL_MSG(" All hotends");
+        if (fan->autoMonitored==9) SERIAL_MSG(" Chamber");
 
         SERIAL_EOL();
       }

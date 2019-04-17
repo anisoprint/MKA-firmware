@@ -29,7 +29,7 @@
 #if HAS_EEPROM
 
 #define CODE_M1003
-//#define CODE_M1004
+#define CODE_M1004
 #define CODE_M1005
 #define CODE_M1006
 #define CODE_M1007
@@ -40,8 +40,17 @@
  * M1003: Set SN
  */
 inline void gcode_M1003(void) {
-  strncpy(eeprom.printerSN, parser.string_arg, 20);
-  eeprom.printerSN[20] = 0;
+  strncpy(eeprom.printerSN, parser.string_arg, 16);
+  eeprom.printerSN[16] = 0;
+  eeprom.Store_Const();
+}
+
+/**
+ * M1004: Set Printer Version
+ */
+inline void gcode_M1004(void) {
+  strncpy(eeprom.printerVersion, parser.string_arg, 9);
+  eeprom.printerVersion[8] = 0;
   eeprom.Store_Const();
 }
 
@@ -56,7 +65,7 @@ inline void gcode_M1005(void) {
  * M1006: Print version
  */
 inline void gcode_M1006(void) {
-	SERIAL_EMV("VER:", MACHINE_VERSION);
+	SERIAL_EMV("VER:", eeprom.printerVersion);
 }
 
 /**
@@ -74,7 +83,7 @@ inline void gcode_M1008(void) {
 }
 
 /**
- * M1008: Display firmware update screen
+ * M1009: Display firmware update screen
  */
 inline void gcode_M1009(void) {
 #if ENABLED(NEXTION_HMI)

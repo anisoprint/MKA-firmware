@@ -149,7 +149,7 @@
 #define COOLER_MINTEMP  10 // (degC) 
 
 // Preheat Constants
-#define PREHEAT_1_TEMP_HOTEND 190
+#define PREHEAT_1_TEMP_HOTEND 230
 #define PREHEAT_1_TEMP_BED     60
 #define PREHEAT_1_FAN_SPEED   255   // Insert Value between 0 and 255
 
@@ -404,8 +404,8 @@
 #define THERMAL_PROTECTION_CHAMBER false
 #define THERMAL_PROTECTION_COOLER false
 
-#define THERMAL_PROTECTION_PERIOD     40     // Seconds
-#define THERMAL_PROTECTION_HYSTERESIS 6     // Degrees Celsius
+#define THERMAL_PROTECTION_PERIOD    40     // Seconds
+#define THERMAL_PROTECTION_HYSTERESIS 8     // Degrees Celsius
 
 /**
  * When ever increases the target temperature the firmware will wait for the
@@ -415,7 +415,7 @@
  * If you get false positives for "Heating failed" increase WATCH TEMP PERIOD and/or decrease WATCH TEMP INCREASE
  * WATCH TEMP INCREASE should not be below 2.
  */
-#define WATCH_TEMP_PERIOD  30               // Seconds
+#define WATCH_TEMP_PERIOD  60               // Seconds
 #define WATCH_BED_TEMP_PERIOD 60
 
 #define WATCH_TEMP_INCREASE 2               // Degrees Celsius
