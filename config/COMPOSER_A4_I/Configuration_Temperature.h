@@ -149,7 +149,7 @@
 #define COOLER_MINTEMP  10 // (degC) 
 
 // Preheat Constants
-#define PREHEAT_1_TEMP_HOTEND 190
+#define PREHEAT_1_TEMP_HOTEND 230
 #define PREHEAT_1_TEMP_BED     60
 #define PREHEAT_1_FAN_SPEED   255   // Insert Value between 0 and 255
 
