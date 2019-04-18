@@ -73,7 +73,7 @@
     int Tools::lpq_len = 20;
   #endif
 
-  void Tools::change(const uint8_t tmp_extruder, const float fr_mm_s/*=0.0*/, bool no_move/*=false*/, bool force /*=false*/) {
+  void Tools::change(const uint8_t tmp_extruder, const float fr_mm_s/*=0.0*/, bool no_move/*=false*/, bool force /*=false*/, bool clean /*=false*/) {
 
     #if ENABLED(COLOR_MIXING_EXTRUDER) && MIXING_VIRTUAL_TOOLS > 1
 
@@ -203,7 +203,7 @@
                 //Making moves to physically switch extruder
                 for (uint8_t i=0; i<CHANGE_MOVES; i++)
                 {
-                	if (hotend_switch_path[active_extruder][i].Speed>0)
+                	if (hotend_switch_path[active_extruder][i].Speed>0 && (hotend_switch_path[active_extruder][i].SwitchMove || clean))
                 	{
                 		x_target = hotend_switch_path[active_extruder][i].SwitchMove ? hotend_switch_path[active_extruder][i].X + tools.switch_offset_x : hotend_switch_path[active_extruder][i].X;
                 		y_target = hotend_switch_path[active_extruder][i].SwitchMove ? hotend_switch_path[active_extruder][i].Y + tools.switch_offset_y : hotend_switch_path[active_extruder][i].Y;
