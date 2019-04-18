@@ -304,6 +304,7 @@ class HAL {
 
     static void analogStart();
     static void AdcChangePin(const pin_t old_pin, const pin_t new_pin);
+    static void AnalogInEnablePin(const pin_t r_pin, const bool enable);
 
     static void hwSetup(void);
 
