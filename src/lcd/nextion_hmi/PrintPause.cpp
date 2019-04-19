@@ -156,7 +156,7 @@ void PrintPause::ResumePrint(const float& purge_length) {
    NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMING);
 
    //Switching to previously active extruder
-	if (resume_tool!=tools.active_extruder) tools.change(resume_tool, 0, false, false);
+	if (resume_tool!=tools.active_extruder) tools.change(resume_tool, 0, false, false, true);
 
    // Re-enable the heaters if they timed out
    bool  nozzle_timed_out  = false,

@@ -355,6 +355,10 @@
   #define MSG_BP_CALIBR_ST1                    		_UxGT("To calibrate the buildplate you will need a\\rsheet of 80gsm paper.\\r\\rPlease be careful during the process. Do not\\rlift the buildplate too much or too fast to\\ravoid collision with the printhead, which can\\rdamage your printer.")
 #endif
 
+#ifndef MSG_BP_CALIBR_ST1A
+  #define MSG_BP_CALIBR_ST1A                    	_UxGT("If buildplate adjustment thumbscrews are in\\rmininum or maximum positions, please tighten\\ror loosen the screws, setting them to middle\\rpositions.\\r")
+#endif
+
 #ifndef MSG_BP_CALIBR_ST2
   #define MSG_BP_CALIBR_ST2                    		_UxGT("Move the buildplate with the buttons below\\runtil the nozzle is a millimeter away from\\rthe buildplate.")
 #endif

@@ -36,11 +36,12 @@ namespace StateWizard {
 
 	//Build plate calibration
 	void BuildPlateS1(void *ptr=0);
-	void BuildPlateS3(void *ptr=0);
+	void BuildPlateS2(void *ptr=0);
 	void BuildPlateS4(void *ptr=0);
 	void BuildPlateS5(void *ptr=0);
-	void BuildPlateS7(void *ptr=0);
+	void BuildPlateS6(void *ptr=0);
 	void BuildPlateS8(void *ptr=0);
+	void BuildPlateS9(void *ptr=0);
 	void BuildPlateFinish(void *ptr=0);
 	void BuildPlateCancel(void *ptr=0);
 

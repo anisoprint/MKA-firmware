@@ -97,7 +97,7 @@ void StateWizardZ::ZOffsetS2(void* ptr) {
 
 }
 
-void StateWizardZ::BuildPlateS2(void* ptr) {
+void StateWizardZ::BuildPlateS3(void* ptr) {
 	//SERIAL_VAL(planner.movesplanned());
 	//SERIAL_EOL();
 	if (!planner.movesplanned())
@@ -120,7 +120,7 @@ void StateWizardZ::BuildPlateS2(void* ptr) {
 		_bRight.setTextPGM(PSTR(MSG_NEXT));
 
 		_bLeft.attachPush(StateWizard::BuildPlateCancel);
-		_bRight.attachPush(StateWizard::BuildPlateS3);
+		_bRight.attachPush(StateWizard::BuildPlateS4);
 
 		DrawUpdate();
 
@@ -136,7 +136,7 @@ void StateWizardZ::DrawUpdate() {
 	_txtZ.setText(NextionHMI::buffer);
 }
 
-void StateWizardZ::BuildPlateS6(void* ptr) {
+void StateWizardZ::BuildPlateS7(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		NextionHMI::ActivateState(PAGE_WIZARDZ);
@@ -151,7 +151,7 @@ void StateWizardZ::BuildPlateS6(void* ptr) {
 		_bRight.setTextPGM(PSTR(MSG_NEXT));
 
 		_bLeft.attachPush(StateWizard::BuildPlateCancel);
-		_bRight.attachPush(StateWizard::BuildPlateS7);
+		_bRight.attachPush(StateWizard::BuildPlateS8);
 
 		DrawUpdate();
 
