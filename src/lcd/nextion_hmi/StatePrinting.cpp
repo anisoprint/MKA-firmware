@@ -60,7 +60,7 @@ namespace {
 
 	NexObject *_listenList[] = { &_bControl, &_bPause, NULL };
 
-	int8_t _previousPercentDone = -1;
+	int8_t _previousProgress = -1;
 	int32_t _previousLayer = -1;
 }
 
@@ -152,7 +152,7 @@ void StatePrinting::Activate() {
 
 	_tFileName.setText(card.fileName);
 	const char* auraString = PSTR("Aura");
-	_previousPercentDone = -1;
+	_previousProgress = -1;
 	_previousLayer = -1;
 	if (strstr_P(card.generatedBy, auraString) != NULL)
 	{
@@ -188,21 +188,39 @@ void StatePrinting::DrawUpdate() {
     	         break;
     	}
         //if (IS_SD_PRINTING) {
-        if (_previousPercentDone != card.percentDone() || _previousLayer!=printer.currentLayer) {
+        if (_previousProgress != printer.progress || _previousLayer!=printer.currentLayer) {
         	  ZERO(NextionHMI::buffer);
 
         	  if (printer.currentLayer>0 && printer.maxLayer>0)
 			  {
-        		  sprintf_P(NextionHMI::buffer, PSTR("Layer: %d/%d - %d%%"), printer.currentLayer, printer.maxLayer, card.percentDone());
+        		  sprintf_P(NextionHMI::buffer, PSTR("Layer: %d/%d - %d%%"), printer.currentLayer, printer.maxLayer, printer.progress);
 			  }
         	  else
         	  {
-        		  sprintf_P(NextionHMI::buffer, PSTR("%d%%"), card.percentDone());
+        		  sprintf_P(NextionHMI::buffer, PSTR("%d%%"), printer.progress);
         	  }
 			  _tProgress.setText(NextionHMI::buffer);
 			  // Progress bar solid part
-			  _pbProgressBar.setValue(card.percentDone());
-			  _previousPercentDone = card.percentDone();
+			  _pbProgressBar.setValue(printer.progress);
+
+			  if (PrintPause::Status!=PrintPauseStatus::WaitingToPause)
+			  {
+				  // Estimate End Time
+				  ZERO(NextionHMI::buffer);
+				  char bufferElapsed[10];
+				  char bufferLeft[10];
+
+				  uint8_t digit;
+				  duration_t time = print_job_counter.duration();
+				  time.toDigital(bufferElapsed, false);
+				  time = (print_job_counter.duration() * (100 - printer.progress)) / (printer.progress + 0.1);
+				  time.toDigital(bufferLeft, false);
+				  sprintf_P(NextionHMI::buffer, PSTR("Time elapsed: %s\\rTime left:%s"), bufferElapsed, bufferLeft);
+
+				  _tStatus2.setText(NextionHMI::buffer);
+			  }
+
+			  _previousProgress = card.percentDone();
 			  _previousLayer = printer.currentLayer;
         }
 
@@ -212,6 +230,7 @@ void StatePrinting::DrawUpdate() {
         _tTempComposite.setText(strTemp.c_str());
         strTemp = String(round(heaters[BED_INDEX].current_temperature)) + "\370C";
         _tTempBuildplate.setText(strTemp.c_str());
+
 #if HAS_HEATER_CHAMBER
         if (heaters[CHAMBER_INDEX].current_temperature>0)
 		{

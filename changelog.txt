@@ -1,0 +1,21 @@
+v.0.9.3
+- Elapsed print time and estimated time left is now displayed during printing
+- Minor changes in buildplate calibration procedure
+- Toolchange sequence updated. "T<toolnum> Q" command performs quick toolchange without nozzle cleaning 
+
+v.0.9.2
+- New firmware file format, fw2. Use Aura 0.9.13 or later to update firmware to this version.
+- System config is now stored in EEPROM
+- Added cut M-code (M1010)
+- Added cut settings M-code (M1011 S<servo-id> A<cut-angle> B<neutral-angle>)
+- Added toolswitch settings M-code (M217)
+- Added filament load/unload settings M-code (M704)
+- Added LCD brightness M-code (M250 C<brightness %>)
+- Added preheat settings M-code (M145 H<hotend temp> B<bed temp>)
+- Linear advance 1.5 added. The deafault k coefficient is set to zero, but can be set before the print with M900 command.
+See http://marlinfw.org/docs/features/lin_advance.html for more details.
+- Information about current printhead, buildplate and chamber temperatures is now displayed during printing
+- Exhaust fan now turns on automatically if the chamber temperature sensor is present on printer and the chamber temperature is high (50°C)
+- Print head throat cooling fans are now turned on only if extruder temperature is above 60°C
+- Fixed bug with layer number not displaying after pause
+- Other minor fixes and improvements

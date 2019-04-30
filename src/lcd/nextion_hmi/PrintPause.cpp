@@ -227,6 +227,7 @@ void PrintPause::ResumePrint(const float& purge_length) {
    Status = NotPaused;
    printer.setWaitForUser(false);
    NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMED);
+   print_job_counter.start();
 
 }
 
