@@ -136,7 +136,7 @@
 // When first starting the main fan, run it at full speed for the
 // given number of milliseconds.  This gets the fan spinning reliably
 // before setting a PWM value.
-//#define FAN_KICKSTART_TIME 200
+#define FAN_KICKSTART_TIME 400
 
 // This defines the minimal speed for the main fan
 // set minimal speed for reliable running (1-255)
@@ -1490,6 +1490,7 @@
 
 // Nextion 4.3" HMI panel model NX4827T043_11
 //#define NEXTION
+//#define NEXTION_HMI
 // Define Serial it use
 #define NEXTION_SERIAL 2
 // For GFX preview visualization enable NEXTION GFX

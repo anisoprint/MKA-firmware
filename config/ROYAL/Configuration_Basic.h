@@ -60,14 +60,14 @@
  *
  * 2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000
  */
-#define BAUDRATE 250000
+#define BAUDRATE 115200
 
 /**
  * User-specified version info of this build to display in [Pronterface, etc] terminal window during
  * startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
  * build by the user have been successfully uploaded into firmware.
  */
-#define STRING_CONFIG_H_AUTHOR "(none, default config)"   // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "Anisoprint LLC"   // Who made the changes.
 
 /**
  * Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)

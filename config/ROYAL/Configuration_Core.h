@@ -69,7 +69,8 @@
  * Displayed in the LCD "Ready" message.                                                 *
  *                                                                                       *
  *****************************************************************************************/
-#define CUSTOM_MACHINE_NAME "Composer A4 alpha"
+#define CUSTOM_MACHINE_NAME "Royal"
+#define MACHINE_VERSION 	"1.0"
 /*****************************************************************************************/
 
 

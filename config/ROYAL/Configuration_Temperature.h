@@ -59,8 +59,9 @@
  ************************************** Thermistor type **********************************************
  *****************************************************************************************************
  *                                                                                                   *
- * Please choose the one that matches your setup and set to TEMP_SENSOR_.                            *
- *                                                                                                   *
+ * Please choose the one that matches your setup and set to TEMP_SENSOR_.
+ *                           *
+ *  -4 is PT100 with MAX31865 (e.g. Adafruit RTD Sensor with MAX31865) (only Hotends)				 *                                                                                                 *
  *  -3 is thermocouple with MAX31855 (only Hotends)                                                  *
  *  -2 is thermocouple with MAX6675 (only Hotends)                                                   *
  *  -1 is thermocouple with AD595 or AD597                                                           *
@@ -131,8 +132,8 @@
 #define HEATER_1_MAXTEMP 275 // (degC)
 #define HEATER_2_MAXTEMP 275 // (degC)
 #define HEATER_3_MAXTEMP 275 // (degC)
-#define BED_MAXTEMP      150 // (degC)
-#define CHAMBER_MAXTEMP  100 // (degC)
+#define BED_MAXTEMP      120 // (degC)
+#define CHAMBER_MAXTEMP  60 // (degC)
 #define COOLER_MAXTEMP   35  // (degC) 
 
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
