@@ -138,9 +138,9 @@
 
 //###SERVO
 #define SERVO0_PIN                 11
-#define SERVO1_PIN                  6
-#define SERVO2_PIN                  5
-#define SERVO3_PIN                  4
+#define SERVO1_PIN                 NoPin
+#define SERVO2_PIN                 NoPin
+#define SERVO3_PIN                 NoPin
 
 //###MISC
 #define ORIG_PS_ON_PIN             12

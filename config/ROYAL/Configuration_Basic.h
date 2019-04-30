@@ -174,7 +174,7 @@
 // If you don't know what this is leave it.
 #define PS_DEFAULT_OFF false
 // Define delay after power on in seconds
-#define DELAY_AFTER_POWER_ON 5
+#define DELAY_AFTER_POWER_ON 1
 // Define time for automatic power off if not needed in second
 #define POWER_TIMEOUT 30
 /*************************************************************************************/

@@ -94,9 +94,9 @@
 #endif
 
 #if DRIVER_EXTRUDERS > 2
-  #define E2_STEP_PIN       6
-  #define E2_DIR_PIN        5
-  #define E2_ENABLE_PIN     4
+  #define E2_STEP_PIN       63
+  #define E2_DIR_PIN        40
+  #define E2_ENABLE_PIN     42
   #define E2_CS_PIN         ORIG_E2_CS_PIN
   #define SOL2_PIN          -1
   #define E2_ENC_PIN        NoPin
