@@ -79,7 +79,7 @@
       // Put off the heaters
       act->setTarget(0);
 
-      const pin_t new_pin = parser.value_pin();
+      const pin_t new_pin = parser.byteval('P', -1);
       const pin_t old_pin = act->sensor.pin;
       act->sensor.pin = new_pin;
 
