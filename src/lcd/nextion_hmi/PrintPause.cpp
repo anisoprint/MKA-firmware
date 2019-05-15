@@ -102,7 +102,7 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     {
     	//get plastic driver of current extruder
     	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
-    	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), -retract, PrintPause::RetractFeedrate);
+    	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), -retract, PrintPause::UnloadFeedrate);
     }
 
     // Park the nozzle by moving up by z_lift and then moving to (x_pos, y_pos)
@@ -174,7 +174,7 @@ void PrintPause::ResumePrint(const float& purge_length) {
      heaters[h].reset_idle_timer();
    }
 
-   if (bed_timed_out)
+   if (bed_timed_out && heaters[BED_INDEX].target_temperature>30)
    {
 	  NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_BUILDPLATE, BED_INDEX);
 	  Temperature::wait_heater(&heaters[BED_INDEX], false);
@@ -184,9 +184,12 @@ void PrintPause::ResumePrint(const float& purge_length) {
    if (nozzle_timed_out)
    {
 	   LOOP_HOTEND() {
-		   NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_EXTRUDER, h);
-		   Temperature::wait_heater(&heaters[h], false);
-		   NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
+		   if (heaters[h].target_temperature>30)
+		   {
+			   NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_EXTRUDER, h);
+			   Temperature::wait_heater(&heaters[h], false);
+			   NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
+		   }
 	   }
    }
 
@@ -204,7 +207,7 @@ void PrintPause::ResumePrint(const float& purge_length) {
    {
    	//get plastic driver of current extruder
    	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
-   	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), purge_length, PrintPause::RetractFeedrate);
+   	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), purge_length, PrintPause::LoadFeedrate);
    }
 
    // Now all positions are resumed and ready to be confirmed

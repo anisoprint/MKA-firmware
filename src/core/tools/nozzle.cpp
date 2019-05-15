@@ -200,8 +200,11 @@
 
       case 2: // Raise by Z-park height
     	  //TODO Zmaxpos
-        mechanics.do_blocking_move_to_z(min(mechanics.current_position[Z_AXIS] + park.z, Z_MAX_POS), fr_z);
-        break;
+    	  mechanics.destination[X_AXIS] = park.x;
+    	  mechanics.destination[Y_AXIS] = park.y;
+    	  mechanics.destination[Z_AXIS] = min(mechanics.current_position[Z_AXIS] + park.z, Z_MAX_POS);
+    	  mechanics.line_to_destination(fr_xy);
+        return;
 
       case 3: //do only xy
     	  break;
