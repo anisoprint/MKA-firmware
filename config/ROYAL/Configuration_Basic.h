@@ -123,7 +123,7 @@
  * See: https://github.com/MagoKimbra/MK4duo/blob/master/Documentation/Hardware.md *
  *                                                                                       *
  *****************************************************************************************/
-#define MOTHERBOARD BOARD_MKS_13
+#define MOTHERBOARD BOARD_MEGATRONICS_2
 /*****************************************************************************************/
 
 
