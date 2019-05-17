@@ -50,6 +50,7 @@
     sensor.raw            = 0;
     last_temperature      = 0.0;
     temperature_1s        = 0.0;
+    consecutive_error_temp = 0;
 
     #if WATCH_THE_HEATER
       watch_target_temp   = 0;

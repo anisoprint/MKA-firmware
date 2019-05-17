@@ -81,6 +81,7 @@
                   temperature_1s;
       millis_t    next_check_ms;
       uint8_t     HeaterFlag;
+      uint8_t     consecutive_error_temp;
 
       #if HEATER_IDLE_HANDLER
         millis_t  idle_timeout_ms;
@@ -112,7 +113,21 @@
         void SetHardwarePwm();
       #endif
 
-      FORCE_INLINE void updateCurrentTemperature() { this->current_temperature = this->sensor.getTemperature(); }
+      FORCE_INLINE void updateCurrentTemperature() {
+    	  float new_temperature = this->sensor.getTemperature();
+    	  if ((new_temperature < this->mintemp) || (new_temperature > this->maxtemp))
+    	  {
+        	  if (++consecutive_error_temp >= MAX_CONSECUTIVE_ERROR_TEMP)
+        	  {
+        		  this->current_temperature = new_temperature;
+        	  }
+    	  }
+    	  else
+    	  {
+    		  this->current_temperature = new_temperature;
+    		  consecutive_error_temp = 0;
+    	  }
+      }
       FORCE_INLINE bool isON()        { return (this->sensor.type != 0 && this->target_temperature > 0); }
       FORCE_INLINE bool isOFF()       { return (!isON()); }
       FORCE_INLINE bool tempisrange() { return (WITHIN(this->current_temperature, this->mintemp, this->maxtemp)); }
