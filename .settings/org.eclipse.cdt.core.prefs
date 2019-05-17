@@ -5358,9 +5358,6 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.ARCHIVE_FILE/v
 environment/project/io.sloeber.core.toolChain.release.918675551/A.ARCHIVE_FILE_PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.ARCHIVE_FILE_PATH/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.ARCHIVE_FILE_PATH/value=${A.BUILD.PATH}/${A.ARCHIVE_FILE}
-environment/project/io.sloeber.core.toolChain.release.918675551/A.BOOTLOADER.HIGH_FUSES/delimiter=;
-environment/project/io.sloeber.core.toolChain.release.918675551/A.BOOTLOADER.HIGH_FUSES/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.BOOTLOADER.HIGH_FUSES/value=0xD8
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.ARCH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.ARCH/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.ARCH/value=SAM
@@ -5759,7 +5756,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARD_NAM
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.BOARD_NAME/value=Arduino Due (Programming Port)
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/value=COM31
+environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.COM_PORT/value=COM41
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.ECLIPSE_LOCATION/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.ECLIPSE_LOCATION/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/JANTJE.ECLIPSE_LOCATION/value=D\:\\Programs\\sloeber4.1\\
