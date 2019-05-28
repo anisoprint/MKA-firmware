@@ -584,7 +584,7 @@
  *                                                                                       *
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 1600, 427.5, 98.23, 427.5, 625}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 1600, 435.34, 99.77, 435.34, 625} //XYZEUV 1/16
 /*****************************************************************************************/
 
 
@@ -592,7 +592,7 @@
  ********************************** Axis feedrate ****************************************
  *****************************************************************************************/
 //                                       X,   Y, Z,  E0...(per extruder). (mm/sec)
-#define DEFAULT_MAX_FEEDRATE          {200, 200, 30, 100, 100, 100, 100}
+#define DEFAULT_MAX_FEEDRATE          {500, 500, 30, 33, 40, 33, 100}
 // Feedrates for manual moves along        X,     Y,     Z,  E from panel
 #define MANUAL_FEEDRATE               {50*60, 50*60, 10*60, 10*60}
 // Minimum feedrate
@@ -643,9 +643,9 @@
  ************************************ Homing feedrate ************************************
  *****************************************************************************************/
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_X (50*60)
-#define HOMING_FEEDRATE_Y (50*60)
-#define HOMING_FEEDRATE_Z (20*60)
+#define HOMING_FEEDRATE_X (60*60)
+#define HOMING_FEEDRATE_Y (60*60)
+#define HOMING_FEEDRATE_Z (21*60)
 
 // Homing hits each endstop, retracts by these distances, then does a slower bump.
 #define X_HOME_BUMP_MM 5
