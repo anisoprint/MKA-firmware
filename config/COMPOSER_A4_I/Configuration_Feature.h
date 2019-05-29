@@ -214,8 +214,8 @@
 
 
 //Change to T0 -          X      Y  Spd  Switch
-#define CHANGE_T0      {{285.0, 20, 150, false},\
-						{285.0,  1, 150,  true},\
+#define CHANGE_T0      {{284.0, 20, 150, false},\
+						{284.0,  1, 150,  true},\
 						{299.9,  1,  50,  true},\
 						{299.9, 20, 150, false},\
 						{  0.0,  0,   0, false},\
@@ -229,8 +229,8 @@
 
 
 //Change to T1 -          X      Y  Spd  Switch
-#define CHANGE_T1      {{330.0, 20, 150, false},\
-						{330.0,  1, 150,  true},\
+#define CHANGE_T1      {{331.0, 20, 150, false},\
+						{331.0,  1, 150,  true},\
 						{313.4,  1,  50,  true},\
 						{313.4, 20, 150, false},\
 						{  0.0,  0,   0, false},\
@@ -244,7 +244,7 @@
 
 //Cut settings
 #define CUT_SERVO_ID      0
-#define CUT_ACTIVE_ANGLE  160
+#define CUT_ACTIVE_ANGLE  30
 #define CUT_NEUTRAL_ANGLE 90
 
 /***********************************************************************/
