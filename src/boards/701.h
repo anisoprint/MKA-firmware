@@ -147,8 +147,8 @@
 #define ORIG_BEEPER_PIN            64
 #define LED_PIN                    13
 #define SDPOWER_PIN                NoPin
-#define SD_DETECT_PIN              NoPin
-#define SDSS                       53
+#define SD_DETECT_PIN              45
+#define SDSS                       46
 #define KILL_PIN                   NoPin
 #define DEBUG_PIN                  NoPin
 #define SUICIDE_PIN                NoPin
@@ -198,12 +198,12 @@
 
 #else
 
-  #define LCD_PINS_RS       32
-  #define LCD_PINS_ENABLE   31
-  #define LCD_PINS_D4       14
-  #define LCD_PINS_D5       30
-  #define LCD_PINS_D6       39
-  #define LCD_PINS_D7       15
+  #define LCD_PINS_RS       14//32
+  #define LCD_PINS_ENABLE   15//31
+  #define LCD_PINS_D4       30//14
+  #define LCD_PINS_D5       31//30
+  #define LCD_PINS_D6       32//39
+  #define LCD_PINS_D7       33//15
 
   #define SHIFT_CLK         43
   #define SHIFT_LD          35
@@ -211,9 +211,9 @@
   #define SHIFT_EN          44
 
   //buttons are directly attached using keypad
-  #define BTN_EN1           44
-  #define BTN_EN2           45
-  #define BTN_ENC           33
+  #define BTN_EN1           59//44
+  #define BTN_EN2           61//45
+  #define BTN_ENC           43//33
 
   #define BLEN_C             2
   #define BLEN_B             1
