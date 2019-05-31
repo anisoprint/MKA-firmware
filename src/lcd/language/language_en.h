@@ -73,6 +73,10 @@
   #define MSG_REPEAT                              _UxGT("Repeat")
 #endif
 
+#ifndef MSG_RETRY
+  #define MSG_RETRY                               _UxGT("Retry")
+#endif
+
 #ifndef MSG_NEXT
   #define MSG_NEXT                                _UxGT("Next")
 #endif
