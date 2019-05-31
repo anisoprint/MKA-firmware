@@ -62,6 +62,7 @@ namespace {
 
 	int8_t _previousProgress = -1;
 	int32_t _previousLayer = -1;
+	uint32_t _previousDuration = 0;
 }
 
 
@@ -203,26 +204,28 @@ void StatePrinting::DrawUpdate() {
 			  // Progress bar solid part
 			  _pbProgressBar.setValue(printer.progress);
 
-			  if (PrintPause::Status!=PrintPauseStatus::WaitingToPause)
-			  {
-				  // Estimate End Time
-				  ZERO(NextionHMI::buffer);
-				  char bufferElapsed[10];
-				  char bufferLeft[10];
-
-				  uint8_t digit;
-				  duration_t time = print_job_counter.duration();
-				  time.toDigital(bufferElapsed, false);
-				  time = (print_job_counter.duration() * (100 - printer.progress)) / (printer.progress + 0.1);
-				  time.toDigital(bufferLeft, false);
-				  sprintf_P(NextionHMI::buffer, PSTR("Time elapsed: %s\\rTime left:%s"), bufferElapsed, bufferLeft);
-
-				  _tStatus2.setText(NextionHMI::buffer);
-			  }
+			  if (_previousProgress != printer.progress) _previousDuration = print_job_counter.duration();
 
 			  _previousProgress = card.percentDone();
 			  _previousLayer = printer.currentLayer;
         }
+
+		if (PrintPause::Status!=PrintPauseStatus::WaitingToPause)
+		{
+			// Estimate End Time
+			ZERO(NextionHMI::buffer);
+			char bufferElapsed[10];
+			char bufferLeft[10];
+
+			uint8_t digit;
+			duration_t time = duration_t(print_job_counter.duration());
+			time.toDigital(bufferElapsed, false);
+			time = duration_t(_previousDuration * (100 - printer.progress) / (printer.progress + 0.1));
+			time.toDigital(bufferLeft, false);
+			sprintf_P(NextionHMI::buffer, PSTR("Time elapsed: %s\\rTime left:%s"), bufferElapsed, bufferLeft);
+
+			_tStatus2.setText(NextionHMI::buffer);
+		  }
 
     	auto strTemp = String(round(heaters[HOT0_INDEX].current_temperature)) + "\370C";
         _tTempPlastic.setText(strTemp.c_str());
