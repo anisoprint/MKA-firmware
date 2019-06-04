@@ -195,12 +195,15 @@ void PrintPause::ResumePrint(const float& purge_length) {
 
    printer.setWaitForHeatUp(false);
 
+   memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
 
    // Move XY to starting position, then Z
    mechanics.do_blocking_move_to_xy(resume_position[X_AXIS], resume_position[Y_AXIS], NOZZLE_PARK_XY_FEEDRATE);
 
    // Set Z_AXIS to saved position
    mechanics.do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
+
+   memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
 
    // Purging plastic
    if (purge_length && !thermalManager.tooColdToExtrude(tools.active_extruder))
@@ -209,6 +212,8 @@ void PrintPause::ResumePrint(const float& purge_length) {
    	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
    	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), purge_length, PrintPause::LoadFeedrate);
    }
+
+   memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
 
    // Now all positions are resumed and ready to be confirmed
    // Set all to saved position
