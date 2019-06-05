@@ -61,6 +61,28 @@ void StateMovement::Back_Push(void* ptr) {
 }
 
 void StateMovement::Movement_Push(void* ptr) {
+	if (_moveMode==MODE_MOVE_EXTRUDERS)
+	{
+		if (ptr==&_bMovementAact)
+		{
+			//toolchange
+			if (tools.active_extruder==0) tools.change(1, 0, false, true);
+			else tools.change(0, 0, false, true);
+		}
+		if (ptr==&_bMovementBact)
+		{
+			//cut
+			tools.cut_fiber();
+		}
+		if (ptr==&_bMovementCact)
+		{
+			//fan
+			tools.cut_fiber();
+		}
+
+	}
+
+
 	if (_moveMode==MODE_MOVE_EXTRUDERS && ptr==&_bMovementBact)
 	{
 		//cut
