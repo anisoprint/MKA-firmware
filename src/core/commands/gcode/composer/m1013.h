@@ -21,30 +21,51 @@
  */
 
 /**
- * gcode.h
+ * mcode
  *
- * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
-#if ENABLED(NOZZLE_PARK_FEATURE)
+  #define CODE_M1013
+  
+ /*
+  *
+  * M1013: Park/Unpark nozzle on wipe station
+  * M1013 X Y Z
+  *
+  */
+ inline void gcode_M1013(void) {
 
-  #define CODE_G27
 
-  /**
-   *
-   * G27: Park the nozzle
-   * G27 X Y Z - Set park point
-   * G27 Px - Park
-   * P0: If current Z-pos is lower than Z-park then the nozzle will be raised to reach Z-park height
-   * P1: No matter the current Z-pos, the nozzle will be raised/lowered to reach Z-park height
-   * P2: The nozzle height will be raised by Z-park amount but never going over the machine’s limit of Z_MAX_POS
-   * G27 R - Return from parking to position
-   */
-  inline void gcode_G27(void) {
-    // Don't allow nozzle parking without homing first
-    if (mechanics.axis_unhomed_error()) { return; }
 
-    Nozzle::park(parser.ushortval('P'));
-  }
 
-#endif // NOZZLE_PARK_FEATURE
+
+	StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_WARNING, "Switch Test", "0", 0, 0, 0, 0, 0);
+	#if EXTRUDERS > 1 && HOTENDS > 1
+
+	int switchCount = 0;
+
+	Temperature::tempError = false;
+
+	while (!Temperature::tempError)
+	{
+		uint8_t new_extruder = 0;
+		if (tools.active_extruder == 0) new_extruder = 1;
+
+		if (printer.mode == PRINTER_MODE_FFF) {
+			 tools.change(new_extruder);
+		}
+		switchCount++;
+		String str = String(switchCount);
+		StateMessage::UpdateMessage(str.c_str());
+	}
+
+	sprintf_P(NextionHMI::buffer, "Temperature failure. T=%d. Switch number: %d.", (int)heaters[0].current_temperature, switchCount);
+	StateMessage::UpdateMessage(NextionHMI::buffer);
+
+	#endif
+	 //tools.cut_fiber();
+ }
+
+
+
+
