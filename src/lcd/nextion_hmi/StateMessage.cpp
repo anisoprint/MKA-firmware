@@ -104,7 +104,7 @@ void StateMessage::ActivatePGM_M(uint8_t priority, uint8_t icon,
 		const char* txtButtonRight_P, NexTouchEventCb cbRight,
 		const char* txtButtonLeft_P, NexTouchEventCb cbLeft, uint8_t picture) {
 
-	if (NextionHMI::GetActiveState() == PAGE_MESSAGE && priority<=_currentPriority) return;
+		if (NextionHMI::GetActiveState() == PAGE_MESSAGE && priority<=_currentPriority) return;
 		if (NextionHMI::GetActiveState() != PAGE_MESSAGE) _interruptedState = NextionHMI::GetActiveState();
 
 		NextionHMI::ActivateState(PAGE_MESSAGE);

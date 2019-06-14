@@ -29,41 +29,51 @@
   
  /*
   *
-  * M1013: Park/Unpark nozzle on wipe station
-  * M1013 X Y Z
+  * M1013: Park/Unpark nozzle for heating near wipe station
+  * M1013 - Park
+  * M1013 R - Return
   *
   */
  inline void gcode_M1013(void) {
 
-
-
-
-
-	StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_WARNING, "Switch Test", "0", 0, 0, 0, 0, 0);
-	#if EXTRUDERS > 1 && HOTENDS > 1
-
-	int switchCount = 0;
-
-	Temperature::tempError = false;
-
-	while (!Temperature::tempError)
+	static float return_position[2] = {0, 0};
+	stepper.synchronize();
+	if (parser.seen('R'))
 	{
-		uint8_t new_extruder = 0;
-		if (tools.active_extruder == 0) new_extruder = 1;
+		#if ENABLED(EG6_EXTRUDER)
+			float x_target, y_target;
+			uint8_t next_extruder = 0;
+			if (tools.active_extruder==0) next_extruder = 1;
+			if (tools.hotend_switch_path[next_extruder][0].Speed>0)
+			{
+				mechanics.do_blocking_move_to_xy(
+						return_position[X_AXIS],
+						return_position[Y_AXIS],
+						tools.hotend_switch_path[next_extruder][0].Speed);
+			}
+		#endif
+	}
+	else
+	{
+		return_position[X_AXIS] = mechanics.current_position[X_AXIS];
+		return_position[Y_AXIS] = mechanics.current_position[Y_AXIS];
 
-		if (printer.mode == PRINTER_MODE_FFF) {
-			 tools.change(new_extruder);
-		}
-		switchCount++;
-		String str = String(switchCount);
-		StateMessage::UpdateMessage(str.c_str());
+		#if ENABLED(EG6_EXTRUDER)
+			float x_target, y_target;
+			uint8_t next_extruder = 0;
+			if (tools.active_extruder==0) next_extruder = 1;
+			if (tools.hotend_switch_path[next_extruder][0].Speed>0)
+			{
+				mechanics.do_blocking_move_to_xy(
+						Mechanics::homeCS2toolCS(tools.active_extruder, tools.hotend_switch_path[next_extruder][0].X, AxisEnum::X_AXIS),
+						Mechanics::homeCS2toolCS(tools.active_extruder, tools.hotend_switch_path[next_extruder][0].Y, AxisEnum::Y_AXIS),
+						tools.hotend_switch_path[next_extruder][0].Speed);
+			}
+		#endif
+
+
 	}
 
-	sprintf_P(NextionHMI::buffer, "Temperature failure. T=%d. Switch number: %d.", (int)heaters[0].current_temperature, switchCount);
-	StateMessage::UpdateMessage(NextionHMI::buffer);
-
-	#endif
-	 //tools.cut_fiber();
  }
 
 
