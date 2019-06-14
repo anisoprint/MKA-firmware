@@ -1123,8 +1123,11 @@ void Planner::check_axes_activity() {
   // Rest here until there is room in the buffer.
   if (block_buffer_tail == next_buffer_head)
   {
-	  while (block_buffer_tail == next_buffer_head) printer.idle();
-	  next_buffer_head = next_block_index(block_buffer_head);
+	  while (block_buffer_tail == next_buffer_head)
+		  {
+		  	  printer.idle();
+		  	  next_buffer_head = next_block_index(block_buffer_head);
+		  }
   }
 
   // Prepare to set up new block

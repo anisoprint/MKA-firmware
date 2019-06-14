@@ -63,6 +63,9 @@ namespace {
 	int8_t _previousProgress = -1;
 	int32_t _previousLayer = -1;
 	uint32_t _previousDuration = 0;
+
+	HMIevent printingLastEvent = HMIevent::NONE;
+	uint8_t  printinglastEventArg = 0;
 }
 
 
@@ -90,7 +93,8 @@ void StatePrinting::Pause_Push(void* ptr) {
 }
 
 void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
-
+	printingLastEvent = event;
+	printinglastEventArg = eventArg;
 	switch(event) {
 	    case HMIevent::HEATING_STARTED_BUILDPLATE :
 	    case HMIevent::HEATING_STARTED_EXTRUDER :
@@ -159,7 +163,27 @@ void StatePrinting::Activate() {
 	{
 		_pFileIcon.setPic(NEX_ICON_FILE_GCODE_AURA);
 	}
-	OnEvent(NextionHMI::lastEvent, NextionHMI::lastEventArg);
+
+	switch(PrintPause::Status)
+	{
+	case WaitingToPause:
+		OnEvent(HMIevent::PRINT_PAUSE_SCHEDULED, 0);
+		break;
+	case Pausing:
+		OnEvent(HMIevent::PRINT_PAUSING, 0);
+		break;
+	case Paused:
+		OnEvent(HMIevent::PRINT_PAUSED, 0);
+		break;
+	case Resuming:
+		OnEvent(HMIevent::PRINT_PAUSE_RESUMING, 0);
+		break;
+	default:
+		OnEvent(printingLastEvent, printinglastEventArg);
+		break;
+	}
+
+
 	DrawUpdate();
 
 }

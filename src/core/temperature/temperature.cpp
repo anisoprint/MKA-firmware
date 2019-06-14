@@ -736,7 +736,13 @@ void Temperature::_temp_error(const uint8_t h, const char * const serial_msg, co
   }
 
   #if ENABLED(NEXTION_HMI)
-  	  NextionHMI::RaiseEvent(HMIevent::TEMPERATURE_ERROR, h, lcd_msg);
+  	  	NextionHMI::RaiseEvent(HMIevent::TEMPERATURE_ERROR, h, lcd_msg);
+		#if HAS_SDSUPPORT
+			if ((IS_SD_PRINTING) && (PrintPause::Status==PrintPauseStatus::NotPaused)) {
+				PrintPause::PausePrint(PrintPause::RetractDistance);
+			}
+		#endif
+
   #endif
 
   lcd_setstatusPGM(lcd_msg);
