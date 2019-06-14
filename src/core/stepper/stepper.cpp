@@ -2334,7 +2334,8 @@ void Stepper::synchronize() {
     printer.idle();
     printer.keepalive(InProcess);
   }
-  memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
+  //memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
+  //planner.clear_block_buffer();
 }
 
 
