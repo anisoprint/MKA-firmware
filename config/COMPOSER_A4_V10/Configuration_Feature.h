@@ -211,28 +211,28 @@
 #define CHANGE_MOVES 12
 
 //Change to T0 -          X      Y  Spd  Switch
-#define CHANGE_T0      {{296.0, 17, 200, false},\
-						{296.0,  7, 200,  true},\
+#define CHANGE_T0      {{296.0,  7, 200,  true},\
 						{315.2,  7,  50,  true},\
-						{304.0,  7, 200, false},\
-						{304.0, 50, 200, false},\
-						{336.0, 50, 200, false},\
-						{336.0,  4,  34, false},\
-						{332.0,  4, 200, false},\
-						{332.0, 50,  34, false},\
+						{310.0, 13,  50,  true},\
+						{332.0, 13, 200, false},\
+						{332.0, 55,  34, false},\
+						{296.0, 55, 200, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false}}
 
 //Change to T1 -          X      Y  Spd  Switch
-#define CHANGE_T1      {{296.0, 50, 200, false},\
-						{336.0, 50, 200, false},\
-						{336.0,  7,  34,  true},\
+#define CHANGE_T1      {{296.0, 55, 200, false},\
+						{336.9, 55, 200, false},\
+						{336.9, 16,  34, false},\
+						{336.9, 15, 200,  true},\
+						{336.9,  7, 200,  true},\
 						{313.9,  7,  50,  true},\
-						{328.0,  7, 200, false},\
-						{328.0, 50,  34, false},\
-						{296.0, 50, 200, false},\
-						{  0.0,  0,   0, false},\
+						{313.9, 13, 200,  true},\
+						{296.0, 13, 200,  true},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\

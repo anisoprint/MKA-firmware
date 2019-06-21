@@ -214,10 +214,10 @@
 
 
 //Change to T0 -          X      Y  Spd  Switch
-#define CHANGE_T0      {{284.0, 20, 150, false},\
+#define CHANGE_T0      {{284.0, 20, 150,  true},\
 						{284.0,  1, 150,  true},\
 						{299.9,  1,  50,  true},\
-						{299.9, 20, 150, false},\
+						{299.9, 20, 150,  true},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
@@ -229,10 +229,10 @@
 
 
 //Change to T1 -          X      Y  Spd  Switch
-#define CHANGE_T1      {{331.0, 20, 150, false},\
+#define CHANGE_T1      {{331.0, 20, 150,  true},\
 						{331.0,  1, 150,  true},\
 						{313.4,  1,  50,  true},\
-						{313.4, 20, 150, false},\
+						{313.4, 20, 150,  true},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
