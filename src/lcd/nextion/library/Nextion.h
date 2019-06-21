@@ -147,6 +147,11 @@ class NexObject {
     void enable(const bool en=true);
 
     /**
+     * Refresh control
+     */
+    void refresh();
+
+    /**
      * Get text attribute of component.
      *
      * @param buffer - buffer storing text returned.

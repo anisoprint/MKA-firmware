@@ -28,6 +28,8 @@ namespace StateMessage {
 
 	void TouchUpdate();
 	void ReturnToLastState(void* ptr);
+	void RetryHeaterAndReturnToLastState(void* ptr);
+
 };
 
 #endif

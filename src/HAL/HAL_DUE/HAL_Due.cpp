@@ -198,22 +198,6 @@ void AnalogInStartConversion() {
   ADC->ADC_CR = ADC_CR_START;
 }
 
-// Enable or disable a channel.
-void AnalogInEnablePin(const pin_t r_pin, const bool enable) {
-  adc_channel_num_t adc_ch = PinToAdcChannel(r_pin);
-  if ((unsigned int)adc_ch < NUM_ANALOG_INPUTS) {
-    if (enable) {
-      adc_enable_channel(ADC, adc_ch);
-      if (r_pin == ADC_TEMPERATURE_SENSOR)
-        ADC->ADC_ACR |= ADC_ACR_TSON;
-    }
-    else {
-      adc_disable_channel(ADC, adc_ch);
-      if (r_pin == ADC_TEMPERATURE_SENSOR)
-        ADC->ADC_ACR &= ~ADC_ACR_TSON;
-    }
-  }
-}   
 
 // Read the most recent 12-bit result from a pin
 uint16_t AnalogInReadPin(const pin_t r_pin) {
@@ -291,6 +275,24 @@ void HAL::analogStart(void) {
   // start first conversion
   AnalogInStartConversion();
 }
+
+// Enable or disable a channel.
+void HAL::AnalogInEnablePin(const pin_t r_pin, const bool enable) {
+  adc_channel_num_t adc_ch = PinToAdcChannel(r_pin);
+  if ((unsigned int)adc_ch < NUM_ANALOG_INPUTS) {
+    if (enable) {
+      adc_enable_channel(ADC, adc_ch);
+      if (r_pin == ADC_TEMPERATURE_SENSOR)
+        ADC->ADC_ACR |= ADC_ACR_TSON;
+    }
+    else {
+      adc_disable_channel(ADC, adc_ch);
+      if (r_pin == ADC_TEMPERATURE_SENSOR)
+        ADC->ADC_ACR &= ~ADC_ACR_TSON;
+    }
+  }
+}
+
 
 void HAL::AdcChangePin(const pin_t old_pin, const pin_t new_pin) {
   AnalogInEnablePin(old_pin, false);

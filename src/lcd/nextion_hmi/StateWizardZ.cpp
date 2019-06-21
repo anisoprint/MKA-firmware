@@ -97,30 +97,24 @@ void StateWizardZ::ZOffsetS2(void* ptr) {
 
 }
 
-void StateWizardZ::BuildPlateS2(void* ptr) {
+void StateWizardZ::BuildPlateS3(void* ptr) {
 	//SERIAL_VAL(planner.movesplanned());
 	//SERIAL_EOL();
 	if (!planner.movesplanned())
 	{
-		//Going to center adjust position
-		mechanics.do_blocking_move_to_xy(int(BED_CENTER_ADJUST_X), int(BED_CENTER_ADJUST_Y), NOZZLE_PARK_XY_FEEDRATE);
-
-		//Going to Z adjust position
-		mechanics.do_blocking_move_to_z(10, mechanics.homing_feedrate_mm_s[Z_AXIS]);
-
 		NextionHMI::ActivateState(PAGE_WIZARDZ);
 
 		_page.show();
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
-		_txtHeader.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR ": 2/8"));
-		_txtCaption.setTextPGM(PSTR(MSG_BP_CALIBR_ST2));
+		_txtHeader.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR ": 3/9"));
+		_txtCaption.setTextPGM(PSTR(MSG_BP_CALIBR_ST3));
 
 		_bLeft.setTextPGM(PSTR(MSG_CANCEL));
 		_bRight.setTextPGM(PSTR(MSG_NEXT));
 
 		_bLeft.attachPush(StateWizard::BuildPlateCancel);
-		_bRight.attachPush(StateWizard::BuildPlateS3);
+		_bRight.attachPush(StateWizard::BuildPlateS4);
 
 		DrawUpdate();
 
@@ -136,7 +130,7 @@ void StateWizardZ::DrawUpdate() {
 	_txtZ.setText(NextionHMI::buffer);
 }
 
-void StateWizardZ::BuildPlateS6(void* ptr) {
+void StateWizardZ::BuildPlateS7(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		NextionHMI::ActivateState(PAGE_WIZARDZ);
@@ -144,14 +138,14 @@ void StateWizardZ::BuildPlateS6(void* ptr) {
 		_page.show();
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
-		_txtHeader.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR ": 6/8"));
-		_txtCaption.setTextPGM(PSTR(MSG_BP_CALIBR_ST5));
+		_txtHeader.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR ": 7/9"));
+		_txtCaption.setTextPGM(PSTR(MSG_BP_CALIBR_ST7));
 
 		_bLeft.setTextPGM(PSTR(MSG_CANCEL));
 		_bRight.setTextPGM(PSTR(MSG_NEXT));
 
 		_bLeft.attachPush(StateWizard::BuildPlateCancel);
-		_bRight.attachPush(StateWizard::BuildPlateS7);
+		_bRight.attachPush(StateWizard::BuildPlateS8);
 
 		DrawUpdate();
 

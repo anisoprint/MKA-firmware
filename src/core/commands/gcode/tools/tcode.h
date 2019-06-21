@@ -80,7 +80,9 @@ inline void gcode_T(const uint8_t tool_id) {
         tools.change(
         tool_id,
         MMM_TO_MMS(parser.linearval('F')),
-        (tool_id == tools.active_extruder) || parser.boolval('S')
+        (tool_id == tools.active_extruder) || parser.boolval('S'),
+		false,
+		!parser.seen('Q')
       );
     }
 

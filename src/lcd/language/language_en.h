@@ -73,6 +73,10 @@
   #define MSG_REPEAT                              _UxGT("Repeat")
 #endif
 
+#ifndef MSG_RETRY
+  #define MSG_RETRY                               _UxGT("Retry")
+#endif
+
 #ifndef MSG_NEXT
   #define MSG_NEXT                                _UxGT("Next")
 #endif
@@ -116,6 +120,26 @@
 
 #ifndef MSG_PLASTIC_EXTRUDER_HEATING
   #define MSG_PLASTIC_EXTRUDER_HEATING              _UxGT("Plastic extruder heating (%d/%d\370C)")
+#endif
+
+#ifndef MSG_PRINTING_TIME
+  #define MSG_PRINTING_TIME              			_UxGT("Time elapsed: %s\\rEst. time left:%s")
+#endif
+
+#ifndef MSG_LAYER_NUMBER
+  #define MSG_LAYER_NUMBER              			_UxGT("Layer: %d/%d - %d%%")
+#endif
+
+#ifndef MSG_PLASTIC_FLOW_H
+  #define MSG_PLASTIC_FLOW_H                 _UxGT("Plastic flow")
+#endif
+
+#ifndef MSG_PLASTIC_FLOW
+  #define MSG_PLASTIC_FLOW              	_UxGT("Plastic flow (%)")
+#endif
+
+#ifndef MSG_COMP_PLASTIC_FLOW
+  #define MSG_COMP_PLASTIC_FLOW              _UxGT("Composite plastic flow (%)")
 #endif
 
 #ifndef MSG_PRINTING
@@ -356,31 +380,35 @@
 #endif
 
 #ifndef MSG_BP_CALIBR_ST2
-  #define MSG_BP_CALIBR_ST2                    		_UxGT("Move the buildplate with the buttons below\\runtil the nozzle is a millimeter away from\\rthe buildplate.")
+  #define MSG_BP_CALIBR_ST2                    		_UxGT("If buildplate adjustment thumbscrews are in\\rmininum or maximum positions, please tighten\\ror loosen the screws, setting them to middle\\rpositions.\\r")
 #endif
 
 #ifndef MSG_BP_CALIBR_ST3
-  #define MSG_BP_CALIBR_ST3                    		_UxGT("Turn the left buildplate screw until the\\rnozzle is a millimeter away from the\\rbuildplate.")
+  #define MSG_BP_CALIBR_ST3                    		_UxGT("Move the buildplate with the buttons below\\runtil the nozzle is a millimeter away from\\rthe buildplate.")
 #endif
 
 #ifndef MSG_BP_CALIBR_ST4
-  #define MSG_BP_CALIBR_ST4                    		_UxGT("Turn the right buildplate screw until the\\rnozzle is a millimeter away from the\\rbuildplate.")
+  #define MSG_BP_CALIBR_ST4                    		_UxGT("Turn the left buildplate screw until the\\rnozzle is a millimeter away from the\\rbuildplate.")
 #endif
 
 #ifndef MSG_BP_CALIBR_ST5
-  #define MSG_BP_CALIBR_ST5                    		_UxGT("Repeat the calibration process, but now use\\ra sheet of 80gsm paper to fine-tune the\\rbuildplate level.")
+  #define MSG_BP_CALIBR_ST5                    		_UxGT("Turn the right buildplate screw until the\\rnozzle is a millimeter away from the\\rbuildplate.")
 #endif
 
 #ifndef MSG_BP_CALIBR_ST6
-  #define MSG_BP_CALIBR_ST6                    		_UxGT("Slide a paper between the buildplate and the\\rnozzle. Turn the central screw or move the\\rbuildplate with the buttons below until you\\rfeel some friction while sliding the paper.")
+  #define MSG_BP_CALIBR_ST6                    		_UxGT("Repeat the calibration process, but now use\\ra sheet of 80gsm paper to fine-tune the\\rbuildplate level.")
 #endif
 
 #ifndef MSG_BP_CALIBR_ST7
-  #define MSG_BP_CALIBR_ST7                    		_UxGT("Turn the left screw until you feel some\\rfriction while sliding the paper between\\rthe nozzle and the buildplate.")
+  #define MSG_BP_CALIBR_ST7                    		_UxGT("Slide a paper between the buildplate and the\\rnozzle. Turn the central screw or move the\\rbuildplate with the buttons below until you\\rfeel some friction while sliding the paper.")
 #endif
 
 #ifndef MSG_BP_CALIBR_ST8
-  #define MSG_BP_CALIBR_ST8                    		_UxGT("Repeat this for the right corner.")
+  #define MSG_BP_CALIBR_ST8                    		_UxGT("Turn the left screw until you feel some\\rfriction while sliding the paper between\\rthe nozzle and the buildplate.")
+#endif
+
+#ifndef MSG_BP_CALIBR_ST9
+  #define MSG_BP_CALIBR_ST9                    		_UxGT("Repeat this for the right corner.")
 #endif
 
 #ifndef MSG_PAUSE_DURING_FIBER

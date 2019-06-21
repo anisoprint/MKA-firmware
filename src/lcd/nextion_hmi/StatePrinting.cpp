@@ -4,17 +4,7 @@
  *  Created on: 9 θών. 2018 γ.
  *      Author: Azarov
  */
-#ifndef MSG_PLASTIC_FLOW_H
-  #define MSG_PLASTIC_FLOW_H                 _UxGT("Plastic flow")
-#endif
 
-#ifndef MSG_PLASTIC_FLOW
-  #define MSG_PLASTIC_FLOW              	_UxGT("Plastic flow (%)")
-#endif
-
-#ifndef MSG_COMP_PLASTIC_FLOW
-  #define MSG_COMP_PLASTIC_FLOW              _UxGT("Composite plastic flow (%)")
-#endif
 
 #include "../../../MK4duo.h"
 
@@ -60,8 +50,10 @@ namespace {
 
 	NexObject *_listenList[] = { &_bControl, &_bPause, NULL };
 
-	int8_t _previousPercentDone = -1;
+	int8_t _previousProgress = -1;
 	int32_t _previousLayer = -1;
+	uint32_t _previousDuration = 0;
+
 }
 
 
@@ -89,7 +81,6 @@ void StatePrinting::Pause_Push(void* ptr) {
 }
 
 void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
-
 	switch(event) {
 	    case HMIevent::HEATING_STARTED_BUILDPLATE :
 	    case HMIevent::HEATING_STARTED_EXTRUDER :
@@ -107,7 +98,7 @@ void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
 	    case HMIevent::PRINT_PAUSED :
 	    	_bPause.setTextPGM(PSTR(MSG_RESUME));
 	    	_tStatus1.setTextPGM(PSTR(MSG_PAUSED));
-	    	_tStatus2.setTextPGM(PSTR(""));
+	    	//_tStatus2.setTextPGM(PSTR(""));
 	    	break;
 	    case HMIevent::PRINT_PAUSE_SCHEDULED :
 	    	_bPause.setTextPGM(PSTR(MSG_CANCEL_PAUSE));
@@ -122,12 +113,12 @@ void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
 	    case HMIevent::PRINT_PAUSE_RESUMING :
 			_bPause.setTextPGM(PSTR(MSG_RESUMING));
 			_tStatus1.setTextPGM(PSTR(MSG_RESUMING));
-			_tStatus2.setTextPGM(PSTR(""));
+			//_tStatus2.setTextPGM(PSTR(""));
 	    	break;
 	    case HMIevent::PRINT_PAUSE_RESUMED :
 			_bPause.setTextPGM(PSTR(MSG_PAUSE));
 			_tStatus1.setTextPGM(PSTR(MSG_PRINTING));
-			_tStatus2.setTextPGM(PSTR(""));
+			//_tStatus2.setTextPGM(PSTR(""));
 	    	break;
 	    case HMIevent::PRINT_CANCELLING :
 			_bPause.setTextPGM(PSTR(MSG_CANCELLING));
@@ -139,6 +130,9 @@ void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
 	    default:
 	    	_tStatus1.setTextPGM(PSTR(MSG_PRINTING));
 	}
+	//_tStatus2.refresh();
+	//DrawUpdate();
+	//_tStatus2.refresh();
 }
 
 void StatePrinting::Init() {
@@ -152,13 +146,33 @@ void StatePrinting::Activate() {
 
 	_tFileName.setText(card.fileName);
 	const char* auraString = PSTR("Aura");
-	_previousPercentDone = -1;
+	_previousProgress = -1;
 	_previousLayer = -1;
 	if (strstr_P(card.generatedBy, auraString) != NULL)
 	{
 		_pFileIcon.setPic(NEX_ICON_FILE_GCODE_AURA);
 	}
-	OnEvent(NextionHMI::lastEvent, NextionHMI::lastEventArg);
+
+	switch(PrintPause::Status)
+	{
+	case WaitingToPause:
+		OnEvent(HMIevent::PRINT_PAUSE_SCHEDULED, 0);
+		break;
+	case Pausing:
+		OnEvent(HMIevent::PRINT_PAUSING, 0);
+		break;
+	case Paused:
+		OnEvent(HMIevent::PRINT_PAUSED, 0);
+		break;
+	case Resuming:
+		OnEvent(HMIevent::PRINT_PAUSE_RESUMING, 0);
+		break;
+	default:
+		OnEvent(NextionHMI::lastEvent, NextionHMI::lastEventArg);
+		break;
+	}
+
+
 	DrawUpdate();
 
 }
@@ -188,23 +202,43 @@ void StatePrinting::DrawUpdate() {
     	         break;
     	}
         //if (IS_SD_PRINTING) {
-        if (_previousPercentDone != card.percentDone() || _previousLayer!=printer.currentLayer) {
+        if (_previousProgress != printer.progress || _previousLayer!=printer.currentLayer) {
         	  ZERO(NextionHMI::buffer);
 
         	  if (printer.currentLayer>0 && printer.maxLayer>0)
 			  {
-        		  sprintf_P(NextionHMI::buffer, PSTR("Layer: %d/%d - %d%%"), printer.currentLayer, printer.maxLayer, card.percentDone());
+        		  sprintf_P(NextionHMI::buffer, PSTR(MSG_LAYER_NUMBER), printer.currentLayer, printer.maxLayer, printer.progress);
 			  }
         	  else
         	  {
-        		  sprintf_P(NextionHMI::buffer, PSTR("%d%%"), card.percentDone());
+        		  sprintf_P(NextionHMI::buffer, PSTR("%d%%"), printer.progress);
         	  }
 			  _tProgress.setText(NextionHMI::buffer);
 			  // Progress bar solid part
-			  _pbProgressBar.setValue(card.percentDone());
-			  _previousPercentDone = card.percentDone();
+			  _pbProgressBar.setValue(printer.progress);
+
+			  if (_previousProgress != printer.progress) _previousDuration = print_job_counter.duration();
+
+			  _previousProgress = card.percentDone();
 			  _previousLayer = printer.currentLayer;
         }
+
+		if (PrintPause::Status!=PrintPauseStatus::WaitingToPause)
+		{
+			// Estimate End Time
+			ZERO(NextionHMI::buffer);
+			char bufferElapsed[10];
+			char bufferLeft[10];
+
+			uint8_t digit;
+			duration_t time = duration_t(print_job_counter.duration());
+			time.toDigital(bufferElapsed, false);
+			time = duration_t(_previousDuration * (100 - printer.progress) / (printer.progress + 0.1));
+			time.toDigital(bufferLeft, false);
+			sprintf_P(NextionHMI::buffer, PSTR(MSG_PRINTING_TIME), bufferElapsed, bufferLeft);
+
+			_tStatus2.setText(NextionHMI::buffer);
+		  }
 
     	auto strTemp = String(round(heaters[HOT0_INDEX].current_temperature)) + "\370C";
         _tTempPlastic.setText(strTemp.c_str());
@@ -212,6 +246,7 @@ void StatePrinting::DrawUpdate() {
         _tTempComposite.setText(strTemp.c_str());
         strTemp = String(round(heaters[BED_INDEX].current_temperature)) + "\370C";
         _tTempBuildplate.setText(strTemp.c_str());
+
 #if HAS_HEATER_CHAMBER
         if (heaters[CHAMBER_INDEX].current_temperature>0)
 		{

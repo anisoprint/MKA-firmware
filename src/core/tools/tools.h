@@ -94,7 +94,7 @@
 
       static void cut_fiber();
 
-      static void change(const uint8_t tmp_extruder, const float fr_mm_s=0.0, bool no_move=false, bool force=false);
+      static void change(const uint8_t tmp_extruder, const float fr_mm_s=0.0, bool no_move=false, bool force=false, bool clean=false);
 
       static bool extruder_driver_is_plastic(const AxisEnum driver_extruder);
       static int8_t extruder_driver_to_extruder(uint8_t extruder_driver);

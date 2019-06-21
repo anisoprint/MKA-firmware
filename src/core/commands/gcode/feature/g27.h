@@ -31,11 +31,19 @@
   #define CODE_G27
 
   /**
+   *
    * G27: Park the nozzle
+   * G27 X Y Z - Set park point
+   * G27 Px - Park
+   * P0: If current Z-pos is lower than Z-park then the nozzle will be raised to reach Z-park height
+   * P1: No matter the current Z-pos, the nozzle will be raised/lowered to reach Z-park height
+   * P2: The nozzle height will be raised by Z-park amount but never going over the machine’s limit of Z_MAX_POS
+   * G27 R - Return from parking to position
    */
   inline void gcode_G27(void) {
     // Don't allow nozzle parking without homing first
     if (mechanics.axis_unhomed_error()) { return; }
+
     Nozzle::park(parser.ushortval('P'));
   }
 

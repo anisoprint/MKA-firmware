@@ -94,12 +94,17 @@ void StateMessage::ReturnToLastState(void* ptr) {
 	NextionHMI::ShowState(_interruptedState);
 }
 
+void StateMessage::RetryHeaterAndReturnToLastState(void* ptr) {
+	if (heaters[NextionHMI::lastEventArg].isIdle()) heaters[NextionHMI::lastEventArg].reset_idle_timer();
+	NextionHMI::ShowState(_interruptedState);
+}
+
 void StateMessage::ActivatePGM_M(uint8_t priority, uint8_t icon,
 		const char* header_P, const char* message, uint8_t numButtons,
 		const char* txtButtonRight_P, NexTouchEventCb cbRight,
 		const char* txtButtonLeft_P, NexTouchEventCb cbLeft, uint8_t picture) {
 
-	if (NextionHMI::GetActiveState() == PAGE_MESSAGE && priority<=_currentPriority) return;
+		if (NextionHMI::GetActiveState() == PAGE_MESSAGE && priority<=_currentPriority) return;
 		if (NextionHMI::GetActiveState() != PAGE_MESSAGE) _interruptedState = NextionHMI::GetActiveState();
 
 		NextionHMI::ActivateState(PAGE_MESSAGE);

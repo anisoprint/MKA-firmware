@@ -73,16 +73,23 @@
     act->sensor.pullupR       = parser.floatval('R', act->sensor.pullupR);
     act->sensor.adcLowOffset  = parser.intval('L', act->sensor.adcLowOffset);
     act->sensor.adcHighOffset = parser.intval('O', act->sensor.adcHighOffset);
+    act->sensor.type          = parser.intval('S', act->sensor.type);
 
     if (parser.seen('P')) {
       // Put off the heaters
       act->setTarget(0);
 
-      const pin_t new_pin = parser.value_pin();
+      const pin_t new_pin = parser.byteval('P', -1);
+      const pin_t old_pin = act->sensor.pin;
+      act->sensor.pin = new_pin;
+
+      if (WITHIN(old_pin, 0 , NUM_ANALOG_INPUTS)) {
+    	  HAL::AnalogInEnablePin(old_pin, false);
+
+      }
       if (WITHIN(new_pin, 0 , NUM_ANALOG_INPUTS)) {
-        const pin_t old_pin = act->sensor.pin;
-        act->sensor.pin = new_pin;
-        HAL::AdcChangePin(old_pin, act->sensor.pin);
+    	  HAL::AnalogInEnablePin(new_pin, true);
+
       }
     }
 

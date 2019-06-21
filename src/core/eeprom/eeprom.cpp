@@ -2656,11 +2656,12 @@ void EEPROM::Factory_Settings() {
 			#endif
 
 			#if HOTENDS > 0
-			  CONFIG_MSG_HEADER("Hotend Sensor parameters: H<Hotend> P<Pin> A<R25> B<BetaK> C<Steinhart-Hart C> R<Pullup> L<ADC low offset> O<ADC high offset>");
+			  CONFIG_MSG_HEADER("Hotend Sensor parameters: H<Hotend> P<Pin> S<Type> A<R25> B<BetaK> C<Steinhart-Hart C> R<Pullup> L<ADC low offset> O<ADC high offset>");
 			  LOOP_HOTEND() {
 				CONFIG_MSG();
 				SERIAL_MV("M305 H", h);
 				SERIAL_MV(" P", heaters[h].sensor.pin);
+				SERIAL_MV(" S", heaters[h].sensor.type);
 				SERIAL_MV(" A", heaters[h].sensor.r25, 1);
 				SERIAL_MV(" B", heaters[h].sensor.beta, 1);
 				SERIAL_MV(" C", heaters[h].sensor.shC, 10);
@@ -2668,6 +2669,7 @@ void EEPROM::Factory_Settings() {
 				SERIAL_MV(" L", heaters[h].sensor.adcLowOffset);
 				SERIAL_EMV(" O", heaters[h].sensor.adcHighOffset);
 			  }
+
 
 			  CONFIG_MSG_HEADER("Hotend Heater parameters: H<Hotend> P<Pin> A<Pid Drive Min> B<Pid Drive Max> C<Pid Max> L<Min Temp> O<Max Temp> U<Use Pid 0-1> I<Hardware Inverted 0-1>");
 			  LOOP_HOTEND() {
@@ -2683,6 +2685,7 @@ void EEPROM::Factory_Settings() {
 				SERIAL_EMV(" I", heaters[h].isHWInverted());
 			  }
 			#endif
+
 
 			#if HAS_TEMP_BED
 			  CONFIG_MSG_HEADER("Bed Sensor parameters: P<Pin> A<R25> B<BetaK> C<Steinhart-Hart C> R<Pullup> L<ADC low offset> O<ADC high offset>");

@@ -679,9 +679,9 @@ void StateWizard::BuildPlateS1(void* ptr) {
 		BUTTONS(2)
 		NO_PICTURE
 		CAPTION(MSG_BP_CALIBR_ST1)
-		HEADER(MSG_HEADER_BP_CALIBR, "1/8", NEX_ICON_MAINTENANCE);
+		HEADER(MSG_HEADER_BP_CALIBR, "1/9", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS2);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS2);
 
 		//Homing if not homed
 		mechanics.home(false, false, true);
@@ -695,6 +695,25 @@ void StateWizard::BuildPlateS1(void* ptr) {
 		{
 			tools.change(0, 0, false, false);
 		}
+
+	}
+}
+
+void StateWizard::BuildPlateS2(void* ptr) {
+	if (!planner.movesplanned())
+	{
+		//Going to center adjust position
+		mechanics.do_blocking_move_to_xy(int(BED_CENTER_ADJUST_X), int(BED_CENTER_ADJUST_Y), NOZZLE_PARK_XY_FEEDRATE);
+
+		//Going to Z adjust position
+		mechanics.do_blocking_move_to_z(10, mechanics.homing_feedrate_mm_s[Z_AXIS]);
+
+		BUTTONS(2)
+		NO_PICTURE
+		CAPTION(MSG_BP_CALIBR_ST2)
+		HEADER(MSG_HEADER_BP_CALIBR, "2/9", NEX_ICON_MAINTENANCE);
+
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS3);
 
 	}
 }
@@ -727,7 +746,7 @@ void StateWizard::BuildPlateCancel(void* ptr) {
 	}
 }
 
-void StateWizard::BuildPlateS3(void* ptr) {
+void StateWizard::BuildPlateS4(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to left position
@@ -741,14 +760,14 @@ void StateWizard::BuildPlateS3(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST3)
-		HEADER(MSG_HEADER_BP_CALIBR, "3/8", NEX_ICON_MAINTENANCE);
+		CAPTION(MSG_BP_CALIBR_ST4)
+		HEADER(MSG_HEADER_BP_CALIBR, "4/9", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS4);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS5);
 	}
 }
 
-void StateWizard::BuildPlateS4(void* ptr) {
+void StateWizard::BuildPlateS5(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to right position
@@ -762,14 +781,14 @@ void StateWizard::BuildPlateS4(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST4)
-		HEADER(MSG_HEADER_BP_CALIBR, "4/8", NEX_ICON_MAINTENANCE);
+		CAPTION(MSG_BP_CALIBR_ST5)
+		HEADER(MSG_HEADER_BP_CALIBR, "5/9", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS5);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS6);
 	}
 }
 
-void StateWizard::BuildPlateS5(void* ptr) {
+void StateWizard::BuildPlateS6(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to center position
@@ -783,14 +802,14 @@ void StateWizard::BuildPlateS5(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST5)
-		HEADER(MSG_HEADER_BP_CALIBR, "5/8", NEX_ICON_MAINTENANCE);
+		CAPTION(MSG_BP_CALIBR_ST6)
+		HEADER(MSG_HEADER_BP_CALIBR, "6/9", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS6);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS7);
 	}
 }
 
-void StateWizard::BuildPlateS7(void* ptr) {
+void StateWizard::BuildPlateS8(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to left position
@@ -804,14 +823,14 @@ void StateWizard::BuildPlateS7(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST7)
-		HEADER(MSG_HEADER_BP_CALIBR, "7/8", NEX_ICON_MAINTENANCE);
+		CAPTION(MSG_BP_CALIBR_ST8)
+		HEADER(MSG_HEADER_BP_CALIBR, "8/9", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS8);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS9);
 	}
 }
 
-void StateWizard::BuildPlateS8(void* ptr) {
+void StateWizard::BuildPlateS9(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to right position
@@ -825,10 +844,10 @@ void StateWizard::BuildPlateS8(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST8)
-		HEADER(MSG_HEADER_BP_CALIBR, "8/8", NEX_ICON_MAINTENANCE);
+		CAPTION(MSG_BP_CALIBR_ST9)
+		HEADER(MSG_HEADER_BP_CALIBR, "9/9", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_REPEAT), StateWizard::BuildPlateS5, PSTR(MSG_FINISH), StateWizard::BuildPlateFinish);
+		Init2Buttons(PSTR(MSG_REPEAT), StateWizard::BuildPlateS6, PSTR(MSG_FINISH), StateWizard::BuildPlateFinish);
 	}
 }
 

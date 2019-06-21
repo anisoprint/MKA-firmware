@@ -1117,11 +1117,18 @@ void Planner::check_axes_activity() {
 
 
   // Calculate the buffer head after we push this byte
-  const uint8_t next_buffer_head = next_block_index(block_buffer_head);
+  uint8_t next_buffer_head = next_block_index(block_buffer_head);
 
   // If the buffer is full: good! That means we are well ahead of the robot.
   // Rest here until there is room in the buffer.
-  while (block_buffer_tail == next_buffer_head) printer.idle();
+  if (block_buffer_tail == next_buffer_head)
+  {
+	  while (block_buffer_tail == next_buffer_head)
+		  {
+		  	  printer.idle();
+		  	  next_buffer_head = next_block_index(block_buffer_head);
+		  }
+  }
 
   // Prepare to set up new block
   block_t* block = &block_buffer[block_buffer_head];

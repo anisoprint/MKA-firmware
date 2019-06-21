@@ -22,6 +22,7 @@ namespace {
 	//Variables
 	NexObject  _gcode = NexObject(PAGE_MOVEMENT,  29,  "$gc");
 	NexObject  _mode = NexObject(PAGE_MOVEMENT,  29,  "movement.$md");
+	NexObject  _fan = NexObject(PAGE_MOVEMENT,  35,  "movement.$fan");
 
 	//Control
 	NexObject _bMovementAplus  = NexObject(PAGE_MOVEMENT,  15,  "bAp");
@@ -61,10 +62,26 @@ void StateMovement::Back_Push(void* ptr) {
 }
 
 void StateMovement::Movement_Push(void* ptr) {
-	if (_moveMode==MODE_MOVE_EXTRUDERS && ptr==&_bMovementBact)
+	if (_moveMode==MODE_MOVE_EXTRUDERS && (ptr==&_bMovementAact || ptr==&_bMovementBact || ptr==&_bMovementCact))
 	{
-		//cut
-		tools.cut_fiber();
+		if (ptr==&_bMovementAact)
+		{
+			//toolchange
+			if (tools.active_extruder==0) tools.change(1, 0, false, true);
+			else tools.change(0, 0, false, true);
+		}
+		if (ptr==&_bMovementBact)
+		{
+			//cut
+			tools.cut_fiber();
+		}
+		if (ptr==&_bMovementCact)
+		{
+			//fan
+			ZERO(NextionHMI::buffer);
+			_gcode.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
+			commands.enqueue_and_echo(NextionHMI::buffer);
+		}
 	}
 	else
 	{
@@ -84,6 +101,7 @@ void StateMovement::Movement_Push(void* ptr) {
 		commands.enqueue_and_echo(NextionHMI::buffer);
 		commands.enqueue_and_echo_P(PSTR("G90"));
 	}
+
 	DrawUpdate();
 }
 
@@ -108,6 +126,7 @@ void StateMovement::Init() {
 void StateMovement::Activate(bool mode) {
 	_moveMode = mode;
 	_mode.setValue(_moveMode);
+	_fan.setValue(fans[1].Speed>0);
 	NextionHMI::ActivateState(PAGE_MOVEMENT);
 	_page.show();
 	DrawUpdate();
