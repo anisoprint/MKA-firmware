@@ -122,6 +122,26 @@
   #define MSG_PLASTIC_EXTRUDER_HEATING              _UxGT("Plastic extruder heating (%d/%d\370C)")
 #endif
 
+#ifndef MSG_PRINTING_TIME
+  #define MSG_PRINTING_TIME              			_UxGT("Time elapsed: %s\\rEst. time left:%s")
+#endif
+
+#ifndef MSG_LAYER_NUMBER
+  #define MSG_LAYER_NUMBER              			_UxGT("Layer: %d/%d - %d%%")
+#endif
+
+#ifndef MSG_PLASTIC_FLOW_H
+  #define MSG_PLASTIC_FLOW_H                 _UxGT("Plastic flow")
+#endif
+
+#ifndef MSG_PLASTIC_FLOW
+  #define MSG_PLASTIC_FLOW              	_UxGT("Plastic flow (%)")
+#endif
+
+#ifndef MSG_COMP_PLASTIC_FLOW
+  #define MSG_COMP_PLASTIC_FLOW              _UxGT("Composite plastic flow (%)")
+#endif
+
 #ifndef MSG_PRINTING
   #define MSG_PRINTING              				_UxGT("Printing...")
 #endif

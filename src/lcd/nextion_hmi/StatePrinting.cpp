@@ -4,17 +4,7 @@
  *  Created on: 9 θών. 2018 γ.
  *      Author: Azarov
  */
-#ifndef MSG_PLASTIC_FLOW_H
-  #define MSG_PLASTIC_FLOW_H                 _UxGT("Plastic flow")
-#endif
 
-#ifndef MSG_PLASTIC_FLOW
-  #define MSG_PLASTIC_FLOW              	_UxGT("Plastic flow (%)")
-#endif
-
-#ifndef MSG_COMP_PLASTIC_FLOW
-  #define MSG_COMP_PLASTIC_FLOW              _UxGT("Composite plastic flow (%)")
-#endif
 
 #include "../../../MK4duo.h"
 
@@ -64,8 +54,6 @@ namespace {
 	int32_t _previousLayer = -1;
 	uint32_t _previousDuration = 0;
 
-	HMIevent printingLastEvent = HMIevent::NONE;
-	uint8_t  printinglastEventArg = 0;
 }
 
 
@@ -93,8 +81,6 @@ void StatePrinting::Pause_Push(void* ptr) {
 }
 
 void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
-	printingLastEvent = event;
-	printinglastEventArg = eventArg;
 	switch(event) {
 	    case HMIevent::HEATING_STARTED_BUILDPLATE :
 	    case HMIevent::HEATING_STARTED_EXTRUDER :
@@ -112,7 +98,7 @@ void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
 	    case HMIevent::PRINT_PAUSED :
 	    	_bPause.setTextPGM(PSTR(MSG_RESUME));
 	    	_tStatus1.setTextPGM(PSTR(MSG_PAUSED));
-	    	_tStatus2.setTextPGM(PSTR(""));
+	    	//_tStatus2.setTextPGM(PSTR(""));
 	    	break;
 	    case HMIevent::PRINT_PAUSE_SCHEDULED :
 	    	_bPause.setTextPGM(PSTR(MSG_CANCEL_PAUSE));
@@ -127,12 +113,12 @@ void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
 	    case HMIevent::PRINT_PAUSE_RESUMING :
 			_bPause.setTextPGM(PSTR(MSG_RESUMING));
 			_tStatus1.setTextPGM(PSTR(MSG_RESUMING));
-			_tStatus2.setTextPGM(PSTR(""));
+			//_tStatus2.setTextPGM(PSTR(""));
 	    	break;
 	    case HMIevent::PRINT_PAUSE_RESUMED :
 			_bPause.setTextPGM(PSTR(MSG_PAUSE));
 			_tStatus1.setTextPGM(PSTR(MSG_PRINTING));
-			_tStatus2.setTextPGM(PSTR(""));
+			//_tStatus2.setTextPGM(PSTR(""));
 	    	break;
 	    case HMIevent::PRINT_CANCELLING :
 			_bPause.setTextPGM(PSTR(MSG_CANCELLING));
@@ -144,6 +130,9 @@ void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
 	    default:
 	    	_tStatus1.setTextPGM(PSTR(MSG_PRINTING));
 	}
+	//_tStatus2.refresh();
+	//DrawUpdate();
+	//_tStatus2.refresh();
 }
 
 void StatePrinting::Init() {
@@ -179,7 +168,7 @@ void StatePrinting::Activate() {
 		OnEvent(HMIevent::PRINT_PAUSE_RESUMING, 0);
 		break;
 	default:
-		OnEvent(printingLastEvent, printinglastEventArg);
+		OnEvent(NextionHMI::lastEvent, NextionHMI::lastEventArg);
 		break;
 	}
 
@@ -218,7 +207,7 @@ void StatePrinting::DrawUpdate() {
 
         	  if (printer.currentLayer>0 && printer.maxLayer>0)
 			  {
-        		  sprintf_P(NextionHMI::buffer, PSTR("Layer: %d/%d - %d%%"), printer.currentLayer, printer.maxLayer, printer.progress);
+        		  sprintf_P(NextionHMI::buffer, PSTR(MSG_LAYER_NUMBER), printer.currentLayer, printer.maxLayer, printer.progress);
 			  }
         	  else
         	  {
@@ -246,7 +235,7 @@ void StatePrinting::DrawUpdate() {
 			time.toDigital(bufferElapsed, false);
 			time = duration_t(_previousDuration * (100 - printer.progress) / (printer.progress + 0.1));
 			time.toDigital(bufferLeft, false);
-			sprintf_P(NextionHMI::buffer, PSTR("Time elapsed: %s\\rTime left:%s"), bufferElapsed, bufferLeft);
+			sprintf_P(NextionHMI::buffer, PSTR(MSG_PRINTING_TIME), bufferElapsed, bufferLeft);
 
 			_tStatus2.setText(NextionHMI::buffer);
 		  }

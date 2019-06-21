@@ -33,43 +33,48 @@
  */
 inline void gcode_M530(void) {
 
-  printer.maxLayer = parser.longval('L');
-
-  if (parser.seen('S') && parser.value_bool()) {
-    print_job_counter.start();
-
-    SERIAL_MSG("Start Printing");
-    if (printer.maxLayer > 0) SERIAL_EMV(" - MaxLayer:", printer.maxLayer);
-    else SERIAL_EOL();
-
-    #if ENABLED(START_GCODE)
-      commands.enqueue_and_echo_P(PSTR(START_PRINTING_SCRIPT));
-    #endif
-
-    printer.setFilamentOut(false);
-
-    #if HAS_FIL_RUNOUT
-      SERIAL_EM("Filament runout activated.");
-      SERIAL_STR(RESUME);
-      SERIAL_EOL();
-    #endif
-
-    #if HAS_POWER_CONSUMPTION_SENSOR
-      powerManager.startpower = powerManager.consumption_hour;
-    #endif
+  if (parser.seen('L'))
+  {
+	  printer.maxLayer = parser.longval('L');
   }
-  else {
-    print_job_counter.stop();
-    SERIAL_EM("Stop Printing");
+  else
+  {
+	  if (parser.seen('S') && parser.value_bool()) {
+		print_job_counter.start();
 
-    #if ENABLED(STOP_GCODE)
-      commands.enqueue_and_echo_P(PSTR(STOP_PRINTING_SCRIPT));
-    #endif
+		SERIAL_MSG("Start Printing");
+		if (printer.maxLayer > 0) SERIAL_EMV(" - MaxLayer:", printer.maxLayer);
+		else SERIAL_EOL();
 
-    printer.setFilamentOut(false);
+		#if ENABLED(START_GCODE)
+		  commands.enqueue_and_echo_P(PSTR(START_PRINTING_SCRIPT));
+		#endif
 
-    #if HAS_FIL_RUNOUT
-      SERIAL_EM("Filament runout deactivated.");
-    #endif
+		printer.setFilamentOut(false);
+
+		#if HAS_FIL_RUNOUT
+		  SERIAL_EM("Filament runout activated.");
+		  SERIAL_STR(RESUME);
+		  SERIAL_EOL();
+		#endif
+
+		#if HAS_POWER_CONSUMPTION_SENSOR
+		  powerManager.startpower = powerManager.consumption_hour;
+		#endif
+	  }
+	  else {
+		print_job_counter.stop();
+		SERIAL_EM("Stop Printing");
+
+		#if ENABLED(STOP_GCODE)
+		  commands.enqueue_and_echo_P(PSTR(STOP_PRINTING_SCRIPT));
+		#endif
+
+		printer.setFilamentOut(false);
+
+		#if HAS_FIL_RUNOUT
+		  SERIAL_EM("Filament runout deactivated.");
+		#endif
+	  }
   }
 }

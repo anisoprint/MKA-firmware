@@ -241,6 +241,16 @@
     recvRetCommandFinished();
   }
 
+  void NexObject::refresh() {
+    String cmd;
+    cmd = "";
+    cmd += "ref ";
+    cmd += this->__name;
+    sendCommand(cmd.c_str());
+    recvRetCommandFinished();
+  }
+
+
   uint16_t NexObject::getMinval() {
     String cmd;
     cmd += "get ";
