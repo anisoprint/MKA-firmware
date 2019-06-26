@@ -123,7 +123,7 @@
 #endif
 
 #ifndef MSG_PRINTING_TIME
-  #define MSG_PRINTING_TIME              			_UxGT("Time elapsed: %s\\rEst. time left:%s")
+  #define MSG_PRINTING_TIME              			_UxGT("Time elapsed: %s\\rEst. time left: %s")
 #endif
 
 #ifndef MSG_LAYER_NUMBER
