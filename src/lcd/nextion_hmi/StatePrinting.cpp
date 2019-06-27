@@ -219,7 +219,7 @@ void StatePrinting::DrawUpdate() {
 
 			  if (_previousProgress != printer.progress) _previousDuration = print_job_counter.duration();
 
-			  _previousProgress = card.percentDone();
+			  _previousProgress = printer.progress;
 			  _previousLayer = printer.currentLayer;
         }
 
@@ -233,7 +233,7 @@ void StatePrinting::DrawUpdate() {
 			uint8_t digit;
 			duration_t time = duration_t(print_job_counter.duration());
 			time.toDigital(bufferElapsed, false);
-			time = duration_t(_previousDuration * (100 - printer.progress) / (printer.progress + 0.1));
+			time = (printer.progress > 0) ? duration_t(_previousDuration * (100 - printer.progress) / (printer.progress + 0.1)) : duration_t(0);
 			time.toDigital(bufferLeft, false);
 			sprintf_P(NextionHMI::buffer, PSTR(MSG_PRINTING_TIME), bufferElapsed, bufferLeft);
 
