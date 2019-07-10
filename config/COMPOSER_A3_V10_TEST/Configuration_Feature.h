@@ -210,41 +210,39 @@
 //Change moves
 #define CHANGE_MOVES 12
 
-
-
-
 //Change to T0 -          X      Y  Spd  Switch
-#define CHANGE_T0      {{128.0, 20, 200, true},\
-						{128.0,  0, 200, true},\
-						{140.0,  0, 200, true},\
-						{150.3,  0,  50, true},\
-						{150.3, 20, 200, true},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false}}
+#define CHANGE_T0      {{-40.0, 137, 200, false},\
+						{-40.0, 207,  40, false},\
+						{-40.0, 287, 200, false},\
+						{-53.0, 287, 200, false},\
+						{-53.0, 282, 200,  true},\
+						{-53.0, 268,  50,  true},\
+						{-42.0, 268, 200, false},\
+						{-42.0, 137,  40, false},\
+						{  0.0,   0,   0, false},\
+						{  0.0,   0,   0, false},\
+						{  0.0,   0,   0, false},\
+						{  0.0,   0,   0, false}}
 
 
 //Change to T1 -          X      Y  Spd  Switch
-#define CHANGE_T1      {{165.0, 20, 200, true},\
-						{165.0,  0, 200, true},\
-						{158.0,  0,  50, true},\
-						{146.9,  0, 200, true},\
-						{146.0, 20, 200, true},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false}}
+#define CHANGE_T1      {{-40.0, 137.0, 200, false},\
+						{-40.0, 207.0,  40, false},\
+						{-53.0, 207.0, 200, false},\
+						{-53.9, 243.3, 200,  true},\
+						{-53.0, 257.3,  50,  true},\
+						{-43.0, 243.3, 200,  true},\
+						{-43.0, 139.0,  40, false},\
+						{  0.0,     0,   0, false},\
+						{  0.0,     0,   0, false},\
+						{  0.0,     0,   0, false},\
+						{  0.0,     0,   0, false},\
+						{  0.0,     0,   0, false}}
+
 
 //Cut settings
 #define CUT_SERVO_ID      0
-#define CUT_ACTIVE_ANGLE  160
+#define CUT_ACTIVE_ANGLE  30
 #define CUT_NEUTRAL_ANGLE 90
 
 /***********************************************************************/
@@ -2142,8 +2140,8 @@
 #define PAUSE_PARK_EXTRUDE_FEEDRATE 5       //+(mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
 
 #if ENABLED(NEXTION_HMI)	      //For nextion HMI material loading/unloading wizard
-	#define PAUSE_PARK_UNLOAD_LENGTH {650, 535+55, 650}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
-	#define PAUSE_PARK_LOAD_LENGTH {650, 650, 650}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+	#define PAUSE_PARK_UNLOAD_LENGTH {740, 900, 850}  // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
+	#define PAUSE_PARK_LOAD_LENGTH {610, 800, 740}    // (mm) E0, E1, E2 length should be equal to DRIVER_EXTRUDERS
 #else
 #define PAUSE_PARK_UNLOAD_LENGTH 100        // (mm) The length of filament for a complete unload.
                                             //   For Bowden, the full length of the tube and nozzle.

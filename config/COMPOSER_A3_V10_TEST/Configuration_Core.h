@@ -69,7 +69,7 @@
  * Displayed in the LCD "Ready" message.                                                 *
  *                                                                                       *
  *****************************************************************************************/
-#define CUSTOM_MACHINE_NAME "Composer A4"
+#define CUSTOM_MACHINE_NAME "Composer A3"
 /*****************************************************************************************/
 
 /*****************************************************************************************
@@ -79,7 +79,7 @@
  * Home printer on power on.                                                             *
  *                                                                                       *
  *****************************************************************************************/
-#define HOME_ON_POWER
+//#define HOME_ON_POWER
 /*****************************************************************************************/
 
 /*****************************************************************************************
@@ -270,8 +270,8 @@
  * Sets direction of endstop when homing; 1=MAX, -1=MIN                                  *
  *                                                                                       *
  *****************************************************************************************/
-#define X_HOME_DIR -1
-#define Y_HOME_DIR -1
+#define X_HOME_DIR  1
+#define Y_HOME_DIR  1
 #define Z_HOME_DIR  1
 /*****************************************************************************************/
 
@@ -327,12 +327,12 @@
  * Change (or reverse the motor connector) if an axis goes the wrong way.                *
  *                                                                                       *
  *****************************************************************************************/
-#define INVERT_X_DIR true
+#define INVERT_X_DIR false
 #define INVERT_Y_DIR true
-#define INVERT_Z_DIR false
-#define INVERT_E0_DIR true
-#define INVERT_E1_DIR true
-#define INVERT_E2_DIR true
+#define INVERT_Z_DIR true
+#define INVERT_E0_DIR false
+#define INVERT_E1_DIR false
+#define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
 #define INVERT_E4_DIR false
 #define INVERT_E5_DIR false
@@ -362,11 +362,11 @@
  * Travel limits after homing (units are in mm)                                          *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MAX_POS 297
+#define X_MAX_POS 478+40
 #define X_MIN_POS 0
-#define Y_MAX_POS 210
+#define Y_MAX_POS 297
 #define Y_MIN_POS 0
-#define Z_MAX_POS 139.65
+#define Z_MAX_POS 210
 #define Z_MIN_POS 0
 #define E_MIN_POS 0
 /*****************************************************************************************/
@@ -609,7 +609,7 @@
  ******************************** Axis acceleration **************************************
  *****************************************************************************************/
 //  Maximum start speed for accelerated moves.    X,    Y,  Z,   E0...(per extruder)
-#define DEFAULT_MAX_ACCELERATION              {1000, 1000, 45, 800, 800, 800, 1000}
+#define DEFAULT_MAX_ACCELERATION              {1500, 1500, 45, 800, 800, 800, 1000}
 //  Maximum acceleration in mm/s^2 for retracts   E0... (per extruder)
 #define DEFAULT_RETRACT_ACCELERATION          {10000, 10000, 10000, 10000}
 //  X, Y, Z and E* maximum acceleration in mm/s^2 for printing moves
@@ -667,9 +667,9 @@
  * For the other hotends it is their distance from the hotend 0.                         *
  *                                                                                       *
  *****************************************************************************************/
-#define HOTEND_OFFSET_X {0.0, 17.1, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the X axis
-#define HOTEND_OFFSET_Y {0.0, -2.2, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Y axis
-#define HOTEND_OFFSET_Z {0.0, 1.65, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Z axis
+#define HOTEND_OFFSET_X {0.0,  -2.2, 0.0, 0.0} // (in mm) for each hotend, offset of the hotend on the X axis
+#define HOTEND_OFFSET_Y {0.0, -16.5, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Y axis
+#define HOTEND_OFFSET_Z {0.0,     0, 0.0, 0.0}  // (in mm) for each hotend, offset of the hotend on the Z axis
 /*****************************************************************************************/
 
 #endif /* _CONFIGURATION_CORE_H_ */

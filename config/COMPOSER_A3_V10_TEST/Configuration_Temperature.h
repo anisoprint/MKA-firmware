@@ -88,16 +88,16 @@
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_BED 1
-#define TEMP_SENSOR_CHAMBER 0
+#define TEMP_SENSOR_CHAMBER 9
 #define TEMP_SENSOR_COOLER 0
 
 // Thermistor series resistor value in Ohms (see on your board)
 #define THERMISTOR_SERIES_RS 4700.0
 
 // User Sensor
-#define T9_NAME   "User Sensor"
-#define T9_R25    100000.0  // Resistance in Ohms @ 25Â°C
-#define T9_BETA     4036.0  // Beta Value (K)
+#define T9_NAME   "NCP21WF104J03RA"
+#define T9_R25    100000.0  // Resistance in Ohms @ 25°C
+#define T9_BETA     4275.0  // Beta Value (K)
 
 // Enable this for support DHT sensor for temperature e Humidity DHT11, DHT21 or DHT22.
 //#define DHT_SENSOR
@@ -111,7 +111,7 @@
 
 // Use it for Testing or Development purposes. NEVER for production machine.
 #define DUMMY_THERMISTOR_998_VALUE 25
-#define DUMMY_THERMISTOR_999_VALUE 25
+#define DUMMY_THERMISTOR_999_VALUE 100
 /*****************************************************************************************/
 
 
@@ -136,8 +136,8 @@
 #define HEATER_1_MAXTEMP 275 // (degC)
 #define HEATER_2_MAXTEMP 275 // (degC)
 #define HEATER_3_MAXTEMP 275 // (degC)
-#define BED_MAXTEMP      150 // (degC)
-#define CHAMBER_MAXTEMP  100 // (degC)
+#define BED_MAXTEMP      120 // (degC)
+#define CHAMBER_MAXTEMP  60 // (degC)
 #define COOLER_MAXTEMP   35  // (degC) 
 
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
