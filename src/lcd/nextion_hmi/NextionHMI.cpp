@@ -16,21 +16,27 @@
 
 namespace {
 	bool _nextionOn = false;
-	uint8_t _pageID = 0;
+
 	bool _sdInserted = false;
 
 #if HAS_SDSUPPORT
   NexUpload Firmware(NEXTION_FIRMWARE_FILE, 57600);
 #endif
 
+  HMIStateInfo _stateStack[STATE_STACK_SIZE];
+  uint8_t _stateStackTop;
+  uint8_t _curStateID = 0;
+  NexTouchEventCb _curStateActivator;
 }
+
+
 
 uint16_t NextionHMI::autoPreheatTempHotend = PREHEAT_1_TEMP_HOTEND;
 uint16_t NextionHMI::autoPreheatTempBed = PREHEAT_1_TEMP_BED;
 uint8_t  NextionHMI::lcdBrightness = 90;
 
-uint8_t NextionHMI::wizardData = 0;
-uint8_t NextionHMI::pageData = 0;
+uint8_t NextionHMI::stateStatus = 0;
+uint8_t NextionHMI::stateArg = 0;
 
 HMIevent NextionHMI::lastEvent = HMIevent::NONE;
 uint8_t  NextionHMI::lastEventArg = 0;
@@ -126,7 +132,7 @@ void NextionHMI::DrawUpdate() {
 		}
 	  #endif // HAS_SDSUPPORT && SD_DETECT_PIN
 
-	switch(_pageID) {
+	switch(_curStateID) {
 	    case PAGE_STATUS : StateStatus::DrawUpdate();
 	         break;
 	    case PAGE_TEMPERATURE : StateTemperature::DrawUpdate();
@@ -157,7 +163,7 @@ void NextionHMI::DrawUpdate() {
 }
 
 void NextionHMI::TouchUpdate() {
-	switch(_pageID) {
+	switch(_curStateID) {
 	    case PAGE_STATUS : StateStatus::TouchUpdate();
 	         break;
 	    case PAGE_TEMPERATURE : StateTemperature::TouchUpdate();
@@ -187,8 +193,28 @@ void NextionHMI::TouchUpdate() {
 	}
 }
 
-void NextionHMI::ActivateState(uint8_t state_id) {
-	_pageID = state_id;
+void NextionHMI::ActivateState(StateActivateBehavior behavior, uint8_t state_id, NexTouchEventCb state_activator, uint8_t state_status, uint8_t state_args) {
+	switch (behavior) {
+		case PushCurrent:
+			_stateStackTop++;
+			if (_stateStackTop>=STATE_STACK_SIZE)
+			{
+				//TODO: error on stack overflow
+				return;
+			}
+			_stateStack[_stateStackTop].ActivateProc = _curStateActivator;
+			_stateStack[_stateStackTop].StateArg = stateArg;
+			_stateStack[_stateStackTop].StateStatus = stateStatus;
+			_stateStack[_stateStackTop].StateId = _curStateID;
+			break;
+		default:
+			break;
+	}
+
+	_curStateID = state_id;
+	_curStateActivator = state_activator;
+	_curStateActivator();
+
 #if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
     UpdateSDIcon();
 #endif
@@ -257,7 +283,7 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventM
 			return;
 	}
 
-	switch(_pageID) {
+	switch(_curStateID) {
 	    case PAGE_STATUS :
 	         break;
 	    case PAGE_TEMPERATURE :
@@ -288,7 +314,7 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventM
 }
 
 uint8_t NextionHMI::GetActiveState() {
-	return _pageID;
+	return _curStateID;
 }
 
 void NextionHMI::WaitOk_Push(void* ptr) {

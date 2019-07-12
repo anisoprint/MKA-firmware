@@ -12,6 +12,17 @@
 
 #include "../nextion/library/Nextion.h"
 
+#define STATE_STACK_SIZE 10
+
+struct HMIStateInfo {
+	uint8_t StateId;
+	NexTouchEventCb ActivateProc;
+	uint8_t StateStatus;
+	uint8_t StateArg;
+};
+
+enum StateActivateBehavior {PushCurrent, ReplaceCurrent, Clear};
+
 namespace NextionHMI {
 
 	extern NexObject headerText;
@@ -19,8 +30,11 @@ namespace NextionHMI {
 	extern NexObject sdText;
 	extern NexObject sdIcon;
 
-	extern uint8_t wizardData;
-	extern uint8_t pageData;
+	//extern uint8_t wizardData;
+	//extern uint8_t pageData;
+
+	extern uint8_t stateStatus;
+	extern uint8_t stateArg;
 
     extern uint16_t autoPreheatTempHotend;
     extern uint16_t autoPreheatTempBed;
@@ -34,7 +48,7 @@ namespace NextionHMI {
 	void Init();
 	void DrawUpdate();
 	void TouchUpdate();
-	void ActivateState(uint8_t state_id);
+	void ActivateState(uint8_t state_id, NexTouchEventCb state_activator, uint8_t state_status=0, uint8_t state_args=0);
 	void ShowState(uint8_t state_id);
 
 	void SetBrightness(uint8_t brightness);
