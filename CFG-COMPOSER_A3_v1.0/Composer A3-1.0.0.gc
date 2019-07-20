@@ -3,8 +3,9 @@
 ; Anisoprint Composer A3 version 1.0.0 system configuration
 ; Firmware: MKA 0.9.3
 ; 10.07.2019 - Andrey Azarov - Configuration created from 0.9.0 (MKA 0.9.3a)
+; 20.07.2019 - Andrey Azarov - Changed steps per mm for Z axis
 ;Mechanics steps per unit:
-M92 X100.000 Y100.000 Z1600.000
+M92 X100.000 Y100.000 Z400.000
 ;Maximum feedrates (units/s):
 M203 X500.000 Y500.000 Z30.000
 M203 E33.000 U40.000 V33.000
