@@ -2688,10 +2688,11 @@ void EEPROM::Factory_Settings() {
 
 
 			#if HAS_TEMP_BED
-			  CONFIG_MSG_HEADER("Bed Sensor parameters: P<Pin> A<R25> B<BetaK> C<Steinhart-Hart C> R<Pullup> L<ADC low offset> O<ADC high offset>");
+			  CONFIG_MSG_HEADER("Bed Sensor parameters: P<Pin> S<Type> A<R25> B<BetaK> C<Steinhart-Hart C> R<Pullup> L<ADC low offset> O<ADC high offset>");
 			  CONFIG_MSG();
 			  SERIAL_MSG("M305 H-1");
 			  SERIAL_MV(" P", heaters[BED_INDEX].sensor.pin);
+			  SERIAL_MV(" S", heaters[BED_INDEX].sensor.type);
 			  SERIAL_MV(" A", heaters[BED_INDEX].sensor.r25, 1);
 			  SERIAL_MV(" B", heaters[BED_INDEX].sensor.beta, 1);
 			  SERIAL_MV(" C", heaters[BED_INDEX].sensor.shC, 10);
@@ -2713,10 +2714,11 @@ void EEPROM::Factory_Settings() {
 			#endif
 
 			#if HAS_TEMP_CHAMBER
-			  CONFIG_MSG_HEADER("Chamber Sensor parameters: P<Pin> A<R25> B<BetaK> C<Steinhart-Hart C> R<Pullup> L<ADC low offset> O<ADC high offset>");
+			  CONFIG_MSG_HEADER("Chamber Sensor parameters: P<Pin> S<Type> A<R25> B<BetaK> C<Steinhart-Hart C> R<Pullup> L<ADC low offset> O<ADC high offset>");
 			  CONFIG_MSG();
 			  SERIAL_MSG("M305 H-2");
 			  SERIAL_MV(" P", heaters[CHAMBER_INDEX].sensor.pin);
+			  SERIAL_MV(" S", heaters[CHAMBER_INDEX].sensor.type);
 			  SERIAL_MV(" A", heaters[CHAMBER_INDEX].sensor.r25, 1);
 			  SERIAL_MV(" B", heaters[CHAMBER_INDEX].sensor.beta, 1);
 			  SERIAL_MV(" C", heaters[CHAMBER_INDEX].sensor.shC, 10);

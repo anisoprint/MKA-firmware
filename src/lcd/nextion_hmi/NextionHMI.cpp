@@ -65,7 +65,7 @@ void NextionHMI::Init() {
 	  //serial_print(buffer);
 	  //serial_print("\n>>>>>>>>>>>>\n");
 
-	if (strstr(buffer, "NX4832T035")) {
+	if (strstr(buffer, "NX")) {
 		SERIAL_MSG("Nextion LCD connected!  \n");
 	}
 	else
