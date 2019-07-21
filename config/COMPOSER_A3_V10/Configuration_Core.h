@@ -362,7 +362,7 @@
  * Travel limits after homing (units are in mm)                                          *
  *                                                                                       *
  *****************************************************************************************/
-#define X_MAX_POS 478
+#define X_MAX_POS 460
 #define X_MIN_POS 0
 #define Y_MAX_POS 297
 #define Y_MIN_POS 0
@@ -584,7 +584,7 @@
  *                                                                                       *
  *****************************************************************************************/
 // Default steps per unit               X,  Y,    Z,  E0...(per extruder)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 400, 435.34, 99.77, 435.34, 625} //XYZEUV 1/16
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 80, 400, 435.34, 99.77, 435.34, 625} //XYZEUV 1/16
 /*****************************************************************************************/
 
 
@@ -643,9 +643,9 @@
  ************************************ Homing feedrate ************************************
  *****************************************************************************************/
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_X (60*60)
-#define HOMING_FEEDRATE_Y (60*60)
-#define HOMING_FEEDRATE_Z (21*60)
+#define HOMING_FEEDRATE_X (90*60)
+#define HOMING_FEEDRATE_Y (90*60)
+#define HOMING_FEEDRATE_Z (30*60)
 
 // Homing hits each endstop, retracts by these distances, then does a slower bump.
 #define X_HOME_BUMP_MM 5
