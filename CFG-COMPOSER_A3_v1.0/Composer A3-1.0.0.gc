@@ -10,7 +10,7 @@ M92 X80.000 Y80.000 Z400.000
 M203 X500.000 Y500.000 Z30.000
 M203 E33.000 U40.000 V33.000
 ;Maximum Acceleration (units/s2):
-M201 X1500 Y1500 Z45
+M201 X1500 Y1500 Z30
 M201 E800.000 U800.000 V800.000
 ;Acceleration (units/s2): P<print_accel> T<travel_accel> E<retract_accel>
 M204 P1000.000 T1000.000
