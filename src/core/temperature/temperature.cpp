@@ -258,7 +258,7 @@ void Temperature::spin() {
 
     #if WATCH_THE_HEATER
       // Make sure temperature is increasing
-      if (act->watch_next_ms && ELAPSED(ms, act->watch_next_ms)) {
+      if (!act->isIdle() && act->watch_next_ms && ELAPSED(ms, act->watch_next_ms)) {
         if (act->current_temperature < act->watch_target_temp)
           _temp_error(h, PSTR(MSG_T_HEATING_FAILED), PSTR(MSG_HEATING_FAILED_LCD));
         else

@@ -641,8 +641,6 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
 
 	uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
 
-
-
 	if (PrintPause::Status==Paused)
 	{
 		PrintPause::RestoreTemperatures();
