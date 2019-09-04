@@ -132,8 +132,8 @@
 // ENDSTOP pin
 #define X_MIN_PIN           ORIG_X_MIN_PIN
 #define X_MAX_PIN           ORIG_X_MAX_PIN
-#define Y_MIN_PIN           ORIG_Y_MIN_PIN
-#define Y_MAX_PIN           ORIG_Y_MAX_PIN
+#define Y_MIN_PIN           ORIG_Y_MAX_PIN
+#define Y_MAX_PIN           NoPin
 #define Z_MIN_PIN           ORIG_Z_MIN_PIN
 #define Z_MAX_PIN           ORIG_Z_MAX_PIN
 #define X2_MIN_PIN          NoPin
@@ -145,27 +145,27 @@
 #define Z_PROBE_PIN         NoPin
 
 // HEATER pin
-#define HEATER_0_PIN        ORIG_HEATER_1_PIN
-#define HEATER_1_PIN        ORIG_HEATER_0_PIN
-#define HEATER_2_PIN        ORIG_HEATER_BED_PIN
-#define HEATER_3_PIN        ORIG_HEATER_3_PIN
+#define HEATER_0_PIN        ORIG_HEATER_0_PIN
+#define HEATER_1_PIN        ORIG_HEATER_1_PIN
+#define HEATER_2_PIN        NoPin
+#define HEATER_3_PIN        NoPin
 #define HEATER_BED_PIN      ORIG_HEATER_2_PIN
-#define HEATER_CHAMBER_PIN  NoPin
+#define HEATER_CHAMBER_PIN  ORIG_HEATER_BED_PIN
 #define HEATER_COOLER_PIN   NoPin
 
 // TEMP pin
 #define TEMP_0_PIN          39//ORIG_TEMP_0_PIN
 #define TEMP_1_PIN          40//ORIG_TEMP_1_PIN
-#define TEMP_2_PIN          ORIG_TEMP_2_PIN
-#define TEMP_3_PIN          ORIG_TEMP_3_PIN
+#define TEMP_2_PIN          NoPin //ORIG_TEMP_2_PIN
+#define TEMP_3_PIN          NoPin //ORIG_TEMP_3_PIN
 #define TEMP_BED_PIN        ORIG_TEMP_BED_PIN
 #define TEMP_CHAMBER_PIN    NoPin
 #define TEMP_COOLER_PIN     NoPin
 
 // FAN pin
-#define FAN0_PIN            ORIG_FAN0_PIN
-#define FAN1_PIN            ORIG_HEATER_3_PIN //ORIG_FAN1_PIN
-#define FAN2_PIN            ORIG_FAN2_PIN
+#define FAN0_PIN            ORIG_FAN0_PIN 		//Throat
+#define FAN1_PIN            ORIG_FAN1_PIN 		//Nozzles
+#define FAN2_PIN            ORIG_HEATER_3_PIN 	//Exhaust
 #define FAN3_PIN            ORIG_FAN3_PIN
 #define FAN4_PIN            ORIG_FAN4_PIN
 #define FAN5_PIN            ORIG_FAN5_PIN
@@ -180,13 +180,11 @@
 
 //================================= FEATURE ==================================
 
-
 //###SERVO
-#define SERVO0_PIN            ORIG_SERVO0_PIN
-#define SERVO1_PIN            ORIG_SERVO1_PIN
+#define SERVO0_PIN            ORIG_SERVO1_PIN
+#define SERVO1_PIN            ORIG_SERVO0_PIN
 #define SERVO2_PIN            ORIG_SERVO2_PIN
 #define SERVO3_PIN            ORIG_SERVO3_PIN
-
 
 #if ENABLED(MKR4)
   #define E0E1_CHOICE_PIN NoPin

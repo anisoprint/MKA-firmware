@@ -211,12 +211,13 @@
 #define CHANGE_MOVES 12
 
 //Change to T0 -          X      Y  Spd  Switch
-#define CHANGE_T0      {{296.0,  7, 200,  true},\
-						{315.2,  7,  50,  true},\
-						{310.0, 13,  50,  true},\
-						{332.0, 13, 200, false},\
+#define CHANGE_T0      {{298.0,  0, 200,  true},\
+						{318.5,  0,  50,  true},\
+						{313.0,  6,  50,  true},\
+						{332.0,  6, 200, false},\
 						{332.0, 55,  34, false},\
 						{296.0, 55, 200, false},\
+						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
@@ -225,18 +226,18 @@
 						{  0.0,  0,   0, false}}
 
 //Change to T1 -          X      Y  Spd  Switch
-#define CHANGE_T1      {{296.0, 55, 200, false},\
-						{336.9, 55, 200, false},\
-						{336.9, 16,  34, false},\
-						{336.9, 15, 200,  true},\
-						{336.9,  7, 200,  true},\
-						{313.9,  7,  50,  true},\
-						{313.9, 13, 200,  true},\
-						{296.0, 13, 200,  true},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false}}
+#define CHANGE_T1      {{296.0, 55,  200, false},\
+						{336.0, 55,  200, false},\
+						{336.0, 6.5,  34, false},\
+						{336.0, 6.0, 200,  true},\
+						{336.0,  0,  200,  true},\
+						{315.0,  0,   50,  true},\
+						{315.0,  6,  200,  true},\
+						{296.0,  6,  200,  true},\
+						{  0.0,  0,    0, false},\
+						{  0.0,  0,    0, false},\
+						{  0.0,  0,    0, false},\
+						{  0.0,  0,    0, false}}
 
 //Cut settings
 #define CUT_SERVO_ID      0
