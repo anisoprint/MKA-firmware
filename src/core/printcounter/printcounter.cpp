@@ -29,15 +29,15 @@ printStatistics PrintCounter::data;
 const uint16_t  PrintCounter::updateInterval  = 10,
                 PrintCounter::saveInterval    = (SD_CFG_SECONDS);
 
-millis_t PrintCounter::lastDuration;
+millis_l PrintCounter::lastDuration;
 bool PrintCounter::loaded = false;
 
-millis_t PrintCounter::deltaDuration() {
+millis_l PrintCounter::deltaDuration() {
   #if ENABLED(DEBUG_PRINTCOUNTER)
     PrintCounter::debug(PSTR("deltaDuration"));
   #endif
 
-  millis_t tmp = lastDuration;
+  millis_l tmp = lastDuration;
   lastDuration = duration();
   return lastDuration - tmp;
 }
@@ -107,10 +107,10 @@ void PrintCounter::showStats() {
 
 void PrintCounter::tick() {
 
-  static millis_t update_last = millis(),
+  static millis_l update_last = millis(),
                   config_last = millis();
 
-  millis_t now = millis();
+  millis_l now = millis();
 
   // Trying to get the amount of calculations down to the bare min
   const static uint16_t interval = updateInterval * 1000UL;
@@ -125,7 +125,7 @@ void PrintCounter::tick() {
   }
 
   #if HAS_SDSUPPORT && ENABLED(SD_SETTINGS)
-    const static millis_t sdinterval = saveInterval * 1000UL;
+    const static millis_l sdinterval = saveInterval * 1000UL;
     if (!loaded) {
       loadStats();
       saveStats();

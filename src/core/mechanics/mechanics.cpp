@@ -51,7 +51,7 @@ float Mechanics::feedrate_mm_s                            = MMM_TO_MMS(1500.0),
             Mechanics::raised_parked_position[NUM_AXIS],                            // used in mode 1
             Mechanics::duplicate_hotend_x_offset    = DEFAULT_DUPLICATION_X_OFFSET; // used in mode 2
   int16_t   Mechanics::duplicate_hotend_temp_offset = 0;                            // used in mode 2
-  millis_t  Mechanics::delayed_move_time            = 0;                            // used in mode 1
+  millis_l  Mechanics::delayed_move_time            = 0;                            // used in mode 1
   bool      Mechanics::active_hotend_parked         = false,                        // used in mode 1 & 2
             Mechanics::hotend_duplication_enabled   = false;                        // used in mode 2
 #endif
@@ -66,7 +66,7 @@ uint32_t  Mechanics::max_acceleration_steps_per_s2[XYZE_N] = { 0 },
 
 const signed char Mechanics::home_dir[XYZ] = { X_HOME_DIR, Y_HOME_DIR, Z_HOME_DIR };
 
-millis_t Mechanics::min_segment_time_us = 0;
+millis_l Mechanics::min_segment_time_us = 0;
 
 #if ENABLED(WORKSPACE_OFFSETS) || ENABLED(DUAL_X_CARRIAGE)
   // The distance that XYZ has been offset by G92. Reset by G28.
@@ -728,7 +728,7 @@ bool Mechanics::position_is_reachable_by_probe(const float &rx, const float &ry)
 
     const float fr_mm_s = MMS_SCALED(feedrate_mm_s);
 
-    millis_t next_idle_ms = millis() + 200UL;
+    millis_l next_idle_ms = millis() + 200UL;
 
     #if N_ARC_CORRECTION > 1
       int8_t arc_recalc_count = N_ARC_CORRECTION;

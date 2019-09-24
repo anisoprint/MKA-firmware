@@ -67,13 +67,14 @@ void StatePrinting::Pause_Push(void* ptr) {
     	switch (PrintPause::Status)
     	{
 			case NotPaused:
-				PrintPause::PausePrint(retract);
+				commands.enqueue_now_P(PSTR("M125"));
+				//PrintPause::PausePrint(retract);
 				break;
 			case WaitingToPause:
-				PrintPause::ResumePrint();
+				//PrintPause::ResumePrint();
 				break;
 			case Paused:
-				PrintPause::ResumePrint(retract);
+				//PrintPause::ResumePrint(retract);
 				break;
     	}
 
@@ -281,7 +282,7 @@ void StatePrinting::Control_Push(void* ptr) {
 void StatePrinting::DoneMessage_Again(void* ptr) {
 	String filename = String(card.fileName);
 	card.selectFile(filename.c_str());
-    commands.enqueue_and_echo_P(PSTR("M24"));
+    commands.enqueue_now_P(PSTR("M24"));
 	StatePrinting::Activate();
 }
 

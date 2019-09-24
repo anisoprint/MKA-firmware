@@ -79,17 +79,17 @@
                   tempIStateLimitMax,
                   last_temperature,
                   temperature_1s;
-      millis_t    next_check_ms;
+      millis_l    next_check_ms;
       uint8_t     HeaterFlag;
       uint8_t     consecutive_error_temp;
 
       #if HEATER_IDLE_HANDLER
-        millis_t  idle_timeout_ms;
+        millis_l  idle_timeout_ms;
       #endif
 
       #if WATCH_THE_HEATER
         uint16_t  watch_target_temp;
-        millis_t  watch_next_ms;
+        millis_l  watch_next_ms;
       #endif
 
       TemperatureSensor sensor;
@@ -165,7 +165,7 @@
       FORCE_INLINE bool resetFlag() { HeaterFlag = 0; }
 
       #if HEATER_IDLE_HANDLER
-        void start_idle_timer(const millis_t timeout_ms);
+        void start_idle_timer(const millis_l timeout_ms);
         void reset_idle_timer();
       #endif
 

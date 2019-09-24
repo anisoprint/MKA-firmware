@@ -80,7 +80,7 @@ void StateMovement::Movement_Push(void* ptr) {
 			//fan
 			ZERO(NextionHMI::buffer);
 			_gcode.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
-			commands.enqueue_and_echo(NextionHMI::buffer);
+			commands.enqueue_one_now(NextionHMI::buffer);
 		}
 	}
 	else
@@ -97,9 +97,9 @@ void StateMovement::Movement_Push(void* ptr) {
 				return;
 			}
 		}
-		commands.enqueue_and_echo_P(PSTR("G91"));
-		commands.enqueue_and_echo(NextionHMI::buffer);
-		commands.enqueue_and_echo_P(PSTR("G90"));
+		commands.enqueue_now_P(PSTR("G91"));
+		commands.enqueue_one_now(NextionHMI::buffer);
+		commands.enqueue_now_P(PSTR("G90"));
 	}
 
 	DrawUpdate();

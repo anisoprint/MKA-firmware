@@ -133,6 +133,8 @@ typedef uint32_t  ptr_int_t;
   #define MKSERIAL Serial3
 #endif
 
+#define NUM_SERIAL 1
+
 // EEPROM START
 #define EEPROM_OFFSET 10
 

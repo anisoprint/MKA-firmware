@@ -97,7 +97,7 @@ PrinterMode Printer::mode =
 #endif
 
 #if ENABLED(IDLE_OOZING_PREVENT)
-  millis_t  Printer::axis_last_activity   = 0;
+  millis_l  Printer::axis_last_activity   = 0;
   bool      Printer::IDLE_OOZING_enabled  = true,
             Printer::IDLE_OOZING_retracted[EXTRUDERS] = ARRAY_BY_EXTRUDERS(false);
 #endif
@@ -192,9 +192,6 @@ void Printer::setup() {
 
   SERIAL_SMV(ECHO, MSG_FREE_MEMORY, HAL::getFreeRam());
   SERIAL_EMV(MSG_PLANNER_BUFFER_BYTES, (int)sizeof(block_t)*BLOCK_BUFFER_SIZE);
-
-  // Send "ok" after commands by default
-  commands.setup();
 
   #if HAS_SDSUPPORT
     card.mount();
@@ -469,7 +466,7 @@ void Printer::check_periodical_actions() {
 
 }
 
-void Printer::safe_delay(millis_t ms) {
+void Printer::safe_delay(millis_l ms) {
   while (ms > 50) {
     ms -= 50;
     HAL::delayMilliseconds(50);
@@ -1183,7 +1180,7 @@ void Printer::setDebugLevel(const uint8_t newLevel) {
   void Printer::handle_status_leds() {
 
     static bool red_led = false;
-    static millis_t next_status_led_update_ms = 0;
+    static millis_l next_status_led_update_ms = 0;
 
     if (ELAPSED(millis(), next_status_led_update_ms)) {
       next_status_led_update_ms += 500; // Update every 0.5s

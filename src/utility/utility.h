@@ -90,4 +90,9 @@ FORCE_INLINE char *ftostr3(const float &x) { return itostr3((int)x); }
   FORCE_INLINE char *ftostr4sign(const float &fx) { return itostr4sign((int)fx); }
 #endif
 
+bool expired(millis_l *start, const millis_l period);
+
+bool expired(millis_s *start, const millis_s period);
+
+
 #endif /* __UTILITY_H__ */

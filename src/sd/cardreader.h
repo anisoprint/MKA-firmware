@@ -95,7 +95,7 @@
       #endif
 
       uint16_t  workDirDepth;
-      millis_t  next_autostart_ms;
+      millis_l  next_autostart_ms;
       uint16_t  nrFiles;             // counter for the files in the current directory and recycled as position counter for getting the nrFiles'th name in the directory.
       LsAction  lsAction;            // stored for recursion.
       bool  autostart_stilltocheck;  // the sd start is delayed, because otherwise the serial cannot answer fast enought to make contact with the hostsoftware.

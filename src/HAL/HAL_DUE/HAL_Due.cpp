@@ -109,7 +109,7 @@ void sei(void) {
 // input parameters: Arduino pin number, frequency in Hz, duration in milliseconds
 void tone(const pin_t _pin, const uint16_t frequency, const uint16_t duration) {
 
-  millis_t endTime = millis() + duration;
+  millis_l endTime = millis() + duration;
   const uint32_t halfPeriod = 1000000L / frequency / 2;
 
   HAL::pinMode(_pin, OUTPUT_LOW);

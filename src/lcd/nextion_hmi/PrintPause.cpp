@@ -50,6 +50,7 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
    * Returns 'true' if pause was completed, 'false' for abort
    */
 
+
   bool PrintPause::PausePrint(const float &retract) {
 
     if (Status!=NotPaused && Status!=WaitingToPause) return false; // already paused
@@ -112,8 +113,8 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     if (printer.isAbortSDprinting()) return false;
 
     // Start the heater idle timers
-    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
-    const millis_t bed_timeout    = (millis_t)(PAUSE_PARK_PRINTER_OFF) * 60000UL;
+    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+    const millis_l bed_timeout    = (millis_l)(PAUSE_PARK_PRINTER_OFF) * 60000UL;
 
     LOOP_HOTEND()
       heaters[h].start_idle_timer(nozzle_timeout);
@@ -128,13 +129,13 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     NextionHMI::RaiseEvent(PRINT_PAUSED);
     print_job_counter.pause();
 
-    printer.keepalive(PausedforUser);
-    printer.setWaitForUser(true);
-    while (printer.isWaitForUser() && Status==Paused) {
-    	printer.idle(true);
-    }
-
-    printer.keepalive(InHandler);
+//    printer.keepalive(PausedforUser);
+//    printer.setWaitForUser(true);
+//    while (printer.isWaitForUser() && Status==Paused) {
+//    	printer.idle(true);
+//    }
+//
+//    printer.keepalive(InHandler);
 
     return true;
 }

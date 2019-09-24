@@ -38,7 +38,7 @@
   inline void gcode_M0_M1(void) {
     const char * const args = parser.string_arg;
 
-    millis_t ms = 0;
+    millis_l ms = 0;
     bool hasP = false, hasS = false;
     if (parser.seenval('P')) {
       ms = parser.value_millis(); // milliseconds to wait

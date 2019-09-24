@@ -41,9 +41,9 @@ class Stopwatch {
     };
 
     static Stopwatch::State state;
-    static millis_t accumulator;
-    static millis_t startTimestamp;
-    static millis_t stopTimestamp;
+    static millis_l accumulator;
+    static millis_l startTimestamp;
+    static millis_l stopTimestamp;
 
   public: /** Public Function */
 
@@ -80,7 +80,7 @@ class Stopwatch {
      * @brief Resume the stopwatch
      * @details Resume a timer from a given duration
      */
-    static void resume(const millis_t duration);
+    static void resume(const millis_l duration);
 
     /**
      * @brief Resets the stopwatch
@@ -107,7 +107,7 @@ class Stopwatch {
      * @details Returns the total number of seconds the timer has been running.
      * @return the delta since starting the stopwatch
      */
-    static millis_t duration();
+    static millis_l duration();
 
     #if ENABLED(DEBUG_STOPWATCH)
 

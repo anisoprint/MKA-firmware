@@ -44,12 +44,12 @@ namespace {
 #if HAS_BUZZER
 
   static void filament_change_beep(const int8_t max_beep_count, const bool init=false) {
-    static millis_t next_buzz = 0;
+    static millis_l next_buzz = 0;
     static int8_t runout_beep = 0;
 
     if (init) next_buzz = runout_beep = 0;
 
-    const millis_t ms = millis();
+    const millis_l ms = millis();
     if (ELAPSED(ms, next_buzz)) {
       if (max_beep_count < 0 || runout_beep < max_beep_count + 5) { // Only beep as long as we're supposed to
         next_buzz = ms + ((max_beep_count < 0 || runout_beep < max_beep_count) ? 1000 : 500);
@@ -237,7 +237,7 @@ void StateWizard::MaterialUnloadS1(void* ptr) {
 		else
 		{
 			const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
-			const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+			const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
 			heaters[heater].start_idle_timer(nozzle_timeout);
 		}
 
@@ -347,7 +347,7 @@ void StateWizard::MaterialUnloadS4(void* ptr) {
 	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "4/4", NEX_ICON_MAINTENANCE);
 
 	const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
-    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
     heaters[heater].start_idle_timer(nozzle_timeout);
 
 	Init1Button(PSTR(MSG_FINISH), MaterialUnloadFinish);
@@ -370,7 +370,7 @@ void StateWizard::MaterialUnloadFinish(void* ptr) {
 	    const point_t park_point = NOZZLE_PARK_POINT;
 		Nozzle::park(3, park_point);
 
-	    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+	    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
 	    heaters[heater].start_idle_timer(nozzle_timeout);
 	}
 	else
@@ -420,7 +420,7 @@ void StateWizard::MaterialLoadS1(void* ptr) {
 	else
 	{
 		const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
-	    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+	    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
 	    heaters[heater].start_idle_timer(nozzle_timeout);
 	}
 
@@ -500,7 +500,7 @@ void StateWizard::MaterialLoadS3(void* ptr) {
 
 	//waiting for 120 seconds
 	const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
-    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
     heaters[heater].start_idle_timer(nozzle_timeout);
 
 	_loopStopped = false;
@@ -574,7 +574,7 @@ void StateWizard::MaterialLoadS5(void* ptr) {
 
 	//waiting for 120 seconds
 	const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
-    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
     heaters[heater].start_idle_timer(nozzle_timeout);
 
 	_loopStopped = false;
@@ -649,7 +649,7 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
 	    const point_t park_point = NOZZLE_PARK_POINT;
 		Nozzle::park(3, park_point);
 
-	    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+	    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
 	    heaters[heater].start_idle_timer(nozzle_timeout);
 	}
 	else
