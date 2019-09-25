@@ -86,7 +86,7 @@
       resume_print();
     #endif
 
-	#if ENABLED(PARK_HEAD_ON_PAUSE) && ENABLED(NEXTION_HMI)
+	#if ENABLED(NEXTION_HMI)
       if (PrintPause::Status==WaitingToPause || PrintPause::Status==Paused)
     	  PrintPause::ResumePrint();
       else if (PrintPause::Status==NotPaused)
@@ -131,9 +131,8 @@
    */
   void gcode_M25(void) {
 
-	#if ENABLED(PARK_HEAD_ON_PAUSE) && ENABLED(NEXTION_HMI)
-	  const float retract = PAUSE_PARK_RETRACT_LENGTH;
-	  PrintPause::PausePrint(retract);
+	#if ENABLED(NEXTION_HMI)
+	  PrintPause::PausePrint();
 	#else
 	    card.pauseSDPrint();
 	    print_job_counter.pause();

@@ -41,7 +41,9 @@ long Commands::gcode_N = 0;
 
 int Commands::serial_count[NUM_SERIAL] = { 0 };
 
-PGM_P Commands::injected_commands_P = nullptr;
+PGM_P Commands::injected_commands_front_P = nullptr;
+
+PGM_P Commands::injected_commands_rear_P = nullptr;
 
 millis_s Commands::last_command_ms = 0;
 
@@ -54,6 +56,10 @@ void Commands::flush_and_request_resend() {
 
 void Commands::get_available() {
   if (buffer_ring.isFull()) return;
+
+  // if any immediate commands remain, don't get other commands yet
+  if (drain_injected_rear_P()) return;
+
   get_serial();
   #if HAS_SDSUPPORT
     get_sdcard();
@@ -63,7 +69,7 @@ void Commands::get_available() {
 void Commands::advance_queue() {
 
   // Process immediate commands
-  if (process_injected()) return;
+  if (process_injected_front()) return;
 
   // Return if the G-code buffer is empty
   if (!buffer_ring.count()) return;
@@ -110,8 +116,13 @@ void Commands::clear_queue() {
   buffer_ring.clear();
 }
 
-void Commands::inject_P(PGM_P const pgcode) {
-  injected_commands_P = pgcode;
+void Commands::inject_front_P(PGM_P const pgcode) {
+  injected_commands_front_P = pgcode;
+}
+
+void Commands::inject_rear_P(PGM_P const pgcode) {
+  injected_commands_rear_P = pgcode;
+  (void)drain_injected_rear_P(); // first command executed asap (when possible)
 }
 
 void Commands::enqueue_one_now(const char * cmd) {
@@ -445,8 +456,11 @@ void Commands::get_serial() {
           if (strcmp(command, "M410") == 0) printer.quickstop_stepper();
         #endif
 
-        // Add the command to the buffer_ring
-        enqueue(serial_line_buffer[i], true, i);
+        if (!process_without_queue(command))
+        {
+            // Add the command to the buffer_ring
+        	enqueue(serial_line_buffer[i], true, i);
+        }
       }
       else if (serial_count[i] >= MAX_CMD_SIZE - 1) {
         // Keep fetching, but ignore normal characters beyond the max length
@@ -464,6 +478,8 @@ void Commands::get_serial() {
     } // for NUM_SERIAL
   }
 }
+
+
 
 #if HAS_SDSUPPORT
 
@@ -548,7 +564,11 @@ void Commands::get_serial() {
         sd_line_buffer[sd_count] = '\0'; // terminate string
         sd_count = 0; // clear sd line buffer
 
-        enqueue(sd_line_buffer, false, -2); // Port -2 for SD non answer and no send ok.
+        if (!process_without_queue(sd_line_buffer))
+        {
+            // Add the command to the buffer_ring
+            enqueue(sd_line_buffer, false, -2); // Port -2 for SD non answer and no send ok.
+        }
 
         #if HAS_SD_RESTART
           restart.cmd_sdpos = card.getIndex();
@@ -633,19 +653,33 @@ bool Commands::enqueue(const char * cmd, bool say_ok/*=false*/, int8_t port/*=-2
   return true;
 }
 
-bool Commands::process_injected() {
+bool Commands::process_injected_rear() {
+  if (injected_commands_rear_P != NULL) {
+    size_t i = 0;
+    char c, cmd[30];
+    strncpy_P(cmd, injected_commands_rear_P, sizeof(cmd) - 1);
+    cmd[sizeof(cmd) - 1] = '\0';
+    while ((c = cmd[i]) && c != '\n') i++; // find the end of this gcode command
+    cmd[i] = '\0';
+    if (enqueue_one(cmd))     // success?
+    	injected_commands_rear_P = c ? injected_commands_rear_P + i + 1 : NULL; // next command or done
+  }
+  return (injected_commands_rear_P != NULL);    // return whether any more remain
+}
 
-  if (injected_commands_P == nullptr) return false;
+bool Commands::process_injected_front() {
+
+  if (injected_commands_front_P == nullptr) return false;
 
   char c;
   size_t i = 0;
-  while ((c = pgm_read_byte(&injected_commands_P[i])) && c != '\n') i++;
+  while ((c = pgm_read_byte(&injected_commands_front_P[i])) && c != '\n') i++;
 
   // Extract current command and move pointer to next command
   char cmd[i + 1];
-  memcpy_P(cmd, injected_commands_P, i);
+  memcpy_P(cmd, injected_commands_front_P, i);
   cmd[i] = '\0';
-  injected_commands_P = c ? injected_commands_P + i + 1 : nullptr;
+  injected_commands_front_P = c ? injected_commands_front_P + i + 1 : nullptr;
 
   // Execute command if non-blank
   if (i) {
@@ -667,6 +701,19 @@ bool Commands::process_injected() {
 #else
   #define EXECUTE_G0_G1(NUM) gcode_G0_G1()
 #endif
+
+bool Commands::process_without_queue(const char * cmd) {
+    if (strcmp(cmd, "M1001") == 0) {
+    	MCode_Table[1001].command();
+    	return true;
+    }
+    if (strcmp(cmd, "M1002") == 0) {
+    	MCode_Table[1002].command();
+    	return true;
+    }
+    return false;
+
+}
 
 void Commands::process_parsed(const bool say_ok/*=true*/) {
 

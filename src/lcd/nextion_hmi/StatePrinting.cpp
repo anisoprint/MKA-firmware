@@ -67,14 +67,14 @@ void StatePrinting::Pause_Push(void* ptr) {
     	switch (PrintPause::Status)
     	{
 			case NotPaused:
-				commands.enqueue_now_P(PSTR("M125"));
-				//PrintPause::PausePrint(retract);
+				//commands.enqueue_now_P(PSTR("M125"));
+				PrintPause::PausePrint();
 				break;
 			case WaitingToPause:
-				//PrintPause::ResumePrint();
+				PrintPause::ResumePrint();
 				break;
 			case Paused:
-				//PrintPause::ResumePrint(retract);
+				PrintPause::ResumePrint(retract);
 				break;
     	}
 

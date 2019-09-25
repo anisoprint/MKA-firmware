@@ -39,21 +39,20 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
   mechanics.set_current_to_destination();
 }
 
-  /**
-   * Pause procedure
-   *
-   * - Abort if already paused
-   * - Send host action for pause, if configured
-   * - Initial retract, if current temperature is hot enough
-   * - Park the nozzle at the given position
-   *
-   * Returns 'true' if pause was completed, 'false' for abort
-   */
 
+/**
+ * Pause procedure
+ *
+ * - Abort if already paused
+ * - Pause SD printing
+ * - Queue nozzle parking
+ *
+ * Returns 'true' if pause was completed, 'false' for abort
+ */
 
-  bool PrintPause::PausePrint(const float &retract) {
+bool PrintPause::PausePrint() {
 
-    if (Status!=NotPaused && Status!=WaitingToPause) return false; // already paused
+	if (Status!=NotPaused && Status!=WaitingToPause) return false; // already paused
 
     //Printing with fiber, can't pause now
     if (CanPauseNow == false)
@@ -62,26 +61,52 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     	NextionHMI::RaiseEvent(PRINT_PAUSE_SCHEDULED);
     	return false;
     }
+    else
+    {
+        SERIAL_STR(PAUSE);
+        SERIAL_EOL();
 
-    SERIAL_STR(PAUSE);
-    SERIAL_EOL();
+        // Pause the print job
+        #if HAS_SDSUPPORT
+          if (IS_SD_PRINTING) {
+            card.pauseSDPrint();
+            SdPrintingPaused = true;
+          }
+        #endif
 
-    // Pause the print job and timer
-    #if HAS_SDSUPPORT
-      if (IS_SD_PRINTING) {
-        card.pauseSDPrint();
-        SdPrintingPaused = true;
-      }
-    #endif
-    Status = Pausing;
-    NextionHMI::RaiseEvent(PRINT_PAUSING);
+        print_job_counter.pause();
+
+        commands.inject_P(PSTR("M125")); // Must be enqueued with pauseSDPrint set to be last in the buffer
+
+        Status = Pausing;
+        NextionHMI::RaiseEvent(PRINT_PAUSING);
+
+
+        return true;
+    }
+}
+
+
+  /**
+   * Park procedure
+   *
+   * - Abort if not pausing
+   * - Initial retract, if current temperature is hot enough
+   * - Park the nozzle at the given position
+   *
+   * Returns 'true' if pause was completed, 'false' for abort
+   */
+
+
+  bool PrintPause::ParkHead(const float &retract) {
+
+    if (Status!=Pausing) return false; // incorrect state
 
     // Wait for synchronize steppers
     while ((planner.has_blocks_queued() || stepper.cleaning_buffer_counter) && !printer.isAbortSDprinting()) {
       printer.idle();
       printer.keepalive(InProcess);
     }
-    //memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
 
     // Handle cancel
     if (printer.isAbortSDprinting()) return false;
@@ -127,7 +152,6 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     // Indicate that the printer is paused
     Status = Paused;
     NextionHMI::RaiseEvent(PRINT_PAUSED);
-    print_job_counter.pause();
 
 //    printer.keepalive(PausedforUser);
 //    printer.setWaitForUser(true);
@@ -199,15 +223,11 @@ void PrintPause::ResumePrint(const float& purge_length) {
 
    printer.setWaitForHeatUp(false);
 
-   //memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
-
    // Move XY to starting position, then Z
    mechanics.do_blocking_move_to_xy(resume_position[X_AXIS], resume_position[Y_AXIS], NOZZLE_PARK_XY_FEEDRATE);
 
    // Set Z_AXIS to saved position
    mechanics.do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
-
-   //memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
 
    // Purging plastic
    if (purge_length && !thermalManager.tooColdToExtrude(tools.active_extruder))
@@ -216,8 +236,6 @@ void PrintPause::ResumePrint(const float& purge_length) {
    	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
    	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), purge_length, PrintPause::LoadFeedrate);
    }
-
-   //memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
 
    // Now all positions are resumed and ready to be confirmed
    // Set all to saved position
@@ -267,5 +285,6 @@ void PrintPause::RestoreTemperatures() {
     		}
 	}
 }
+
 
 #endif

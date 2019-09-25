@@ -76,7 +76,8 @@ class Commands {
      * Used by MK4duo internally to ensure that commands initiated from within
      * are enqueued ahead of any pending serial or sd card
      */
-    static PGM_P injected_commands_P;
+    static PGM_P injected_commands_front_P;
+    static PGM_P injected_commands_rear_P;
 
     static millis_s last_command_ms;
 
@@ -107,11 +108,18 @@ class Commands {
     static void clear_queue();
 
     /**
-     * Enqueue one or many commands to run from program memory.
+     * Enqueue one or many commands to run from program memory before the common queue.
      * Aborts the current queue, if any.
-     * Note: process_injected() will process them.
+     * Note: process_injected_front() will process them.
      */
-    static void inject_P(PGM_P const pgcode);
+    static void inject_front_P(PGM_P const pgcode);
+
+    /**
+     * Enqueue one or many commands to run from program memory at the end of the current queue.
+     * Aborts the current queue, if any.
+     * Note: drain_injected_P() must be called repeatedly to drain the commands afterwards
+     */
+    static void inject_rear_P(PGM_P const pgcode);
 
     /**
      * Enqueue and return only when commands are actually enqueued
@@ -224,7 +232,18 @@ class Commands {
     /**
      * Process the next "immediate" command
      */
-    static bool process_injected();
+    static bool process_injected_front();
+
+    /**
+     * Inject the next "immediate" command, when possible, onto the rear of the buffer_ring.
+     * Return true if any immediate commands remain to inject.
+     */
+    static bool process_injected_rear();
+
+    /**
+     * Process the next "immediate" command
+     */
+    static bool process_without_queue(const char * cmd);
 
     /**
      * Process parsed gcode and execute command
