@@ -241,7 +241,7 @@
 
 //Cut settings
 #define CUT_SERVO_ID      0
-#define CUT_ACTIVE_ANGLE  30
+#define CUT_ACTIVE_ANGLE  160
 #define CUT_NEUTRAL_ANGLE 90
 
 /***********************************************************************/

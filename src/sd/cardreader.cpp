@@ -144,8 +144,8 @@
     char cmd[4 + strlen(name) + 1]; // Room for "M23 ", filename, and null
     sprintf_P(cmd, PSTR("M23 %s"), name);
     for (char *c = &cmd[4]; *c; c++) *c = tolower(*c);
-    commands.enqueue_one_now(cmd);
-    commands.enqueue_now_P(PSTR("M24"));
+    commands.enqueue_and_echo_now(cmd);
+    commands.enqueue_and_echo_P(PSTR("M24"));
   }
 
   void CardReader::stopSDPrint() {
@@ -268,7 +268,7 @@
     print_job_counter.stop();
 
     if (print_job_counter.duration() > 60)
-    	commands.inject_P(PSTR("M31"));
+      commands.enqueue_and_echo_P(PSTR("M31"));
 
     #if ENABLED(SDCARD_SORT_ALPHA)
       presort();

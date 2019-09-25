@@ -24,9 +24,9 @@
 #include "stopwatch.h"
 
 Stopwatch::State Stopwatch::state;
-millis_l Stopwatch::accumulator;
-millis_l Stopwatch::startTimestamp;
-millis_l Stopwatch::stopTimestamp;
+millis_t Stopwatch::accumulator;
+millis_t Stopwatch::startTimestamp;
+millis_t Stopwatch::stopTimestamp;
 
 bool Stopwatch::stop() {
   #if ENABLED(DEBUG_STOPWATCH)
@@ -70,7 +70,7 @@ bool Stopwatch::start() {
   else return false;
 }
 
-void Stopwatch::resume(const millis_l duration) {
+void Stopwatch::resume(const millis_t duration) {
   #if ENABLED(DEBUG_STOPWATCH)
     Stopwatch::debug(PSTR("resume"));
   #endif
@@ -90,7 +90,7 @@ void Stopwatch::reset() {
   accumulator = 0;
 }
 
-millis_l Stopwatch::duration() {
+millis_t Stopwatch::duration() {
   return (((isRunning()) ? millis() : stopTimestamp)
           - startTimestamp) / 1000UL + accumulator;
 }

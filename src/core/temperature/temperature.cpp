@@ -82,7 +82,7 @@ void Temperature::init() {
 void Temperature::wait_heater(Heater *act, bool no_wait_for_cooling/*=true*/) {
 
   #if TEMP_RESIDENCY_TIME > 0
-    millis_l residency_start_ms = 0;
+    millis_t residency_start_ms = 0;
     // Loop until the temperature has stabilized
     #define TEMP_CONDITIONS (!residency_start_ms || PENDING(now, residency_start_ms + (TEMP_RESIDENCY_TIME) * 1000UL))
   #else
@@ -91,7 +91,7 @@ void Temperature::wait_heater(Heater *act, bool no_wait_for_cooling/*=true*/) {
 
   float     old_temp            = 9999.0;
   bool      wants_to_cool       = false;
-  millis_l  now,
+  millis_t  now,
             next_cool_check_ms  = 0;
 
   printer.setWaitForHeatUp(true);
@@ -220,7 +220,7 @@ void Temperature::spin() {
 
   if (++cycle_1_second == 10) cycle_1_second = 0;
 
-  millis_l ms = millis();
+  millis_t ms = millis();
 
   LOOP_HEATER() {
 
@@ -301,9 +301,9 @@ void Temperature::spin() {
   
   #if HAS_POWER_CONSUMPTION_SENSOR
 
-    static millis_l last_update = millis();
-    millis_l temp_last_update = millis();
-    millis_l from_last_update = temp_last_update - last_update;
+    static millis_t last_update = millis();
+    millis_t temp_last_update = millis();
+    millis_t from_last_update = temp_last_update - last_update;
     static float watt_overflow = 0.0;
     powerManager.consumption_meas = powerManager.analog2power();
     /*SERIAL_MV("raw:", powerManager.raw_analog2voltage(), 5);
@@ -341,7 +341,7 @@ void Temperature::PID_autotune(Heater *act, const float temp, const uint8_t ncyc
 
   disable_all_heaters(); // switch off all heaters.
 
-  millis_l  t1 = millis(),
+  millis_t  t1 = millis(),
             t2 = t1;
   int32_t   t_high = 0,
             t_low = 0;
@@ -374,7 +374,7 @@ void Temperature::PID_autotune(Heater *act, const float temp, const uint8_t ncyc
 
     act->updateCurrentTemperature();
 
-    const millis_l time = millis();
+    const millis_t time = millis();
     currentTemp = act->current_temperature;
     NOLESS(maxTemp, currentTemp);
     NOMORE(minTemp, currentTemp);
@@ -789,9 +789,9 @@ void Temperature::max_temp_error(const uint8_t h) {
 #if HAS_THERMALLY_PROTECTED_HEATER
 
   Temperature::TRState Temperature::thermal_runaway_state_machine[HEATER_COUNT] = { TRInactive };
-  millis_l Temperature::thermal_runaway_timer[HEATER_COUNT] = { 0 };
+  millis_t Temperature::thermal_runaway_timer[HEATER_COUNT] = { 0 };
 
-  void Temperature::thermal_runaway_protection(Temperature::TRState* state, millis_l* timer, float temperature, float target_temperature, const uint8_t h, int period_seconds, int hysteresis_degc) {
+  void Temperature::thermal_runaway_protection(Temperature::TRState* state, millis_t* timer, float temperature, float target_temperature, const uint8_t h, int period_seconds, int hysteresis_degc) {
 
     static float tr_target_temperature[HEATER_COUNT] = { 0.0 };
 

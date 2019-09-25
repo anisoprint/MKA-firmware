@@ -55,8 +55,7 @@
 /**
  * Types
  */
-typedef uint32_t  millis_l;
-typedef uint16_t  millis_s;
+typedef uint32_t  millis_t;
 typedef int8_t    pin_t;
 
 
@@ -134,7 +133,6 @@ typedef int8_t    pin_t;
 #include "src/inc/sanitycheck.h"
 #include "src/inc/point_t.h"
 #include "src/inc/watch.h"
-#include "src/inc/circular_queue.h"
 
 // HAL Modules
 #include "src/HAL/HAL.h"

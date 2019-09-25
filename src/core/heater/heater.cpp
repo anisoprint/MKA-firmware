@@ -119,7 +119,7 @@
 
     const float difference = (float)target_temperature - current_temperature;
 
-    millis_l ms = millis();
+    millis_t ms = millis();
 
     #if HEATER_IDLE_HANDLER
       if (!isIdle() && idle_timeout_ms && ELAPSED(ms, idle_timeout_ms))
@@ -294,7 +294,7 @@
   #endif
 
   #if HEATER_IDLE_HANDLER
-    void Heater::start_idle_timer(const millis_l timeout_ms) {
+    void Heater::start_idle_timer(const millis_t timeout_ms) {
       idle_timeout_ms = millis() + timeout_ms;
       setIdle(false);
     }
