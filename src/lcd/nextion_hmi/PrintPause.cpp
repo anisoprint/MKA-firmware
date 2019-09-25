@@ -76,7 +76,7 @@ bool PrintPause::PausePrint() {
 
         print_job_counter.pause();
 
-        commands.inject_P(PSTR("M125")); // Must be enqueued with pauseSDPrint set to be last in the buffer
+        commands.inject_rear_P(PSTR("M125")); // Must be enqueued with pauseSDPrint set to be last in the buffer
 
         Status = Pausing;
         NextionHMI::RaiseEvent(PRINT_PAUSING);

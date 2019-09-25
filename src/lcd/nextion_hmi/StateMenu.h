@@ -26,11 +26,13 @@ namespace StateMenu {
 	void Control_CancelPrint_Yes(void *ptr);
 	void Control_Tune(void *ptr);
 	void Control_Tune_OK(void *ptr);
+	void Control_DInfo(void* ptr);
 
 	//Maintenance menu
 	void ActivateMaintenance(void *ptr=0);
 	void Maintenance_Move(void *ptr);
 	void Maintenance_About(void* ptr);
+	void Maintenance_DInfo(void* ptr);
 	void Maintenance_Settings(void* ptr);
 	void Maintenance_Settings_OK(void* ptr);
 	void MaintenanceBack(void *ptr);

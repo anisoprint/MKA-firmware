@@ -58,7 +58,7 @@ void Commands::get_available() {
   if (buffer_ring.isFull()) return;
 
   // if any immediate commands remain, don't get other commands yet
-  if (drain_injected_rear_P()) return;
+  if (process_injected_rear()) return;
 
   get_serial();
   #if HAS_SDSUPPORT
@@ -122,7 +122,7 @@ void Commands::inject_front_P(PGM_P const pgcode) {
 
 void Commands::inject_rear_P(PGM_P const pgcode) {
   injected_commands_rear_P = pgcode;
-  (void)drain_injected_rear_P(); // first command executed asap (when possible)
+  (void)process_injected_rear(); // first command executed asap (when possible)
 }
 
 void Commands::enqueue_one_now(const char * cmd) {

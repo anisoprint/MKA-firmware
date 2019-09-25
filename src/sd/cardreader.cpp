@@ -268,10 +268,13 @@
     print_job_counter.stop();
 
     if (print_job_counter.duration() > 60)
-    	commands.inject_P(PSTR("M31"));
+    	commands.inject_rear_P(PSTR("M31"));
 
     #if ENABLED(SDCARD_SORT_ALPHA)
+      String filename = String(fileName);
       presort();
+      ZERO(fileName);
+      strncpy(fileName, filename.c_str(), strlen(filename.c_str()));
     #endif
   }
 
@@ -289,7 +292,7 @@
       if (workDirDepth < SD_MAX_FOLDER_DEPTH)
         workDirParents[workDirDepth++] = workDir;
       #if ENABLED(SDCARD_SORT_ALPHA)
-        presort();
+      	  presort();
       #endif
     }
   }

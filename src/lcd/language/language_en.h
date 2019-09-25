@@ -263,6 +263,10 @@
   #define MSG_SETTINGS                     			_UxGT("Settings")
 #endif
 
+#ifndef MSG_DINFO
+  #define MSG_DINFO                     			_UxGT("Debug info")
+#endif
+
 #ifndef MSG_ABOUT_PRINTER
   #define MSG_ABOUT_PRINTER                     	_UxGT("About printer")
 #endif
@@ -433,6 +437,10 @@
 
 #ifndef MSG_INPUT_BOUNDS
   #define MSG_INPUT_BOUNDS                    	_UxGT("The value should be between %.2f and %.2f")
+#endif
+
+#ifndef MSG_DEBUG_INFO
+  #define MSG_DEBUG_INFO                 		_UxGT("X:%.2f Y:%.2f Z:%.2f\\rE:%.2f U:%.2f V:%.2f\\rT0:%.2f/%d T1:%.2f/%d\\rTB:%.2f/%d TC:%.2f\\rF0:%d F1:%d F2:%d")
 #endif
 
 //Settings

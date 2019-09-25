@@ -176,6 +176,7 @@ typedef int8_t    pin_t;
 #include "src/lcd/nextion_hmi/StateWizard.h"
 #include "src/lcd/nextion_hmi/StateWizardZ.h"
 #include "src/lcd/nextion_hmi/StateAbout.h"
+#include "src/lcd/nextion_hmi/StateDInfo.h"
 #include "src/lcd/nextion_hmi/StateEditNumber.h"
 
 // SD modules

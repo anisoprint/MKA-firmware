@@ -117,7 +117,7 @@ class Commands {
     /**
      * Enqueue one or many commands to run from program memory at the end of the current queue.
      * Aborts the current queue, if any.
-     * Note: drain_injected_P() must be called repeatedly to drain the commands afterwards
+     * Note: process_injected_rear() must be called repeatedly to drain the commands afterwards
      */
     static void inject_rear_P(PGM_P const pgcode);
 
