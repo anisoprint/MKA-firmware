@@ -323,14 +323,7 @@ void StateWizard::MaterialUnloadS3(void* ptr) {
 	if (Tools::extruder_driver_is_plastic((AxisEnum)NextionHMI::wizardData)) //Unload plastic
 	{
 	    // Push filament
-		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, PrintPause::RetractDistance/2, PrintPause::UnloadFeedrate);
-	    // Retract filament
-		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -PrintPause::RetractDistance, PrintPause::RetractFeedrate);
-	    // Wait for filament to cool
-	    printer.safe_delay(FILAMENT_UNLOAD_DELAY);
-	    // Quickly purge
-	    // PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, FILAMENT_UNLOAD_RETRACT_LENGTH + FILAMENT_UNLOAD_PURGE_LENGTH, mechanics.max_feedrate_mm_s[(AxisEnum)NextionHMI::wizardData]);
-
+		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, PrintPause::RetractDistance*2, PrintPause::RetractFeedrate);
 	}
 
     // Unload filament

@@ -24,9 +24,14 @@ namespace StateMenu {
 	void PrintControlBack(void *ptr);
 	void Control_CancelPrint(void *ptr);
 	void Control_CancelPrint_Yes(void *ptr);
+	void Control_Move(void* ptr);
 	void Control_Tune(void *ptr);
 	void Control_Tune_OK(void *ptr);
 	void Control_DInfo(void* ptr);
+	void ActivatePrintTemperature(void* ptr);
+	void PrintTemperature_Plastic(void* ptr);
+	void PrintTemperature_Composite(void* ptr);
+	void PrintTemperature_Buildplate(void* ptr);
 
 	//Maintenance menu
 	void ActivateMaintenance(void *ptr=0);

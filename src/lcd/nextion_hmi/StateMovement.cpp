@@ -57,10 +57,6 @@ void StateMovement::Extruders_Push(void* ptr) {
 	StateMovement::Activate(!_moveMode);
 }
 
-void StateMovement::Back_Push(void* ptr) {
-	StateMenu::ActivateMaintenance();
-}
-
 void StateMovement::Movement_Push(void* ptr) {
 	if (_moveMode==MODE_MOVE_EXTRUDERS && (ptr==&_bMovementAact || ptr==&_bMovementBact || ptr==&_bMovementCact))
 	{
@@ -120,10 +116,11 @@ void StateMovement::Init() {
 	_bMovementCact.attachPush(Movement_Push, &_bMovementCact);
 
 	_bMovementMode.attachPush(Extruders_Push);
-	_bMovementBack.attachPush(Back_Push);
+
 }
 
-void StateMovement::Activate(bool mode) {
+void StateMovement::Activate(bool mode, NexTouchEventCb cbBack) {
+	if (cbBack!=nullptr) _bMovementBack.attachPush(cbBack);
 	_moveMode = mode;
 	_mode.setValue(_moveMode);
 	_fan.setValue(fans[1].Speed>0);

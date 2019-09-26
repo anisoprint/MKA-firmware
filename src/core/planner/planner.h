@@ -310,6 +310,7 @@ class Planner {
     static void set_position_mm_kinematic(const float (&cart)[XYZE]);
     FORCE_INLINE static void set_z_position_mm(const float &z) { set_position_mm(AxisEnum(Z_AXIS), z); }
     FORCE_INLINE static void set_e_position_mm(const float e[DRIVER_EXTRUDERS]) {  LOOP_EUVW(ie) set_position_mm(AxisEnum(ie), e[ie-XYZ]); }
+    FORCE_INLINE static void set_only_e_position_mm(const float pos[XYZE]) {  LOOP_EUVW(ie) set_position_mm(AxisEnum(ie), pos[ie]); }
 
     /**
      * Sync from the stepper positions. (e.g., after an interrupted move)

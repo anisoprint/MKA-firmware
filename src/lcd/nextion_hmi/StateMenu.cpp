@@ -52,20 +52,24 @@ void StateMenu::ActivatePrintControl(void* ptr) {
 
 	if (PrintPause::Status == Paused) //Control menu while paused
 	{
-		_count.setValue(4);
+		_count.setValue(6);
 		_page.show();
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_CONTROL));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 
 		_b1.setTextPGM(PSTR(MSG_CANCEL_PRINT));
-		_b2.setTextPGM(PSTR(MSG_MATERIALS));
-		_b3.setTextPGM(PSTR(MSG_TUNE));
-		_b4.setTextPGM(PSTR(MSG_DINFO));
+		_b2.setTextPGM(PSTR(MSG_MOVE));
+		_b3.setTextPGM(PSTR(MSG_TEMPERATURE));
+		_b4.setTextPGM(PSTR(MSG_MATERIALS));
+		_b5.setTextPGM(PSTR(MSG_TUNE));
+		_b6.setTextPGM(PSTR(MSG_DINFO));
 
 		_b1.attachPush(Control_CancelPrint);
-		_b2.attachPush(ActivateMaterials);
-		_b3.attachPush(Control_Tune);
-		_b4.attachPush(Control_DInfo);
+		_b2.attachPush(Control_Move);
+		_b3.attachPush(ActivatePrintTemperature);
+		_b4.attachPush(ActivateMaterials);
+		_b5.attachPush(Control_Tune);
+		_b6.attachPush(Control_DInfo);
 	}
 	else //Control menu while printing
 	{
@@ -77,7 +81,7 @@ void StateMenu::ActivatePrintControl(void* ptr) {
 		_b1.setTextPGM(PSTR(MSG_CANCEL_PRINT));
 		_b2.setTextPGM(PSTR(MSG_TUNE));
 		_b3.setTextPGM(PSTR(MSG_DINFO));
-
+		_b4.setTextPGM(PSTR(MSG_DINFO));
 
 		_b1.attachPush(Control_CancelPrint);
 		_b2.attachPush(Control_Tune);
@@ -94,6 +98,10 @@ void StateMenu::PrintControlBack(void* ptr) {
 
 void StateMenu::Control_DInfo(void* ptr) {
 	StateDInfo::Activate(StateMenu::ActivatePrintControl);
+}
+
+void StateMenu::Control_Move(void* ptr) {
+	StateMovement::Activate(MODE_MOVE_AXIS, StateMenu::ActivatePrintControl);
 }
 
 void StateMenu::Control_Tune(void* ptr) {
@@ -127,6 +135,42 @@ void StateMenu::Control_CancelPrint_Yes(void* ptr) {
 	printer.setWaitForUser(false);
 	printer.setAbortSDprinting(true);
 	printer.setWaitForHeatUp(false);
+}
+
+/*********************************************************************************
+*
+* ControlTemperature
+*
+*********************************************************************************/
+
+void StateMenu::ActivatePrintTemperature(void* ptr) {
+	NextionHMI::ActivateState(PAGE_MENU);
+	_count.setValue(3);
+	_page.show();
+	NextionHMI::headerText.setTextPGM(PSTR(MSG_TEMPERATURE));
+	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
+
+	_b1.setTextPGM(PSTR(MSG_PLASTIC ));
+	_b2.setTextPGM(PSTR(MSG_COMPOSITE));
+	_b3.setTextPGM(PSTR(MSG_BUILD_PLATE));
+
+	_b1.attachPush(StateMenu::PrintTemperature_Plastic);
+	_b2.attachPush(StateMenu::PrintTemperature_Composite);
+	_b3.attachPush(StateMenu::PrintTemperature_Buildplate);
+
+	_bBack.attachPush(ActivatePrintControl);
+}
+
+void StateMenu::PrintTemperature_Plastic(void* ptr) {
+	StateTemperature::Activate(HOT0_INDEX, StateMenu::ActivatePrintTemperature, StateMenu::ActivatePrintTemperature);
+}
+
+void StateMenu::PrintTemperature_Composite(void* ptr) {
+	StateTemperature::Activate(HOT1_INDEX, StateMenu::ActivatePrintTemperature, StateMenu::ActivatePrintTemperature);
+}
+
+void StateMenu::PrintTemperature_Buildplate(void* ptr) {
+	StateTemperature::Activate(BED_INDEX, StateMenu::ActivatePrintTemperature, StateMenu::ActivatePrintTemperature);
 }
 
 
@@ -165,7 +209,7 @@ void StateMenu::MaintenanceBack(void* ptr) {
 }
 
 void StateMenu::Maintenance_Move(void* ptr) {
-	StateMovement::Activate(MODE_MOVE_AXIS);
+	StateMovement::Activate(MODE_MOVE_AXIS, StateMenu::ActivateMaintenance);
 }
 
 void StateMenu::Maintenance_DInfo(void* ptr) {

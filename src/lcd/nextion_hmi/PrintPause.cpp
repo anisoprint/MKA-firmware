@@ -242,6 +242,10 @@ void PrintPause::ResumePrint(const float& purge_length) {
    COPY_ARRAY(mechanics.current_position, resume_position);
    COPY_ARRAY(mechanics.destination, resume_position);
 
+   // Now all extrusion positions are resumed and ready to be confirmed
+   // Set extruder to saved position
+   planner.set_only_e_position_mm(mechanics.current_position);
+
    printer.setFilamentOut(false);
 
    SERIAL_STR(RESUME);

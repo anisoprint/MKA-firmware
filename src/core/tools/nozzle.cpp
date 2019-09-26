@@ -204,7 +204,9 @@
     	  mechanics.destination[Y_AXIS] = park.y;
     	  mechanics.destination[Z_AXIS] = min(mechanics.current_position[Z_AXIS] + park.z, Z_MAX_POS);
 
-    	  mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.destination[Z_AXIS], fr_xy);
+    	  mechanics.line_to_destination(fr_xy);
+    	  stepper.synchronize();
+
         return;
 
       case 3: //do only xy

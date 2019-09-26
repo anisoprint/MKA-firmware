@@ -231,6 +231,10 @@
   #define MSG_MOVE                    				_UxGT("Move")
 #endif
 
+#ifndef MSG_TEMPERATURE
+  #define MSG_TEMPERATURE                    		_UxGT("Temperature")
+#endif
+
 #ifndef MSG_MATERIALS
   #define MSG_MATERIALS                     		_UxGT("Materials")
 #endif
