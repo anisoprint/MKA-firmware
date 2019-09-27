@@ -205,6 +205,7 @@
     	  mechanics.destination[Z_AXIS] = min(mechanics.current_position[Z_AXIS] + park.z, Z_MAX_POS);
 
     	  mechanics.line_to_destination(fr_xy);
+    	  mechanics.set_current_to_destination();
     	  stepper.synchronize();
 
         return;

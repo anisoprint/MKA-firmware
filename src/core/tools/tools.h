@@ -73,6 +73,8 @@
       static uint8_t   cut_active_angle;
       static uint8_t   cut_neutral_angle;
 
+      static bool fiber_is_cut;
+
 
 	  #if ENABLED(EG6_EXTRUDER)
         static ToolSwitchPos hotend_switch_path[HOTENDS][CHANGE_MOVES];

@@ -363,21 +363,12 @@ void Printer::loop() {
       // Clear all command in quee
       commands.clear_queue();
 
-      // Fiber cutting is needed?
-      bool needCut = false;
-      bool moveXY = (stepper.current_block->steps[X_AXIS]>0) || (stepper.current_block->steps[Y_AXIS]>0);
-      bool move_fiber = false;
-      const int plastic_driver_extruders[] = PLASTIC_DRIVER_EXTRUDERS;
-      LOOP_EUVW(i)
-      {
-    	  if (plastic_driver_extruders[i-XYZ] == 0 && stepper.current_block->steps[i]>0) move_fiber = true;
-      }
-      needCut = (moveXY & move_fiber);
-
       // Stop all stepper
       stepper.quickstop_stepper();
 
-      //if(needCut) tools.cut_fiber();
+      // Fiber cutting is needed?
+      bool needCut = !tools.fiber_is_cut;
+      if(needCut) tools.cut_fiber();
 
       // Auto home
       #if Z_HOME_DIR > 0

@@ -61,7 +61,11 @@
     #else
       if (WITHIN(servo_index, 0, NUM_SERVOS - 1)) {
         if (parser.seenval('S'))
-          MOVE_SERVO(servo_index, parser.value_int());
+        {
+          const int angle = parser.value_int();
+          MOVE_SERVO(servo_index, angle);
+          if (servo_index ==  tools.cut_servo_id && angle ==  tools.cut_active_angle) tools.fiber_is_cut = true;
+        }
         else {
           SERIAL_SMV(ECHO, " Servo ", servo_index);
           SERIAL_EMV(": ", servo[servo_index].read());

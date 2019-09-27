@@ -11,10 +11,11 @@
   // private:
 namespace {
 	static float resume_position[XYZE];
-	static int16_t resume_temperatures[HOTENDS];
+	static int16_t resume_temperatures[HEATER_COUNT];
 	static uint8_t resume_tool;
-}
+	static uint8_t resume_fan_speed[FAN_COUNT];
 
+}
 
 float PrintPause::LoadDistance[DRIVER_EXTRUDERS] = { 0.0 };
 float PrintPause::UnloadDistance[DRIVER_EXTRUDERS] = { 0.0 };;
@@ -116,11 +117,16 @@ bool PrintPause::PausePrint() {
     resume_tool = tools.active_extruder;
 
     //Save current temperatures
-    LOOP_HOTEND()
+    LOOP_HEATER()
 	{
     	resume_temperatures[h] = heaters[h].target_temperature;
 	}
 
+    //Save current fan speed
+    LOOP_FAN()
+    {
+    	resume_fan_speed[f] = fans[f].Speed;
+    }
 
     // Initial retract before move to park position
     if (retract && !thermalManager.tooColdToExtrude(tools.active_extruder))
@@ -186,30 +192,32 @@ void PrintPause::ResumePrint(const float& purge_length) {
    //Switching to previously active extruder
 	if (resume_tool!=tools.active_extruder) tools.change(resume_tool, 0, false, false, true);
 
-   // Re-enable the heaters if they timed out
-   bool  nozzle_timed_out  = false,
-         bed_timed_out     = false;
+   //Check if heaters are timed out or temperature restoration is needed
+   bool  nozzles_need_reheating  = false,
+         bed_need_reheating     = false;
 
-   RestoreTemperatures();
-
-   #if HAS_TEMP_BED && PAUSE_PARK_PRINTER_OFF > 0
-     bed_timed_out |= heaters[BED_INDEX].isIdle();
+   #if HAS_TEMP_BED
+     bed_need_reheating |= heaters[BED_INDEX].isIdle();
+     bed_need_reheating |= (heaters[BED_INDEX].target_temperature != resume_temperatures[BED_INDEX]);
      heaters[BED_INDEX].reset_idle_timer();
    #endif
 
    LOOP_HOTEND() {
-     nozzle_timed_out |= heaters[h].isIdle();
+	 nozzles_need_reheating |= heaters[h].isIdle();
+	 nozzles_need_reheating |= (heaters[h].target_temperature != resume_temperatures[h]);
      heaters[h].reset_idle_timer();
    }
 
-   if (bed_timed_out && heaters[BED_INDEX].target_temperature>30)
+   RestoreTemperatures();
+
+   if (bed_need_reheating && heaters[BED_INDEX].target_temperature>30)
    {
 	  NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_BUILDPLATE, BED_INDEX);
 	  Temperature::wait_heater(&heaters[BED_INDEX], false);
 	  NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
    }
 
-   if (nozzle_timed_out)
+   if (nozzles_need_reheating)
    {
 	   LOOP_HOTEND() {
 		   if (heaters[h].target_temperature>30)
@@ -219,6 +227,12 @@ void PrintPause::ResumePrint(const float& purge_length) {
 			   NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
 		   }
 	   }
+   }
+
+   // Restore fan speed
+   LOOP_FAN()
+   {
+   	 if (fans[f].autoMonitored==-1) fans[f].Speed = resume_fan_speed[f];
    }
 
    printer.setWaitForHeatUp(false);
@@ -267,27 +281,12 @@ void PrintPause::ResumePrint(const float& purge_length) {
 
 void PrintPause::RestoreTemperatures() {
 	if (Status!=Paused && Status!=Resuming) return;
-
     //Restore current temperatures
-    LOOP_HOTEND()
+	LOOP_HEATER()
 	{
-/*		Serial.print("N ");
-		Serial.print(h);
-		Serial.print(" CUR:");
-		Serial.println(heaters[h].target_temperature);
-		Serial.print(" RESUME:");
-		Serial.println(resume_temperatures[h]);*/
-
-    	if (resume_temperatures[h] != heaters[h].target_temperature)
-    		{
-/*    			Serial.print("Restore ");
-    			Serial.print(h);
-    			Serial.print(" to ");
-    			Serial.println(resume_temperatures[h]);*/
-    			heaters[h].setTarget(resume_temperatures[h]);
-
-    		}
+    	if (resume_temperatures[h] != heaters[h].target_temperature) heaters[h].setTarget(resume_temperatures[h]);
 	}
+
 }
 
 

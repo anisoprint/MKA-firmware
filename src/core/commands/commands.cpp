@@ -704,11 +704,11 @@ bool Commands::process_injected_front() {
 
 bool Commands::process_without_queue(const char * cmd) {
     if (strcmp(cmd, "M1001") == 0) {
-    	MCode_Table[1001].command();
+    	gcode_M1001();
     	return true;
     }
     if (strcmp(cmd, "M1002") == 0) {
-    	MCode_Table[1002].command();
+    	gcode_M1002();
     	return true;
     }
     return false;
