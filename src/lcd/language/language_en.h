@@ -444,7 +444,7 @@
 #endif
 
 #ifndef MSG_DEBUG_INFO
-  #define MSG_DEBUG_INFO                 		_UxGT("X:%.2f Y:%.2f Z:%.2f\\rE:%.2f U:%.2f V:%.2f\\rT0:%.2f/%d T1:%.2f/%d\\rTB:%.2f/%d TC:%.2f\\rF0:%d F1:%d F2:%d")
+  #define MSG_DEBUG_INFO                 		_UxGT("X:%.2f Y:%.2f Z:%.2f\\rE:%.2f U:%.2f V:%.2f T%d\\rT0:%.2f/%d T1:%.2f/%d\\rTB:%.2f/%d TC:%.2f\\rF0:%d F1:%d F2:%d\\rXe:%d Ye:%d Ze:%d")
 #endif
 
 //Settings

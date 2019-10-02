@@ -57,6 +57,7 @@
   uint8_t   Tools::cut_active_angle = 0;
 
   bool Tools::fiber_is_cut = true;
+  bool Tools::printing_with_fiber = false;
 
 #if ENABLED(EG6_EXTRUDER)
   ToolSwitchPos Tools::hotend_switch_path[HOTENDS][CHANGE_MOVES] = {0.0, 0.0, 0.0, false};

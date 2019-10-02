@@ -319,7 +319,8 @@ void StateWizard::MaterialUnloadS3(void* ptr) {
 	if (Tools::extruder_driver_is_plastic((AxisEnum)NextionHMI::wizardData)) //Unload plastic
 	{
 	    // Push filament
-		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, PrintPause::RetractDistance*2, PrintPause::RetractFeedrate);
+		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, PrintPause::RetractDistance*2.5, PrintPause::RetractFeedrate);
+		printer.safe_delay(FILAMENT_UNLOAD_DELAY);
 	}
 
     // Unload filament

@@ -26,7 +26,6 @@ float PrintPause::RetractDistance = 0,
 	  PrintPause::UnloadFeedrate = 0,
 	  PrintPause::ExtrudeFeedrate = 0;
 
-bool PrintPause::CanPauseNow = true;
 bool PrintPause::SdPrintingPaused = false;
 PrintPauseStatus PrintPause::Status = NotPaused;
 
@@ -56,7 +55,7 @@ bool PrintPause::PausePrint() {
 	if (Status!=NotPaused && Status!=WaitingToPause) return false; // already paused
 
     //Printing with fiber, can't pause now
-    if (CanPauseNow == false)
+    if (tools.printing_with_fiber)
     {
     	Status = WaitingToPause;
     	NextionHMI::RaiseEvent(PRINT_PAUSE_SCHEDULED);
