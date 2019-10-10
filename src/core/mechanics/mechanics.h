@@ -175,7 +175,7 @@ class Mechanics {
     /**
      * Min segment time
      */
-    static millis_t  min_segment_time_us;
+    static millis_l  min_segment_time_us;
 
     /**
      * Cartesian Current Position
@@ -212,7 +212,7 @@ class Mechanics {
                         raised_parked_position[NUM_AXIS], // used in mode 1
                         duplicate_hotend_x_offset;        // used in mode 2
       static int16_t    duplicate_hotend_temp_offset;     // used in mode 2
-      static millis_t   delayed_move_time;                // used in mode 1
+      static millis_l   delayed_move_time;                // used in mode 1
       static bool       active_hotend_parked,             // used in mode 1 & 2
                         hotend_duplication_enabled;       // used in mode 2
     #endif

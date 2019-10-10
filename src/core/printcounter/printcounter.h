@@ -133,7 +133,7 @@ class PrintCounter: public Stopwatch {
      * @details Stores the timestamp of the last deltaDuration(), this is
      * required due to the updateInterval cycle.
      */
-    static millis_t lastDuration;
+    static millis_l lastDuration;
 
   protected: /** Protected Parameters */
 
@@ -143,7 +143,7 @@ class PrintCounter: public Stopwatch {
      * used internally for print statistics accounting is not intended to be a
      * user callable function.
      */
-    static millis_t deltaDuration();
+    static millis_l deltaDuration();
 
 };
 

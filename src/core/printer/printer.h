@@ -149,7 +149,7 @@ class Printer {
     static uint16_t mk_2_flag;      // For various
 
     #if ENABLED(IDLE_OOZING_PREVENT)
-      static millis_t axis_last_activity;
+      static millis_l axis_last_activity;
       static bool     IDLE_OOZING_retracted[EXTRUDERS];
     #endif
 
@@ -159,7 +159,7 @@ class Printer {
     static void loop();   // Main loop
 
     static void check_periodical_actions();
-    static void safe_delay(millis_t ms);
+    static void safe_delay(millis_l ms);
 
     static void setup_for_endstop_or_probe_move();
     static void clean_up_after_endstop_or_probe_move();

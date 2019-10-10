@@ -566,7 +566,7 @@
     uint16_t NexUpload::recvRetString(String &string, uint32_t timeout,bool recv_flag) {
       uint16_t ret = 0;
       uint8_t c = 0;
-      millis_t start;
+      millis_l start;
       bool exit_flag = false;
       start = millis();
       while (millis() - start <= timeout) {
@@ -896,7 +896,7 @@
     uint8_t cnt_0xff = 0;
     String temp = String("");
     uint8_t c = 0;
-    millis_t start;
+    millis_l start;
 
     if (!buffer || len == 0) return;
 

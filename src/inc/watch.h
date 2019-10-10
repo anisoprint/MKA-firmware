@@ -23,12 +23,14 @@
 #ifndef _WATCH_H_
 #define _WATCH_H_
 
+
+
 struct watch_t {
 
-  millis_t  startwatch = 0,
+  millis_l  startwatch = 0,
             stopwatch  = 0;
 
-  watch_t(const millis_t duration=0) {
+  watch_t(const millis_l duration=0) {
     this->stopwatch = duration;
     if (duration) this->start();
   }
@@ -37,8 +39,8 @@ struct watch_t {
   FORCE_INLINE void stop()  { this->startwatch = 0; }
   FORCE_INLINE bool isRunning() { return this->startwatch; }
 
-  FORCE_INLINE bool elapsed(const millis_t period=0) {
-    const millis_t  now = millis(),
+  FORCE_INLINE bool elapsed(const millis_l period=0) {
+    const millis_l  now = millis(),
                     end = period ? period : this->stopwatch;
 
     if (this->startwatch == 0 || now >= this->startwatch + end || now < this->startwatch) {
@@ -49,5 +51,7 @@ struct watch_t {
   }
 
 };
+
+
 
 #endif /* _WATCH_H_ */

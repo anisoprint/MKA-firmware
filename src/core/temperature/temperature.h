@@ -61,7 +61,7 @@ class Temperature {
 
     static uint8_t pid_pointer;
 
-    static millis_t next_check_ms[HEATER_COUNT];
+    static millis_l next_check_ms[HEATER_COUNT];
 
     #if ENABLED(FILAMENT_SENSOR)
       static int8_t   meas_shift_index;     // Index of a delayed sample in buffer
@@ -160,10 +160,10 @@ class Temperature {
 
       typedef enum TRState { TRInactive, TRFirstHeating, TRStable, TRRunaway } TRstate;
 
-      static void thermal_runaway_protection(TRState* state, millis_t* timer, float temperature, float target_temperature, const uint8_t h, int period_seconds, int hysteresis_degc);
+      static void thermal_runaway_protection(TRState* state, millis_l* timer, float temperature, float target_temperature, const uint8_t h, int period_seconds, int hysteresis_degc);
 
       static TRState thermal_runaway_state_machine[HEATER_COUNT];
-      static millis_t thermal_runaway_timer[HEATER_COUNT];
+      static millis_l thermal_runaway_timer[HEATER_COUNT];
 
     #endif // HAS_THERMALLY_PROTECTED_HEATER
 
