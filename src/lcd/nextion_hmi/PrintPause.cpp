@@ -11,10 +11,11 @@
   // private:
 namespace {
 	static float resume_position[XYZE];
-	static int16_t resume_temperatures[HOTENDS];
+	static int16_t resume_temperatures[HEATER_COUNT];
 	static uint8_t resume_tool;
-}
+	static uint8_t resume_fan_speed[FAN_COUNT];
 
+}
 
 float PrintPause::LoadDistance[DRIVER_EXTRUDERS] = { 0.0 };
 float PrintPause::UnloadDistance[DRIVER_EXTRUDERS] = { 0.0 };;
@@ -25,7 +26,6 @@ float PrintPause::RetractDistance = 0,
 	  PrintPause::UnloadFeedrate = 0,
 	  PrintPause::ExtrudeFeedrate = 0;
 
-bool PrintPause::CanPauseNow = true;
 bool PrintPause::SdPrintingPaused = false;
 PrintPauseStatus PrintPause::Status = NotPaused;
 
@@ -39,48 +39,74 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
   mechanics.set_current_to_destination();
 }
 
+
+/**
+ * Pause procedure
+ *
+ * - Abort if already paused
+ * - Pause SD printing
+ * - Queue nozzle parking
+ *
+ * Returns 'true' if pause was completed, 'false' for abort
+ */
+
+bool PrintPause::PausePrint() {
+
+	if (Status!=NotPaused && Status!=WaitingToPause) return false; // already paused
+
+    //Printing with fiber, can't pause now
+    if (tools.printing_with_fiber)
+    {
+    	Status = WaitingToPause;
+    	NextionHMI::RaiseEvent(PRINT_PAUSE_SCHEDULED);
+    	return false;
+    }
+    else
+    {
+        SERIAL_STR(PAUSE);
+        SERIAL_EOL();
+
+        // Pause the print job
+        #if HAS_SDSUPPORT
+          if (IS_SD_PRINTING) {
+            card.pauseSDPrint();
+            SdPrintingPaused = true;
+          }
+        #endif
+
+        print_job_counter.pause();
+
+        commands.inject_rear_P(PSTR("M125")); // Must be enqueued with pauseSDPrint set to be last in the buffer
+
+        Status = Pausing;
+        NextionHMI::RaiseEvent(PRINT_PAUSING);
+
+
+        return true;
+    }
+}
+
+
   /**
-   * Pause procedure
+   * Park procedure
    *
-   * - Abort if already paused
-   * - Send host action for pause, if configured
+   * - Abort if not pausing
    * - Initial retract, if current temperature is hot enough
    * - Park the nozzle at the given position
    *
    * Returns 'true' if pause was completed, 'false' for abort
    */
 
-  bool PrintPause::PausePrint(const float &retract) {
 
-    if (Status!=NotPaused && Status!=WaitingToPause) return false; // already paused
+  bool PrintPause::ParkHead(const float &retract) {
 
-    //Printing with fiber, can't pause now
-    if (CanPauseNow == false)
-    {
-    	Status = WaitingToPause;
-    	NextionHMI::RaiseEvent(PRINT_PAUSE_SCHEDULED);
-    	return false;
-    }
-
-    SERIAL_STR(PAUSE);
-    SERIAL_EOL();
-
-    // Pause the print job and timer
-    #if HAS_SDSUPPORT
-      if (IS_SD_PRINTING) {
-        card.pauseSDPrint();
-        SdPrintingPaused = true;
-      }
-    #endif
-    Status = Pausing;
-    NextionHMI::RaiseEvent(PRINT_PAUSING);
+    if (Status!=Pausing) return false; // incorrect state
 
     // Wait for synchronize steppers
     while ((planner.has_blocks_queued() || stepper.cleaning_buffer_counter) && !printer.isAbortSDprinting()) {
       printer.idle();
       printer.keepalive(InProcess);
     }
-    //memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
 
     // Handle cancel
     if (printer.isAbortSDprinting()) return false;
@@ -90,11 +116,16 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     resume_tool = tools.active_extruder;
 
     //Save current temperatures
-    LOOP_HOTEND()
+    LOOP_HEATER()
 	{
     	resume_temperatures[h] = heaters[h].target_temperature;
 	}
 
+    //Save current fan speed
+    LOOP_FAN()
+    {
+    	resume_fan_speed[f] = fans[f].Speed;
+    }
 
     // Initial retract before move to park position
     if (retract && !thermalManager.tooColdToExtrude(tools.active_extruder))
@@ -112,8 +143,8 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     if (printer.isAbortSDprinting()) return false;
 
     // Start the heater idle timers
-    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
-    const millis_t bed_timeout    = (millis_t)(PAUSE_PARK_PRINTER_OFF) * 60000UL;
+    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+    const millis_l bed_timeout    = (millis_l)(PAUSE_PARK_PRINTER_OFF) * 60000UL;
 
     LOOP_HOTEND()
       heaters[h].start_idle_timer(nozzle_timeout);
@@ -126,15 +157,14 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
     // Indicate that the printer is paused
     Status = Paused;
     NextionHMI::RaiseEvent(PRINT_PAUSED);
-    print_job_counter.pause();
 
-    printer.keepalive(PausedforUser);
-    printer.setWaitForUser(true);
-    while (printer.isWaitForUser() && Status==Paused) {
-    	printer.idle(true);
-    }
-
-    printer.keepalive(InHandler);
+//    printer.keepalive(PausedforUser);
+//    printer.setWaitForUser(true);
+//    while (printer.isWaitForUser() && Status==Paused) {
+//    	printer.idle(true);
+//    }
+//
+//    printer.keepalive(InHandler);
 
     return true;
 }
@@ -161,30 +191,32 @@ void PrintPause::ResumePrint(const float& purge_length) {
    //Switching to previously active extruder
 	if (resume_tool!=tools.active_extruder) tools.change(resume_tool, 0, false, false, true);
 
-   // Re-enable the heaters if they timed out
-   bool  nozzle_timed_out  = false,
-         bed_timed_out     = false;
+   //Check if heaters are timed out or temperature restoration is needed
+   bool  nozzles_need_reheating  = false,
+         bed_need_reheating     = false;
 
-   RestoreTemperatures();
-
-   #if HAS_TEMP_BED && PAUSE_PARK_PRINTER_OFF > 0
-     bed_timed_out |= heaters[BED_INDEX].isIdle();
+   #if HAS_TEMP_BED
+     bed_need_reheating |= heaters[BED_INDEX].isIdle();
+     bed_need_reheating |= (heaters[BED_INDEX].target_temperature != resume_temperatures[BED_INDEX]);
      heaters[BED_INDEX].reset_idle_timer();
    #endif
 
    LOOP_HOTEND() {
-     nozzle_timed_out |= heaters[h].isIdle();
+	 nozzles_need_reheating |= heaters[h].isIdle();
+	 nozzles_need_reheating |= (heaters[h].target_temperature != resume_temperatures[h]);
      heaters[h].reset_idle_timer();
    }
 
-   if (bed_timed_out && heaters[BED_INDEX].target_temperature>30)
+   RestoreTemperatures();
+
+   if (bed_need_reheating && heaters[BED_INDEX].target_temperature>30)
    {
 	  NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_BUILDPLATE, BED_INDEX);
 	  Temperature::wait_heater(&heaters[BED_INDEX], false);
 	  NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
    }
 
-   if (nozzle_timed_out)
+   if (nozzles_need_reheating)
    {
 	   LOOP_HOTEND() {
 		   if (heaters[h].target_temperature>30)
@@ -196,17 +228,19 @@ void PrintPause::ResumePrint(const float& purge_length) {
 	   }
    }
 
-   printer.setWaitForHeatUp(false);
+   // Restore fan speed
+   LOOP_FAN()
+   {
+   	 if (fans[f].autoMonitored==-1) fans[f].Speed = resume_fan_speed[f];
+   }
 
-   //memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
+   printer.setWaitForHeatUp(false);
 
    // Move XY to starting position, then Z
    mechanics.do_blocking_move_to_xy(resume_position[X_AXIS], resume_position[Y_AXIS], NOZZLE_PARK_XY_FEEDRATE);
 
    // Set Z_AXIS to saved position
    mechanics.do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
-
-   //memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
 
    // Purging plastic
    if (purge_length && !thermalManager.tooColdToExtrude(tools.active_extruder))
@@ -216,12 +250,14 @@ void PrintPause::ResumePrint(const float& purge_length) {
    	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), purge_length, PrintPause::LoadFeedrate);
    }
 
-   //memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
-
    // Now all positions are resumed and ready to be confirmed
    // Set all to saved position
    COPY_ARRAY(mechanics.current_position, resume_position);
    COPY_ARRAY(mechanics.destination, resume_position);
+
+   // Now all extrusion positions are resumed and ready to be confirmed
+   // Set extruder to saved position
+   planner.set_only_e_position_mm(mechanics.current_position);
 
    printer.setFilamentOut(false);
 
@@ -244,27 +280,13 @@ void PrintPause::ResumePrint(const float& purge_length) {
 
 void PrintPause::RestoreTemperatures() {
 	if (Status!=Paused && Status!=Resuming) return;
-
     //Restore current temperatures
-    LOOP_HOTEND()
+	LOOP_HEATER()
 	{
-/*		Serial.print("N ");
-		Serial.print(h);
-		Serial.print(" CUR:");
-		Serial.println(heaters[h].target_temperature);
-		Serial.print(" RESUME:");
-		Serial.println(resume_temperatures[h]);*/
-
-    	if (resume_temperatures[h] != heaters[h].target_temperature)
-    		{
-/*    			Serial.print("Restore ");
-    			Serial.print(h);
-    			Serial.print(" to ");
-    			Serial.println(resume_temperatures[h]);*/
-    			heaters[h].setTarget(resume_temperatures[h]);
-
-    		}
+    	if (resume_temperatures[h] != heaters[h].target_temperature) heaters[h].setTarget(resume_temperatures[h]);
 	}
+
 }
+
 
 #endif

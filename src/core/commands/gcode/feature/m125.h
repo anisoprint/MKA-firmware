@@ -26,6 +26,25 @@
  * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
+#if ENABLED(NEXTION_HMI)
+
+  #define CODE_M125
+
+  /**
+   * M125: Store current position and move to pause park position.
+   *       Called on pause (by M25) to prevent material leaking onto the
+   *       object. On resume (M24) the head will be moved back and the
+   *       print will resume.
+   */
+  inline void gcode_M125(void) {
+
+    // Initial retract before move to pause park position
+	PrintPause::ParkHead(PrintPause::RetractDistance);
+
+  }
+
+#endif // ENABLED(PARK_HEAD_ON_PAUSE)
+
 #if ENABLED(PARK_HEAD_ON_PAUSE)
 
   #define CODE_M125

@@ -34,7 +34,7 @@
  */
 inline void gcode_M1001(void) {
 #if ENABLED(NEXTION_HMI)
-	PrintPause::CanPauseNow = false;
+	tools.printing_with_fiber = true;
 #endif
 }
 
@@ -43,14 +43,11 @@ inline void gcode_M1001(void) {
  */
 inline void gcode_M1002(void) {
 #if ENABLED(NEXTION_HMI)
-	Serial.println("M1002");
-	PrintPause::CanPauseNow = true;
+	tools.printing_with_fiber = false;
 	if (PrintPause::Status==WaitingToPause)
 	{
-		Serial.println("M1002 WaitingToPause");
-	    point_t park_point = NOZZLE_PARK_POINT;
-	    const float retract = PAUSE_PARK_RETRACT_LENGTH;
-	    PrintPause::PausePrint(retract);
+		Serial.println("M1002 Pausing");
+	    PrintPause::PausePrint();
 
 	}
 #endif

@@ -20,12 +20,11 @@
 namespace StateMovement {
 
 	void Extruders_Push(void *ptr);
-	void Back_Push(void *ptr);
 
   	void Movement_Push(void *ptr);
 
 	void Init();
-	void Activate(bool mode);
+	void Activate(bool mode, NexTouchEventCb cbBack = nullptr);
 	void ActivateExtruders();
 	void DrawUpdate();
 	void TouchUpdate();

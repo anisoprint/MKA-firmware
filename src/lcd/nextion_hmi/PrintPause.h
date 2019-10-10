@@ -27,7 +27,8 @@ namespace PrintPause {
 
   void DoPauseExtruderMove(AxisEnum axis, const float &length, const float fr);
 
-  bool PausePrint(const float &retract);
+  bool PausePrint();
+  bool ParkHead(const float &retract);
   void ResumePrint(const float& purge_length=0);
   void RestoreTemperatures();
 

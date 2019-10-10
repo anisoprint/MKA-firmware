@@ -56,6 +56,9 @@
   uint8_t   Tools::cut_neutral_angle = 0;
   uint8_t   Tools::cut_active_angle = 0;
 
+  bool Tools::fiber_is_cut = true;
+  bool Tools::printing_with_fiber = false;
+
 #if ENABLED(EG6_EXTRUDER)
   ToolSwitchPos Tools::hotend_switch_path[HOTENDS][CHANGE_MOVES] = {0.0, 0.0, 0.0, false};
 
@@ -366,6 +369,7 @@ void Tools::cut_fiber() {
 	stepper.synchronize();
     MOVE_SERVO(cut_servo_id, cut_active_angle);
     MOVE_SERVO(cut_servo_id, cut_neutral_angle);
+    fiber_is_cut = true;
 }
 
   #if ENABLED(VOLUMETRIC_EXTRUSION)

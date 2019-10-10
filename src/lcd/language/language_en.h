@@ -231,6 +231,10 @@
   #define MSG_MOVE                    				_UxGT("Move")
 #endif
 
+#ifndef MSG_TEMPERATURE
+  #define MSG_TEMPERATURE                    		_UxGT("Temperature")
+#endif
+
 #ifndef MSG_MATERIALS
   #define MSG_MATERIALS                     		_UxGT("Materials")
 #endif
@@ -261,6 +265,10 @@
 
 #ifndef MSG_SETTINGS
   #define MSG_SETTINGS                     			_UxGT("Settings")
+#endif
+
+#ifndef MSG_DINFO
+  #define MSG_DINFO                     			_UxGT("Debug info")
 #endif
 
 #ifndef MSG_ABOUT_PRINTER
@@ -433,6 +441,10 @@
 
 #ifndef MSG_INPUT_BOUNDS
   #define MSG_INPUT_BOUNDS                    	_UxGT("The value should be between %.2f and %.2f")
+#endif
+
+#ifndef MSG_DEBUG_INFO
+  #define MSG_DEBUG_INFO                 		_UxGT("X:%.2f Y:%.2f Z:%.2f\\rE:%.2f U:%.2f V:%.2f T%d\\rT0:%.2f/%d T1:%.2f/%d\\rTB:%.2f/%d TC:%.2f\\rF0:%d F1:%d F2:%d\\rXe:%d Ye:%d Ze:%d")
 #endif
 
 //Settings

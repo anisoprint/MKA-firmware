@@ -739,7 +739,7 @@ void Temperature::_temp_error(const uint8_t h, const char * const serial_msg, co
   	  	NextionHMI::RaiseEvent(HMIevent::TEMPERATURE_ERROR, h, lcd_msg);
 		#if HAS_SDSUPPORT
 			if ((IS_SD_PRINTING) && (PrintPause::Status==PrintPauseStatus::NotPaused)) {
-				PrintPause::PausePrint(PrintPause::RetractDistance);
+				PrintPause::PausePrint();
 			}
 		#endif
 

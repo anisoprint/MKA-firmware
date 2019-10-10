@@ -44,12 +44,12 @@ namespace {
 #if HAS_BUZZER
 
   static void filament_change_beep(const int8_t max_beep_count, const bool init=false) {
-    static millis_t next_buzz = 0;
+    static millis_l next_buzz = 0;
     static int8_t runout_beep = 0;
 
     if (init) next_buzz = runout_beep = 0;
 
-    const millis_t ms = millis();
+    const millis_l ms = millis();
     if (ELAPSED(ms, next_buzz)) {
       if (max_beep_count < 0 || runout_beep < max_beep_count + 5) { // Only beep as long as we're supposed to
         next_buzz = ms + ((max_beep_count < 0 || runout_beep < max_beep_count) ? 1000 : 500);
@@ -237,12 +237,13 @@ void StateWizard::MaterialUnloadS1(void* ptr) {
 		else
 		{
 			const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
-			const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+			const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
 			heaters[heater].start_idle_timer(nozzle_timeout);
 		}
 
-		// Move XY to change position
-		mechanics.do_blocking_move_to_xy(int(MATERIAL_CHANGE_X), int(MATERIAL_CHANGE_Y), NOZZLE_PARK_XY_FEEDRATE);
+		// Move XY to park position
+	    const point_t park_point = NOZZLE_PARK_POINT;
+		Nozzle::park(3, park_point);
 
 		//Changing tool
 		const uint8_t extruder_id = Tools::extruder_driver_to_extruder(NextionHMI::wizardData - E_AXIS);
@@ -274,11 +275,6 @@ void StateWizard::MaterialUnloadS2(void* ptr) {
 	DrawUpdateCallback = MaterialUnloadS2DrawUpdate;
 
 	Temperature::wait_heater(&heaters[heater]);
-
-	//waiting for heating
-    //printer.setWaitForHeatUp(true);
-    //while (printer.isWaitForHeatUp() && heaters[heater].wait_for_heating()) printer.idle();
-    //printer.setWaitForHeatUp(false);
 
     DrawUpdateCallback = NULL;
 
@@ -323,14 +319,8 @@ void StateWizard::MaterialUnloadS3(void* ptr) {
 	if (Tools::extruder_driver_is_plastic((AxisEnum)NextionHMI::wizardData)) //Unload plastic
 	{
 	    // Push filament
-		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, PrintPause::RetractDistance/2, PrintPause::UnloadFeedrate);
-	    // Retract filament
-		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, -PrintPause::RetractDistance, PrintPause::RetractFeedrate);
-	    // Wait for filament to cool
-	    printer.safe_delay(FILAMENT_UNLOAD_DELAY);
-	    // Quickly purge
-	    // PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, FILAMENT_UNLOAD_RETRACT_LENGTH + FILAMENT_UNLOAD_PURGE_LENGTH, mechanics.max_feedrate_mm_s[(AxisEnum)NextionHMI::wizardData]);
-
+		PrintPause::DoPauseExtruderMove((AxisEnum)NextionHMI::wizardData, PrintPause::RetractDistance*2.5, PrintPause::RetractFeedrate);
+		printer.safe_delay(FILAMENT_UNLOAD_DELAY);
 	}
 
     // Unload filament
@@ -347,7 +337,7 @@ void StateWizard::MaterialUnloadS4(void* ptr) {
 	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "4/4", NEX_ICON_MAINTENANCE);
 
 	const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
-    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
     heaters[heater].start_idle_timer(nozzle_timeout);
 
 	Init1Button(PSTR(MSG_FINISH), MaterialUnloadFinish);
@@ -366,21 +356,18 @@ void StateWizard::MaterialUnloadFinish(void* ptr) {
 	{
 		PrintPause::RestoreTemperatures();
 
-		// Move XY to park position
-	    const point_t park_point = NOZZLE_PARK_POINT;
-		Nozzle::park(3, park_point);
-
-	    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+	    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
 	    heaters[heater].start_idle_timer(nozzle_timeout);
 	}
 	else
 	{
 		heaters[heater].setTarget(0);
 		heaters[heater].reset_idle_timer();
-
-		mechanics.home(true, true, true);
-
 	}
+
+	// Move XY to park position
+    const point_t park_point = NOZZLE_PARK_POINT;
+	Nozzle::park(3, park_point);
 
 	StateMenu::ActivateLoadUnload();
 }
@@ -420,12 +407,13 @@ void StateWizard::MaterialLoadS1(void* ptr) {
 	else
 	{
 		const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
-	    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+	    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
 	    heaters[heater].start_idle_timer(nozzle_timeout);
 	}
 
 	// Move XY to change position
-	mechanics.do_blocking_move_to_xy(int(MATERIAL_CHANGE_X), int(MATERIAL_CHANGE_Y), NOZZLE_PARK_XY_FEEDRATE);
+    const point_t park_point = NOZZLE_PARK_POINT;
+	Nozzle::park(3, park_point);
 
 	//Changing tool
 	uint8_t extruder_id = Tools::extruder_driver_to_extruder(NextionHMI::wizardData - E_AXIS);
@@ -500,7 +488,7 @@ void StateWizard::MaterialLoadS3(void* ptr) {
 
 	//waiting for 120 seconds
 	const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
-    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
     heaters[heater].start_idle_timer(nozzle_timeout);
 
 	_loopStopped = false;
@@ -518,7 +506,7 @@ void StateWizard::MaterialLoadS3(void* ptr) {
 	//timeout
 	if (heaters[heater].isIdle())
 	{
-		LOOP_HEATER() heaters[h].setTarget(0);
+		heaters[heater].setTarget(0);
 		StateMessage::ActivatePGM(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_HEADER_LOAD_MATERIAL, PSTR(MSG_LOAD_MATERIAL_ST3_TIMEOUT), 2, PSTR(MSG_REPEAT), MaterialLoadS2, PSTR(MSG_CANCEL), MaterialLoadCancel, 0);
 	}
 	else
@@ -574,7 +562,7 @@ void StateWizard::MaterialLoadS5(void* ptr) {
 
 	//waiting for 120 seconds
 	const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
-    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
     heaters[heater].start_idle_timer(nozzle_timeout);
 
 	_loopStopped = false;
@@ -594,7 +582,7 @@ void StateWizard::MaterialLoadS5(void* ptr) {
 	if (heaters[heater].isIdle())
 	{
 		_wizardCancelled = true;
-		LOOP_HEATER() heaters[h].setTarget(0);
+		heaters[heater].setTarget(0);
 		StateMessage::ActivatePGM(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_HEADER_LOAD_MATERIAL, PSTR(MSG_LOAD_MATERIAL_ST5_TIMEOUT), 1, PSTR(MSG_OK), MaterialLoadCancel, 0, 0, 0);
 	}
 	else
@@ -645,19 +633,19 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
 	{
 		PrintPause::RestoreTemperatures();
 
-		// Move XY to park position
-	    const point_t park_point = NOZZLE_PARK_POINT;
-		Nozzle::park(3, park_point);
-
-	    const millis_t nozzle_timeout = (millis_t)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
+	    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
 	    heaters[heater].start_idle_timer(nozzle_timeout);
 	}
 	else
 	{
 		heaters[heater].setTarget(0);
 		heaters[heater].reset_idle_timer();
-		mechanics.home(true, true, true);
 	};
+
+	// Move XY to park position
+    const point_t park_point = NOZZLE_PARK_POINT;
+	Nozzle::park(3, park_point);
+
 	StateMenu::ActivateLoadUnload();
 }
 

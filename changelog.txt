@@ -1,3 +1,14 @@
+v.0.9.4
+- Pause rework
+- Prindhead movement is now available on pause
+- Printhead heating/cooling is now available on pause
+- Reinforcing fiber is now cut on printing cancel if needed
+- New Debug Info screen with information about current position, tool, temperatures, fan speed, endstop status
+- Minor changes in material loading/unloading sequence
+- Fixed problem with "Print again" printing different file
+- Fixed problem with buildplate heating after pause
+- Fixed problem with with unexpected feeders movement after pause  
+
 v.0.9.3
 - Elapsed time and estimated time left is now displayed during printing
 - Nozzle cooling fans can now be turned on/off from LCD (Maintenance - Movement - Extruders)

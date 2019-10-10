@@ -1357,7 +1357,7 @@ void Stepper::isr() {
       planner.discard_current_block();
       --cleaning_buffer_counter;                          // Count down for abort print
       #if SD_FINISHED_STEPPERRELEASE && ENABLED(SD_FINISHED_RELEASECOMMAND)
-        if (!cleaning_buffer_counter) commands.enqueue_and_echo_P(PSTR(SD_FINISHED_RELEASECOMMAND));
+        if (!cleaning_buffer_counter) commands.inject_rear_P(PSTR(SD_FINISHED_RELEASECOMMAND));
       #endif
     }
     current_block = NULL;               // Prep to get a new block after cleaning
@@ -1381,6 +1381,18 @@ void Stepper::isr() {
 
       // Initialize the trapezoid generator from the current block.
       static int8_t last_extruder = -1;
+
+      if (tools.printing_with_fiber && tools.fiber_is_cut)
+      {
+          bool moveXY = (current_block->steps[X_AXIS]>0) || (current_block->steps[Y_AXIS]>0);
+          bool move_fiber = false;
+          const int plastic_driver_extruders[] = PLASTIC_DRIVER_EXTRUDERS;
+          LOOP_EUVW(i)
+          {
+        	  if (plastic_driver_extruders[i-XYZ] == 0 && current_block->steps[i]>0) move_fiber = true;
+          }
+          if (moveXY && move_fiber) tools.fiber_is_cut = false;
+      }
 
       #if ENABLED(LIN_ADVANCE)
         #if EXTRUDERS > 1
