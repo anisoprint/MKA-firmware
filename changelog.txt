@@ -2,7 +2,7 @@ v.0.9.4
 - Pause rework
 - Prindhead movement is now available on pause
 - Printhead heating/cooling is now available on pause
-- Reinforcing fiber is now cut on printing cancel if needed
+- Reinforcing fiber is now cut on print cancellation if needed
 - New Debug Info screen with information about current position, tool, temperatures, fan speed, endstop status
 - Minor changes in material loading/unloading sequence
 - Fixed problem with "Print again" printing different file
