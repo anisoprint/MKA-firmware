@@ -159,7 +159,7 @@
 #define TEMP_2_PIN          NoPin //ORIG_TEMP_2_PIN
 #define TEMP_3_PIN          NoPin //ORIG_TEMP_3_PIN
 #define TEMP_BED_PIN        ORIG_TEMP_BED_PIN
-#define TEMP_CHAMBER_PIN    NoPin
+#define TEMP_CHAMBER_PIN    ORIG_TEMP_0_PIN
 #define TEMP_COOLER_PIN     NoPin
 
 // FAN pin
