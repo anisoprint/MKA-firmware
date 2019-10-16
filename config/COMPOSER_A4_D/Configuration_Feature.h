@@ -205,16 +205,39 @@
  * Anisoprint EG-6 extruder											   *
  *                                                                     *
  ***********************************************************************/
-//#define EG6_EXTRUDER
-#define EG5_EXTRUDER
+#define EG6_EXTRUDER
 
-// Defines which tools will be at zero (or max) position after homing each axis
-// If the homing is performed while other tool is active, a movement will
-// be done to set active tool to zero (or max) position according to
-// Hotend offset
-#define HOME_X_TOOL 1
-#define HOME_Y_TOOL 0
-#define HOME_Z_TOOL 0
+//Change moves
+#define CHANGE_MOVES 12
+
+//Change to T0 -          X      Y  Spd  Switch
+#define CHANGE_T0      {{  0.0,  0,   0,  true},\
+						{  0.0,  0,   0,  true},\
+						{  0.0,  0,   0,  true},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false},\
+						{  0.0,  0,   0, false}}
+
+//Change to T1 -          X      Y  Spd  Switch
+#define CHANGE_T1      {{  0.0, 0,  0, false},\
+						{  0.0, 0,  0, false},\
+						{  0.0, 0,  0, false},\
+						{  0.0, 0,  0,  true},\
+						{  0.0, 0,  0,  true},\
+						{  0.0, 0,  0,  true},\
+						{  0.0, 0,  0,  true},\
+						{  0.0, 0,  0,  true},\
+						{  0.0, 0,  0, false},\
+						{  0.0, 0,  0, false},\
+						{  0.0, 0,  0, false},\
+						{  0.0, 0,  0, false}}
 
 //Cut settings
 #define CUT_SERVO_ID      0
