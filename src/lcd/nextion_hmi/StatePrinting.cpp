@@ -22,6 +22,11 @@ StateSettings::SettingDefinition StatePrinting::TuneList[] = {
 			{MSG_PLASTIC_FLOW_H, StateSettings::SettingType::HEADER, nullptr, 0, 0},
 			{" " MSG_PLASTIC_FLOW, StateSettings::SettingType::INT16, &tools.flow_percentage[E_AXIS-XYZ], 25, 150},
 			{" " MSG_COMP_PLASTIC_FLOW, StateSettings::SettingType::INT16, &tools.flow_percentage[V_AXIS-XYZ], 25, 150},
+
+			{MSG_TEMPERATURE_CORRECTION_H, StateSettings::SettingType::HEADER, nullptr, 0, 0},
+			{" " MSG_TEMPCOR_PLASTIC, StateSettings::SettingType::INT16, &heaters[HOT0_INDEX].temperature_correction, -100, 100},
+			{" " MSG_TEMPCOR_COMPOSITE, StateSettings::SettingType::INT16, &heaters[HOT1_INDEX].temperature_correction, -100, 100},
+			{" " MSG_TEMPCOR_BP, StateSettings::SettingType::INT16, &heaters[BED_INDEX].temperature_correction, -100, 100},
 	};
 
 

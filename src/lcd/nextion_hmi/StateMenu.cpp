@@ -116,6 +116,11 @@ void StateMenu::Control_Tune_OK(void* ptr) {
 	  for (uint8_t i = COUNT(tools.e_factor); i--;)
 		tools.refresh_e_factor(i);
 	#endif
+
+	LOOP_HEATER()
+	{
+		heaters[h].updateCorrection();
+	}
 }
 
 void StateMenu::Control_CancelPrint(void* ptr) {

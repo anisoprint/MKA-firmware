@@ -142,6 +142,22 @@
   #define MSG_COMP_PLASTIC_FLOW              _UxGT("Composite plastic flow (%)")
 #endif
 
+#ifndef MSG_TEMPERATURE_CORRECTION_H
+  #define MSG_TEMPERATURE_CORRECTION_H              _UxGT("Temperature correction")
+#endif
+
+#ifndef MSG_TEMPCOR_PLASTIC
+  #define MSG_TEMPCOR_PLASTIC            			_UxGT("Plastic temp. correction (\370C)")
+#endif
+
+#ifndef MSG_TEMPCOR_COMPOSITE
+  #define MSG_TEMPCOR_COMPOSITE            			_UxGT("Composite temp. correction (\370C)")
+#endif
+
+#ifndef MSG_TEMPCOR_BP
+  #define MSG_TEMPCOR_BP            				_UxGT("Buildplate temp. correction (\370C)")
+#endif
+
 #ifndef MSG_PRINTING
   #define MSG_PRINTING              				_UxGT("Printing...")
 #endif

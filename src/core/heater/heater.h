@@ -68,7 +68,9 @@
                   pidMax;
       int16_t     target_temperature,
                   mintemp,
-                  maxtemp;
+                  maxtemp,
+				  target_temp_nocorr,
+				  temperature_correction;
       float       current_temperature,
                   Kp,
                   Ki,
@@ -101,6 +103,7 @@
       void init();
 
       void setTarget(int16_t celsius);
+      void updateCorrection();
       void updatePID();
       void get_pid_output(const bool cycle_1s);
       void print_PID(const bool dump);

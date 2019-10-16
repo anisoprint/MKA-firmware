@@ -43,13 +43,15 @@
   void Heater::init() {
 
     // Reset valor
-    soft_pwm              = 0;
-    pwm_pos               = 0;
-    target_temperature    = 0;
-    current_temperature   = 25.0;
-    sensor.raw            = 0;
-    last_temperature      = 0.0;
-    temperature_1s        = 0.0;
+    soft_pwm               = 0;
+    pwm_pos                = 0;
+    target_temperature     = 0;
+    target_temp_nocorr     = 0;
+    temperature_correction = 0;
+    current_temperature    = 25.0;
+    sensor.raw             = 0;
+    last_temperature       = 0.0;
+    temperature_1s         = 0.0;
     consecutive_error_temp = 0;
 
     #if WATCH_THE_HEATER
@@ -80,13 +82,25 @@
 
   void Heater::setTarget(int16_t celsius) {
 
-    NOMORE(celsius, maxtemp);
+	NOMORE(celsius, maxtemp);
+	target_temp_nocorr = celsius;
+
+	if (celsius!=0) celsius += temperature_correction;
+	NOMORE(celsius, maxtemp);
     target_temperature = celsius;
 
     #if WATCH_THE_HEATER
       start_watching();
     #endif
   }
+
+  void Heater::updateCorrection() {
+	if (target_temp_nocorr !=0 )
+	{
+		setTarget(target_temp_nocorr);
+	}
+  }
+
 
   void Heater::updatePID() {
     if (isUsePid() && Ki != 0) {
@@ -308,7 +322,10 @@
       #if WATCH_THE_BED
         if (type == IS_BED) start_watching();
       #endif
-    }
+}
+
+
+
   #endif
 
 #endif // HEATER_COUNT > 0
