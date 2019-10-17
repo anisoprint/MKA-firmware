@@ -26,7 +26,7 @@
  * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
-#if ENABLED(BABYSTEPPING)
+#if ENABLED(BABYSTEPPING) && ENABLED(BABYSTEP_GCODE)
 
   #define CODE_M290
 

@@ -303,8 +303,8 @@
   #define MSG_TUNE                    				_UxGT("Tune")
 #endif
 
-#ifndef MSG_ADJUST_Z
-  #define MSG_ADJUST_Z                    			_UxGT("Adjust Z")
+#ifndef MSG_CORRECT_Z
+  #define MSG_CORRECT_Z                    			_UxGT("Correct Z")
 #endif
 
 #ifndef RESTART_TO_CONTINUE
@@ -433,6 +433,14 @@
 
 #ifndef MSG_BP_CALIBR_ST9
   #define MSG_BP_CALIBR_ST9                    		_UxGT("Repeat this for the right corner.")
+#endif
+
+#ifndef MSG_HEADER_Z_BABYSTEP
+  #define MSG_HEADER_Z_BABYSTEP                    	_UxGT("Z axis correction")
+#endif
+
+#ifndef MSG_Z_BABYSTEP
+  #define MSG_Z_BABYSTEP                   			_UxGT("If your first layer appears to be too thick\\ror too thin you can move the buildplate with\\rthe buttons below to correct Z axis\\rcalibration (max. correction is 1 mm).")
 #endif
 
 #ifndef MSG_PAUSE_DURING_FIBER

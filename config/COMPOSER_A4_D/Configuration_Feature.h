@@ -680,17 +680,21 @@
  * Warning: Does not respect endstops!                                    *
  *                                                                        *
  **************************************************************************/
-//#define BABYSTEPPING
+#define BABYSTEPPING
 
 // Also enable X/Y Babystepping. Not supported on DELTA!
 //#define BABYSTEP_XY
 
+// Enable Babystep G-code (M290)
+//#define BABYSTEP_GCODE
 // Change if Z babysteps should go the other way
 #define BABYSTEP_INVERT_Z false
 // Babysteps are very small. Increase for faster motion.
-#define BABYSTEP_MULTIPLICATOR 1
+#define BABYSTEP_MULTIPLICATOR 1s
 // Enable to combine M851 and Babystepping
 //#define BABYSTEP_ZPROBE_OFFSET
+// Enable to combine Home offset and Babystepping
+#define BABYSTEP_HOME_OFFSETS
 // Double-click on the Status Screen for Z Babystepping.
 //#define DOUBLECLICK_FOR_Z_BABYSTEPPING
 // Maximum interval between clicks, in milliseconds.

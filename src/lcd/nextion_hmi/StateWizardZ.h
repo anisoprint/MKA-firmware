@@ -20,13 +20,19 @@
 namespace StateWizardZ {
 
   	void Movement_Push(void *ptr);
+  	void Babystep_Push(void *ptr);
 
-  	void Init();
+  	void InitMovement();
+  	void InitBabystep();
   	void DrawUpdate();
 	void ZOffsetS2(void *ptr=0);
 	void CompZOffsetS2(void *ptr=0);
 	void BuildPlateS3(void *ptr=0);
 	void BuildPlateS7(void *ptr=0);
+
+	void BabystepZ(void *ptr=0);
+	void BabystepZ_Save(void *ptr=0);
+	void BabystepZ_Cancel(void *ptr=0);
 
 	void TouchUpdate();
 

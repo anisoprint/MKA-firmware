@@ -73,19 +73,20 @@ void StateMenu::ActivatePrintControl(void* ptr) {
 	}
 	else //Control menu while printing
 	{
-		_count.setValue(3);
+		_count.setValue(4);
 		_page.show();
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_CONTROL));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 
 		_b1.setTextPGM(PSTR(MSG_CANCEL_PRINT));
 		_b2.setTextPGM(PSTR(MSG_TUNE));
-		_b3.setTextPGM(PSTR(MSG_DINFO));
+		_b3.setTextPGM(PSTR(MSG_CORRECT_Z));
 		_b4.setTextPGM(PSTR(MSG_DINFO));
 
 		_b1.attachPush(Control_CancelPrint);
 		_b2.attachPush(Control_Tune);
-		_b3.attachPush(Control_DInfo);
+		_b3.attachPush(StateWizardZ::BabystepZ);
+		_b4.attachPush(Control_DInfo);
 	}
 
 
