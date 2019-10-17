@@ -171,6 +171,12 @@
 #define MSG_SD_SLASH                        "/"
 #define MSG_SD_MAX_DEPTH                    "trying to call sub-gcode files with too many levels. MAX level is:"
 
+// EEPROM
+#define MSG_EEPROM_FAIL_READ_SYSTEM         "Failed to read System Config from EEPROM.\\rPlease try to update printer firmware.\\rIf the error persists, please contact Support"
+#define MSG_EEPROM_FAIL_WRITE_SYSTEM        "Failed to write System Config to EEPROM.\\rPlease try to update printer firmware.\\rIf the error persists, please contact Support"
+#define MSG_EEPROM_FAIL_READ_USER           "Failed to read User Config from EEPROM.\\rDefault settings were loaded. Buildpate and\\rprinthead re-calibration may be needed.\\rIf the error persists, please contact Support"
+#define MSG_EEPROM_FAIL_WRITE_USER          "Failed to save User Config to EEPROM.\\rPlease reset the printer and try again.\\rIf the error persists, please contact Support"
+
 #define MSG_ENDSTOPS_HIT                    "endstops hit: "
 #define MSG_ERR_COLD_EXTRUDE_STOP           "cold extrusion prevented"
 #define MSG_ERR_LONG_EXTRUDE_STOP           "too long extrusion prevented"
