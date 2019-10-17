@@ -164,9 +164,11 @@
 #define CONTROLLERFAN_MIN_SPEED       0
 // Parameters for Chamber Fan
 #define CHAMBERFAN_SPEED1         	128 // 255 = full speed
-#define CHAMBERFAN_TEMP1         	 40 // 255 = full speed
+#define CHAMBERFAN_TEMP1         	 42 // 255 = full speed
 #define CHAMBERFAN_SPEED2         	255 // 255 = full speed
-#define CHAMBERFAN_TEMP2         	 50 // 255 = full speed
+#define CHAMBERFAN_TEMP2         	 52 // 255 = full speed
+#define CHAMBERFAN_HYSTERESIS		  4
+
 #define CHAMBERFAN_MIN_SPEED          0
 /**************************************************************************/
 
