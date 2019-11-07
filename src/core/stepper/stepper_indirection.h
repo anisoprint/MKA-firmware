@@ -94,15 +94,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #endif
     #define X_ENABLE_INIT SET_OUTPUT(X_ENABLE_PIN)
     #define X_ENABLE_WRITE(STATE) WRITE(X_ENABLE_PIN,STATE)
-    #define X_ENABLE_READ READ(X_ENABLE_PIN)
+    #define X_ENABLE_READ READ_OUTPUT(X_ENABLE_PIN)
   #endif
   #define X_DIR_INIT SET_OUTPUT(X_DIR_PIN)
   #define X_DIR_WRITE(STATE) WRITE(X_DIR_PIN,STATE)
-  #define X_DIR_READ READ(X_DIR_PIN)
+  #define X_DIR_READ READ_OUTPUT(X_DIR_PIN)
 #endif
 #define X_STEP_INIT SET_OUTPUT(X_STEP_PIN)
 #define X_STEP_WRITE(STATE) WRITE(X_STEP_PIN,STATE)
-#define X_STEP_READ READ(X_STEP_PIN)
+#define X_STEP_READ READ_OUTPUT(X_STEP_PIN)
 
 // Y Stepper
 #if ENABLED(HAVE_L6470DRIVER) && ENABLED(Y_IS_L6470)
@@ -127,15 +127,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #endif
     #define Y_ENABLE_INIT SET_OUTPUT(Y_ENABLE_PIN)
     #define Y_ENABLE_WRITE(STATE) WRITE(Y_ENABLE_PIN,STATE)
-    #define Y_ENABLE_READ READ(Y_ENABLE_PIN)
+    #define Y_ENABLE_READ READ_OUTPUT(Y_ENABLE_PIN)
   #endif
   #define Y_DIR_INIT SET_OUTPUT(Y_DIR_PIN)
   #define Y_DIR_WRITE(STATE) WRITE(Y_DIR_PIN,STATE)
-  #define Y_DIR_READ READ(Y_DIR_PIN)
+  #define Y_DIR_READ READ_OUTPUT(Y_DIR_PIN)
 #endif
 #define Y_STEP_INIT SET_OUTPUT(Y_STEP_PIN)
 #define Y_STEP_WRITE(STATE) WRITE(Y_STEP_PIN,STATE)
-#define Y_STEP_READ READ(Y_STEP_PIN)
+#define Y_STEP_READ READ_OUTPUT(Y_STEP_PIN)
 
 // Z Stepper
 #if ENABLED(HAVE_L6470DRIVER) && ENABLED(Z_IS_L6470)
@@ -160,15 +160,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #endif
     #define Z_ENABLE_INIT SET_OUTPUT(Z_ENABLE_PIN)
     #define Z_ENABLE_WRITE(STATE) WRITE(Z_ENABLE_PIN,STATE)
-    #define Z_ENABLE_READ READ(Z_ENABLE_PIN)
+    #define Z_ENABLE_READ READ_OUTPUT(Z_ENABLE_PIN)
   #endif
   #define Z_DIR_INIT SET_OUTPUT(Z_DIR_PIN)
   #define Z_DIR_WRITE(STATE) WRITE(Z_DIR_PIN,STATE)
-  #define Z_DIR_READ READ(Z_DIR_PIN)
+  #define Z_DIR_READ READ_OUTPUT(Z_DIR_PIN)
 #endif
 #define Z_STEP_INIT SET_OUTPUT(Z_STEP_PIN)
 #define Z_STEP_WRITE(STATE) WRITE(Z_STEP_PIN,STATE)
-#define Z_STEP_READ READ(Z_STEP_PIN)
+#define Z_STEP_READ READ_OUTPUT(Z_STEP_PIN)
 
 // X2 Stepper
 #if HAS_X2_ENABLE
@@ -194,15 +194,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
       #endif
       #define X2_ENABLE_INIT SET_OUTPUT(X2_ENABLE_PIN)
       #define X2_ENABLE_WRITE(STATE) WRITE(X2_ENABLE_PIN,STATE)
-      #define X2_ENABLE_READ READ(X2_ENABLE_PIN)
+      #define X2_ENABLE_READ READ_OUTPUT(X2_ENABLE_PIN)
     #endif
     #define X2_DIR_INIT SET_OUTPUT(X2_DIR_PIN)
     #define X2_DIR_WRITE(STATE) WRITE(X2_DIR_PIN,STATE)
-    #define X2_DIR_READ READ(X2_DIR_PIN)
+    #define X2_DIR_READ READ_OUTPUT(X2_DIR_PIN)
   #endif
   #define X2_STEP_INIT SET_OUTPUT(X2_STEP_PIN)
   #define X2_STEP_WRITE(STATE) WRITE(X2_STEP_PIN,STATE)
-  #define X2_STEP_READ READ(X2_STEP_PIN)
+  #define X2_STEP_READ READ_OUTPUT(X2_STEP_PIN)
 #endif
 
 // Y2 Stepper
@@ -229,15 +229,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
       #endif
       #define Y2_ENABLE_INIT SET_OUTPUT(Y2_ENABLE_PIN)
       #define Y2_ENABLE_WRITE(STATE) WRITE(Y2_ENABLE_PIN,STATE)
-      #define Y2_ENABLE_READ READ(Y2_ENABLE_PIN)
+      #define Y2_ENABLE_READ READ_OUTPUT(Y2_ENABLE_PIN)
     #endif
     #define Y2_DIR_INIT SET_OUTPUT(Y2_DIR_PIN)
     #define Y2_DIR_WRITE(STATE) WRITE(Y2_DIR_PIN,STATE)
-    #define Y2_DIR_READ READ(Y2_DIR_PIN)
+    #define Y2_DIR_READ READ_OUTPUT(Y2_DIR_PIN)
   #endif
   #define Y2_STEP_INIT SET_OUTPUT(Y2_STEP_PIN)
   #define Y2_STEP_WRITE(STATE) WRITE(Y2_STEP_PIN,STATE)
-  #define Y2_STEP_READ READ(Y2_STEP_PIN)
+  #define Y2_STEP_READ READ_OUTPUT(Y2_STEP_PIN)
 #endif
 
 // Z2 Stepper
@@ -264,15 +264,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
       #endif
       #define Z2_ENABLE_INIT SET_OUTPUT(Z2_ENABLE_PIN)
       #define Z2_ENABLE_WRITE(STATE) WRITE(Z2_ENABLE_PIN,STATE)
-      #define Z2_ENABLE_READ READ(Z2_ENABLE_PIN)
+      #define Z2_ENABLE_READ READ_OUTPUT(Z2_ENABLE_PIN)
     #endif
     #define Z2_DIR_INIT SET_OUTPUT(Z2_DIR_PIN)
     #define Z2_DIR_WRITE(STATE) WRITE(Z2_DIR_PIN,STATE)
-    #define Z2_DIR_READ READ(Z2_DIR_PIN)
+    #define Z2_DIR_READ READ_OUTPUT(Z2_DIR_PIN)
   #endif
   #define Z2_STEP_INIT SET_OUTPUT(Z2_STEP_PIN)
   #define Z2_STEP_WRITE(STATE) WRITE(Z2_STEP_PIN,STATE)
-  #define Z2_STEP_READ READ(Z2_STEP_PIN)
+  #define Z2_STEP_READ READ_OUTPUT(Z2_STEP_PIN)
 #endif
 
 // Z3 Stepper
@@ -294,15 +294,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #else
       #define Z3_ENABLE_INIT SET_OUTPUT(Z3_ENABLE_PIN)
       #define Z3_ENABLE_WRITE(STATE) WRITE(Z3_ENABLE_PIN,STATE)
-      #define Z3_ENABLE_READ READ(Z3_ENABLE_PIN)
+      #define Z3_ENABLE_READ READ_OUTPUT(Z3_ENABLE_PIN)
     #endif
     #define Z3_DIR_INIT SET_OUTPUT(Z3_DIR_PIN)
     #define Z3_DIR_WRITE(STATE) WRITE(Z3_DIR_PIN,STATE)
-    #define Z3_DIR_READ READ(Z3_DIR_PIN)
+    #define Z3_DIR_READ READ_OUTPUT(Z3_DIR_PIN)
   #endif
   #define Z3_STEP_INIT SET_OUTPUT(Z3_STEP_PIN)
   #define Z3_STEP_WRITE(STATE) WRITE(Z3_STEP_PIN,STATE)
-  #define Z3_STEP_READ READ(Z3_STEP_PIN)
+  #define Z3_STEP_READ READ_OUTPUT(Z3_STEP_PIN)
 #endif
 
 // Z4 Stepper
@@ -324,15 +324,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #else
       #define Z4_ENABLE_INIT SET_OUTPUT(Z4_ENABLE_PIN)
       #define Z4_ENABLE_WRITE(STATE) WRITE(Z4_ENABLE_PIN,STATE)
-      #define Z4_ENABLE_READ READ(Z4_ENABLE_PIN)
+      #define Z4_ENABLE_READ READ_OUTPUT(Z4_ENABLE_PIN)
     #endif
     #define Z4_DIR_INIT SET_OUTPUT(Z4_DIR_PIN)
     #define Z4_DIR_WRITE(STATE) WRITE(Z4_DIR_PIN,STATE)
-    #define Z4_DIR_READ READ(Z4_DIR_PIN)
+    #define Z4_DIR_READ READ_OUTPUT(Z4_DIR_PIN)
   #endif
   #define Z4_STEP_INIT SET_OUTPUT(Z4_STEP_PIN)
   #define Z4_STEP_WRITE(STATE) WRITE(Z4_STEP_PIN,STATE)
-  #define Z4_STEP_READ READ(Z4_STEP_PIN)
+  #define Z4_STEP_READ READ_OUTPUT(Z4_STEP_PIN)
 #endif
 
 // E0 Stepper
@@ -358,20 +358,20 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #endif
     #define E0_ENABLE_INIT SET_OUTPUT(E0_ENABLE_PIN)
     #define E0_ENABLE_WRITE(STATE) WRITE(E0_ENABLE_PIN,STATE)
-    #define E0_ENABLE_READ READ(E0_ENABLE_PIN)
+    #define E0_ENABLE_READ READ_OUTPUT(E0_ENABLE_PIN)
   #endif
   #define E0_DIR_INIT SET_OUTPUT(E0_DIR_PIN)
   #define E0_DIR_WRITE(STATE) WRITE(E0_DIR_PIN,STATE)
-  #define E0_DIR_READ READ(E0_DIR_PIN)
+  #define E0_DIR_READ READ_OUTPUT(E0_DIR_PIN)
 #endif
 #if HAS_DAV_SYSTEM
   #define E0_STEP_INIT          SET_OUTPUT(E0_STEP_PIN); SET_OUTPUT(FIL_RUNOUT_DAV_PIN)
   #define E0_STEP_WRITE(STATE)  WRITE(E0_STEP_PIN,STATE); WRITE(FIL_RUNOUT_DAV_PIN,STATE)
-  #define E0_STEP_READ          READ(E0_STEP_PIN)
+  #define E0_STEP_READ          READ_OUTPUT(E0_STEP_PIN)
 #else
   #define E0_STEP_INIT          SET_OUTPUT(E0_STEP_PIN)
   #define E0_STEP_WRITE(STATE)  WRITE(E0_STEP_PIN,STATE)
-  #define E0_STEP_READ          READ(E0_STEP_PIN)
+  #define E0_STEP_READ          READ_OUTPUT(E0_STEP_PIN)
 #endif
 
 // E1 Stepper
@@ -397,15 +397,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #endif
     #define E1_ENABLE_INIT SET_OUTPUT(E1_ENABLE_PIN)
     #define E1_ENABLE_WRITE(STATE) WRITE(E1_ENABLE_PIN,STATE)
-    #define E1_ENABLE_READ READ(E1_ENABLE_PIN)
+    #define E1_ENABLE_READ READ_OUTPUT(E1_ENABLE_PIN)
   #endif
   #define E1_DIR_INIT SET_OUTPUT(E1_DIR_PIN)
   #define E1_DIR_WRITE(STATE) WRITE(E1_DIR_PIN,STATE)
-  #define E1_DIR_READ READ(E1_DIR_PIN)
+  #define E1_DIR_READ READ_OUTPUT(E1_DIR_PIN)
 #endif
 #define E1_STEP_INIT SET_OUTPUT(E1_STEP_PIN)
 #define E1_STEP_WRITE(STATE) WRITE(E1_STEP_PIN,STATE)
-#define E1_STEP_READ READ(E1_STEP_PIN)
+#define E1_STEP_READ READ_OUTPUT(E1_STEP_PIN)
 
 // E2 Stepper
 #if ENABLED(HAVE_L6470DRIVER) && ENABLED(E2_IS_L6470)
@@ -430,15 +430,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #endif
     #define E2_ENABLE_INIT SET_OUTPUT(E2_ENABLE_PIN)
     #define E2_ENABLE_WRITE(STATE) WRITE(E2_ENABLE_PIN,STATE)
-    #define E2_ENABLE_READ READ(E2_ENABLE_PIN)
+    #define E2_ENABLE_READ READ_OUTPUT(E2_ENABLE_PIN)
   #endif
   #define E2_DIR_INIT SET_OUTPUT(E2_DIR_PIN)
   #define E2_DIR_WRITE(STATE) WRITE(E2_DIR_PIN,STATE)
-  #define E2_DIR_READ READ(E2_DIR_PIN)
+  #define E2_DIR_READ READ_OUTPUT(E2_DIR_PIN)
 #endif
 #define E2_STEP_INIT SET_OUTPUT(E2_STEP_PIN)
 #define E2_STEP_WRITE(STATE) WRITE(E2_STEP_PIN,STATE)
-#define E2_STEP_READ READ(E2_STEP_PIN)
+#define E2_STEP_READ READ_OUTPUT(E2_STEP_PIN)
 
 // E3 Stepper
 #if ENABLED(HAVE_L6470DRIVER) && ENABLED(E3_IS_L6470)
@@ -463,15 +463,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #endif
     #define E3_ENABLE_INIT SET_OUTPUT(E3_ENABLE_PIN)
     #define E3_ENABLE_WRITE(STATE) WRITE(E3_ENABLE_PIN,STATE)
-    #define E3_ENABLE_READ READ(E3_ENABLE_PIN)
+    #define E3_ENABLE_READ READ_OUTPUT(E3_ENABLE_PIN)
   #endif
   #define E3_DIR_INIT SET_OUTPUT(E3_DIR_PIN)
   #define E3_DIR_WRITE(STATE) WRITE(E3_DIR_PIN,STATE)
-  #define E3_DIR_READ READ(E3_DIR_PIN)
+  #define E3_DIR_READ READ_OUTPUT(E3_DIR_PIN)
 #endif
 #define E3_STEP_INIT SET_OUTPUT(E3_STEP_PIN)
 #define E3_STEP_WRITE(STATE) WRITE(E3_STEP_PIN,STATE)
-#define E3_STEP_READ READ(E3_STEP_PIN)
+#define E3_STEP_READ READ_OUTPUT(E3_STEP_PIN)
 
 // E4 Stepper
 #if ENABLED(HAVE_L6470DRIVER) && ENABLED(E4_IS_L6470)
@@ -496,15 +496,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #endif
     #define E4_ENABLE_INIT SET_OUTPUT(E4_ENABLE_PIN)
     #define E4_ENABLE_WRITE(STATE) WRITE(E4_ENABLE_PIN,STATE)
-    #define E4_ENABLE_READ READ(E4_ENABLE_PIN)
+    #define E4_ENABLE_READ READ_OUTPUT(E4_ENABLE_PIN)
   #endif
   #define E4_DIR_INIT SET_OUTPUT(E4_DIR_PIN)
   #define E4_DIR_WRITE(STATE) WRITE(E4_DIR_PIN,STATE)
-  #define E4_DIR_READ READ(E4_DIR_PIN)
+  #define E4_DIR_READ READ_OUTPUT(E4_DIR_PIN)
 #endif
 #define E4_STEP_INIT SET_OUTPUT(E4_STEP_PIN)
 #define E4_STEP_WRITE(STATE) WRITE(E4_STEP_PIN,STATE)
-#define E4_STEP_READ READ(E4_STEP_PIN)
+#define E4_STEP_READ READ_OUTPUT(E4_STEP_PIN)
 
 // E5 Stepper
 #if ENABLED(HAVE_L6470DRIVER) && ENABLED(E5_IS_L6470)
@@ -529,15 +529,15 @@ void reset_stepper_drivers();    // Called by eeprom.load / eeprom.reset
     #endif
     #define E5_ENABLE_INIT SET_OUTPUT(E5_ENABLE_PIN)
     #define E5_ENABLE_WRITE(STATE) WRITE(E5_ENABLE_PIN,STATE)
-    #define E5_ENABLE_READ READ(E5_ENABLE_PIN)
+    #define E5_ENABLE_READ READ_OUTPUT(E5_ENABLE_PIN)
   #endif
   #define E5_DIR_INIT SET_OUTPUT(E5_DIR_PIN)
   #define E5_DIR_WRITE(STATE) WRITE(E5_DIR_PIN,STATE)
-  #define E5_DIR_READ READ(E5_DIR_PIN)
+  #define E5_DIR_READ READ_OUTPUT(E5_DIR_PIN)
 #endif
 #define E5_STEP_INIT SET_OUTPUT(E5_STEP_PIN)
 #define E5_STEP_WRITE(STATE) WRITE(E5_STEP_PIN,STATE)
-#define E5_STEP_READ READ(E5_STEP_PIN)
+#define E5_STEP_READ READ_OUTPUT(E5_STEP_PIN)
 
 /**
  * Extruder indirection for the single E axis
