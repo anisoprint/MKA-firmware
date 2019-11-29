@@ -122,7 +122,6 @@
   #error "DEPENDENCY ERROR: Missing setting INVERT_E_STEP_PIN."
 #endif
 
-
 // Invert direction
 #if DISABLED(INVERT_X_DIR)
   #error "DEPENDENCY ERROR: Missing setting INVERT_X_DIR."
@@ -151,7 +150,6 @@
 #if DISABLED(INVERT_E5_DIR)
   #error "DEPENDENCY ERROR: Missing setting INVERT_E5_DIR."
 #endif
-
 
 // Disable axis
 #if DISABLED(DISABLE_X)

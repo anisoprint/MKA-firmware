@@ -57,6 +57,8 @@ class Stepper {
 
   public: /** Public Parameters */
 
+    static bool stepper_dir_invert[XYZE_N];
+
     static block_t* current_block;  // A pointer to the block currently being traced
 
     static watch_t move_watch;

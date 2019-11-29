@@ -158,7 +158,10 @@
 
         if (pwm_pos != lastpwm) {
           lastpwm = pwm_pos;
-          HAL::analogWrite(pin, pwm_pos, freq);
+          if (freq>0)
+        	  HAL::analogWrite(pin, pwm_pos, freq);
+          else
+        	  HAL::digitalWrite(pin, pwm_pos>127);
         }
       }
     }

@@ -149,6 +149,12 @@ static constexpr Fastio_Param Fastio[] = {
 FORCE_INLINE static bool READ(const uint8_t pin) {
   return (bool)(Fastio[pin].base_address->PIO_PDSR & (MASK(Fastio[pin].shift_count)));
 }
+
+// Read a pin
+FORCE_INLINE static bool READ_OUTPUT(const uint8_t pin) {
+  return (bool)(Fastio[pin].base_address->PIO_ODSR & (MASK(Fastio[pin].shift_count)));
+}
+
 FORCE_INLINE static bool READ_VAR(const uint8_t pin) {
   const PinDescription& pinDesc = g_APinDescription[pin];
 	if (pinDesc.ulPinType != PIO_NOT_A_PIN) {

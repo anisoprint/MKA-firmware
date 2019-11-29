@@ -1,10 +1,13 @@
-;SC10
+;SC11
 ;00000
 ; Anisoprint Composer A3 version 0.9.0 system configuration
-; Firmware: MKA 0.9.3
+; Firmware: MKA 0.9.4a
 ; 13.03.2019 - Andrey Azarov - Configuration created for 0.9.0 (MKA 0.9.2a)
 ; 18.04.2019 - Andrey Azarov - M305 sensor type added (MKA 0.9.3)
 ; 21.06.2019 - Andrey Azarov - Tool switch sequence updated (MKA 0.9.3)
+; 29.11.2019 - Andrey Azarov - Added stepper directions (MKA 0.9.4a)
+;Stepper directions inversion
+M569 X0 Y0 Z1 E0 U1 V0
 ;Mechanics steps per unit:
 M92 X100.000 Y100.000 Z1600.000
 ;Maximum feedrates (units/s):
