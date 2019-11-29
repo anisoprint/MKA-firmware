@@ -1,9 +1,12 @@
-;SC10
+;SC11
 ;00000
-; Anisoprint Composer A4 version 1.0.3 system configuration
-; Firmware: MKA 0.9.3
-; 18.07.2019 - Andrey Azarov - Clone of 1.0.2
-: 07.11.2019 - Andrey Azarov - Added controller fan
+; Anisoprint Composer A4 version 1.0.4 system configuration
+; Firmware: MKA 0.9.4a
+; 07.11.2019 - Andrey Azarov - Clone of 1.0.3
+; 07.11.2019 - Andrey Azarov - Added controller fan (MKA 0.9.4a)
+; 29.11.2019 - Andrey Azarov - Added stepper directions (MKA 0.9.4a)
+;Stepper directions inversion
+M569 X0 Y0 Z1 E1 U1 V1
 ;Mechanics steps per unit:
 M92 X100.000 Y100.000 Z400.000
 ;Maximum feedrates (units/s):

@@ -43,7 +43,7 @@
 
 #if ENABLED(EEPROM_MULTIPART)
 	#define USRCFG_VERSION "MKA12"
-	#define SYSCFG_VERSION "SC10"
+	#define SYSCFG_VERSION "SC11"
 
 	#define USRCFG_OFFSET 	0
 	#define SYSCFG_OFFSET   4096
@@ -63,6 +63,7 @@
  *  Version                                                     (char x6)
  *  EEPROM Checksum                                             (uint16_t)
  *
+ *  M569  XYZEUV      	  stepper.stepper_dir_invert ...        (bool x6)
  *  M92   E0 ...      	  mechanics.axis_steps_per_mm E0 ...    (float x6)
  *  M206  XYZ             mechanics.home_offset                 (float x3)
  *  M218  T   XY          tools.hotend_offset                   (float x6)
@@ -345,6 +346,8 @@ void EEPROM::Postprocess() {
     mechanics.current_position[Z_AXIS]
   };
 
+  stepper.set_directions();
+
   // steps per s2 needs to be updated to agree with units per s2
   mechanics.reset_acceleration_rates();
 
@@ -538,6 +541,10 @@ void EEPROM::Postprocess() {
         //
         // Mechanics settings
         //
+        LOOP_XYZE(i)
+        {
+            EEPROM_WRITE(stepper.stepper_dir_invert[i]);
+        }
         LOOP_XYZ(i)
         {
             EEPROM_WRITE(mechanics.axis_steps_per_mm[i]);
@@ -697,6 +704,11 @@ void EEPROM::Postprocess() {
             //
             // Mechanics settings
             //
+            LOOP_XYZE(i)
+            {
+            	EEPROM_READ(stepper.stepper_dir_invert[i]);
+            }
+
             LOOP_XYZ(i)
             {
                 EEPROM_READ(mechanics.axis_steps_per_mm[i]);
@@ -2027,7 +2039,11 @@ void EEPROM::Factory_Settings() {
   #endif
 
 
+  constexpr bool tmpdir[]     = { INVERT_X_DIR, INVERT_Y_DIR, INVERT_Z_DIR,
+                                  INVERT_E0_DIR, INVERT_E1_DIR, INVERT_E2_DIR, INVERT_E3_DIR, INVERT_E4_DIR, INVERT_E5_DIR };
+
   LOOP_XYZE_N(i) {
+	stepper.stepper_dir_invert[i] 			= tmpdir[i < COUNT(tmpdir) ? i : COUNT(tmpdir) - 1];
     mechanics.axis_steps_per_mm[i]          = pgm_read_float(&tmp1[i < COUNT(tmp1) ? i : COUNT(tmp1) - 1]);
     mechanics.max_feedrate_mm_s[i]          = pgm_read_float(&tmp2[i < COUNT(tmp2) ? i : COUNT(tmp2) - 1]);
     mechanics.max_acceleration_mm_per_s2[i] = pgm_read_dword_near(&tmp3[i < COUNT(tmp3) ? i : COUNT(tmp3) - 1]);

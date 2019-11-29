@@ -65,6 +65,8 @@ Stepper stepper;
 
 // public:
 
+bool Stepper::stepper_dir_invert[XYZE_N] { false };
+
 block_t* Stepper::current_block = NULL;  // A pointer to the block currently being traced
 
 #if ENABLED(ABORT_ON_ENDSTOP_HIT)
@@ -379,25 +381,39 @@ void Stepper::wake_up() { ENABLE_STEPPER_INTERRUPT(); }
  */
 void Stepper::set_directions() {
 
-  #define SET_STEP_DIR(AXIS) \
-    if (motor_direction(AXIS ##_AXIS)) { \
-      AXIS ##_APPLY_DIR(INVERT_## AXIS ##_DIR, false); \
-      count_direction[AXIS ##_AXIS] = -1; \
-    } \
-    else { \
-      AXIS ##_APPLY_DIR(!INVERT_## AXIS ##_DIR, false); \
-      count_direction[AXIS ##_AXIS] = 1; \
-    }
-
   #if HAS_X_DIR
-    SET_STEP_DIR(X); // A
+	  if (motor_direction(X_AXIS)) {
+		REV_X_DIR();
+		count_direction[X_AXIS] = -1;
+	  }
+	  else {
+		NORM_X_DIR();
+		count_direction[X_AXIS] = 1;
+	  }
   #endif
+
   #if HAS_Y_DIR
-    SET_STEP_DIR(Y); // B
+	  if (motor_direction(Y_AXIS)) {
+		REV_Y_DIR();
+		count_direction[Y_AXIS] = -1;
+	  }
+	  else {
+		NORM_Y_DIR();
+		count_direction[Y_AXIS] = 1;
+	  }
   #endif
+
   #if HAS_Z_DIR
-    SET_STEP_DIR(Z); // C
+	  if (motor_direction(Z_AXIS)) {
+		REV_Z_DIR();
+		count_direction[Z_AXIS] = -1;
+	  }
+	  else {
+		NORM_Z_DIR();
+		count_direction[Z_AXIS] = 1;
+	  }
   #endif
+
 
   #if HAS_EXTRUDERS
 
@@ -2346,8 +2362,6 @@ void Stepper::synchronize() {
     printer.idle();
     printer.keepalive(InProcess);
   }
-  //memset(planner.block_buffer, 0, sizeof(block_t)*BLOCK_BUFFER_SIZE);
-  //planner.clear_block_buffer();
 }
 
 
@@ -2606,6 +2620,8 @@ void Stepper::report_positions() {
 }
 
 #if ENABLED(BABYSTEPPING)
+
+#error "NEED FIX FOR STEPPER DIRECTIONS"
 
   #if ENABLED(DELTA)
     #define CYCLES_EATEN_BABYSTEP (2 * 15)

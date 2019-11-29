@@ -60,6 +60,7 @@
 #include "config/m302.h"                  // Allow cold extrudes
 #include "config/m305.h"                  // Set thermistor and ADC parameters
 #include "config/m306.h"                  // Set Heaters
+#include "config/m569.h"                  // Set Stepper directions
 #include "config/m595.h"                  // Set AD595 offset & Gain
 #include "config/m900.h"                  // Set and/or Get advance K factor
 #include "config/m906.h"                  // Set Alligator motor currents or Set motor current in milliamps with have a TMC2130 driver
