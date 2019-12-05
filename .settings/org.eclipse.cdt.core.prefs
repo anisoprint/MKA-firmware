@@ -2438,7 +2438,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.BOARD/value=SAM_DUE
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.CORE.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.CORE.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.CORE.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.11\\cores\\arduino
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.CORE.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.12\\cores\\arduino
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.CORE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.CORE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.CORE/value=arduino
@@ -2477,7 +2477,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.USB_PRODUCT/value=\\"Arduino Due\\"
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.VARIANT.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.VARIANT.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.VARIANT.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.11\\variants\\arduino_due_x
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.VARIANT.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.12\\variants\\arduino_due_x
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.VARIANT/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.VARIANT/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.BUILD.VARIANT/value=arduino_due_x
@@ -2525,7 +2525,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.CPP.EXTRA_FLAGS/value=
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.CPP.FLAGS/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.CPP.FLAGS/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.CPP.FLAGS/value=-c -g -Os ${A.COMPILER.WARNING_FLAGS} -std\=gnu++11 -ffunction-sections -fdata-sections -nostdlib -fno-threadsafe-statics --param max-inline-insns-single\=500 -fno-rtti -fno-exceptions -Dprintf\=iprintf -MMD
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.CPP.FLAGS/value=-c -g -Os ${A.COMPILER.WARNING_FLAGS} -std\=gnu++11 -ffunction-sections -fdata-sections -nostdlib -fno-threadsafe-statics --param max-inline-insns-single\=500 -fno-rtti -fno-exceptions -MMD
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.DEFINE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.DEFINE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.DEFINE/value=-DARDUINO\=
@@ -2552,7 +2552,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.OBJCOPY.EEP.FLAGS/value=-O ihex -j .eeprom --set-section-flags\=.eeprom\=alloc,load --no-change-warnings --change-section-lma .eeprom\=0
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.PATH/value=${A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC.PATH}/bin/
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.PATH/value=${A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC-4.8.3-2014Q1.PATH}/bin/
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.S.CMD/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.S.CMD/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.COMPILER.S.CMD/value=arm-none-eabi-gcc
@@ -2615,10 +2615,10 @@ environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.COMBINE.PATTERN.2/value=\ "${A.BUILD.VARIANT.PATH}/${A.BUILD.VARIANT_SYSTEM_LIB}" 
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.COMBINE.PATTERN.3/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.COMBINE.PATTERN.3/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.COMBINE.PATTERN.3/value=\ -Wl,--end-group -lm -gcc
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.COMBINE.PATTERN.3/value=\ -Wl,--end-group -lm -lgcc
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.COMBINE.PATTERN/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.COMBINE.PATTERN/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.COMBINE.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.C.ELF.CMD}" -mcpu\=${A.BUILD.MCU} -mthumb ${A.COMPILER.C.ELF.FLAGS} "-T${A.BUILD.VARIANT.PATH}/${A.BUILD.LDSCRIPT}" "-Wl,-Map,${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.map" ${A.COMPILER.C.ELF.EXTRA_FLAGS} -o "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.elf" "-L${A.BUILD.PATH}" -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry\=Reset_Handler -Wl,--unresolved-symbols\=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group ${A.COMPILER.COMBINE.FLAGS} ${A.OBJECT_FILES} "${A.BUILD.VARIANT.PATH}/${A.BUILD.VARIANT_SYSTEM_LIB}" "${A.BUILD.PATH}/${A.ARCHIVE_FILE}" -Wl,--end-group -lm -gcc
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.COMBINE.PATTERN/value="${A.COMPILER.PATH}${A.COMPILER.C.ELF.CMD}" -mcpu\=${A.BUILD.MCU} -mthumb ${A.COMPILER.C.ELF.FLAGS} "-T${A.BUILD.VARIANT.PATH}/${A.BUILD.LDSCRIPT}" "-Wl,-Map,${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.map" ${A.COMPILER.C.ELF.EXTRA_FLAGS} -o "${A.BUILD.PATH}/${A.BUILD.PROJECT_NAME}.elf" "-L${A.BUILD.PATH}" -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry\=Reset_Handler -Wl,--unresolved-symbols\=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group ${A.COMPILER.COMBINE.FLAGS} ${A.OBJECT_FILES} "${A.BUILD.VARIANT.PATH}/${A.BUILD.VARIANT_SYSTEM_LIB}" "${A.BUILD.PATH}/${A.ARCHIVE_FILE}" -Wl,--end-group -lm -lgcc
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.O.PATTERN.1/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.O.PATTERN.1/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.C.O.PATTERN.1/value="${A.COMPILER.PATH}${A.COMPILER.C.CMD}" ${A.COMPILER.C.FLAGS} -mcpu\=${A.BUILD.MCU} -mthumb -DF_CPU\=${A.BUILD.F_CPU} -DARDUINO\=${A.RUNTIME.IDE.VERSION} -DARDUINO_${A.BUILD.BOARD} -DARDUINO_ARCH_${A.BUILD.ARCH} ${A.COMPILER.C.EXTRA_FLAGS} ${A.BUILD.EXTRA_FLAGS} ${A.COMPILER.LIBSAM.C.FLAGS} ${A.INCLUDES} 
@@ -2682,6 +2682,15 @@ environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.SIZE.REGEX/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.SIZE.REGEX/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RECIPE.SIZE.REGEX/value=\\.text\\s+([0-9]+).*
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.REFERENCED.CORE.PATH/delimiter=;
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.REFERENCED.CORE.PATH/operation=replace
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.REFERENCED.CORE.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.12
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.REFERENCED.UPLOAD.PATH/delimiter=;
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.REFERENCED.UPLOAD.PATH/operation=replace
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.REFERENCED.UPLOAD.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.12
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.REFERENCED.VARIANT.PATH/delimiter=;
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.REFERENCED.VARIANT.PATH/operation=replace
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.REFERENCED.VARIANT.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.12
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.HARDWARE.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.HARDWARE.PATH/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.HARDWARE.PATH/value=${eclipse_home}/arduinoPlugin/packages/arduino/hardware/sam
@@ -2690,52 +2699,52 @@ environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.IDE.VERSION/value=10802
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.PLATFORM.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.PLATFORM.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.PLATFORM.PATH/value=${eclipse_home}/arduinoPlugin/packages/arduino/hardware/sam/1.6.11
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA-1.1.1.PATH/delimiter=;
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA-1.1.1.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA-1.1.1.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arduinoOTA\\1.1.1
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.PLATFORM.PATH/value=${eclipse_home}/arduinoPlugin/packages/arduino/hardware/sam/1.6.12
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA-1.2.1.PATH/delimiter=;
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA-1.2.1.PATH/operation=replace
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA-1.2.1.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arduinoOTA\\1.2.1
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arduinoOTA\\1.1.1
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA1.1.1.PATH/delimiter=;
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA1.1.1.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA1.1.1.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arduinoOTA\\1.1.1
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arduinoOTA\\1.2.1
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA1.2.1.PATH/delimiter=;
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA1.2.1.PATH/operation=replace
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARDUINOOTA1.2.1.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arduinoOTA\\1.2.1
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC-4.8.3-2014Q1.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC-4.8.3-2014Q1.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC-4.8.3-2014Q1.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arm-none-eabi-gcc\\4.8.3-2014q1
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC-4.8.3-2014Q1.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arm-none-eabi-gcc\\4.8.3-2014q1
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arm-none-eabi-gcc\\4.8.3-2014q1
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arm-none-eabi-gcc\\4.8.3-2014q1
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC4.8.3-2014Q1.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC4.8.3-2014Q1.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC4.8.3-2014Q1.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arm-none-eabi-gcc\\4.8.3-2014q1
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC-4.9.2-ATMEL3.5.4-ARDUINO2.PATH/delimiter=;
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC-4.9.2-ATMEL3.5.4-ARDUINO2.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC-4.9.2-ATMEL3.5.4-ARDUINO2.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avr-gcc\\4.9.2-atmel3.5.4-arduino2
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.ARM-NONE-EABI-GCC4.8.3-2014Q1.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\arm-none-eabi-gcc\\4.8.3-2014q1
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC-5.4.0-ATMEL3.6.1-ARDUINO2.PATH/delimiter=;
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC-5.4.0-ATMEL3.6.1-ARDUINO2.PATH/operation=replace
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC-5.4.0-ATMEL3.6.1-ARDUINO2.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avr-gcc\\5.4.0-atmel3.6.1-arduino2
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avr-gcc\\4.9.2-atmel3.5.4-arduino2
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC4.9.2-ATMEL3.5.4-ARDUINO2.PATH/delimiter=;
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC4.9.2-ATMEL3.5.4-ARDUINO2.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC4.9.2-ATMEL3.5.4-ARDUINO2.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avr-gcc\\4.9.2-atmel3.5.4-arduino2
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE-6.3.0-ARDUINO9.PATH/delimiter=;
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE-6.3.0-ARDUINO9.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE-6.3.0-ARDUINO9.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avrdude\\6.3.0-arduino9
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avr-gcc\\5.4.0-atmel3.6.1-arduino2
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC5.4.0-ATMEL3.6.1-ARDUINO2.PATH/delimiter=;
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC5.4.0-ATMEL3.6.1-ARDUINO2.PATH/operation=replace
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVR-GCC5.4.0-ATMEL3.6.1-ARDUINO2.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avr-gcc\\5.4.0-atmel3.6.1-arduino2
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE-6.3.0-ARDUINO14.PATH/delimiter=;
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE-6.3.0-ARDUINO14.PATH/operation=replace
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE-6.3.0-ARDUINO14.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avrdude\\6.3.0-arduino14
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avrdude\\6.3.0-arduino9
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE6.3.0-ARDUINO9.PATH/delimiter=;
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE6.3.0-ARDUINO9.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE6.3.0-ARDUINO9.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avrdude\\6.3.0-arduino9
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avrdude\\6.3.0-arduino14
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE6.3.0-ARDUINO14.PATH/delimiter=;
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE6.3.0-ARDUINO14.PATH/operation=replace
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.AVRDUDE6.3.0-ARDUINO14.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\avrdude\\6.3.0-arduino14
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC-1.6.1-ARDUINO.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC-1.6.1-ARDUINO.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC-1.6.1-ARDUINO.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\bossac\\1.6.1-arduino
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC-1.6.1-ARDUINO.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\bossac\\1.6.1-arduino
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\bossac\\1.6.1-arduino
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\bossac\\1.6.1-arduino
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC1.6.1-ARDUINO.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC1.6.1-ARDUINO.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC1.6.1-ARDUINO.PATH/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\bossac\\1.6.1-arduino
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.RUNTIME.TOOLS.BOSSAC1.6.1-ARDUINO.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\bossac\\1.6.1-arduino
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.SERIAL.PORT.FILE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.SERIAL.PORT.FILE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.SERIAL.PORT.FILE/value=${A.SERIAL.PORT}
@@ -2807,7 +2816,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.UPLOAD.WAIT_FOR_UPLOAD_PORT/value=false
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.VERSION/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.VERSION/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.VERSION/value=1.6.11
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.VERSION/value=1.6.12
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.VID.0/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.VID.0/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/A.VID.0/value=0x2341
@@ -2819,7 +2828,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.ARCHITECTURE_ID/value=sam
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.BOARDS_FILE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.BOARDS_FILE/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.BOARDS_FILE/value=C\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.11\\boards.txt
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.BOARDS_FILE/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\hardware\\sam\\1.6.12\\boards.txt
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.BOARD_ID/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.BOARD_ID/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.BOARD_ID/value=arduino_due_x_dbg
@@ -2855,7 +2864,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.EXTRA.LINK/value=
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.MAKE_LOCATION/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.MAKE_LOCATION/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.MAKE_LOCATION/value=C\:\\Programs\\sloeber\\arduinoPlugin\\tools\\make\\
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.MAKE_LOCATION/value=D\:\\Programs\\sloeber\\arduinoPlugin\\tools\\make\\
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.MENU.CPU/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.MENU.CPU/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.MENU.CPU/value=ATMEGA2560
@@ -2879,7 +2888,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.PROJECT_NAME/value=MKA
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.SELECTED.PLATFORM/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.SELECTED.PLATFORM/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.SELECTED.PLATFORM/value=${eclipse_home}/arduinoPlugin/packages/arduino/hardware/sam/1.6.11
+environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.SELECTED.PLATFORM/value=${eclipse_home}/arduinoPlugin/packages/arduino/hardware/sam/1.6.12
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.SIZE.SWITCH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.SIZE.SWITCH/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551.435472822.442842501/JANTJE.SIZE.SWITCH/value=${A.RECIPE.SIZE.PATTERN}
@@ -7121,10 +7130,10 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.RUNTIME.TOOLS.
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RUNTIME.TOOLS.BOSSAC1.6.1-ARDUINO.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\bossac\\1.6.1-arduino
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT.FILE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT.FILE/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT.FILE/value=${A.SERIAL.PORT}
+environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT.FILE/value=COM35
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT/value=${JANTJE.COM_PORT}
+environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT/value=COM35
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SOFTWARE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SOFTWARE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SOFTWARE/value=ARDUINO

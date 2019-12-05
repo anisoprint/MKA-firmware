@@ -166,7 +166,7 @@
 #define FAN0_PIN            ORIG_FAN0_PIN 		//Throat
 #define FAN1_PIN            ORIG_FAN1_PIN 		//Nozzles
 #define FAN2_PIN            ORIG_HEATER_3_PIN 	//Exhaust
-#define FAN3_PIN            ORIG_FAN3_PIN
+#define FAN3_PIN            38					//Mainboard
 #define FAN4_PIN            ORIG_FAN4_PIN
 #define FAN5_PIN            ORIG_FAN5_PIN
 
