@@ -1783,7 +1783,7 @@
 #define DEFAULT_STEPPER_DEACTIVE_TIME 120
 #define DISABLE_INACTIVE_X
 #define DISABLE_INACTIVE_Y
-#define DISABLE_INACTIVE_Z
+//#define DISABLE_INACTIVE_Z
 #define DISABLE_INACTIVE_E
 /***********************************************************************/
 
