@@ -1127,7 +1127,7 @@
 //#define SD_DETECT_INVERTED
 
 #define SD_FINISHED_STEPPERRELEASE true           // if sd support and the file is finished: disable steppers?
-#define SD_FINISHED_RELEASECOMMAND "M84 X Y Z E"  // You might want to keep the z enabled so your bed stays in place.
+#define SD_FINISHED_RELEASECOMMAND "M84 X Y E"  // You might want to keep the z enabled so your bed stays in place.
 
 //#define MENU_ADDAUTOSTART
 

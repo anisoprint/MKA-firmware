@@ -7184,10 +7184,10 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.RUNTIME.TOOLS.
 environment/project/io.sloeber.core.toolChain.release.918675551/A.RUNTIME.TOOLS.BOSSAC1.6.1-ARDUINO.PATH/value=D\:\\Programs\\sloeber\\arduinoPlugin\\packages\\arduino\\tools\\bossac\\1.6.1-arduino
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT.FILE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT.FILE/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT.FILE/value=COM35
+environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT.FILE/value=${A.SERIAL.PORT}
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT/value=COM35
+environment/project/io.sloeber.core.toolChain.release.918675551/A.SERIAL.PORT/value=${JANTJE.COM_PORT}
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SOFTWARE/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SOFTWARE/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.SOFTWARE/value=ARDUINO

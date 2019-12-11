@@ -78,6 +78,10 @@
 
 	  #if ENABLED(EG6_EXTRUDER)
         static ToolSwitchPos hotend_switch_path[HOTENDS][CHANGE_MOVES];
+        static float wipepark_return_position[XYZ];
+        static bool parked_near_wipe;
+
+
 	  #endif
 
       #if HAS_EXT_ENCODER
@@ -109,6 +113,11 @@
           #endif
         );
       }
+
+	#if ENABLED(EG6_EXTRUDER)
+      static void park_to_wipe();
+      static void unpark_from_wipe();
+	#endif
 
       #if ENABLED(VOLUMETRIC_EXTRUSION)
 
