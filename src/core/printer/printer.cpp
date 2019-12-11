@@ -945,7 +945,13 @@ void Printer::handle_safety_watch() {
 
   static watch_t safety_watch(30 * 60 * 1000UL);
 
-  if (safety_watch.isRunning() && (IS_SD_PRINTING || print_job_counter.isRunning() || !thermalManager.heaters_isON()))
+  #if ENABLED(NEXTION_HMI)
+	#define PRINT_IS_PAUSED (PrintPause::Status==Paused)
+  #else
+	#define PRINT_IS_PAUSED false
+  #endif
+
+  if (safety_watch.isRunning() && (IS_SD_PRINTING || PRINT_IS_PAUSED || print_job_counter.isRunning() || !thermalManager.heaters_isON()))
     safety_watch.stop();
   else if (!safety_watch.isRunning() && thermalManager.heaters_isON())
     safety_watch.start();
