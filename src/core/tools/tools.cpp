@@ -223,7 +223,7 @@
                 if (parked_near_wipe)
                 {
                 	unpark_from_wipe();
-                	mechanics.set_current_to_destination();
+                	//mechanics.set_current_to_destination();
                 }
                 else
                 {
