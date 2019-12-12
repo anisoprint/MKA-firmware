@@ -6,6 +6,7 @@
 ; 20.07.2019 - Andrey Azarov - Changed steps per mm for X, Y, Z. Updated tool change
 ; 29.11.2019 - Andrey Azarov - Added stepper directions (MKA 0.9.4a)
 ; 05.12.2019 - Andrey Azarov - Fixed fan for chamber (MKA 0.9.4a)
+; 13.12.2019 - Andrey Azarov - Updated load/unload lengths (MKA 0.9.4a)
 ;Stepper directions inversion
 M569 X0 Y1 Z1 E0 U1 V0
 ;Mechanics steps per unit:
@@ -41,9 +42,9 @@ M106 P2 U9 L1 F250 H9 I0
 ; Linear Advance:
 M900 K0.000000
 ;Filament load/unload parameters: E<Extruder> L<Load length> U<Unload length>
-M704 E0 L610.0 U740.0
-M704 E1 L800.0 U900.0
-M704 E2 L740.0 U850.0
+M704 E0 L660.0 U990.0
+M704 E1 L1050.0 U1150.0
+M704 E2 L740.0 U1150.0
 ;Filament load/unload parameters: A<RetrDist> B<RetrFR> C<LoadFR> D<UnloadFR> K<ExtrudeFR>
 M704 A5.0 B10.0 C30.0 D30.0 K5.0
 ;Fiber cut parameters: S<ServoId> A<CutAngle> B<NeutralAngle>
