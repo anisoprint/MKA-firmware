@@ -61,7 +61,8 @@
 
 #if ENABLED(EG6_EXTRUDER)
   ToolSwitchPos Tools::hotend_switch_path[HOTENDS][CHANGE_MOVES] = {0.0, 0.0, 0.0, false};
-
+  float Tools::wipepark_return_position[XYZ] = {0, 0, 0};
+  bool Tools::parked_near_wipe = false;
 #endif
 
   #if HAS_EXT_ENCODER
@@ -218,9 +219,19 @@
                 	}
                 }
 
-				//Returning to original position
-				mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.current_position[Z_AXIS]);
-				mechanics.do_blocking_move_to_z(mechanics.destination[Z_AXIS], mechanics.max_feedrate_mm_s[Z_AXIS]);
+                //Returning to original position
+                if (parked_near_wipe)
+                {
+                	unpark_from_wipe();
+                	//mechanics.set_current_to_destination();
+                }
+                else
+                {
+    				mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.current_position[Z_AXIS]);
+    				mechanics.do_blocking_move_to_z(mechanics.destination[Z_AXIS], mechanics.max_feedrate_mm_s[Z_AXIS]);
+                }
+
+
 			#else
 				mechanics.do_blocking_move_to(mechanics.destination[X_AXIS], mechanics.destination[Y_AXIS], mechanics.destination[Z_AXIS]);
 			#endif
@@ -371,6 +382,49 @@ void Tools::cut_fiber() {
     MOVE_SERVO(cut_servo_id, cut_neutral_angle);
     fiber_is_cut = true;
 }
+
+#if ENABLED(EG6_EXTRUDER)
+
+void Tools::park_to_wipe() {
+
+	wipepark_return_position[X_AXIS] = mechanics.current_position[X_AXIS];
+	wipepark_return_position[Y_AXIS] = mechanics.current_position[Y_AXIS];
+	wipepark_return_position[Z_AXIS] = mechanics.current_position[Z_AXIS];
+
+	stepper.synchronize();
+	float x_target, y_target;
+	uint8_t next_extruder = 0;
+	if (active_extruder==0) next_extruder = 1;
+	if (hotend_switch_path[next_extruder][0].Speed>0)
+	{
+		mechanics.do_blocking_move_to_xy(
+				Mechanics::homeCS2toolCS(active_extruder, hotend_switch_path[next_extruder][0].X, AxisEnum::X_AXIS),
+				Mechanics::homeCS2toolCS(active_extruder, hotend_switch_path[next_extruder][0].Y, AxisEnum::Y_AXIS),
+				hotend_switch_path[next_extruder][0].Speed);
+		parked_near_wipe = true;
+	}
+}
+
+void Tools::unpark_from_wipe() {
+	if (parked_near_wipe)
+	{
+		stepper.synchronize();
+		float x_target, y_target;
+		uint8_t next_extruder = 0;
+		if (active_extruder==0) next_extruder = 1;
+		if (hotend_switch_path[next_extruder][0].Speed>0)
+		{
+			mechanics.do_blocking_move_to_xy(
+					wipepark_return_position[X_AXIS],
+					wipepark_return_position[Y_AXIS],
+					hotend_switch_path[next_extruder][0].Speed);
+			mechanics.do_blocking_move_to_z(wipepark_return_position[Z_AXIS], mechanics.max_feedrate_mm_s[Z_AXIS]);
+			parked_near_wipe = false;
+		}
+	}
+}
+
+#endif
 
   #if ENABLED(VOLUMETRIC_EXTRUSION)
 

@@ -1,3 +1,11 @@
+v.0.9.4a
+[Added] M569 code to turn on or off stepper motor direction inversion (use X, Y, Z, E, U, V letters for axes, e.g. "M569 X0 Y1" to turn off X-axis iversion and turn on Y-axis inversion)
+[Added] Controlled motherboard cooling fans for Composer A4 v1.0.4+ and A3 v1.0.1+
+[Changed] Buildplate in now not cooled on pause
+[Changed] Minor changes on toolchange sequence to make it faster
+[Fixed] Fixed material load/unload lengths on Composer A3 1.0.x
+[Fixed] Fixed disabling z-axis motors and Z homing sequence for Composer A3 1.0.x
+
 v.0.9.4
 - Pause rework
 - Prindhead movement is now available on pause

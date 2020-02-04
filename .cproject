@@ -22,14 +22,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_V10}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1825809653" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -38,14 +37,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_V10}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.601727464" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -54,14 +52,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_V10}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.829244576" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -100,14 +97,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_V10_TEST}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.882047260" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -116,14 +112,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_V10_TEST}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.2013894068" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -132,14 +127,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_V10_TEST}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.304066484" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -184,7 +178,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V09}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.860977994" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
@@ -200,7 +193,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V09}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.1952035400" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
@@ -216,7 +208,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V09}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.1725259948" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
@@ -496,7 +487,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V10}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.638241170" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
@@ -512,7 +502,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V10}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.673230294" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
@@ -528,7 +517,6 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V10}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.1337843961" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
@@ -568,14 +556,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V10_TEST}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1578674965" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -584,14 +571,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V10_TEST}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.404509883" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -600,14 +586,13 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/core}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/core/variant}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/LiquidCrystal/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/U8glib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V10_TEST}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.278392460" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>

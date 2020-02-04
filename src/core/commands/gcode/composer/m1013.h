@@ -34,46 +34,20 @@
   * M1013 R - Return
   *
   */
+
+
+
  inline void gcode_M1013(void) {
-
-	static float return_position[2] = {0, 0};
-	stepper.synchronize();
-	if (parser.seen('R'))
-	{
-		#if ENABLED(EG6_EXTRUDER)
-			float x_target, y_target;
-			uint8_t next_extruder = 0;
-			if (tools.active_extruder==0) next_extruder = 1;
-			if (tools.hotend_switch_path[next_extruder][0].Speed>0)
-			{
-				mechanics.do_blocking_move_to_xy(
-						return_position[X_AXIS],
-						return_position[Y_AXIS],
-						tools.hotend_switch_path[next_extruder][0].Speed);
-			}
-		#endif
-	}
-	else
-	{
-		return_position[X_AXIS] = mechanics.current_position[X_AXIS];
-		return_position[Y_AXIS] = mechanics.current_position[Y_AXIS];
-
-		#if ENABLED(EG6_EXTRUDER)
-			float x_target, y_target;
-			uint8_t next_extruder = 0;
-			if (tools.active_extruder==0) next_extruder = 1;
-			if (tools.hotend_switch_path[next_extruder][0].Speed>0)
-			{
-				mechanics.do_blocking_move_to_xy(
-						Mechanics::homeCS2toolCS(tools.active_extruder, tools.hotend_switch_path[next_extruder][0].X, AxisEnum::X_AXIS),
-						Mechanics::homeCS2toolCS(tools.active_extruder, tools.hotend_switch_path[next_extruder][0].Y, AxisEnum::Y_AXIS),
-						tools.hotend_switch_path[next_extruder][0].Speed);
-			}
-		#endif
-
-
-	}
-
+	#if ENABLED(EG6_EXTRUDER)
+		if (parser.seen('R') )
+		{
+			tools.unpark_from_wipe();
+		}
+		else
+		{
+			tools.park_to_wipe();
+		}
+	#endif
  }
 
 
