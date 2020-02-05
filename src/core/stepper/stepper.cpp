@@ -2621,7 +2621,7 @@ void Stepper::report_positions() {
 
 #if ENABLED(BABYSTEPPING)
 
-#error "NEED FIX FOR STEPPER DIRECTIONS"
+//#error "NEED FIX FOR STEPPER DIRECTIONS"
 
   #if ENABLED(DELTA)
     #define CYCLES_EATEN_BABYSTEP (2 * 15)
@@ -2632,8 +2632,9 @@ void Stepper::report_positions() {
 
   #define _ENABLE(AXIS) enable_## AXIS()
   #define _READ_DIR(AXIS) AXIS ##_DIR_READ
-  #define _INVERT_DIR(AXIS) INVERT_## AXIS ##_DIR
+  #define _INVERT_DIR(AXIS) stepper.stepper_dir_invert[AXIS ##_AXIS]
   #define _APPLY_DIR(AXIS, INVERT) AXIS ##_APPLY_DIR(INVERT, true)
+
 
   #if EXTRA_CYCLES_BABYSTEP > 20
     #define _SAVE_START const hal_timer_t pulse_start = HAL_timer_get_current_count(STEPPER_TIMER)
