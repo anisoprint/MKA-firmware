@@ -1,0 +1,3 @@
+..\COMPOSER_A3_v0.9\MKA.bin;
+..\cfg-COMPOSER_A3_v0.9\*.*;
+$($env:APPDATA)\Nextion Editor\bianyi\MKA_35.tft;MKA.tft
