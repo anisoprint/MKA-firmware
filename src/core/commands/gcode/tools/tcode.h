@@ -77,11 +77,14 @@ inline void gcode_T(const uint8_t tool_id) {
   #elif EXTRUDERS > 1 && HOTENDS > 1
 
     if (printer.mode == PRINTER_MODE_FFF) {
+
+    	bool force_change = parser.seen('R');
+
         tools.change(
         tool_id,
         MMM_TO_MMS(parser.linearval('F')),
-        (tool_id == tools.active_extruder) || parser.boolval('S'),
-		false,
+        ((tool_id == tools.active_extruder) && !force_change) || parser.boolval('S'),
+		force_change,
 		!parser.seen('Q')
       );
     }
