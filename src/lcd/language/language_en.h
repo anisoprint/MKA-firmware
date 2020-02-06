@@ -146,6 +146,14 @@
   #define MSG_TEMPERATURE_CORRECTION_H              _UxGT("Temperature correction")
 #endif
 
+#ifndef MSG_FAN_CORRECTION_H
+  #define MSG_FAN_CORRECTION_H              		_UxGT("Fan correction")
+#endif
+
+#ifndef MSG_FANCOR_NOZZLE
+  #define MSG_FANCOR_NOZZLE            				_UxGT("Part cooling correction (%)")
+#endif
+
 #ifndef MSG_TEMPCOR_PLASTIC
   #define MSG_TEMPCOR_PLASTIC            			_UxGT("Plastic temp. correction (\370C)")
 #endif

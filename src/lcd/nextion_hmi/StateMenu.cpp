@@ -122,6 +122,12 @@ void StateMenu::Control_Tune_OK(void* ptr) {
 	{
 		heaters[h].updateCorrection();
 	}
+
+	LOOP_FAN()
+	{
+		fans[f].updateCorrection();
+	}
+
 }
 
 void StateMenu::Control_CancelPrint(void* ptr) {

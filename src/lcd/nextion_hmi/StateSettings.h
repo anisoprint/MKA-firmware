@@ -20,7 +20,7 @@ namespace StateSettings {
 
 #define SETTINGS_LIST_LENGTH 18
 
-enum SettingType {HEADER, FLOAT, INT16};
+enum SettingType {HEADER, FLOAT, INT16, INT8};
 
 	struct SettingDefinition
 	{

@@ -60,7 +60,7 @@
     	pin_t new_pin = parser.value_pin();
     	if (new_pin!= fan->pin)
     	{
-            fan->Speed = 0;
+            fan->setSpeed(0);
             fan->pin = new_pin;
             SERIAL_LM(ECHO, MSG_CHANGE_PIN);
     	}
@@ -91,7 +91,7 @@
 		  #endif
 
 
-		  fan->Speed = fan->min_Speed + (speed * (255 - fan->min_Speed)) / 255;
+		  fan->setSpeed(fan->min_Speed + (speed * (255 - fan->min_Speed)) / 255);
       }
 
       if (!parser.seen('S')) {
@@ -124,7 +124,7 @@
    */
   inline void gcode_M107(void) {
     const uint8_t f = parser.byteval('P');
-    if (f < FAN_COUNT) fans[f].Speed = 0;
+    if (f < FAN_COUNT) fans[f].setSpeed(0);
   }
 
 #endif // FAN_COUNT > 0

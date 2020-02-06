@@ -14,7 +14,7 @@
 #include "../nextion/library/Nextion.h"
 #include "NextionConstants.h"
 
-#define TUNE_LIST_LENGTH 9
+#define TUNE_LIST_LENGTH 11
 
 namespace StatePrinting {
 

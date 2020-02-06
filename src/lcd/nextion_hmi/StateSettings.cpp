@@ -102,8 +102,15 @@ namespace {
 			}
 			case StateSettings::SettingType::INT16:
 			{
-				int16_t* int_val = (int16_t*)setting.setting;
-				_rValues[row].setText(String(*int_val).c_str());
+				int16_t* int16_val = (int16_t*)setting.setting;
+				_rValues[row].setText(String(*int16_val).c_str());
+				_rRows[row].Set_font_color_pco(0);
+				break;
+			}
+			case StateSettings::SettingType::INT8:
+			{
+				int8_t* int8_val = (int8_t*)setting.setting;
+				_rValues[row].setText(String(*int8_val).c_str());
 				_rRows[row].Set_font_color_pco(0);
 				break;
 			}
@@ -194,9 +201,16 @@ void StateSettings::FRow_Push(void* ptr) {
 			}
 			case StateSettings::SettingType::INT16:
 			{
-				int16_t* int_val = (int16_t*)_settings[setting_index].setting;
+				int16_t* int16_val = (int16_t*)_settings[setting_index].setting;
 				_editedSetting = setting_index;
-				StateEditNumber::Activate(String(*int_val).c_str(), EditNumber_OK_Push, EditNumber_Cancel_Push);
+				StateEditNumber::Activate(String(*int16_val).c_str(), EditNumber_OK_Push, EditNumber_Cancel_Push);
+				break;
+			}
+			case StateSettings::SettingType::INT8:
+			{
+				int8_t* int8_val = (int8_t*)_settings[setting_index].setting;
+				_editedSetting = setting_index;
+				StateEditNumber::Activate(String(*int8_val).c_str(), EditNumber_OK_Push, EditNumber_Cancel_Push);
 				break;
 			}
 		}
@@ -264,11 +278,28 @@ void StateSettings::EditNumber_OK_Push(void* ptr) {
 		}
 		case StateSettings::SettingType::INT16:
 		{
-			int16_t* int_val = (int16_t*)_settings[_editedSetting].setting;
+			int16_t* int16_val = (int16_t*)_settings[_editedSetting].setting;
 			int16_t val = atoi(NextionHMI::buffer);
 			if (val >= _settings[_editedSetting].minValue && val <= _settings[_editedSetting].maxValue)
 			{
-				*int_val = val;
+				*int16_val = val;
+				eeprom.Store_Settings();
+				StateSettings::Activate(_editedSetting);
+			}
+			else
+			{
+				sprintf_P(NextionHMI::buffer, PSTR(MSG_INPUT_BOUNDS), _settings[_editedSetting].minValue, _settings[_editedSetting].maxValue);
+				StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_INCORRECT_INPUT), NextionHMI::buffer, 1, MSG_OK, EditNumber_Cancel_Push, 0, 0, 0);
+			}
+			break;
+		}
+		case StateSettings::SettingType::INT8:
+		{
+			int8_t* int8_val = (int8_t*)_settings[_editedSetting].setting;
+			int8_t val = atoi(NextionHMI::buffer);
+			if (val >= _settings[_editedSetting].minValue && val <= _settings[_editedSetting].maxValue)
+			{
+				*int8_val = val;
 				eeprom.Store_Settings();
 				StateSettings::Activate(_editedSetting);
 			}

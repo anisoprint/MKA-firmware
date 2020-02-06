@@ -383,7 +383,7 @@ void Printer::loop() {
       // Disabled Heaters and Fan
       thermalManager.disable_all_heaters();
       #if FAN_COUNT > 0
-        LOOP_FAN() fans[f].Speed = 0;
+        LOOP_FAN() fans[f].setSpeed(0);
       #endif
 
       // Stop printer job timer
@@ -1164,6 +1164,15 @@ void Printer::clean_tuned_parameters() {
 	#endif
 	#if ENABLED(EG6_EXTRUDER)
 	  tools.parked_near_wipe = false;
+	#endif
+	#if HAS_FAN0
+		fans[FAN0_INDEX].speed_correction = 0;
+	#endif
+	#if HAS_FAN1
+		fans[FAN1_INDEX].speed_correction = 0;
+	#endif
+	#if HAS_FAN2
+		fans[FAN2_INDEX].speed_correction = 0;
 	#endif
 }
 

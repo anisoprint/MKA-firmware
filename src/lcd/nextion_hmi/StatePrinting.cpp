@@ -27,6 +27,9 @@ StateSettings::SettingDefinition StatePrinting::TuneList[] = {
 			{" " MSG_TEMPCOR_PLASTIC, StateSettings::SettingType::INT16, &heaters[HOT0_INDEX].temperature_correction, -100, 100},
 			{" " MSG_TEMPCOR_COMPOSITE, StateSettings::SettingType::INT16, &heaters[HOT1_INDEX].temperature_correction, -100, 100},
 			{" " MSG_TEMPCOR_BP, StateSettings::SettingType::INT16, &heaters[BED_INDEX].temperature_correction, -100, 100},
+
+			{MSG_FAN_CORRECTION_H, StateSettings::SettingType::HEADER, nullptr, 0, 0},
+			{" " MSG_FANCOR_NOZZLE, StateSettings::SettingType::INT8, &fans[FAN1_INDEX].speed_correction, -100, 100},
 	};
 
 

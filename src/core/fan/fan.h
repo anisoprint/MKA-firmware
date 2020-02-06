@@ -46,11 +46,13 @@
 
       pin_t     pin;
       uint8_t   Speed,
+	  	  	  	speed_nocorr,
                 min_Speed,
                 paused_Speed,
                 Kickstart,
                 pwm_pos,
                 FanFlag;
+      int8_t    speed_correction;
       int8_t    autoMonitored;
       uint16_t  freq,
                 triggerTemperatures;
@@ -79,6 +81,26 @@
         }
       }
       FORCE_INLINE bool isIdle() { return TEST(FanFlag, fan_flag_idle); }
+
+      FORCE_INLINE void setSpeed(uint8_t new_speed)
+      {
+    	  speed_nocorr = new_speed;
+    	  if (new_speed!=0 && speed_correction!=0)
+    	  {
+    		  int16_t speed_after_correction = new_speed + speed_correction*255/100;
+    		  NOMORE(speed_after_correction, 255);
+    		  NOLESS(speed_after_correction, 0);
+    		  new_speed = (uint8_t)speed_after_correction;
+    	  }
+    	  Speed = new_speed;
+      }
+
+      FORCE_INLINE void updateCorrection() {
+    	if (speed_nocorr !=0 )
+    	{
+    		setSpeed(speed_nocorr);
+    	}
+      }
 
       #if HARDWARE_PWM
         void SetHardwarePwm();

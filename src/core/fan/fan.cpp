@@ -38,6 +38,8 @@
   void Fan::init() {
 
     Speed               = 0;
+    speed_nocorr		= 0;
+    speed_correction 	= 0;
     paused_Speed        = 0;
     Kickstart           = 0;
     pwm_pos             = 0;

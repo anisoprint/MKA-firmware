@@ -39,7 +39,7 @@ inline void gcode_M81(void) {
 
   #if FAN_COUNT > 0
     LOOP_FAN() {
-      fans[f].Speed = 0;
+      fans[f].setSpeed(0);
       fans[f].paused_Speed = 0;
       fans[f].setIdle(false);
     }
