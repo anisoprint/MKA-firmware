@@ -1162,6 +1162,9 @@ void Printer::clean_tuned_parameters() {
 	#if HAS_HEATER_BED
 		heaters[BED_INDEX].temperature_correction = 0;
 	#endif
+	#if ENABLED(EG6_EXTRUDER)
+	  tools.parked_near_wipe = false;
+	#endif
 }
 
 #if ENABLED(HOST_KEEPALIVE_FEATURE)
