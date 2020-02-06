@@ -42,7 +42,7 @@ function PackFirmware ($modelListFile, $model, $fwVersion) {
 }
 
 
-
+Push-Location $PSScriptRoot
 
 $ver = Select-String -Pattern '#define SHORT_BUILD_VERSION "(.+)"' -Path '..\Configuration_Version.h' | %{$_.Matches[0].Groups[1].Value}
 
@@ -57,5 +57,7 @@ foreach ($result in $packResults)
 {
     Write-Host $result.Message -ForegroundColor $result.Color
 }
+
+Pop-Location
 
 Read-Host -Prompt "Press Enter to exit"
