@@ -83,8 +83,13 @@ inline void gcode_T(const uint8_t tool_id) {
         tools.change(
         tool_id,
         MMM_TO_MMS(parser.linearval('F')),
+<<<<<<< HEAD
         ((tool_id == tools.active_extruder) && !force_change) || parser.boolval('S'),
 		force_change,
+=======
+        (tool_id == tools.active_extruder) || parser.boolval('S'),
+		parser.seen('R'),
+>>>>>>> branch 'dev-1.0.0' of https://github.com/anisoprint/MKA.git
 		!parser.seen('Q')
       );
     }
