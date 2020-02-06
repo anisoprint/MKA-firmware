@@ -94,12 +94,6 @@
     		Printer::currentLayer  = 0,
     		Printer::maxLayer = -1;
 
-    	    mechanics.feedrate_percentage = 100;  // 100% mechanics.feedrate_mm_s
-    	    tools.flow_percentage[E_AXIS-XYZ] = 100;
-    		#if (DRIVER_EXTRUDERS>2)
-    	      	tools.flow_percentage[V_AXIS-XYZ] = 100;
-    		#endif
-
     	    card.startFileprint();
     	    print_job_counter.start();
 
@@ -206,12 +200,6 @@
       if (parser.seenval('S')) card.setIndex(parser.value_long());
 
       mechanics.feedrate_mm_s       = 20.0; // 20 units/sec
-
-      mechanics.feedrate_percentage = 100;  // 100% mechanics.feedrate_mm_s
-      tools.flow_percentage[E_AXIS-XYZ] = 100;
-	  #if (DRIVER_EXTRUDERS>2)
-      	  tools.flow_percentage[V_AXIS-XYZ] = 100;
-	  #endif
 
       Printer::currentLayer  = 0,
       Printer::maxLayer = -1;

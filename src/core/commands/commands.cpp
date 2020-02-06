@@ -530,6 +530,7 @@ void Commands::get_serial() {
 			#if ENABLED(NEXTION_HMI)
 				NextionHMI::RaiseEvent(HMIevent::SD_PRINT_FINISHED);
 			#endif
+			printer.clean_tuned_parameters();
             #if ENABLED(PRINTER_EVENT_LEDS)
               LCD_MESSAGEPGM(MSG_INFO_COMPLETED_PRINTS);
               leds.set_green();

@@ -174,6 +174,8 @@ class Printer {
 
     static void suicide();
 
+    static void clean_tuned_parameters();
+
     #if ENABLED(IDLE_OOZING_PREVENT)
       static void IDLE_OOZING_retract(bool retracting);
     #endif

@@ -370,6 +370,9 @@ void Printer::loop() {
       bool needCut = !tools.fiber_is_cut;
       if(needCut) tools.cut_fiber();
 
+      //Reset parameters that were tuned during the print
+      clean_tuned_parameters();
+
       // Auto home
       #if Z_HOME_DIR > 0
         mechanics.home();
@@ -1136,6 +1139,29 @@ void Printer::setDebugLevel(const uint8_t newLevel) {
     }
   }
   SERIAL_EMV("DebugLevel:", (int)mk_debug_flag);
+}
+
+
+/**
+ * Clean parameters, that were tuned during print after print was finished/cancelled
+ */
+void Printer::clean_tuned_parameters() {
+
+    mechanics.feedrate_percentage = 100;  // 100% mechanics.feedrate_mm_s
+    tools.flow_percentage[E_AXIS-XYZ] = 100;
+	#if (DRIVER_EXTRUDERS>2)
+    	tools.flow_percentage[V_AXIS-XYZ] = 100;
+	#endif
+
+	#if HAS_HEATER_0
+		heaters[HOT0_INDEX].temperature_correction = 0;
+	#endif
+	#if HAS_HEATER_1
+    	heaters[HOT1_INDEX].temperature_correction = 0;
+	#endif
+	#if HAS_HEATER_BED
+		heaters[BED_INDEX].temperature_correction = 0;
+	#endif
 }
 
 #if ENABLED(HOST_KEEPALIVE_FEATURE)
