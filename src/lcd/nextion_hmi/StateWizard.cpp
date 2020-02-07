@@ -626,6 +626,7 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
 	CAPTION(MSG_PLEASE_WAIT)
 	HEADER(MSG_HEADER_LOAD_MATERIAL, "", NEX_ICON_MAINTENANCE);
 
+	stepper.synchronize();
 
 	uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
 
@@ -650,12 +651,9 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
 }
 
 void StateWizard::MaterialLoadCancel(void* ptr) {
-	if (!planner.movesplanned())
-	{
-		_wizardCancelled = true;
-		printer.setWaitForHeatUp(false);
-		MaterialLoadFinish();
-	}
+	_wizardCancelled = true;
+	printer.setWaitForHeatUp(false);
+	MaterialLoadFinish();
 }
 
 void StateWizard::BuildPlateS1(void* ptr) {
