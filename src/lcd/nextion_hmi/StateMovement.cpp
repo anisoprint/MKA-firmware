@@ -93,9 +93,9 @@ void StateMovement::Movement_Push(void* ptr) {
 				return;
 			}
 		}
-		commands.enqueue_now_P(PSTR("G91"));
-		commands.enqueue_one_now(NextionHMI::buffer);
-		commands.enqueue_now_P(PSTR("G90"));
+		commands.inject_rear_P(PSTR("G91"));
+		commands.inject_rear_P(NextionHMI::buffer);
+		commands.inject_rear_P(PSTR("G90"));
 	}
 
 	DrawUpdate();
