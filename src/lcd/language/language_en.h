@@ -328,7 +328,7 @@
 #endif
 
 #ifndef MSG_HEADER_UNLOAD_MATERIAL
-  #define MSG_HEADER_UNLOAD_MATERIAL                _UxGT("Unload material")
+  #define MSG_HEADER_UNLOAD_MATERIAL                _UxGT(" unloading")
 #endif
 
 #ifndef MSG_UNLOAD_MATERIAL_ST1
@@ -352,7 +352,7 @@
 #endif
 
 #ifndef MSG_HEADER_LOAD_MATERIAL
-  #define MSG_HEADER_LOAD_MATERIAL                  _UxGT("Load material")
+  #define MSG_HEADER_LOAD_MATERIAL                  _UxGT(" loading")
 #endif
 
 #ifndef MSG_LOAD_MATERIAL_ST1

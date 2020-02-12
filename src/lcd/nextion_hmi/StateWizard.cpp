@@ -16,6 +16,18 @@
 #define CAPTION(n) 					_text.setTextPGM(PSTR(n));
 #define HEADER(str, stage, icon) 	if (stage!="") {_head.setTextPGM(PSTR(str ": " stage));} else {_head.setTextPGM(PSTR(str));} _page.show(); NextionHMI::headerText.setTextPGM(PSTR(str)); NextionHMI::headerIcon.setPic(icon);
 
+#define HEADER_LOAD_UNLOAD(str, stage, icon) 		switch (NextionHMI::wizardData) { \
+														case E_AXIS: \
+															HEADER(MSG_PLASTIC str, stage, icon); \
+															break; \
+														case U_AXIS: \
+															HEADER(MSG_COMP_FIBER str, stage, icon); \
+															break; \
+														case V_AXIS: \
+															HEADER(MSG_COMP_PLASTIC str, stage, icon); \
+															break; \
+													}
+
 #include "StateWizard.h"
 
 namespace {
@@ -41,26 +53,10 @@ namespace {
 	bool _loopStopped = false;
 	bool _wizardCancelled = false;
 
-#if HAS_BUZZER
+	inline void SetHeaderLoad(const char* stageNum)
+	{
 
-  static void filament_change_beep(const int8_t max_beep_count, const bool init=false) {
-    static millis_l next_buzz = 0;
-    static int8_t runout_beep = 0;
-
-    if (init) next_buzz = runout_beep = 0;
-
-    const millis_l ms = millis();
-    if (ELAPSED(ms, next_buzz)) {
-      if (max_beep_count < 0 || runout_beep < max_beep_count + 5) { // Only beep as long as we're supposed to
-        next_buzz = ms + ((max_beep_count < 0 || runout_beep < max_beep_count) ? 1000 : 500);
-        BUZZ(50, 880 - (runout_beep & 1) * 220);
-        runout_beep++;
-      }
-    }
-  }
-
-#endif
-
+	}
 }
 
 inline void StateWizard::Init1Button(const char* txtCenter, NexTouchEventCb cbCenter) {
@@ -218,7 +214,7 @@ void StateWizard::MaterialUnloadS1(void* ptr) {
 		BUTTONS(2)
 		NO_PICTURE
 		CAPTION(MSG_UNLOAD_MATERIAL_ST1)
-		HEADER(MSG_HEADER_UNLOAD_MATERIAL, "1/4", NEX_ICON_MAINTENANCE);
+		HEADER_LOAD_UNLOAD(MSG_HEADER_UNLOAD_MATERIAL, "1/4", NEX_ICON_MAINTENANCE);
 
 		Init2Buttons(PSTR(MSG_CANCEL), MaterialUnloadCancel, PSTR(MSG_NEXT), MaterialUnloadS1a);
 
@@ -264,7 +260,7 @@ void StateWizard::MaterialUnloadS1a(void* ptr) {
 void StateWizard::MaterialUnloadS2(void* ptr) {
 	BUTTONS(1)
 	NO_PICTURE
-	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "2/4", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_UNLOAD_MATERIAL, "2/4", NEX_ICON_MAINTENANCE);
 	MaterialUnloadS2DrawUpdate();
 	Init1Button(PSTR(MSG_CANCEL), MaterialUnloadCancel);
 
@@ -303,7 +299,7 @@ void StateWizard::MaterialUnloadS2a(void* ptr) {
 	BUTTONS(2)
 	NO_PICTURE
 	CAPTION(MSG_UNLOAD_MATERIAL_ST2A)
-	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "2/4", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_UNLOAD_MATERIAL, "2/4", NEX_ICON_MAINTENANCE);
 
 	Init2Buttons(PSTR(MSG_CANCEL), MaterialUnloadCancel, PSTR(MSG_NEXT), MaterialUnloadS1a);
 }
@@ -314,7 +310,7 @@ void StateWizard::MaterialUnloadS3(void* ptr) {
 	BUTTONS(0)
 	NO_PICTURE
 	CAPTION(MSG_UNLOAD_MATERIAL_ST3)
-	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "3/4", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_UNLOAD_MATERIAL, "3/4", NEX_ICON_MAINTENANCE);
 
 	if (Tools::extruder_driver_is_plastic((AxisEnum)NextionHMI::wizardData)) //Unload plastic
 	{
@@ -334,7 +330,7 @@ void StateWizard::MaterialUnloadS4(void* ptr) {
 	BUTTONS(1)
 	NO_PICTURE
 	CAPTION(MSG_UNLOAD_MATERIAL_ST4)
-	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "4/4", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_UNLOAD_MATERIAL, "4/4", NEX_ICON_MAINTENANCE);
 
 	const uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
     const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
@@ -348,7 +344,7 @@ void StateWizard::MaterialUnloadFinish(void* ptr) {
 	BUTTONS(0)
 	NO_PICTURE
 	CAPTION(MSG_PLEASE_WAIT)
-	HEADER(MSG_HEADER_UNLOAD_MATERIAL, "", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_UNLOAD_MATERIAL, "", NEX_ICON_MAINTENANCE);
 
 	uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
 
@@ -388,7 +384,7 @@ void StateWizard::MaterialLoadS1(void* ptr) {
 	BUTTONS(2)
 	NO_PICTURE
 	CAPTION(MSG_LOAD_MATERIAL_ST1)
-	HEADER(MSG_HEADER_LOAD_MATERIAL, "1/6", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_LOAD_MATERIAL, "1/6", NEX_ICON_MAINTENANCE);
 
 	Init2Buttons(PSTR(MSG_CANCEL), MaterialLoadCancel, PSTR(MSG_NEXT), MaterialLoadS1a);
 
@@ -432,7 +428,7 @@ void StateWizard::MaterialLoadS1a(void* ptr) {
 void StateWizard::MaterialLoadS2(void* ptr) {
 	BUTTONS(1)
 	NO_PICTURE
-	HEADER(MSG_HEADER_LOAD_MATERIAL, "2/6", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_LOAD_MATERIAL, "2/6", NEX_ICON_MAINTENANCE);
 	MaterialLoadS2DrawUpdate();
 
 	Init1Button(PSTR(MSG_CANCEL), MaterialLoadCancel);
@@ -464,7 +460,7 @@ void StateWizard::MaterialLoadS2a(void* ptr) {
 	BUTTONS(2)
 	NO_PICTURE
 	CAPTION(MSG_LOAD_MATERIAL_ST2A)
-	HEADER(MSG_HEADER_LOAD_MATERIAL, "2/6", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_LOAD_MATERIAL, "2/6", NEX_ICON_MAINTENANCE);
 
 	Init2Buttons(PSTR(MSG_CANCEL), MaterialLoadCancel, PSTR(MSG_NEXT), MaterialLoadS1a);
 }
@@ -481,7 +477,7 @@ void StateWizard::MaterialLoadS3(void* ptr) {
 	BUTTONS(2)
 	NO_PICTURE
 	CAPTION(MSG_LOAD_MATERIAL_ST3)
-	HEADER(MSG_HEADER_LOAD_MATERIAL, "3/6", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_LOAD_MATERIAL, "3/6", NEX_ICON_MAINTENANCE);
 
 	Init2Buttons(PSTR(MSG_CANCEL), MaterialLoadCancel, PSTR(MSG_NEXT), MaterialLoadS3a);
 
@@ -528,7 +524,7 @@ void StateWizard::MaterialLoadS4(void* ptr) {
 	BUTTONS(1)
 	NO_PICTURE
 	CAPTION(MSG_LOAD_MATERIAL_ST4)
-	HEADER(MSG_HEADER_LOAD_MATERIAL, "4/6", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_LOAD_MATERIAL, "4/6", NEX_ICON_MAINTENANCE);
 
 	Init1Button(PSTR(MSG_CANCEL), MaterialLoadCancel);
 
@@ -555,7 +551,7 @@ void StateWizard::MaterialLoadS5(void* ptr) {
 	BUTTONS(2)
 	NO_PICTURE
 	CAPTION(MSG_LOAD_MATERIAL_ST5)
-	HEADER(MSG_HEADER_LOAD_MATERIAL, "5/6", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_LOAD_MATERIAL, "5/6", NEX_ICON_MAINTENANCE);
 
 	Init2Buttons(PSTR(MSG_CANCEL), MaterialLoadCancel, PSTR(MSG_NEXT), MaterialLoadS5a);
 
@@ -614,7 +610,7 @@ void StateWizard::MaterialLoadS6(void* ptr) {
 	BUTTONS(1)
 	NO_PICTURE
 	CAPTION(MSG_LOAD_MATERIAL_ST6)
-	HEADER(MSG_HEADER_LOAD_MATERIAL, "6/6", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_LOAD_MATERIAL, "6/6", NEX_ICON_MAINTENANCE);
 
 	Init1Button(PSTR(MSG_FINISH), MaterialLoadFinish);
 
@@ -624,7 +620,7 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
 	BUTTONS(0)
 	NO_PICTURE
 	CAPTION(MSG_PLEASE_WAIT)
-	HEADER(MSG_HEADER_LOAD_MATERIAL, "", NEX_ICON_MAINTENANCE);
+	HEADER_LOAD_UNLOAD(MSG_HEADER_LOAD_MATERIAL, "", NEX_ICON_MAINTENANCE);
 
 	stepper.synchronize();
 

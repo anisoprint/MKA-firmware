@@ -335,7 +335,19 @@ void StateMenu::ActivateLoadUnload(void* ptr) {
 	NextionHMI::ActivateState(PAGE_MENU);
 	_count.setValue(2);
 	_page.show();
-	NextionHMI::headerText.setTextPGM(PSTR(MSG_MATERIALS));
+
+	switch (NextionHMI::wizardData) {
+		case E_AXIS:
+			NextionHMI::headerText.setTextPGM(PSTR(MSG_PLASTIC));
+			break;
+		case U_AXIS:
+			NextionHMI::headerText.setTextPGM(PSTR(MSG_COMP_FIBER));
+			break;
+		case V_AXIS:
+			NextionHMI::headerText.setTextPGM(PSTR(MSG_COMP_PLASTIC));
+			break;
+		}
+
 	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
 
 	_b1.setTextPGM(PSTR(MSG_LOAD));
