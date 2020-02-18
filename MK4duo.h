@@ -209,6 +209,7 @@ typedef int8_t    pin_t;
 #include "src/feature/rgbled/led.h"
 #include "src/feature/caselight/caselight.h"
 #include "src/feature/restart/restart.h"
+#include "src/feature/babystep/babystep.h"
 
 /**
  * External libraries loading

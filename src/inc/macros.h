@@ -46,6 +46,9 @@
 #define _O2             __attribute__((optimize("O2")))
 #define _O3             __attribute__((optimize("O3")))
 
+#define A(CODE)       " " CODE "\n\t"
+#define L(CODE)       CODE ":\n\t"
+
 /**
  * Macros for mechanics type
  */

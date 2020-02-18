@@ -62,10 +62,11 @@ void StateWizardZ::Babystep_Push(void* ptr) {
 		ZERO(NextionHMI::buffer);
 		_gcode.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
 		double dz = strtod(NextionHMI::buffer, NULL);
-		if (abs(_babystepZ+dz)<1.0)
+		if (abs(_babystepZ+dz)<=1.001 && babystep.steps[Z_AXIS]==0)
 		{
 			_babystepZ += dz;
-			mechanics.babystep_axis(Z_AXIS, dz * mechanics.axis_steps_per_mm[Z_AXIS]);
+			babystep.add_mm(Z_AXIS, dz);
+			DrawUpdate();
 		}
 
 }
@@ -80,12 +81,12 @@ void StateWizardZ::InitMovement() {
 }
 
 void StateWizardZ::InitBabystep() {
-	_bMovement1.attachPush(Movement_Push);
-	_bMovement2.attachPush(Movement_Push);
-	_bMovement3.attachPush(Movement_Push);
-	_bMovement4.attachPush(Movement_Push);
-	_bMovement5.attachPush(Movement_Push);
-	_bMovement6.attachPush(Movement_Push);
+	_bMovement1.attachPush(Babystep_Push);
+	_bMovement2.attachPush(Babystep_Push);
+	_bMovement3.attachPush(Babystep_Push);
+	_bMovement4.attachPush(Babystep_Push);
+	_bMovement5.attachPush(Babystep_Push);
+	_bMovement6.attachPush(Babystep_Push);
 }
 
 void StateWizardZ::TouchUpdate() {
@@ -261,7 +262,7 @@ void StateWizardZ::BabystepZ_Save(void* ptr) {
 }
 
 void StateWizardZ::BabystepZ_Cancel(void* ptr) {
-	mechanics.babystep_axis(Z_AXIS, -_babystepZ * mechanics.axis_steps_per_mm[Z_AXIS]);
+	babystep.add_mm(Z_AXIS, -_babystepZ);
 	StateMenu::ActivatePrintControl();
 }
 

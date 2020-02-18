@@ -480,6 +480,10 @@ void Stepper::set_directions() {
 	#endif
   #endif // HAS_EXTRUDERS
 
+  if (DIRECTION_STEPPER_DELAY >= 50)
+       HAL::delayNanoseconds(DIRECTION_STEPPER_DELAY);
+
+
   #if HAS_EXT_ENCODER
 
 			RESET_EXTRUDER_ENC(0, count_direction[E_AXIS]); break;
@@ -2621,8 +2625,6 @@ void Stepper::report_positions() {
 
 #if ENABLED(BABYSTEPPING)
 
-//#error "NEED FIX FOR STEPPER DIRECTIONS"
-
   #if ENABLED(DELTA)
     #define CYCLES_EATEN_BABYSTEP (2 * 15)
   #else
@@ -2657,12 +2659,16 @@ void Stepper::report_positions() {
       _ENABLE(AXIS);                                    \
       _SAVE_START;                                      \
       _APPLY_DIR(AXIS, _INVERT_DIR(AXIS)^DIR^INVERT);   \
-      _PULSE_WAIT;                                      \
+      if (DIRECTION_STEPPER_DELAY >= 50) HAL::delayNanoseconds(DIRECTION_STEPPER_DELAY); \
+      hal_timer_t p_start = HAL_timer_get_current_count(STEPPER_TIMER); \
       _APPLY_STEP(AXIS)(!_INVERT_STEP_PIN(AXIS), true); \
-      _PULSE_WAIT;                                      \
+      while ((hal_timer_t)(HAL_timer_get_current_count(STEPPER_TIMER) - p_start) < STEPPER_PULSE_CYCLES) { /* nada */ } \
+	  p_start = HAL_timer_get_current_count(STEPPER_TIMER); \
       _APPLY_STEP(AXIS)(_INVERT_STEP_PIN(AXIS), true);  \
       _APPLY_DIR(AXIS, old_dir);                        \
+      HAL::delayNanoseconds(DIRECTION_STEPPER_DELAY);   \
     }
+
 
   // MUST ONLY BE CALLED BY AN ISR,
   // No other ISR should ever interrupt this!
@@ -2710,7 +2716,31 @@ void Stepper::report_positions() {
           BABYSTEP_AXIS(Z, BABYSTEP_INVERT_Z, direction^(CORESIGN(1)<0));
 
         #elif DISABLED(DELTA)
+
           BABYSTEP_AXIS(Z, BABYSTEP_INVERT_Z, direction);
+
+/*          const bool old_Z_dir = _READ_DIR(Z);
+          enable_Z();
+          _APPLY_DIR(Z, _INVERT_DIR(Z)^direction^BABYSTEP_INVERT_Z);
+
+          if (DIRECTION_STEPPER_DELAY >= 50)
+            HAL::delayNanoseconds(DIRECTION_STEPPER_DELAY);
+
+		  #if MINIMUM_STEPPER_PULSE > 0
+			hal_timer_t pulse_start = HAL_timer_get_current_count(STEPPER_TIMER);
+		  #endif
+
+          _APPLY_STEP(Z)(!_INVERT_STEP_PIN(Z), true);
+
+		  #if MINIMUM_STEPPER_PULSE > 0
+			while ((hal_timer_t)(HAL_timer_get_current_count(STEPPER_TIMER) - pulse_start) < STEPPER_PULSE_CYCLES) {  nada  }
+			pulse_start = HAL_timer_get_current_count(STEPPER_TIMER);
+		  #endif
+
+		  _APPLY_STEP(Z)(_INVERT_STEP_PIN(Z), true);
+          _APPLY_DIR(Z, _INVERT_DIR(Z)^old_Z_dir);
+          if (DIRECTION_STEPPER_DELAY >= 50)
+            HAL::delayNanoseconds(DIRECTION_STEPPER_DELAY);*/
 
         #else // DELTA
 

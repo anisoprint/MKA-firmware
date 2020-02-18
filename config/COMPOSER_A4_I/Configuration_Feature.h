@@ -1819,6 +1819,24 @@
 #define MINIMUM_STEPPER_PULSE 1
 /***********************************************************************/
 
+/***********************************************************************
+ ********************** Direction Stepper Delay ************************
+ ***********************************************************************
+ *                                                                     *
+ * Minimum delay after setting the stepper DIR (in ns)                 *
+ *      0 : No delay at all - But, at least 10µs are expected          *
+ *     50 : Minimum for TMC2xxx drivers                                *
+ *    200 : Minimum for A4988 drivers                                  *
+ *    400 : Minimum for A5984 drivers                                  *
+ *    500 : Minimum for LV8729 drivers (guess, no info in datasheet)   *
+ *    650 : Minimum for DRV8825 drivers                                *
+ *   1500 : Minimum for TB6600 drivers (guess, no info in datasheet)   *
+ *  15000 : Minimum for TB6560 drivers (guess, no info in datasheet)   *
+ *                                                                     *
+ ***********************************************************************/
+#define DIRECTION_STEPPER_DELAY 50
+/***********************************************************************/
+
 
 /***********************************************************************
  *************************** Microstepping *****************************

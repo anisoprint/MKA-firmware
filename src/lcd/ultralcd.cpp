@@ -1098,7 +1098,7 @@ void kill_screen(const char* lcd_msg) {
         const int16_t babystep_increment = (int32_t)encoderPosition * (BABYSTEP_MULTIPLICATOR);
         encoderPosition = 0;
         lcdDrawUpdate = LCDVIEW_REDRAW_NOW;
-        mechanics.babystep_axis(axis, babystep_increment);
+        babystepping.babystep_axis(axis, babystep_increment);
         babysteps_done += babystep_increment;
       }
       if (lcdDrawUpdate)

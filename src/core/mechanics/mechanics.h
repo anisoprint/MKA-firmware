@@ -252,10 +252,6 @@ class Mechanics {
       static WorkspacePlane workspace_plane = PLANE_XY;
     #endif
 
-    #if ENABLED(BABYSTEPPING)
-      static int babystepsTodo[XYZ];
-    #endif
-
   public: /** Public Function */
 
     /**
@@ -416,10 +412,6 @@ class Mechanics {
 
     #if ENABLED(DEBUG_LEVELING_FEATURE)
       static void log_machine_info();
-    #endif
-
-    #if ENABLED(BABYSTEPPING)
-      static void babystep_axis(const AxisEnum axis, const int distance);
     #endif
 
     #if ENABLED(NEXTION) && ENABLED(NEXTION_GFX)

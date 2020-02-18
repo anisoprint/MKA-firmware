@@ -81,6 +81,7 @@ typedef uint32_t  ptr_int_t;
 // Includes
 // --------------------------------------------------------------------------
 #include "fastio_Due.h"
+#include "delay.h"
 #include "HAL_watchdog_Due.h"
 #include "HAL_timers_Due.h"
 
@@ -361,6 +362,11 @@ class HAL {
         watchdog.reset();
       }
     }
+
+    FORCE_INLINE static void delayNanoseconds(const uint32_t delayNs) {
+      HAL_delay_cycles(delayNs * (CYCLES_PER_US) / 1000UL);
+    }
+
     FORCE_INLINE static uint32_t timeInMilliseconds() {
       return millis();
     }

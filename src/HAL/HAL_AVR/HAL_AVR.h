@@ -80,6 +80,7 @@ typedef uint16_t  ptr_int_t;
 // Includes
 // --------------------------------------------------------------------------
 #include "fastio.h"
+#include "delay.h"
 #include "HAL_watchdog_AVR.h"
 
 // Serial
@@ -447,6 +448,10 @@ class HAL {
     }
     static inline uint32_t timeInMilliseconds() {
       return millis();
+    }
+
+    FORCE_INLINE static void delayNanoseconds(const uint32_t delayNs) {
+      HAL_delay_cycles(delayNs * (CYCLES_PER_US) / 1000UL);
     }
 
     static inline void serialSetBaudrate(const uint16_t baud) {

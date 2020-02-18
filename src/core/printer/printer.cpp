@@ -666,6 +666,10 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
 
   #endif // ENABLED(FLOWMETER_SENSOR)
 
+	#if ENABLED(BABYSTEPPING)
+	  babystep.spin();
+	#endif
+
   // Prevent steppers timing-out in the middle of M6003
   #if ENABLED(ADVANCED_PAUSE_FEATURE) && ENABLED(PAUSE_PARK_NO_STEPPER_TIMEOUT)
     #define MOVE_AWAY_TEST !did_pause_print

@@ -84,10 +84,6 @@ millis_l Mechanics::min_segment_time_us = 0;
   float Mechanics::home_offset[XYZ] = { 0.0 };
 #endif
 
-#if ENABLED(BABYSTEPPING)
-  int Mechanics::babystepsTodo[XYZ] = { 0 };
-#endif
-
 #if ENABLED(EG6_EXTRUDER)
   uint8_t Mechanics::home_tool(uint8_t axis)
   {
@@ -957,41 +953,6 @@ bool Mechanics::position_is_reachable_by_probe(const float &rx, const float &ry)
   }
 
 #endif // DEBUG_LEVELING_FEATURE
-
-#if ENABLED(BABYSTEPPING)
-
-  void Mechanics::babystep_axis(const AxisEnum axis, const int distance) {
-
-    if (printer.isAxisHomed(axis)) {
-      #if IS_CORE
-        #if ENABLED(BABYSTEP_XY)
-          switch (axis) {
-            case CORE_AXIS_1: // X on CoreXY and CoreXZ, Y on CoreYZ
-              babystepsTodo[CORE_AXIS_1] += distance * 2;
-              babystepsTodo[CORE_AXIS_2] += distance * 2;
-              break;
-            case CORE_AXIS_2: // Y on CoreXY, Z on CoreXZ and CoreYZ
-              babystepsTodo[CORE_AXIS_1] += CORESIGN(distance * 2);
-              babystepsTodo[CORE_AXIS_2] -= CORESIGN(distance * 2);
-              break;
-            case NORMAL_AXIS: // Z on CoreXY, Y on CoreXZ, X on CoreYZ
-              babystepsTodo[NORMAL_AXIS] += distance;
-              break;
-          }
-        #elif CORE_IS_XZ || CORE_IS_YZ
-          // Only Z stepping needs to be handled here
-          babystepsTodo[CORE_AXIS_1] += CORESIGN(distance * 2);
-          babystepsTodo[CORE_AXIS_2] -= CORESIGN(distance * 2);
-        #else
-          babystepsTodo[Z_AXIS] += distance;
-        #endif
-      #else
-        babystepsTodo[axis] += distance;
-      #endif
-    }
-  }
-
-#endif // BABYSTEPPING
 
 #if ENABLED(NEXTION) && ENABLED(NEXTION_GFX)
 
