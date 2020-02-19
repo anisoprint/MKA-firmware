@@ -190,10 +190,18 @@ void StateFiles::FFile_Push(void* ptr) {
     else if (ptr == &_tFName6)
     	_tFName6.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
 
-    Serial.print(NextionHMI::buffer);
+    if (strlen(NextionHMI::buffer)>50)
+	{
+    	StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_LONG_FILENAME, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+    	return;
+	}
+
     if (card.isFileOpen()) card.closeFile();
     card.selectFile(NextionHMI::buffer);
     StateFileinfo::Activate();
+
+
+
 }
 
 void StateFiles::FFolder_Push(void* ptr) {
@@ -214,6 +222,12 @@ void StateFiles::FFolder_Push(void* ptr) {
     	_tFName5.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
     else if (ptr == &_tFName6)
     	_tFName6.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
+
+    if (strlen(NextionHMI::buffer)>50)
+	{
+    	StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_LONG_FILENAME, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+    	return;
+	}
 
 	_tLoading.SetVisibility(true);
     card.chdir(NextionHMI::buffer);

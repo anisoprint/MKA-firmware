@@ -190,12 +190,20 @@
   #define MSG_NO_SD              					_UxGT("No SD card found")
 #endif
 
+#ifndef MSG_LONG_FILENAME
+  #define MSG_LONG_FILENAME              			_UxGT("File name is too long. Please use name which is shorter than 50 characters.")
+#endif
+
 #ifndef MSG_DONE
   #define MSG_DONE             						_UxGT("DONE!")
 #endif
 
 #ifndef MSG_ERROR
   #define MSG_ERROR             					_UxGT("Error")
+#endif
+
+#ifndef MSG_WARNING
+  #define MSG_WARNING             					_UxGT("Warning")
 #endif
 
 #ifndef MSG_FINISHED
