@@ -1784,6 +1784,8 @@
     static void printFatDate(uint16_t fatDate);
     static void printFatTime(uint16_t fatTime);
     bool printModifyDateTime();
+    int16_t getModifyDate();
+    int16_t getModifyTime();
     int printField(int16_t value, char term);
     int printField(uint16_t value, char term);
     int printField(int32_t value, char term);

@@ -78,6 +78,9 @@
             tempLongFilename[LONG_FILENAME_LENGTH + 1],
             generatedBy[GENBY_SIZE];
 
+      uint16_t fileModifiedDate;
+      uint16_t fileModifiedTime;
+
     private: /** Private Parameters */
 
       Sd2Card card;

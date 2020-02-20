@@ -1222,6 +1222,9 @@ void CardReader::readFileInfo(SdBaseFile& file) {
 	    #define GCI_BUF_SIZE 1024
 	  #endif
 
+      fileModifiedDate = file.getModifyDate();
+      fileModifiedTime = file.getModifyTime();
+
 	  // READ 4KB FROM THE BEGINNING
 	  char buf[GCI_BUF_SIZE];
 	  for (int i = 0; i < 4096; i += GCI_BUF_SIZE - 50) {
