@@ -46,6 +46,18 @@
 
   #include "SDFat.h"
 
+  struct PrintFileExtruderInfo {
+	  char PlasticMaterialName[MAT_NAME_SIZE];
+	  float PlasticConsumption;
+	  char FiberMaterialName[MAT_NAME_SIZE];
+	  float FiberConsumption;
+  };
+
+  struct PrintFileInfo {
+	  uint32_t PrintDuration;
+	  PrintFileExtruderInfo ExtruderInfo[HOTENDS];
+  };
+
   class CardReader {
 
     public: /** Constructor */
@@ -77,6 +89,8 @@
       char  fileName[LONG_FILENAME_LENGTH],
             tempLongFilename[LONG_FILENAME_LENGTH + 1],
             generatedBy[GENBY_SIZE];
+
+      PrintFileInfo fileInfo;
 
       uint16_t fileModifiedDate;
       uint16_t fileModifiedTime;
@@ -151,6 +165,8 @@
         #endif // SDSORT_USES_RAM
 
       #endif // SDCARD_SORT_ALPHA
+
+
 
     public: /** Public Function */
 
@@ -241,6 +257,8 @@
       void lsDive(SdBaseFile parent, const char* const match = NULL);
       void parsejson(SdBaseFile &parser_file);
       void readFileInfo(SdBaseFile &file);
+      void clearFileInfo();
+      bool findFileInfo(const char *buf, uint16_t buf_length);
       bool findGeneratedBy(char* buf, char* genBy);
       bool findFirstLayerHeight(char* buf, float &firstlayerHeight);
       bool findLayerHeight(char* buf, float &layerHeight);

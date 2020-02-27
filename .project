@@ -42,6 +42,11 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x</locationURI>
 		</link>
 		<link>
+			<name>libraries/ArduinoJson</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/ArduinoJson/6.14.1</locationURI>
+		</link>
+		<link>
 			<name>libraries/LiquidCrystal</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/LiquidCrystal/1.0.7</locationURI>

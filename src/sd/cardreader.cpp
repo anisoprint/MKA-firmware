@@ -28,11 +28,13 @@
     #include <avr/dtostrf.h>
   #endif
 
+  #include <ArduinoJson.h>
+
   CardReader card;
 
   uint16_t nrFile_index;
 
-  // Pubblic Function
+  // Public Function
   CardReader::CardReader() {
     #if ENABLED(SDCARD_SORT_ALPHA)
       sort_count = 0;
@@ -45,6 +47,8 @@
     sdprinting = cardOK = saving = false;
     fileSize = 0;
     sdpos = 0;
+
+    clearFileInfo();
 
     workDirDepth = 0;
     ZERO(workDirParents);
@@ -989,11 +993,11 @@
 
     bool genByFound = false, firstlayerHeightFound = false, layerHeightFound = false, filamentNeedFound = false;
 
-    #if CPU_ARCH==ARCH_AVR
-      #define GCI_BUF_SIZE 120
-    #else
-      #define GCI_BUF_SIZE 1024
-    #endif
+	#ifdef CPU_32_BIT
+		#define GCI_BUF_SIZE 1024
+	#else
+		#define GCI_BUF_SIZE 120
+	#endif
 
     // READ 4KB FROM THE BEGINNING
     char buf[GCI_BUF_SIZE];
@@ -1212,14 +1216,16 @@ void CardReader::readFileInfo(SdBaseFile& file) {
 	  //firstlayerHeight  = 0.0;
 	  //layerHeight       = 0.0;
 
+	  clearFileInfo();
 	  bool genByFound = false;//, firstlayerHeightFound = false, layerHeightFound = false, filamentNeedFound = false;
+	  bool fileInfoFound = false;
 
 	  if (!file.isOpen()) return;
 
-	  #if CPU_ARCH==ARCH_AVR
-	    #define GCI_BUF_SIZE 120
+	  #ifdef CPU_32_BIT
+		#define GCI_BUF_SIZE 1024
 	  #else
-	    #define GCI_BUF_SIZE 1024
+		#define GCI_BUF_SIZE 120
 	  #endif
 
       fileModifiedDate = file.getModifyDate();
@@ -1231,30 +1237,87 @@ void CardReader::readFileInfo(SdBaseFile& file) {
 	    if(!file.seekSet(i)) break;
 	    file.read(buf, GCI_BUF_SIZE);
 	    if (!genByFound && findGeneratedBy(buf, generatedBy)) genByFound = true;
-	    //if (!firstlayerHeightFound && findFirstLayerHeight(buf, firstlayerHeight)) firstlayerHeightFound = true;
-	    //if (!layerHeightFound && findLayerHeight(buf, layerHeight)) layerHeightFound = true;
-	    //if (!filamentNeedFound && findFilamentNeed(buf, filamentNeeded)) filamentNeedFound = true;
-	    //if(genByFound && layerHeightFound && filamentNeedFound) goto get_objectHeight;
+
 	  }
 	  // READ 4KB FROM END
-	  for (int i = 0; i < 4096; i += GCI_BUF_SIZE - 50) {
-	    if(!file.seekEnd(-4096 + i)) break;
+	  for (int i = -GCI_BUF_SIZE; i > -4096; i -= GCI_BUF_SIZE/2) {
+	    if(!file.seekEnd(i)) break;
 	    file.read(buf, GCI_BUF_SIZE);
 	    if (!genByFound && findGeneratedBy(buf, generatedBy)) genByFound = true;
-	    //if (!firstlayerHeightFound && findFirstLayerHeight(buf, firstlayerHeight)) firstlayerHeightFound = true;
-	    //if (!layerHeightFound && findLayerHeight(buf, layerHeight)) layerHeightFound = true;
-	    //if (!filamentNeedFound && findFilamentNeed(buf, filamentNeeded)) filamentNeedFound = true;
-	    //if(genByFound && layerHeightFound && filamentNeedFound) goto get_objectHeight;
+	    if (!fileInfoFound && findFileInfo(buf, GCI_BUF_SIZE)) fileInfoFound = true;
 	  }
-	/*
-	  get_objectHeight:
-	  // MOVE FROM END UP IN 1KB BLOCKS UP TO 30KB
-	  for (int i = GCI_BUF_SIZE; i < 30000; i += GCI_BUF_SIZE - 50) {
-	    if(!file.seekEnd(-i)) break;
-	    file.read(buf, GCI_BUF_SIZE);
-	    if (findTotalHeight(buf, objectHeight)) break;
-	  }*/
+
 	  file.seekSet(0);
+}
+
+void CardReader::clearFileInfo() {
+    fileModifiedDate = 0;
+    fileModifiedTime = 0;
+
+    fileInfo.PrintDuration = 0;
+    LOOP_HOTEND()
+    {
+    	ZERO(fileInfo.ExtruderInfo[h].PlasticMaterialName);
+    	fileInfo.ExtruderInfo[h].PlasticConsumption = 0;
+    	ZERO(fileInfo.ExtruderInfo[h].FiberMaterialName);
+    	fileInfo.ExtruderInfo[h].FiberConsumption = 0;
+    }
+}
+
+bool CardReader::findFileInfo(const char *buf, uint16_t buf_length) {
+	// AURA
+	const char* infoString = PSTR("PRINTINFO:");
+	const char* pos = strstr_P(buf, infoString);
+	if (pos) {
+		pos += strlen_P(infoString);
+		const char* pos_end = pos;
+		while (pos_end < (buf + buf_length))
+		{
+			pos_end++;
+	        char c = *pos_end;
+	        if (c == '\r' || c == '\n') {
+	        	break;
+	        }
+		}
+		const size_t capacity = 7*JSON_OBJECT_SIZE(2) + 240;
+		StaticJsonDocument<capacity> jsonDoc;
+		DeserializationError err = deserializeJson(jsonDoc, pos, pos_end-pos);
+		if (err!=DeserializationError::Ok)
+		{
+			return false;
+		}
+		fileInfo.PrintDuration = jsonDoc["time"] | 0;
+
+
+		JsonObject extruder0 = jsonDoc["extruders"]["0"];
+		if (!extruder0.isNull())
+	    {
+	    	strncpy(fileInfo.ExtruderInfo[0].PlasticMaterialName, (const char*)(extruder0["p"]["name"]), sizeof(fileInfo.ExtruderInfo[0].PlasticMaterialName));
+	    	fileInfo.ExtruderInfo[0].PlasticConsumption = extruder0["p"]["cons"];
+	    	strncpy(fileInfo.ExtruderInfo[0].FiberMaterialName, (const char*)(extruder0["f"]["name"]), sizeof(fileInfo.ExtruderInfo[0].FiberMaterialName));
+	    	fileInfo.ExtruderInfo[0].FiberConsumption = extruder0["f"]["cons"];
+	    }
+
+		#if HOTENDS>1
+
+		JsonObject extruder1 = jsonDoc["extruders"]["1"];
+		if (!extruder1.isNull())
+	    {
+	    	strncpy(fileInfo.ExtruderInfo[1].PlasticMaterialName, (const char*)(extruder1["p"]["name"]), sizeof(fileInfo.ExtruderInfo[1].PlasticMaterialName));
+	    	fileInfo.ExtruderInfo[1].PlasticConsumption = extruder1["p"]["cons"];
+	    	strncpy(fileInfo.ExtruderInfo[1].FiberMaterialName, (const char*)(extruder1["f"]["name"]), sizeof(fileInfo.ExtruderInfo[1].FiberMaterialName));
+	    	fileInfo.ExtruderInfo[1].FiberConsumption = extruder1["f"]["cons"];
+	    }
+
+		#endif
+
+		return true;
+	}
+	return false;
+
+
+
+
 }
 
 #endif //SDSUPPORT

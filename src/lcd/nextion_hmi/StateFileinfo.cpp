@@ -70,6 +70,39 @@ void StateFileinfo::Activate() {
 		_tModified.setText(NextionHMI::buffer);
 	}
 
+	if (card.fileInfo.PrintDuration!=0)
+	{
+		char bufferTime[10] = {0};
+		duration_t time = duration_t(card.fileInfo.PrintDuration);
+		time.toDigital(bufferTime, false);
+
+		ZERO(NextionHMI::buffer);
+		sprintf_P(NextionHMI::buffer, PSTR(MSG_FILE_PRINT_TIME), bufferTime);
+		_tPrintTime.setText(NextionHMI::buffer);
+	}
+
+	if (card.fileInfo.ExtruderInfo[0].PlasticConsumption!=0)
+	{
+		_tPlastic.setTextPGM(MSG_PLASTIC ":");
+
+		ZERO(NextionHMI::buffer);
+		sprintf_P(NextionHMI::buffer, PSTR(MSG_PLASTIC_CONS), card.fileInfo.ExtruderInfo[0].PlasticMaterialName, card.fileInfo.ExtruderInfo[0].PlasticConsumption);
+		_tPlasticMat.setText(NextionHMI::buffer);
+	}
+
+	if (card.fileInfo.ExtruderInfo[1].PlasticConsumption!=0 && card.fileInfo.ExtruderInfo[1].FiberConsumption!=0)
+	{
+		_tComposite.setTextPGM(MSG_COMPOSITE ":");
+
+		ZERO(NextionHMI::buffer);
+		sprintf_P(NextionHMI::buffer, PSTR(MSG_PLASTIC_CONS), card.fileInfo.ExtruderInfo[1].PlasticMaterialName, card.fileInfo.ExtruderInfo[1].PlasticConsumption);
+		_tCompPlasticMat.setText(NextionHMI::buffer);
+
+		ZERO(NextionHMI::buffer);
+		sprintf_P(NextionHMI::buffer, PSTR(MSG_FIBER_CONS), card.fileInfo.ExtruderInfo[1].FiberMaterialName, card.fileInfo.ExtruderInfo[1].FiberConsumption);
+		_tCompFiberMat.setText(NextionHMI::buffer);
+	}
+
 
 }
 

@@ -198,8 +198,16 @@
   #define MSG_FILE_MODIFIED_DATE              		_UxGT("Modified: %.2i.%.2i.%.4i %.2i:%.2i")
 #endif
 
-#ifndef MSG_PRINT_TIME
-  #define MSG_PRINT_TIME              				_UxGT("Print time: %d:%.2i")
+#ifndef MSG_PLASTIC_CONS
+  #define MSG_PLASTIC_CONS              			_UxGT("%s (%.1f g)")
+#endif
+
+#ifndef MSG_FIBER_CONS
+  #define MSG_FIBER_CONS              				_UxGT("%s (%.1f m)")
+#endif
+
+#ifndef MSG_FILE_PRINT_TIME
+  #define MSG_FILE_PRINT_TIME              			_UxGT("Print time: %s")
 #endif
 
 #ifndef MSG_DONE
@@ -264,7 +272,6 @@
 
 #ifndef MSG_COMP_Z_OFFSET
   #define MSG_COMP_Z_OFFSET                   		_UxGT("Comp. Z-offset")
-
 #endif
 
 #ifndef MSG_MOVE
@@ -558,17 +565,8 @@
   #define MSG_FEEDRATE              		_UxGT("Feedrate (%)")
 #endif
 
-#ifndef MSG_PLASTIC_FLOW_H
-  #define MSG_PLASTIC_FLOW_H                 _UxGT("Plastic flow")
-#endif
 
-#ifndef MSG_PLASTIC_FLOW
-  #define MSG_PLASTIC_FLOW              	_UxGT("Plastic flow (%)")
-#endif
 
-#ifndef MSG_COMP_PLASTIC_FLOW
-  #define MSG_COMP_PLASTIC_FLOW              _UxGT("Composite plastic flow (%)")
-#endif
 
 
 #ifndef WELCOME_MSG
@@ -702,6 +700,9 @@
 #endif
 #ifndef MSG_SWITCH_PS_OFF
   #define MSG_SWITCH_PS_OFF                   _UxGT("Switch power off")
+#endif
+#ifndef MSG_PRINT_TIME
+  #define MSG_PRINT_TIME              		_UxGT("Print time: %d:%.2i")
 #endif
 #ifndef MSG_EXTRUDE
   #define MSG_EXTRUDE                         _UxGT("Extrude")
