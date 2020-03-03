@@ -204,12 +204,14 @@ void Printer::setup() {
   // Init endstops and pullups
   endstops.init();
 
+  #if ENABLED(NEXTION_HMI)
+	NextionHMI::Init();
+  #endif
+
   // Load data from EEPROM if available (or use defaults)
   // This also updates variables in the planner, elsewhere
 
   const bool eeprom_loaded = eeprom.Load_Settings();
-
-
 
   #if ENABLED(WORKSPACE_OFFSETS)
     // Initialize current position based on home_offset
@@ -276,6 +278,7 @@ void Printer::setup() {
   #endif
 
   #if ENABLED(NEXTION_HMI)
+    NextionHMI::SetBrightness(NextionHMI::lcdBrightness);
     NextionHMI::Init();
   #else
 	lcd_init();
@@ -308,7 +311,10 @@ void Printer::setup() {
   #endif
 
   #if ENABLED(NEXTION_HMI)
-	StateStatus::Activate();
+    if (NextionHMI::GetActiveState()!=PAGE_MESSAGE)
+	{
+		StateStatus::Activate();
+	}
   #endif
 
   #if FAN_COUNT > 0

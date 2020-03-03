@@ -822,6 +822,7 @@ void EEPROM::Postprocess() {
 			  read_data(eeprom_index, (uint8_t*)&stored_crc, sizeof(stored_crc), &temp_crc);
 			#endif
 
+
 			if (working_crc == stored_crc) {
 			  #if ENABLED(EEPROM_CHITCHAT)
 				SERIAL_VAL(syscfg_version);
@@ -1004,6 +1005,8 @@ void EEPROM::Postprocess() {
             read_data(eeprom_index, (uint8_t*)&stored_ver, sizeof(stored_ver), &temp_crc);
             read_data(eeprom_index, (uint8_t*)&stored_crc, sizeof(stored_crc), &temp_crc);
           #endif
+
+
 
           if (working_crc == stored_crc) {
             #if ENABLED(EEPROM_CHITCHAT)

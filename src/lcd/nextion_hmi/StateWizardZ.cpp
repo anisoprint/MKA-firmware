@@ -254,11 +254,9 @@ void StateWizardZ::BabystepZ(void* ptr) {
 void StateWizardZ::BabystepZ_Save(void* ptr) {
 
 	mechanics.set_home_offset(Z_AXIS, mechanics.home_offset[Z_AXIS] - _babystepZ);
-	eeprom.Store_Settings();
-
-	Serial.println(mechanics.home_offset[Z_AXIS]);
 
 	StateMenu::ActivatePrintControl();
+	eeprom.Store_Settings();
 }
 
 void StateWizardZ::BabystepZ_Cancel(void* ptr) {

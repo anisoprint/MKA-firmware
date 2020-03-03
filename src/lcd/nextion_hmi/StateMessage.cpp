@@ -91,7 +91,15 @@ void StateMessage::TouchUpdate() {
 }
 
 void StateMessage::ReturnToLastState(void* ptr) {
-	NextionHMI::ShowState(_interruptedState);
+	if (_interruptedState!=0)
+	{
+		NextionHMI::ShowState(_interruptedState);
+	}
+	else
+	{
+		NextionHMI::ShowState(PAGE_STATUS);
+	}
+
 }
 
 void StateMessage::RetryHeaterAndReturnToLastState(void* ptr) {

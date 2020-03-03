@@ -266,8 +266,8 @@ void StateSettings::EditNumber_OK_Push(void* ptr) {
 			if (val >= _settings[_editedSetting].minValue && val <= _settings[_editedSetting].maxValue)
 			{
 				*float_val = val;
-				eeprom.Store_Settings();
 				StateSettings::Activate(_editedSetting);
+				eeprom.Store_Settings();
 			}
 			else
 			{
@@ -283,8 +283,8 @@ void StateSettings::EditNumber_OK_Push(void* ptr) {
 			if (val >= _settings[_editedSetting].minValue && val <= _settings[_editedSetting].maxValue)
 			{
 				*int16_val = val;
-				eeprom.Store_Settings();
 				StateSettings::Activate(_editedSetting);
+				eeprom.Store_Settings();
 			}
 			else
 			{

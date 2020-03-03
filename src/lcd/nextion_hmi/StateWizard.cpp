@@ -184,8 +184,6 @@ void StateWizard::ZAxisFinish(void* ptr) {
 		mechanics.set_home_offset(Z_AXIS, mechanics.home_offset[Z_AXIS] - dz);
 		eeprom.Store_Settings();
 
-		Serial.println(mechanics.home_offset[Z_AXIS]);
-
 		mechanics.home(true, true, true);
 		StateMenu::ActivateCalibrate();
 	}
@@ -708,8 +706,8 @@ void StateWizard::BuildPlateFinish(void* ptr) {
 		float dz = mechanics.current_position[Z_AXIS]-LEVELING_OFFSET;
 		mechanics.set_home_offset(Z_AXIS, mechanics.home_offset[Z_AXIS]-dz);
 		mechanics.home(true, true, true);
-		eeprom.Store_Settings();
 		StateStatus::Activate();
+		eeprom.Store_Settings();
 	}
 }
 

@@ -530,9 +530,11 @@
 #ifndef MSG_PLASTIC_P
   #define MSG_PLASTIC_P                  	 _UxGT("Plastic P")
 #endif
+
 #ifndef MSG_PLASTIC_I
   #define MSG_PLASTIC_I                  	 _UxGT("Plastic I")
 #endif
+
 #ifndef MSG_PLASTIC_D
   #define MSG_PLASTIC_D                  	 _UxGT("Plastic D")
 #endif
@@ -540,9 +542,11 @@
 #ifndef MSG_COMPOSITE_P
   #define MSG_COMPOSITE_P                  	 _UxGT("Composite P")
 #endif
+
 #ifndef MSG_COMPOSITE_I
   #define MSG_COMPOSITE_I                  	 _UxGT("Composite I")
 #endif
+
 #ifndef MSG_COMPOSITE_D
   #define MSG_COMPOSITE_D                  	 _UxGT("Composite D")
 #endif
@@ -550,9 +554,11 @@
 #ifndef MSG_BUILDPLATE_P
   #define MSG_BUILDPLATE_P                   _UxGT("Buildplate P")
 #endif
+
 #ifndef MSG_BUILDPLATE_I
   #define MSG_BUILDPLATE_I                   _UxGT("Buildplate I")
 #endif
+
 #ifndef MSG_BUILDPLATE_D
   #define MSG_BUILDPLATE_D                   _UxGT("Buildplate D")
 #endif
@@ -563,6 +569,23 @@
 
 #ifndef MSG_FEEDRATE
   #define MSG_FEEDRATE              		_UxGT("Feedrate (%)")
+#endif
+
+// EEPROM ERRORS
+#ifndef MSG_EEPROM_FAIL_READ_SYSTEM
+  #define MSG_EEPROM_FAIL_READ_SYSTEM         "Failed to read System Config from EEPROM.\\rPlease try to update printer firmware.\\rIf the error persists, please contact\\rSupport"
+#endif
+
+#ifndef MSG_EEPROM_FAIL_WRITE_SYSTEM
+  #define MSG_EEPROM_FAIL_WRITE_SYSTEM        "Failed to write System Config to EEPROM.\\rPlease try to update printer firmware.\\rIf the error persists, please contact\\rSupport"
+#endif
+
+#ifndef MSG_EEPROM_FAIL_READ_USER
+  #define MSG_EEPROM_FAIL_READ_USER           "Failed to read User Config from EEPROM.\\rDefault settings were loaded. Buildpate and\\rprinthead re-calibration may be needed.\\rIf the error persists, please contact\\rSupport"
+#endif
+
+#ifndef MSG_EEPROM_FAIL_WRITE_USER
+  #define MSG_EEPROM_FAIL_WRITE_USER          "Failed to save User Config to EEPROM.\\rPlease reset the printer and try again.\\rIf the error persists, please contact\\rSupport"
 #endif
 
 
