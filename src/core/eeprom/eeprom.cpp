@@ -900,8 +900,6 @@ void EEPROM::Postprocess() {
         #endif
 
 
-        eeprom_error = true;
-
         if (!eeprom_error) {
           const int eeprom_size = eeprom_index;
 
