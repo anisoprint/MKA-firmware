@@ -9,6 +9,7 @@
 ; 16.05.2019 - Andrey Azarov - Material load distances decreased (MKA 0.9.3)
 ; 11.06.2019 - Andrey Azarov - Tool switch sequence updated (MKA 0.9.3)
 ; 29.11.2019 - Andrey Azarov - Added stepper directions (MKA 0.9.4a)
+; 03.03.2019 - Andrey Azarov - Changed max. extruder temperature to 270°C (MKA 1.0.0)
 ;Stepper directions inversion
 M569 X0 Y0 Z1 E0 U1 V0
 ;Mechanics steps per unit:
@@ -29,8 +30,8 @@ M205 E5.000 U5.000 V5.000
 M305 H0 S-4 P39 A0.0 B0.0 C0.0000000000 R4700.0 L0 O0
 M305 H1 S-4 P40 A0.0 B0.0 C0.0000000000 R4700.0 L0 O0
 ;Hotend Heater parameters: H<Hotend> P<Pin> A<Pid Drive Min> B<Pid Drive Max> C<Pid Max> L<Min Temp> O<Max Temp> U<Use Pid 0-1> I<Hardware Inverted 0-1>
-M306 H0 P3 A85 B255 C255 L5 O275 U1 I0
-M306 H1 P8 A85 B255 C255 L5 O275 U1 I0
+M306 H0 P3 A85 B255 C255 L5 O270 U1 I0
+M306 H1 P8 A85 B255 C255 L5 O270 U1 I0
 ;Bed Sensor parameters: P<Pin> S<Type> A<R25> B<BetaK> C<Steinhart-Hart C> R<Pullup> L<ADC low offset> O<ADC high offset>
 M305 H-1 S1 P1 A100000.0 B4092.0 C0.0000000000 R4700.0 L0 O0
 ;Bed Heater parameters: P<Pin> A<Pid Drive Min> B<Pid Drive Max> C<Pid Max> L<Min Temp> O<Max Temp> U<Use Pid 0-1> I<Hardware Inverted 0-1>

@@ -236,10 +236,13 @@ void Temperature::spin() {
     		min_temp_error(act->ID);
     	}
 	#else
-    if (act->isON() && act->current_temperature > act->maxtemp) max_temp_error(act->ID);
+    if (act->isON() && act->current_temperature > act->maxtemp+MAXTEMP_ERROR_THRESHOLD)
+    {
+    	max_temp_error(act->ID);
+    }
     if (act->isON() && act->current_temperature < act->mintemp)
     {
-    		min_temp_error(act->ID);
+    	min_temp_error(act->ID);
     }
 	#endif
 

@@ -118,7 +118,7 @@
 
       FORCE_INLINE void updateCurrentTemperature() {
     	  float new_temperature = this->sensor.getTemperature();
-    	  if ((new_temperature < this->mintemp) || (new_temperature > this->maxtemp))
+    	  if ((new_temperature < this->mintemp) || (new_temperature > this->maxtemp+MAXTEMP_ERROR_THRESHOLD))
     	  {
         	  if (++consecutive_error_temp >= MAX_CONSECUTIVE_ERROR_TEMP)
         	  {

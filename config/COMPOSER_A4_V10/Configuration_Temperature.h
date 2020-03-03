@@ -127,18 +127,22 @@
 #define TEMP_HYSTERESIS 3       // (degC) range of +/- temperatures considered "close" to the target one
 #define TEMP_WINDOW     1       // (degC) Window around target to start the residency timer x degC early.
 
-// When temperature exceeds max temp, your heater will be switched off.
-// When temperature exceeds max temp, your cooler cannot be activaed.
+// Max temperature is maximum target temperature for heaters
+// When temperature exceeds max temp + error threshold, your heater will be switched off.
+// When temperature exceeds max temp + error threshold, your cooler cannot be activaed.
 // This feature exists to protect your hotend from overheating accidentally,
 // but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 275 // (degC)
-#define HEATER_1_MAXTEMP 275 // (degC)
-#define HEATER_2_MAXTEMP 275 // (degC)
-#define HEATER_3_MAXTEMP 275 // (degC)
-#define BED_MAXTEMP      120 // (degC)
-#define CHAMBER_MAXTEMP  60 // (degC)
-#define COOLER_MAXTEMP   35  // (degC) 
+#define MAXTEMP_ERROR_THRESHOLD 6 			// (degC)
+
+#define HEATER_0_MAXTEMP 270 				// (degC)
+#define HEATER_1_MAXTEMP 270 				// (degC)
+#define HEATER_2_MAXTEMP 270 				// (degC)
+#define HEATER_3_MAXTEMP 270 				// (degC)
+
+#define BED_MAXTEMP      120 				// (degC)
+#define CHAMBER_MAXTEMP  60 				// (degC)
+#define COOLER_MAXTEMP   35  				// (degC)
 
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
 // or, in case of cooler, it will switched off.
