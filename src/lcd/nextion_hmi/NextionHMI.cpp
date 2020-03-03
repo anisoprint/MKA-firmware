@@ -18,6 +18,7 @@ namespace {
 	bool _nextionOn = false;
 	uint8_t _pageID = 0;
 	bool _sdInserted = false;
+	uint8_t _rootState = 0;
 
 #if HAS_SDSUPPORT
   NexUpload Firmware(NEXTION_FIRMWARE_FILE, 57600);
@@ -60,11 +61,6 @@ void NextionHMI::Init() {
 	}
 
 	//Retreiving model
-
-	  //serial_print("\n>>>>>>>>>>>>\n");
-	  //serial_print(buffer);
-	  //serial_print("\n>>>>>>>>>>>>\n");
-
 	if (strstr(buffer, "NX")) {
 		SERIAL_MSG("Nextion LCD connected!  \n");
 	}
@@ -76,20 +72,7 @@ void NextionHMI::Init() {
 
 	SetBrightness(lcdBrightness);
 
-	/*
 	//Init Pages
-	Status_Init();
-	Temperature_Init();
-	Maintenance_Init();
-	Files_Init();
-	Fileinfo_Init();
-	Printing_Init();
-	Message_Init();
-	Movement_Init();
-
-
-
-	Status_Activate();*/
 
 	StateStatus::Init();
 	StateFiles::Init();
@@ -192,6 +175,9 @@ void NextionHMI::TouchUpdate() {
 
 void NextionHMI::ActivateState(uint8_t state_id) {
 	_pageID = state_id;
+	if (_pageID == PAGE_STATUS) _rootState = PAGE_STATUS;
+	else if (_pageID == PAGE_PRINTING) _rootState = PAGE_PRINTING;
+
 #if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
     UpdateSDIcon();
 #endif
@@ -209,21 +195,21 @@ void NextionHMI::ShowState(uint8_t state_id) {
 		         break;
 		    case PAGE_PRINTING : StatePrinting::Activate();
 		         break;
-		    case PAGE_MESSAGE :
+		    case PAGE_MESSAGE : ShowState(_rootState);
 		         break;
-		    case PAGE_WIZARD :
+		    case PAGE_WIZARD : ShowState(_rootState);
 		         break;
-		    case PAGE_MENU :
+		    case PAGE_MENU : ShowState(_rootState);
 		         break;
 		    case PAGE_MOVEMENT : StateMovement::Activate(MODE_MOVE_AXIS);
 		         break;
-		    case PAGE_SETTINGS :
+		    case PAGE_SETTINGS : ShowState(_rootState);
 		         break;
 		    case PAGE_ABOUT : StateAbout::Activate();
 		         break;
-		    case PAGE_WIZARDZ :
+		    case PAGE_WIZARDZ : ShowState(_rootState);
 		         break;
-		    case PAGE_C_NUMBER :
+		    case PAGE_C_NUMBER : ShowState(_rootState);
 		         break;
 		}
 }
