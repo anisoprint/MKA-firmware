@@ -279,7 +279,6 @@ void Printer::setup() {
 
   #if ENABLED(NEXTION_HMI)
     NextionHMI::SetBrightness(NextionHMI::lcdBrightness);
-    NextionHMI::Init();
   #else
 	lcd_init();
 	LCD_MESSAGEPGM(WELCOME_MSG);
@@ -322,10 +321,6 @@ void Printer::setup() {
   #endif
 
   if (!eeprom_loaded) lcd_eeprom_allert();
-
-  //#if HAS_SDSUPPORT
-    //card.checkautostart(false);
-  //#endif
 
   #if HAS_SD_RESTART
     restart.do_print_job();

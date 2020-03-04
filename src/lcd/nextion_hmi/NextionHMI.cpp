@@ -70,10 +70,7 @@ void NextionHMI::Init() {
 		SERIAL_MSG("Nextion LCD NOT connected! \n");
 	}
 
-	SetBrightness(lcdBrightness);
-
 	//Init Pages
-
 	StateStatus::Init();
 	StateFiles::Init();
 	StateFileinfo::Init();
@@ -81,8 +78,6 @@ void NextionHMI::Init() {
 	StateMovement::Init();
 	StateAbout::Init();
 	StateSettings::Init();
-
-
 }
 
 void NextionHMI::DrawUpdate() {
@@ -293,6 +288,7 @@ void NextionHMI::UploadFirmwareFromSD() {
     Firmware.startUpload();
     nexSerial.end();
     Init();
+	SetBrightness(lcdBrightness);
   }
 }
 
@@ -300,6 +296,7 @@ void NextionHMI::UploadFirmwareFromSerial(uint32_t tftSize) {
     Firmware.uploadFromSerial(tftSize);
     nexSerial.end();
     Init();
+	SetBrightness(lcdBrightness);
 }
 
 void NextionHMI::ShowStartScreen(const char* header, const char* message) {

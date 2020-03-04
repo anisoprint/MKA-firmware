@@ -966,9 +966,6 @@ void EEPROM::Postprocess() {
         }
         else {
 
-
-          float dummy = 0;
-
           working_crc = 0; // Init to 0. Accumulated by EEPROM_READ
 
           // version number match
