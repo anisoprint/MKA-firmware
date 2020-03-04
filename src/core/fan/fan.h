@@ -74,10 +74,13 @@
           SET_BIT(FanFlag, fan_flag_idle, onoff);
           if (onoff) {
             paused_Speed = Speed;
-            Speed = 0;
+            setSpeed(0);
           }
           else
-            Speed = paused_Speed;
+          {
+        	setSpeed(paused_Speed);
+          }
+
         }
       }
       FORCE_INLINE bool isIdle() { return TEST(FanFlag, fan_flag_idle); }

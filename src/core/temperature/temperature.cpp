@@ -582,11 +582,8 @@ void Temperature::disable_all_heaters() {
 
   #if HEATER_COUNT > 0
     LOOP_HEATER() {
-      heaters[h].target_temperature = 0;
+      heaters[h].setTarget(0);
       heaters[h].soft_pwm = 0;
-      #if WATCH_THE_HEATER
-        heaters[h].start_watching();
-      #endif
     }
   #endif
 

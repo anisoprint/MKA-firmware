@@ -39,7 +39,7 @@
 
     const bool no_wait_for_cooling = parser.seen('S');
     if (no_wait_for_cooling || parser.seen('R')) {
-      heaters[BED_INDEX].target_temperature = parser.value_celsius();
+      heaters[BED_INDEX].setTarget(parser.value_celsius());
     }
     else return;
 	#if ENABLED(NEXTION_HMI)

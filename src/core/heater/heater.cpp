@@ -82,13 +82,17 @@
 
   void Heater::setTarget(int16_t celsius) {
 
+	//SERIAL_MV("Heater ", this->ID);
+	//SERIAL_MV("; celsius ", celsius);
 	NOMORE(celsius, maxtemp);
 	target_temp_nocorr = celsius;
-
+	//SERIAL_MV("; target_nocorr ", target_temp_nocorr);
+	//SERIAL_MV("; corr ", temperature_correction);
 	if (celsius!=0) celsius += temperature_correction;
 	NOMORE(celsius, maxtemp);
     target_temperature = celsius;
-
+	//SERIAL_MV("; target ", target_temperature);
+	//SERIAL_EOL();
     #if WATCH_THE_HEATER
       start_watching();
     #endif
@@ -98,6 +102,9 @@
 	if (target_temp_nocorr !=0 )
 	{
 		setTarget(target_temp_nocorr);
+		//SERIAL_MV("Heater ", this->ID);
+		//SERIAL_MV("; target_nocorr ", target_temp_nocorr);
+		//SERIAL_EOL();
 	}
   }
 

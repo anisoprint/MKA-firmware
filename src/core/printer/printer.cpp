@@ -317,7 +317,7 @@ void Printer::setup() {
   #endif
 
   #if FAN_COUNT > 0
-    LOOP_FAN() fans[f].Speed = 0;
+    LOOP_FAN() fans[f].setSpeed(0);
   #endif
 
   if (!eeprom_loaded) lcd_eeprom_allert();
