@@ -49,7 +49,7 @@ namespace NextionHMI {
 	void UploadFirmwareFromSD();
 	#endif
 
-	void UploadFirmwareFromSerial(uint32_t tftSize);
+	void UploadFirmwareFromSerial(uint32_t tftSize, uint8_t serialPort);
 
 	uint8_t GetActiveState();
 

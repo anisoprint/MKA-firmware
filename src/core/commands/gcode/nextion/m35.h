@@ -52,8 +52,15 @@
     inline void gcode_M35(void) {
 
       if (parser.seen('S')) {
+
+    	  if (Commands::current_command_port < 0 || Commands::current_command_port >= NUM_SERIAL)
+    	  {
+    		  SERIAL_LM(ER, MSG_ERR_M35_SERIAL);
+    		  return;
+    	  }
+
     	  uint32_t tftSize = parser.value_ulong();
-    	  NextionHMI::UploadFirmwareFromSerial(tftSize);
+    	  NextionHMI::UploadFirmwareFromSerial(tftSize, Commands::current_command_port);
       }
       else
       {

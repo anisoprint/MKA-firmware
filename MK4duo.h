@@ -134,10 +134,11 @@ typedef int8_t    pin_t;
 #include "src/inc/sanitycheck.h"
 #include "src/inc/point_t.h"
 #include "src/inc/watch.h"
+#include "src/inc/timer.h"
 #include "src/inc/circular_queue.h"
 
-// HAL Modules
-#include "src/HAL/HAL.h"
+// Platform modules
+#include "src/platform/platform.h"
 
 // Core modules
 #include "src/core/mechanics/mechanics.h"

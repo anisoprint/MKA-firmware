@@ -75,7 +75,7 @@
 #if HAS_SERVOS
 
   #include <inttypes.h>
-  #include "../../HAL/HAL_servotimers.h"
+  #include "../../platform/HAL_servotimers.h"
 
   /**
    * Defines for 16 bit timers used with  Servo library

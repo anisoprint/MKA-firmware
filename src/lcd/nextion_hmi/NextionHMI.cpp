@@ -292,8 +292,9 @@ void NextionHMI::UploadFirmwareFromSD() {
   }
 }
 
-void NextionHMI::UploadFirmwareFromSerial(uint32_t tftSize) {
-    Firmware.uploadFromSerial(tftSize);
+void NextionHMI::UploadFirmwareFromSerial(uint32_t tftSize, uint8_t serialPort) {
+    Firmware.uploadFromSerial(tftSize, serialPort);
+    SERIAL_PORT(-1);
     nexSerial.end();
     Init();
 	SetBrightness(lcdBrightness);

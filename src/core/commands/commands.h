@@ -20,6 +20,8 @@
  *
  */
 
+#pragma once
+
 /**
  * commands.h
  *
@@ -28,8 +30,11 @@
 
 #include "parser.h"
 
-#ifndef _COMMANDS_H_
-#define _COMMANDS_H_
+#define PS_NORMAL 0
+#define PS_EOL    1
+#define PS_QUOTED 2
+#define PS_PAREN  3
+#define PS_ESC    4
 
 struct gcode_t {
   char    gcode[MAX_CMD_SIZE];  // Char for gcode
@@ -58,18 +63,22 @@ class Commands {
      */
     static Circular_Queue<gcode_t, BUFSIZE> buffer_ring;
 
+    static int8_t current_command_port; // Serial port for print information:
+    									//    -1 for all port
+    									//    -2 for SD or null port
+
     /**
      * GCode line number handling. Hosts may opt to include line numbers when
      * sending commands to MK4duo, and lines will be checked for sequentiality.
      * M110 N<int> sets the current line number.
      */
-    static long gcode_last_N;
+    static long gcode_last_N[NUM_SERIAL];
 
   private: /** Private Parameters */
 
     static long gcode_N;
 
-    static int serial_count[NUM_SERIAL];
+    static uint16_t serial_count[NUM_SERIAL];
 
     /**
      * Next Injected Command pointer. Nullptr if no commands are being injected.
@@ -78,8 +87,6 @@ class Commands {
      */
     static PGM_P injected_commands_front_P;
     static PGM_P injected_commands_rear_P;
-
-    static millis_s last_command_ms;
 
   public: /** Public Function */
 
@@ -212,9 +219,9 @@ class Commands {
      */
     static void process_next();
 
-    static void unknown_error();
+    static void unknown_warning();
 
-    static void gcode_line_error(PGM_P err, const int8_t tmp_port);
+    static void gcode_line_error(PGM_P err, const uint8_t tmp_port);
 
     /**
      * Enqueue with Serial Echo
@@ -257,8 +264,48 @@ class Commands {
       return strstr_P(cmd, PSTR("M29"));
     }
 
+    FORCE_INLINE static void process_stream_char(const char c, uint8_t &sis, char (&buff)[MAX_CMD_SIZE], uint16_t &ind) {
+
+      if (ind >= MAX_CMD_SIZE - 1)
+        sis = PS_EOL;                   // Skip the rest on overflow
+
+      if (sis == PS_EOL) return;        // EOL comment or overflow
+      else if (sis == PS_PAREN) {       // Inline comment
+        if (c == ')') sis = PS_NORMAL;
+        return;
+      }
+      else if (sis >= PS_ESC)           // End escaped char
+        sis -= PS_ESC;
+      else if (c == '\\') {             // Start escaped char
+        sis += PS_ESC;
+        if (sis == PS_ESC) return;      // Keep if quoting
+      }
+      else if (sis == PS_QUOTED) {
+        if (c == '"') sis = PS_NORMAL;  // End quoted string
+      }
+      else if (c == '"')                // Start quoted string
+        sis = PS_QUOTED;
+      else if (c == ';') {              // Start end-of-line comment
+        sis = PS_EOL;
+        return;
+      }
+      else if (c == '(') {              // Start inline comment
+        sis = PS_PAREN;
+        return;
+      }
+
+      buff[ind++] = c;
+
+    }
+
+    FORCE_INLINE static bool process_line_done(uint8_t &sis, char (&buff)[MAX_CMD_SIZE], uint16_t &ind) {
+      sis = PS_NORMAL;
+      buff[ind] = 0;
+      if (ind) { ind = 0; return false; }
+      return true;
+    }
+
 };
 
 extern Commands commands;
 
-#endif /* _COMMANDS_H_ */

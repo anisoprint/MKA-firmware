@@ -403,7 +403,7 @@ class NexObject {
       /**
        * start upload from serial.
        */
-      void uploadFromSerial(uint32_t tftSize);
+      void uploadFromSerial(uint32_t tftSize, uint8_t serialPort);
 
     private:
 
@@ -452,7 +452,7 @@ class NexObject {
        *
        * @return none.
        */
-      bool _uploadTftFromSerial(void);
+      bool _uploadTftFromSerial(uint8_t serialPort);
 
 
       /**

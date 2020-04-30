@@ -59,7 +59,8 @@ char    Printer::printName[21] = "";   // max. 20 chars + 0
 uint8_t Printer::progress = 0;
 
 // Inactivity shutdown
-watch_t Printer::max_inactivity_watch;
+long_timer_t  Printer::max_inactivity_timer;
+uint16_t      Printer::max_inactive_time  = 0;
 
 #if ENABLED(HOST_KEEPALIVE_FEATURE)
   watch_t Printer::host_keepalive_watch(DEFAULT_KEEPALIVE_INTERVAL * 1000UL);
@@ -158,7 +159,9 @@ void Printer::setup() {
   #endif
 
   // Init Serial for HOST
-  SERIAL_INIT(BAUDRATE);
+
+  Com::setBaudrate();
+
   SERIAL_L(START);
 
   // Init TMC stepper drivers CS or Serial
@@ -637,7 +640,7 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
 
   handle_safety_watch();
 
-  if (max_inactivity_watch.stopwatch && max_inactivity_watch.elapsed()) {
+  if (max_inactivity_timer.expired(SECOND_TO_MILLIS(max_inactive_time))) {
     SERIAL_LMT(ER, MSG_KILL_INACTIVE_TIME, parser.command_ptr);
     kill(PSTR(MSG_KILL_INACTIVE_TIME));
   }

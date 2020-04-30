@@ -81,16 +81,8 @@
 
     stepper.synchronize();
 
-    if (ms > 0) {
-      watch_t watch(ms);
-      while (!watch.elapsed() && printer.isWaitForUser()) printer.idle();
-    }
-    else {
-      #if ENABLED(ULTIPANEL)
-        if (lcd_detected())
-      #endif
-        while (printer.isWaitForUser()) printer.idle();
-    }
+    if (ms) ms += millis();
+    	while (printer.isWaitForUser() && !(ms && ELAPSED(millis(), ms))) printer.idle();
 
     IS_SD_PRINTING ? LCD_MESSAGEPGM(MSG_RESUMING) : LCD_MESSAGEPGM(WELCOME_MSG);
 

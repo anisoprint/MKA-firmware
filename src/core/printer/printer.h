@@ -111,7 +111,8 @@ class Printer {
 
     static uint8_t  progress;
 
-    static watch_t  max_inactivity_watch;
+    static long_timer_t  max_inactivity_timer;
+    static uint16_t 	 max_inactive_time;
 
     #if ENABLED(HOST_KEEPALIVE_FEATURE)
       static watch_t  host_keepalive_watch;

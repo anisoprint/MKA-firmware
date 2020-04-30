@@ -84,13 +84,28 @@ typedef uint16_t  ptr_int_t;
 #include "HAL_watchdog_AVR.h"
 
 // Serial
-//#define EXTERNALSERIAL  // Force using arduino serial
-#ifndef EXTERNALSERIAL
-  #include "HardwareSerial.h"
-  #define MKSERIAL MKSerial
-#else
-  #define MKSERIAL Serial
+#if !WITHIN(SERIAL_PORT_1, -1, 3)
+  #error "SERIAL_PORT_1 must be from -1 to 3"
 #endif
+#define MKSERIAL1 Serial
+
+// SERIAL
+#if !WITHIN(SERIAL_PORT_2, -1, 3)
+  #error "SERIAL_PORT_2 must be from -1 to 3"
+#endif
+
+#if SERIAL_PORT_2 == -1
+  #define MKSERIAL2 SerialUSB
+#elif SERIAL_PORT_2 == 0
+  #define MKSERIAL2 Serial
+#elif SERIAL_PORT_2 == 1
+  #define MKSERIAL2 Serial1
+#elif SERIAL_PORT_2 == 2
+  #define MKSERIAL2 Serial2
+#elif SERIAL_PORT_2 == 3
+  #define MKSERIAL2 Serial3
+#endif
+
 
 // --------------------------------------------------------------------------
 // Defines
@@ -454,22 +469,6 @@ class HAL {
       HAL_delay_cycles(delayNs * (CYCLES_PER_US) / 1000UL);
     }
 
-    static inline void serialSetBaudrate(const uint16_t baud) {
-      MKSERIAL.begin(baud);
-      HAL::delayMilliseconds(1);
-    }
-    static inline bool serialByteAvailable() {
-      return MKSERIAL.available() > 0;
-    }
-    static inline uint8_t serialReadByte() {
-      return MKSERIAL.read();
-    }
-    static inline void serialWriteByte(const char b) {
-      MKSERIAL.write(b);
-    }
-    static inline void serialFlush() {
-      MKSERIAL.flush();
-    }
 
     // SPI related functions
     #if ENABLED(SOFTWARE_SPI)

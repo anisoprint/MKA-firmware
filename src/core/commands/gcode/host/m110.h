@@ -32,5 +32,17 @@
  * M110: Set Current Line Number
  */
 inline void gcode_M110(void) {
-	  if (parser.seenval('N')) commands.gcode_last_N = parser.value_long();
+	  if (Commands::current_command_port < 0 || Commands::current_command_port >= NUM_SERIAL)
+	  {
+		  SERIAL_LM(ER, MSG_ERR_M110_SERIAL);
+		  return;
+	  }
+	  if (parser.seenval('N'))
+	  {
+		  commands.gcode_last_N[Commands::current_command_port] = parser.value_long();
+	  }
+	  else
+	  {
+		  commands.gcode_last_N[Commands::current_command_port] = 1;
+	  }
 }

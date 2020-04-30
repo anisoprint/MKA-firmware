@@ -710,7 +710,7 @@ void Temperature::_temp_error(const uint8_t h, const char * const serial_msg, co
   if (!heaters[h].isIdle()) {
 	tempError = true;
     SERIAL_STR(ER);
-    SERIAL_PS(serial_msg);
+    SERIAL_STR(serial_msg);
     SERIAL_MSG(MSG_STOPPED_HEATER);
     switch (heaters[h].type) {
       case IS_HOTEND:

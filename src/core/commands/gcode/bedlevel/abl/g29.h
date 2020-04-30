@@ -28,7 +28,7 @@
 
 void out_of_range_error(const char* p_edge) {
   SERIAL_MSG("?Probe ");
-  SERIAL_PS(p_edge);
+  SERIAL_MSG(p_edge);
   SERIAL_EM(" position out of range.");
 }
 

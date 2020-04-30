@@ -28,8 +28,6 @@
 
 #if ENABLED(SUPPORT_MAX31865)
 
-//static SPISettings max31865_spisettings = SPISettings(200000, MSBFIRST, SPI_MODE1);
-
 namespace {
 
 void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin) {
@@ -39,29 +37,18 @@ void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin
 
   HAL::digitalWrite(cs_pin, LOW); // enable TT_MAX31855
 
-  //SPI.beginTransaction(max31865_spisettings);
-
   HAL::spiInit(MAX_31865_CHANNEL, SPI_MAX_31865_RATE);
+
+  // ensure 100ns delay
+  HAL::delayNanoseconds(100);
+
   HAL::spiSend(MAX_31865_CHANNEL, addr);
 
   //Serial.print("$"); Serial.print(addr, HEX); Serial.print(": ");
   while (n--) {
-    //buffer[0] = SPI.transfer(0xFF);
 	  buffer[0] = HAL::spiReceive(MAX_31865_CHANNEL);
-	  //Serial.print(" 0x"); Serial.print(buffer[0], HEX);
     buffer++;
   }
-
-  // ensure 100ns delay - a bit extra is fine
-  #if ENABLED(ARDUINO_ARCH_SAM)
-    HAL::delayMicroseconds(1);
-  #else
-    asm("nop"); // 50ns on 20Mhz, 62.5ns on 16Mhz
-    asm("nop"); // 50ns on 20Mhz, 62.5ns on 16Mhz
-  #endif
-
-  //SPI.endTransaction();
-  //Serial.println();
 
   HAL::digitalWrite(cs_pin, HIGH); // disable TT_MAX31855
 }
@@ -90,11 +77,6 @@ void writeRegister8(uint8_t addr, uint8_t data, const pin_t cs_pin) {
   HAL::spiBegin();
   HAL::digitalWrite(cs_pin, LOW); // enable TT_MAX31855
 
-  //SPI.beginTransaction(max31865_spisettings);
-  //SPI.transfer(addr | 0x80);
-  //SPI.transfer(data);
-  //SPI.endTransaction();
-
   HAL::spiInit(MAX_31865_CHANNEL, SPI_MAX_31865_RATE);
 
   HAL::spiSend(MAX_31865_CHANNEL, addr | 0x80);
@@ -109,7 +91,6 @@ void writeRegister8(uint8_t addr, uint8_t data, const pin_t cs_pin) {
     asm("nop"); // 50ns on 20Mhz, 62.5ns on 16Mhz
   #endif
 
-  //Serial.print("$"); Serial.print(addr | 0x80, HEX); Serial.print(" = 0x"); Serial.println(data, HEX);
 
   HAL::digitalWrite(cs_pin, HIGH); // disable TT_MAX31855
 }
@@ -158,26 +139,23 @@ uint8_t readFault(const pin_t cs_pin) {
 
 bool readRTD (uint16_t &rtd, const pin_t cs_pin) {
 
-  uint8_t r0 = readRegister8(MAX31856_CONFIG_REG, cs_pin);
+  //uint8_t r0 = readRegister8(MAX31856_CONFIG_REG, cs_pin);
   rtd = readRegister16(MAX31856_RTDMSB_REG, cs_pin);
 
   if ((rtd & 1) != 0)										// if fault bit set
   {
 	  uint8_t f = readFault(cs_pin);
-	  Serial.print("R0:");
+	  /*Serial.print("R0:");
 	  Serial.println(r0, HEX);
 	  Serial.print("RTD:");
 	  Serial.println(rtd, HEX);
 	  Serial.print("F:");
-	  Serial.println(f, HEX);
-	  if (f & 0x04) SERIAL_LV(PSTR("MAX31856 error - over/undervoltage - "), cs_pin);
-	  else if (f & 0x13) SERIAL_LV(PSTR("MAX31856 error - open circuit - "), cs_pin);
-	  else if (f & 0x40) SERIAL_LV(PSTR("MAX31856 error - RDT low resistance - "), cs_pin);
-	  else SERIAL_LV(PSTR("MAX31856 hardware error - "), cs_pin);
+	  Serial.println(f, HEX);*/
+	  if (f & 0x04) SERIAL_LMV(WARNING, PSTR("MAX31856 warning - over/undervoltage - "), cs_pin);
+	  else if (f & 0x13) SERIAL_LMV(ER, PSTR("MAX31856 error - open circuit - "), cs_pin);
+	  else if (f & 0x40) SERIAL_LMV(ER,PSTR("MAX31856 error - RDT low resistance - "), cs_pin);
+	  else SERIAL_LMV(ER,PSTR("MAX31856 hardware error - "), cs_pin);
 	  clearFault(cs_pin);
-	  rtd >>= 1;
-	  return true;
-	  //return false;
   }
 
   // remove fault
@@ -192,16 +170,6 @@ bool MAX31865::Initialize(max31865_numwires_t wires, const pin_t cs_pin) {
 	HAL::pinMode(cs_pin, OUTPUT_HIGH);
 	//start hardware SPI
 	HAL::spiBegin();
-
-	  /*setWires(wires, cs_pin);
-	  enableBias(true, cs_pin);
-	  autoConvert(true, cs_pin);
-	  clearFault(cs_pin);*/
-
-	//Serial.print("pin: "); Serial.println(cs_pin);
-	//Serial.println("config before: ");
-	//Serial.println(readRegister8(MAX31856_CONFIG_REG, cs_pin), HEX);
-	//readRegister8(MAX31856_CONFIG_REG, cs_pin);
 
 
 	uint8_t r0 = DefaultCr0;
@@ -233,8 +201,6 @@ float MAX31865::ReadTemperature(const pin_t cs_pin) {
 	  Rt = rtd;
 	  Rt /= 32768;
 	  Rt *= refResistor;
-
-	  //Serial.print("Resistance: "); Serial.println(Rt, 8);
 
 	  Z1 = -RTD_A;
 	  Z2 = RTD_A * RTD_A - (4 * RTD_B);

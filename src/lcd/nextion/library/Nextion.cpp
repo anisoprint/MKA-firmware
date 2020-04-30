@@ -503,8 +503,9 @@
       SERIAL_EM("upload ok");
     }
 
-    void NexUpload::uploadFromSerial(uint32_t tftSize) {
+    void NexUpload::uploadFromSerial(uint32_t tftSize, uint8_t serialPort) {
       _unuploadByte = tftSize;
+      SERIAL_PORT(serialPort);
       if (_getBaudrate() == 0) {
         SERIAL_LM(ER, "baudrate error");
         return;
@@ -515,11 +516,11 @@
       }
       else
       {
-    	  MKSERIAL.flush();
+    	  SERIAL_FLUSH();
     	  SERIAL_EMV("RESULT:", "ok");
       }
 
-      if (!_uploadTftFromSerial()) {
+      if (!_uploadTftFromSerial(serialPort)) {
         SERIAL_LM(ER, "upload file error");
         return;
       }
@@ -669,7 +670,7 @@
 
 
 
-    bool NexUpload::_uploadTftFromSerial(void) {
+    bool NexUpload::_uploadTftFromSerial(uint8_t serialPort) {
       uint8_t c;
       uint32_t current_byte = 0;
       String string = String("");
@@ -677,13 +678,11 @@
       uint8_t data[4096];
       ZERO(data);
 
-      uint8_t buffer_count = 0;
-
       while(current_byte<_unuploadByte)
       {
-    	 if (HAL::serialByteAvailable())
+    	 if (Com::serialDataAvailable(serialPort))
     	 {
-       		c = (uint8_t)MKSERIAL.read();
+       		c = Com::serialRead(serialPort);
        		nexSerial.write(c);
        		if(current_byte<4096) data[current_byte] = c;
        		current_byte++;
@@ -694,10 +693,6 @@
 				if (string.indexOf(0x05) != -1) string = "";
 				else
 				{
-					Serial.println("DATA:");
-					PrintHex8(data, 4096);
-					SERIAL_EOL();
-					Serial.println("ENDDATA");
 					return false;
 				}
 
@@ -724,67 +719,6 @@
 
       return true;
 
-
-      /*while(send_timer) {
-        if (send_timer == 1) {
-
-
-
-
-          //Last portion
-          uint16_t counter_last = 0;
-          buffer_count = 0;
-          while(counter_last<last_send_num)
-          {
-          	if (HAL::serialByteAvailable())
-          	{
-          		c = (uint8_t)MKSERIAL.read();
-          		nexSerial.write(c);
-
-          		counter_last++;
-          		buffer_count++;
-
-          		SERIAL_EMV("counter_last:", counter_last);
-          		SERIAL_EMV("buffer_count:", buffer_count);
-          	}
-          	if (buffer_count==128 && counter_last<4096)
-          	{
-          		SERIAL_EMV("RESULT:", "ok");
-          	}
-          }
-        }
-        else {
-          uint16_t counter = 0;
-          buffer_count = 0;
-          while(counter<4096)
-          {
-          	if (HAL::serialByteAvailable())
-          	{
-          		c = (uint8_t)MKSERIAL.read();
-          		nexSerial.write(c);
-          		counter++;
-          		buffer_count++;
-          		SERIAL_EMV("counter:", counter);
-          		SERIAL_EMV("buffer_count:", buffer_count);
-          	}
-          	if (buffer_count==128 && counter<4096)
-          	{
-          		SERIAL_EMV("RESULT:", "ok");
-          	}
-          }
-        }
-
-        this->recvRetString(string, 500, true);
-        if (string.indexOf(0x05) != -1)
-          string = "";
-        else
-          return false;
-
-        SERIAL_EMV("RESULT:", "ok");
-        --send_timer;
-      }
-
-      return true;*/
     }
 
   #endif  // SDSUPPORT

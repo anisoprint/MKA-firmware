@@ -122,19 +122,39 @@ typedef uint32_t  ptr_int_t;
 #endif
 
 // SERIAL
-#if SERIAL_PORT == -1
-  #define MKSERIAL SerialUSB
-#elif SERIAL_PORT == 0
-  #define MKSERIAL Serial
-#elif SERIAL_PORT == 1
-  #define MKSERIAL Serial1
-#elif SERIAL_PORT == 2
-  #define MKSERIAL Serial2
-#elif SERIAL_PORT == 3
-  #define MKSERIAL Serial3
+#if !WITHIN(SERIAL_PORT_1, -1, 3)
+  #error "SERIAL_PORT_1 must be from -1 to 3"
 #endif
 
-#define NUM_SERIAL 1
+#if SERIAL_PORT_1 == -1
+  #define MKSERIAL1 SerialUSB
+#elif SERIAL_PORT_1 == 0
+  #define MKSERIAL1 Serial
+#elif SERIAL_PORT_1 == 1
+  #define MKSERIAL1 Serial1
+#elif SERIAL_PORT_1 == 2
+  #define MKSERIAL1 Serial2
+#elif SERIAL_PORT_1 == 3
+  #define MKSERIAL1 Serial3
+#endif
+
+ // SERIAL
+ #if !WITHIN(SERIAL_PORT_2, -1, 3)
+   #error "SERIAL_PORT_2 must be from -1 to 3"
+ #endif
+
+ #if SERIAL_PORT_2 == -1
+   #define MKSERIAL2 SerialUSB
+ #elif SERIAL_PORT_2 == 0
+   #define MKSERIAL2 Serial
+ #elif SERIAL_PORT_2 == 1
+   #define MKSERIAL2 Serial1
+ #elif SERIAL_PORT_2 == 2
+   #define MKSERIAL2 Serial2
+ #elif SERIAL_PORT_2 == 3
+   #define MKSERIAL2 Serial3
+ #endif
+
 
 // EEPROM START
 #define EEPROM_OFFSET 10
@@ -374,22 +394,6 @@ class HAL {
     // Serial communication
     FORCE_INLINE static char readFlashByte(PGM_P ptr) {
       return pgm_read_byte(ptr);
-    }
-    FORCE_INLINE static void serialSetBaudrate(const long baud) {
-      MKSERIAL.begin(baud);
-      HAL::delayMilliseconds(1);
-    }
-    FORCE_INLINE static bool serialByteAvailable() {
-      return MKSERIAL.available() > 0;
-    }
-    FORCE_INLINE static uint8_t serialReadByte() {
-      return MKSERIAL.read();
-    }
-    FORCE_INLINE static void serialWriteByte(char c) {
-      MKSERIAL.write(c);
-    }
-    FORCE_INLINE static void serialFlush() {
-      MKSERIAL.flush();
     }
 
     static void showStartReason();
