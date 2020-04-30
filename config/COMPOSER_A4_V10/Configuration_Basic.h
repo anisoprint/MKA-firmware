@@ -115,7 +115,7 @@
  * enter the serial receive buffer, so they cannot be blocked.
  * Currently handles M108, M112, M410
  */
-#define EMERGENCY_PARSER
+//#define EMERGENCY_PARSER
 
 /**
  * Spend 28 bytes of SRAM to optimize the GCode parser

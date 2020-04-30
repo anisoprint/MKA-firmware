@@ -455,7 +455,7 @@ void Commands::get_serial() {
             #endif
           }
           if (strcmp(command, "M112") == 0) printer.kill(PSTR("M112"));
-          if (strcmp(command, "M410") == 0) printer.quickstop_stepper();
+          if (strcmp(command, "M410") == 0) stepper.quickstop_stepper();
         #endif
 
         #if NO_TIMEOUTS > 0

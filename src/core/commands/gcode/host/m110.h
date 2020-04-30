@@ -41,8 +41,4 @@ inline void gcode_M110(void) {
 	  {
 		  commands.gcode_last_N[Commands::current_command_port] = parser.value_long();
 	  }
-	  else
-	  {
-		  commands.gcode_last_N[Commands::current_command_port] = 1;
-	  }
 }

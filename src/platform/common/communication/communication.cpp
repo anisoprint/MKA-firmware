@@ -47,10 +47,16 @@ int8_t Com::serial_port_index = -1;
 void Com::setBaudrate() {
   uint32_t serial_connect_timeout = millis() + 1000UL;
   MKSERIAL1.begin(BAUDRATE_1);
+  #if (SERIAL_PORT_1 != -1)
+  	  MKSERIAL1.setInterruptPriority(1);
+  #endif
   while (!MKSERIAL1 && PENDING(millis(), serial_connect_timeout)) { /* nada */ }
 
   #if NUM_SERIAL > 1
     MKSERIAL2.begin(BAUDRATE_2);
+	#if (SERIAL_PORT_2 != -1)
+		  MKSERIAL2.setInterruptPriority(1);
+	#endif
     serial_connect_timeout = millis() + 1000UL;
     while (!MKSERIAL2 && PENDING(millis(), serial_connect_timeout)) { /* nada */ }
   #endif
