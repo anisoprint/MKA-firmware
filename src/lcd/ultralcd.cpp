@@ -255,7 +255,7 @@ uint16_t max_display_update_time = 0;
   void menu_action_setting_edit_bool(const char* pstr, bool* ptr);
   void menu_action_setting_edit_callback_bool(const char* pstr, bool* ptr, screenFunc_t callbackFunc);
 
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
     void lcd_sdcard_menu();
     void menu_action_sdfile(const char* longFilename);
     void menu_action_sddirectory(const char* longFilename);
@@ -644,7 +644,7 @@ void lcd_status_screen() {
 
       // Handle message expire
       if (expire_status_ms > 0) {
-        #if HAS_SDSUPPORT
+        #if HAS_SD_SUPPORT
           if (card.isFileOpen()) {
             // Expire the message when printing is active
             if (IS_SD_PRINTING) {
@@ -762,7 +762,7 @@ void kill_screen(const char* lcd_msg) {
     line_to_current_z();
   }
 
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
 
     void lcd_sdcard_pause() {
       card.pauseSDPrint();
@@ -999,7 +999,7 @@ void kill_screen(const char* lcd_msg) {
     }
     MENU_ITEM(submenu, MSG_CONTROL, lcd_control_menu);
 
-    #if HAS_SDSUPPORT
+    #if HAS_SD_SUPPORT
       if (card.cardOK) {
         if (card.isFileOpen()) {
           if (card.sdprinting)
@@ -1687,7 +1687,7 @@ void kill_screen(const char* lcd_msg) {
 
   #endif
 
-  #if HAS_SDSUPPORT && ENABLED(MENU_ADDAUTOSTART)
+  #if HAS_SD_SUPPORT && ENABLED(MENU_ADDAUTOSTART)
 
     void lcd_autostart_sd() {
       card.checkautostart(true);
@@ -2645,7 +2645,7 @@ void kill_screen(const char* lcd_msg) {
     //
     // Autostart
     //
-    #if HAS_SDSUPPORT && ENABLED(MENU_ADDAUTOSTART)
+    #if HAS_SD_SUPPORT && ENABLED(MENU_ADDAUTOSTART)
       MENU_ITEM(function, MSG_AUTOSTART, lcd_autostart_sd);
     #endif
 
@@ -3946,7 +3946,7 @@ void kill_screen(const char* lcd_msg) {
 
   #endif // LASER
 
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
 
     #if !PIN_EXISTS(SD_DETECT)
       void lcd_sd_refresh() {
@@ -4944,7 +4944,7 @@ void kill_screen(const char* lcd_msg) {
   void menu_action_gcode(const char* pgcode) { commands.enqueue_and_echo_P(pgcode); }
   void menu_action_function(screenFunc_t func) { (*func)(); }
 
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
 
     void menu_action_sdfile(const char* longFilename) {
       card.openAndPrintFile(longFilename);
@@ -5020,7 +5020,7 @@ void lcd_init() {
 
   #endif // !NEWPANEL
 
-  #if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+  #if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
     SET_INPUT_PULLUP(SD_DETECT_PIN);
     lcd_sd_status = 2; // UNKNOWN
   #endif
@@ -5119,7 +5119,7 @@ void lcd_update() {
 
   #endif
 
-  #if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+  #if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
 
     const bool sd_status = IS_SD_INSERTED;
     if (sd_status != lcd_sd_status && lcd_detected()) {
@@ -5145,7 +5145,7 @@ void lcd_update() {
       );
     }
 
-  #endif // HAS_SDSUPPORT && SD_DETECT_PIN
+  #endif // HAS_SD_SUPPORT && SD_DETECT_PIN
 
   #if HAS_SD_RESTART
     if (restart.count && restart.job_phase == RESTART_IDLE) {

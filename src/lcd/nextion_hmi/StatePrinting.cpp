@@ -68,7 +68,7 @@ namespace {
 void StatePrinting::Pause_Push(void* ptr) {
     UNUSED(ptr);
 
-    if (card.cardOK && card.isFileOpen()) {
+    if (card.isMounted() && card.isFileOpen()) {
 
     	const float retract = PrintPause::RetractDistance;
 

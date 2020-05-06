@@ -131,6 +131,7 @@ typedef int8_t    pin_t;
 #include "src/inc/conditionals_pre.h"
 #include "src/inc/pins.h"
 #include "src/inc/conditionals_post.h"
+#include "src/inc/enum.h"
 #include "src/inc/sanitycheck.h"
 #include "src/inc/point_t.h"
 #include "src/inc/watch.h"
@@ -181,7 +182,7 @@ typedef int8_t    pin_t;
 #include "src/lcd/nextion_hmi/StateEditNumber.h"
 
 // SD modules
-#include "src/sd/cardreader.h"
+#include "src/sd/sdcard.h"
 
 // Utility modules
 #include "src/utility/utility.h"

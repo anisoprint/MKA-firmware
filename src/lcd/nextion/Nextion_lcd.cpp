@@ -58,7 +58,7 @@
   char        lcd_status_message[30]    = WELCOME_MSG;
   const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE;
 
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
     // 0 card not present, 1 SD not insert, 2 SD insert, 3 SD printing
     enum SDstatus_enum {NO_SD = 0, SD_NO_INSERT = 1, SD_INSERT = 2, SD_PRINTING = 3, SD_PAUSE = 4 };
     SDstatus_enum SDstatus    = NO_SD;
@@ -445,7 +445,7 @@
       speed_list[i]->setText(temp, "move");
     }
 
-    #if HAS_SDSUPPORT
+    #if HAS_SD_SUPPORT
       card.mount();
       if (card.cardOK)
         SDstatus = SD_INSERT;
@@ -534,7 +534,7 @@
       lcdDrawUpdate = false; \
     } while(0)
 
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
 
     void UploadNewFirmware() {
       if (IS_SD_INSERTED || card.cardOK) {
@@ -1066,7 +1066,7 @@
     UNUSED(ptr);
 
     switch(Vyes.getValue()) {
-      #if HAS_SDSUPPORT
+      #if HAS_SD_SUPPORT
         case 1: // Stop Print
           printer.setAbortSDprinting(true);
           lcd_setstatusPGM(PSTR(MSG_PRINT_ABORTED), -1);
@@ -1143,7 +1143,7 @@
         gfx.color_set(NX_HIGH, 63488);
       #endif
 
-      #if HAS_SDSUPPORT
+      #if HAS_SD_SUPPORT
         sd_mount.attachPop(sdmountdismountPopCallback, &sd_mount);
         sd_dismount.attachPop(sdmountdismountPopCallback, &sd_dismount);
         sdlist.attachPop(sdlistPopCallback);
@@ -1374,7 +1374,7 @@
           PreviouspercentDone = printer.progress;
         }
 
-        #if HAS_SDSUPPORT
+        #if HAS_SD_SUPPORT
 
           if (card.isFileOpen()) {
             if (IS_SD_PRINTING && SDstatus != SD_PRINTING) {
@@ -1395,7 +1395,7 @@
             SD.setValue(SDstatus);
           }
 
-        #endif // HAS_SDSUPPORT
+        #endif // HAS_SD_SUPPORT
 
         #if HAS_SD_RESTART
           if (restart.count && restart.job_phase == RESTART_IDLE) {
@@ -1405,7 +1405,7 @@
         #endif
 
         break;
-      #if HAS_SDSUPPORT
+      #if HAS_SD_SUPPORT
         case 3:
           if (PreviousPage != 3) setpageSD();
           break;

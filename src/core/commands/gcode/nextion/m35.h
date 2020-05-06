@@ -28,7 +28,7 @@
 
 #if ENABLED(NEXTION)
 
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
 
     #define CODE_M35
 
@@ -42,7 +42,7 @@
 #elif ENABLED(NEXTION_HMI)
 
 
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
 
     #define CODE_M35
 

@@ -20,7 +20,7 @@ namespace {
 	bool _sdInserted = false;
 	uint8_t _rootState = 0;
 
-#if HAS_SDSUPPORT
+#if HAS_SD_SUPPORT
   NexUpload Firmware(NEXTION_FIRMWARE_FILE, 57600);
 #endif
 
@@ -82,7 +82,7 @@ void NextionHMI::Init() {
 
 void NextionHMI::DrawUpdate() {
 	//check SD card
-	#if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+	#if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
 
 	Serial.println(READ(SD_DETECT_PIN));
 
@@ -101,7 +101,7 @@ void NextionHMI::DrawUpdate() {
 		    UpdateSDIcon();
 
 		}
-	  #endif // HAS_SDSUPPORT && SD_DETECT_PIN
+	  #endif // HAS_SD_SUPPORT && SD_DETECT_PIN
 
 	switch(_pageID) {
 	    case PAGE_STATUS : StateStatus::DrawUpdate();
@@ -173,7 +173,7 @@ void NextionHMI::ActivateState(uint8_t state_id) {
 	if (_pageID == PAGE_STATUS) _rootState = PAGE_STATUS;
 	else if (_pageID == PAGE_PRINTING) _rootState = PAGE_PRINTING;
 
-#if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+#if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
     UpdateSDIcon();
 #endif
 }
@@ -284,7 +284,7 @@ void NextionHMI::WaitOk_Push(void* ptr) {
 }
 
 void NextionHMI::UploadFirmwareFromSD() {
-  if (IS_SD_INSERTED || card.cardOK) {
+  if (IS_SD_INSERTED() || card.isMounted()) {
     Firmware.startUpload();
     nexSerial.end();
     Init();
@@ -313,7 +313,7 @@ void NextionHMI::SetBrightness(uint8_t brightness) {
 	setCurrentBrightness(brightness);
 }
 
-#if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+#if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
 void NextionHMI::UpdateSDIcon() {
 	if (_sdInserted)
 	{

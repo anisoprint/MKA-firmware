@@ -468,7 +468,7 @@
   /**
    * Class NexUpload
    */
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
 
     SdFile nextion_file;
 
@@ -541,7 +541,7 @@
     bool NexUpload::_checkFile(void) {
       SERIAL_EMT("Start checkFile ", _file_name);
       card.setroot();
-      if (!nextion_file.open(card.curDir, _file_name, O_READ)) {
+      if (!nextion_file.open(&card.workDir, _file_name, O_READ)) {
         SERIAL_LM(ER, "file is not exit");
         return false;
       }

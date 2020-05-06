@@ -30,6 +30,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1825809653" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -46,6 +47,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.601727464" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -62,6 +64,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.829244576" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -71,9 +74,11 @@
 							<tool id="io.sloeber.tool.size.1552726340" name="Arduino tool Print Size" superClass="io.sloeber.tool.size"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="io.sloeber.core.toolChain.release.918675551.2108847127" name="cardreader.h" rcbsApplicability="disable" resourcePath="src/sd/cardreader.h" toolsToInvoke=""/>
+					<fileInfo id="io.sloeber.core.toolChain.release.918675551.35337573" name="SDFat.h" rcbsApplicability="disable" resourcePath="src/sd/SDFat.h" toolsToInvoke=""/>
 					<fileInfo id="io.sloeber.core.toolChain.release.918675551.1735666758" name="StateStatus.h" rcbsApplicability="disable" resourcePath="src/lcd/nextion_hmi/StateStatus.h" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="src/platform/HAL_DUE/old_communication.h|src/platform/HAL_DUE/old_communication.cpp|src/lcd/nextion_hmi/StateStatusc.cpp|libraries/?*/**/test*/**|libraries**/._*|libraries/?*/**/third-party/**|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/c*/?*|libraries/?*/d*/?*|src/lcd/nextion_hmi/StateStatusc.h|libraries/?*/D*/?*" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/sd/cardreader.h|src/sd/cardreader.cpp|src/sd/SDFat.h|src/sd/SDFat.cpp|src/platform/HAL_DUE/old_communication.h|src/platform/HAL_DUE/old_communication.cpp|src/lcd/nextion_hmi/StateStatusc.cpp|libraries/?*/**/test*/**|libraries**/._*|libraries/?*/**/third-party/**|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/c*/?*|libraries/?*/d*/?*|src/lcd/nextion_hmi/StateStatusc.h|libraries/?*/D*/?*" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

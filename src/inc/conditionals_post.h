@@ -507,16 +507,23 @@
  * SPI_SPEED
  */
 
-#if ENABLED(SDEXTRASLOW)
-  #define SD_SPI_SPEED 3
-#elif ENABLED(SDSLOW)
-  #define SD_SPI_SPEED 2
+/**
+ * SPI_SPEED
+ */
+#if ENABLED(SD_HALF_SPEED)
+  #define SD_SPI_SPEED SPI_HALF_SPEED
+#elif ENABLED(SD_QUARTER_SPEED)
+  #define SD_SPI_SPEED SPI_QUARTER_SPEED
+#elif ENABLED(SD_EIGHTH_SPEED)
+  #define SD_SPI_SPEED SPI_EIGHTH_SPEED
+#elif ENABLED(SD_SIXTEENTH_SPEED)
+  #define SD_SPI_SPEED SPI_SIXTEENTH_SPEED
 #else
-  #define SD_SPI_SPEED 0
+  #define SD_SPI_SPEED SPI_FULL_SPEED
 #endif
 
 // SD support
-#define HAS_SDSUPPORT       (ENABLED(SDSUPPORT))
+#define HAS_SD_SUPPORT       (ENABLED(SDSUPPORT))
 #if ENABLED(SDSUPPORT)
   #define SD_MAX_FOLDER_DEPTH 5     // Maximum folder depth
   // Number of VFAT entries used. Each entry has 13 UTF-16 characters

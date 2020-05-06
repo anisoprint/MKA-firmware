@@ -65,7 +65,7 @@ void Commands::get_available() {
   if (process_injected_rear()) return;
 
   get_serial();
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
     get_sdcard();
   #endif
 }
@@ -78,9 +78,9 @@ void Commands::advance_queue() {
   // Return if the G-code buffer is empty
   if (!buffer_ring.count()) return;
 
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
 
-    if (card.saving) {
+    if (card.isSaving()) {
       gcode_t command = buffer_ring.peek();
       if (is_M29(command.gcode)) {
         // M29 closes the file
@@ -105,11 +105,11 @@ void Commands::advance_queue() {
     else
       process_next();
 
-  #else // !HAS_SDSUPPORT
+  #else // !HAS_SD_SUPPORT
 
     process_next();
 
-  #endif // !HAS_SDSUPPORT
+  #endif // !HAS_SD_SUPPORT
 
   // The buffer_ring may be reset by a command handler or by code invoked by idle() within a handler
   buffer_ring.dequeue();
@@ -412,9 +412,9 @@ void Commands::get_serial() {
 
           gcode_last_N[i] = gcode_N;
         }
-        #if HAS_SDSUPPORT
+        #if HAS_SD_SUPPORT
           // Pronterface "M29" and "M29 " has no line number
-          else if (card.saving && !is_M29(command)) {
+          else if (card.isSaving() && !is_M29(command)) {
             gcode_line_error(PSTR(MSG_ERR_NO_CHECKSUM), i);
             return;
           }
@@ -475,7 +475,7 @@ void Commands::get_serial() {
   }
 }
 
-#if HAS_SDSUPPORT
+#if HAS_SD_SUPPORT
 
   /**
    * Get lines from the SD Card until the command buffer is full
@@ -488,7 +488,7 @@ void Commands::get_serial() {
     static char     sd_line_buffer[MAX_CMD_SIZE];
     static uint8_t  sd_input_state = PS_NORMAL;
 
-    if (!IS_SD_PRINTING) return;
+    if (!IS_SD_PRINTING()) return;
 
     #if HAS_DOOR_OPEN
       if (READ(DOOR_OPEN_PIN) != endstops.isLogic(DOOR_OPEN)) {
@@ -531,9 +531,9 @@ void Commands::get_serial() {
 
         if (card_eof) {
         
-        	card.printingHasFinished();
+        	card.fileHasFinished();
 
-        	if (IS_SD_PRINTING)
+        	if (IS_SD_PRINTING())
           		sd_count = 0; // If a sub-file was printing, continue from call point
         	else {
           		SERIAL_EM(MSG_FILE_PRINTED);
@@ -554,7 +554,7 @@ void Commands::get_serial() {
 
   }
 
-#endif // HAS_SDSUPPORT
+#endif // HAS_SD_SUPPORT
 
 void Commands::process_next() {
 

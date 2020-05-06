@@ -127,7 +127,7 @@ void Endstops::init() {
     SET_INPUT(DOOR_OPEN_PIN);
   #endif
 
-  #if HAS_POWER_CHECK && HAS_SDSUPPORT
+  #if HAS_POWER_CHECK && HAS_SD_SUPPORT
     SET_INPUT(POWER_CHECK_PIN);
   #endif
 
@@ -193,7 +193,7 @@ void Endstops::setup_pullup() {
     HAL::setInputPullup(DOOR_OPEN_PIN, isPullup(DOOR_OPEN_SENSOR));
   #endif
 
-  #if HAS_POWER_CHECK && HAS_SDSUPPORT
+  #if HAS_POWER_CHECK && HAS_SD_SUPPORT
     HAL::setInputPullup(POWER_CHECK_PIN, isPullup(POWER_CHECK_SENSOR));
   #endif
 
@@ -281,7 +281,7 @@ void Endstops::report() {
     SERIAL_EMV(" Pullup:", isPullup(DOOR_OPEN_SENSOR) ? "true" : "false");
   #endif
 
-  #if HAS_POWER_CHECK && HAS_SDSUPPORT
+  #if HAS_POWER_CHECK && HAS_SD_SUPPORT
     // Power Check
     SERIAL_MV("Endstop Power Check Logic:", isLogic(POWER_CHECK_SENSOR) ? "true" : "false");
     SERIAL_EMV(" Pullup:", isPullup(POWER_CHECK_SENSOR) ? "true" : "false");

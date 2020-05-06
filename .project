@@ -57,6 +57,11 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/sam/1.6.12/libraries/SPI</locationURI>
 		</link>
 		<link>
+			<name>libraries/SdFat</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/SdFat/1.1.2</locationURI>
+		</link>
+		<link>
 			<name>libraries/U8glib</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/U8glib/1.19.1</locationURI>

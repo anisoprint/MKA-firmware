@@ -3313,9 +3313,9 @@ void EEPROM::Factory_Settings() {
 		  #endif // EXTRUDERS != 1
 		#endif // ADVANCED_PAUSE_FEATURE
 
-		#if HAS_SDSUPPORT
-		  card.PrintSettings();
-		#endif
+		//#if HAS_SD_SUPPORT
+		  //card.print_settings();
+		//#endif
 	}
 
 }

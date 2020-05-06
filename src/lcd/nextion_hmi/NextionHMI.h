@@ -41,11 +41,11 @@ namespace NextionHMI {
 
 	void ShowStartScreen(const char* header, const char* message);
 
-	#if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+	#if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
 	void UpdateSDIcon();
 	#endif
 
-	#if HAS_SDSUPPORT
+	#if HAS_SD_SUPPORT
 	void UploadFirmwareFromSD();
 	#endif
 

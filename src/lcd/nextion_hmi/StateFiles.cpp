@@ -132,7 +132,7 @@ namespace {
 			#else
 			  card.getfilename(i);
 			#endif
-	        Files_PopulateFileRow(row, card.filenameIsDir, card.fileName);
+	        Files_PopulateFileRow(row, card.isFilenameIsDir(), card.fileName);
 
 	      }
 	      else
@@ -261,7 +261,7 @@ void StateFiles::Activate() {
     NextionHMI::ActivateState(PAGE_FILES);
     _page.show();
     card.mount();
-    if (card.cardOK)
+    if (card.isMounted())
     {
 	  Files_PopulateFileList(_listPosition);
 	  _tLoading.SetVisibility(false);

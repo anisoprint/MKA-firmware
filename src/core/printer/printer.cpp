@@ -196,7 +196,7 @@ void Printer::setup() {
   SERIAL_SMV(ECHO, MSG_FREE_MEMORY, HAL::getFreeRam());
   SERIAL_EMV(MSG_PLANNER_BUFFER_BYTES, (int)sizeof(block_t)*BLOCK_BUFFER_SIZE);
 
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
     card.mount();
   #endif
 
@@ -346,10 +346,10 @@ void Printer::loop() {
 
   printer.keepalive(NotBusy);
 
-  #if HAS_SDSUPPORT
+  #if HAS_SD_SUPPORT
 
-    if (isAbortSDprinting()) {
-      setAbortSDprinting(false);
+    if (card.isAbortSDprinting()) {
+    	card.setAbortSDprinting(false);
 
 	  #if ENABLED(NEXTION_HMI)
     	  PrintPause::Status = Resuming; //to prevent pausing
@@ -362,7 +362,7 @@ void Printer::loop() {
       #endif
 
       // Stop SD printing
-      card.stopSDPrint();
+      card.endFilePrint();
 
       // Clear all command in quee
       commands.clear_queue();
@@ -400,7 +400,7 @@ void Printer::loop() {
 	  #endif
     }
 
-  #endif // HAS_SDSUPPORT
+  #endif // HAS_SD_SUPPORT
 
   commands.get_available();
   commands.advance_queue();
@@ -439,8 +439,8 @@ void Printer::check_periodical_actions() {
         thermalManager.report_temperatures();
         SERIAL_EOL();
       }
-      #if HAS_SDSUPPORT
-        if (isAutoreportSD()) card.printStatus();
+      #if HAS_SD_SUPPORT
+        if (card.isAutoreport()) card.print_status();
       #endif
       #if ENABLED(NEXTION)
         nextion_draw_update();
@@ -962,7 +962,7 @@ void Printer::handle_safety_watch() {
 	#define PRINT_IS_PAUSED false
   #endif
 
-  if (safety_watch.isRunning() && (IS_SD_PRINTING || PRINT_IS_PAUSED || print_job_counter.isRunning() || !thermalManager.heaters_isON()))
+  if (safety_watch.isRunning() && (IS_SD_PRINTING() || PRINT_IS_PAUSED || print_job_counter.isRunning() || !thermalManager.heaters_isON()))
     safety_watch.stop();
   else if (!safety_watch.isRunning() && thermalManager.heaters_isON())
     safety_watch.start();
@@ -1033,7 +1033,7 @@ void Printer::setup_pinout() {
 
   #endif
 
-	#if HAS_SDSUPPORT && PIN_EXISTS(SD_DETECT)
+	#if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
 	  SET_INPUT_PULLUP(SD_DETECT_PIN);
 	#endif
 

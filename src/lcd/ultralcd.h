@@ -256,6 +256,7 @@
   inline void lcd_setalertstatusPGM(const char* message) { UNUSED(message); }
   inline void lcd_reset_alert_level() {}
   inline void lcd_eeprom_allert() {}
+  inline void lcd_sd_changed(const uint8_t old_status, const uint8_t status) {}
 
 #endif // ULTRA_LCD
 

@@ -55,7 +55,7 @@ void PrintCounter::loadStats() {
     PrintCounter::debug(PSTR("loadStats"));
   #endif
 
-  #if HAS_SDSUPPORT && ENABLED(SD_SETTINGS)
+  #if HAS_SD_SUPPORT && ENABLED(SD_SETTINGS)
     // Checks if the SDCARD is inserted
     if (IS_SD_INSERTED && !IS_SD_PRINTING)
       card.RetrieveSettings(true);
@@ -70,7 +70,7 @@ void PrintCounter::saveStats() {
   // Refuses to save data is object is not loaded
   if (!loaded) return;
 
-  #if HAS_SDSUPPORT && ENABLED(SD_SETTINGS)
+  #if HAS_SD_SUPPORT && ENABLED(SD_SETTINGS)
     card.StoreSettings();
   #endif
 }
@@ -124,7 +124,7 @@ void PrintCounter::tick() {
     update_last = now;
   }
 
-  #if HAS_SDSUPPORT && ENABLED(SD_SETTINGS)
+  #if HAS_SD_SUPPORT && ENABLED(SD_SETTINGS)
     const static millis_l sdinterval = saveInterval * 1000UL;
     if (!loaded) {
       loadStats();

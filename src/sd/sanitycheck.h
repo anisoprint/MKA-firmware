@@ -2,8 +2,8 @@
  * MK4duo Firmware for 3D Printer, Laser and CNC
  *
  * Based on Marlin, Sprinter and grbl
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
- * Copyright (C) 2013 Alberto Cotronei @MagoKimbra
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2020 Alberto Cotronei @MagoKimbra
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
 /**
  * sanitycheck.h
@@ -26,32 +27,22 @@
  * Test configuration values for errors at compile-time.
  */
 
-#ifndef _SD_CARD_SANITYCHECK_H_
-#define _SD_CARD_SANITYCHECK_H_
-
-// SDSUPPORT test
-#if ENABLED(SD_SETTINGS) && DISABLED(SDSUPPORT)
-  #error "DEPENDENCY ERROR: You have to enable SDSUPPORT to use SD_SETTINGS."
-#endif
-
-/**
- * EEPROM test
- */
-#if DISABLED(SDSUPPORT) && ENABLED(EEPROM_SETTINGS) && ENABLED(EEPROM_SD)
-  #error "DEPENDENCY ERROR: You have to enable SDSUPPORT to use EEPROM_SD."
-#endif
-
-// addon
-#if HAS_SDSUPPORT
+#if ENABLED(SDSUPPORT) && ENABLED(USB_FLASH_DRIVE_SUPPORT)
+  #error "DEPENDENCY ERROR: SDSUPPORT and USB_FLASH_DRIVE_SUPPORT not supported!"
+#elif HAS_SD_SUPPORT
   #if DISABLED(SD_FINISHED_STEPPERRELEASE)
     #error "DEPENDENCY ERROR: Missing setting SD_FINISHED_STEPPERRELEASE."
   #endif
   #if DISABLED(SD_FINISHED_RELEASECOMMAND)
     #error "DEPENDENCY ERROR: Missing setting SD_FINISHED_RELEASECOMMAND."
   #endif
-  #if ENABLED(SD_SETTINGS) && DISABLED(SD_CFG_SECONDS)
-    #error "DEPENDENCY ERROR: Missing setting SD_CFG_SECONDS."
-  #endif
+#elif ENABLED(EEPROM_SETTINGS) && ENABLED(EEPROM_SD)
+  #error "DEPENDENCY ERROR: You have to enable SDSUPPORT || USB_FLASH_DRIVE_SUPPORT to use EEPROM_SD."
 #endif
 
-#endif /* _SD_CARD_SANITYCHECK_H_ */
+#if DISABLED(SDSUPPORT) && ENABLED(SERIAL_STATS_MAX_RX_QUEUED)
+  #error "DEPENDENCY ERROR: You must enable SDSUPPORT for SERIAL_STATS_MAX_RX_QUEUED."
+#endif
+#if DISABLED(SDSUPPORT) && ENABLED(SERIAL_STATS_DROPPED_RX)
+  #error "DEPENDENCY ERROR: You must enable SDSUPPORT for SERIAL_STATS_DROPPED_RX."
+#endif

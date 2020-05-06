@@ -26,7 +26,7 @@
  * Copyright (C) 2017 Alberto Cotronei @MagoKimbra
  */
 
-#if HAS_SDSUPPORT
+#if HAS_SD_SUPPORT
 
   #define CODE_M20
   #define CODE_M21
@@ -40,6 +40,7 @@
   #define CODE_M29
   #define CODE_M30
   #define CODE_M32
+  #define CODE_M524
 
   /**
    * M20: List SD card to serial output
@@ -94,9 +95,8 @@
     		Printer::currentLayer  = 0,
     		Printer::maxLayer = -1;
 
-    	    card.startFileprint();
+    	    card.startFilePrint();
     	    print_job_counter.start();
-
 
     	    StatePrinting::Activate();
       }
@@ -145,21 +145,22 @@
    * M26: Set SD Card file index
    */
   inline void gcode_M26(void) {
-    if (card.cardOK && parser.seen('S'))
+    if (card.isMounted() && parser.seen('S'))
       card.setIndex(parser.value_long());
   }
 
   /**
-   * M27: Get SD Card status or set the SD status auto-report interval.
+   * M27: Get SD Card status
+   *      OR, with 'S<bool>' set the SD status auto-report.
+   *      OR, with 'C' get the current filename.
    */
-  inline void gcode_M27(void) {
-    bool to_enable = false;
-    if (parser.seenval('S')) {
-      to_enable = parser.value_bool();
-      printer.setAutoreportSD(to_enable);
-    }
+  inline void gcode_M27() {
+    if (parser.seen('C'))
+      SERIAL_EMT("Current file: ", card.fileName);
+    else if (parser.seenval('S'))
+      card.setAutoreport(parser.value_bool());
     else
-      card.printStatus();
+      card.print_status();
   }
 
   /**
@@ -171,13 +172,13 @@
    * M29: Stop SD Write
    * Processed in write to file routine above
    */
-  inline void gcode_M29(void) { card.saving = false; }
+  inline void gcode_M29(void) { card.setSaving(false); }
 
   /**
    * M30 <filename>: Delete SD Card file
    */
   inline void gcode_M30(void) {
-    if (card.cardOK) {
+    if (card.isMounted()) {
       card.closeFile();
       card.deleteFile(parser.string_arg);
     }
@@ -187,9 +188,9 @@
    * M32: Select file and start SD print
    */
   inline void gcode_M32(void) {
-    if (card.sdprinting) stepper.synchronize();
+    if (IS_SD_PRINTING()) stepper.synchronize();
 
-    if (card.cardOK) {
+    if (card.isMounted()) {
       card.closeFile();
 
       char* namestartpos = parser.string_arg ; // default name position
@@ -204,7 +205,7 @@
       Printer::currentLayer  = 0,
       Printer::maxLayer = -1;
 
-      card.startFileprint();
+      card.startFilePrint();
       print_job_counter.start();
 
 	  #if ENABLED(NEXTION_HMI)
@@ -216,6 +217,15 @@
       #endif
     }
   }
+
+
+
+/**
+ * M524: Abort the current SD print job (started with M24)
+ */
+inline void gcode_M524() {
+  if (IS_SD_PRINTING()) card.setAbortSDprinting(true);
+}
 
   #if ENABLED(SDCARD_SORT_ALPHA) && ENABLED(SDSORT_GCODE)
 
@@ -235,4 +245,4 @@
 
   #endif // SDCARD_SORT_ALPHA && SDSORT_GCODE
 
-#endif // HAS_SDSUPPORT
+#endif // HAS_SD_SUPPORT

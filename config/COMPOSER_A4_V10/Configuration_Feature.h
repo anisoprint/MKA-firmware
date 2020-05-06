@@ -1118,11 +1118,32 @@
  *************************************** SDCARD *******************************************
  ****************************************************************************************/
 #define SDSUPPORT
-//#define DEBUG_SD_ERROR
-//#define SDSLOW              // Use slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
-//#define SDEXTRASLOW         // Use even slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
-//#define SD_CHECK_AND_RETRY  // Use CRC checks and retries on the SD communication
-//#define SD_EXTENDED_DIR     // Show extended directory including file length. Don't use this with Pronterface
+
+// Advanced command M39
+// Info and formatting SD card
+// This requires more PROGMEM
+//#define ADVANCED_SD_COMMAND
+
+//
+// SD CARD: SPI SPEED
+//
+// Enable one of the following items for a slower SPI transfer speed.
+// This may be required to resolve "volume init" errors.
+//#define SD_HALF_SPEED
+//#define SD_QUARTER_SPEED
+#define SD_EIGHTH_SPEED
+//#define SD_SIXTEENTH_SPEED
+
+//
+// SD CARD: ENABLE CRC
+//
+// Use CRC checks and retries on the SD communication.
+//#define SD_CHECK_AND_RETRY
+
+//
+// Show extended directory including file length.
+// Don't use this with Pronterface
+//#define SD_EXTENDED_DIR
 
 // Decomment this if you have external SD without DETECT_PIN
 #define SD_DISABLED_DETECT
@@ -1983,7 +2004,7 @@
 // The ASCII buffer for receiving from the serial:
 #define MAX_CMD_SIZE 96
 // For Arduino DUE setting to 8
-#define BUFSIZE 4
+#define BUFSIZE 16
 
 /** START Function only for 8 bit proccesor */
 // Transmission to Host Buffer Size

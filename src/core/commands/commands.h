@@ -209,7 +209,7 @@ class Commands {
      * or until the end of the file is reached. The special character '#'
      * can also interrupt buffering.
      */
-    #if HAS_SDSUPPORT
+    #if HAS_SD_SUPPORT
       static void get_sdcard();
     #endif
 

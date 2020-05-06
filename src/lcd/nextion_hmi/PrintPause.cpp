@@ -67,8 +67,8 @@ bool PrintPause::PausePrint() {
         SERIAL_EOL();
 
         // Pause the print job
-        #if HAS_SDSUPPORT
-          if (IS_SD_PRINTING) {
+        #if HAS_SD_SUPPORT
+          if (IS_SD_PRINTING()) {
             card.pauseSDPrint();
             SdPrintingPaused = true;
           }
@@ -103,13 +103,13 @@ bool PrintPause::PausePrint() {
     if (Status!=Pausing) return false; // incorrect state
 
     // Wait for synchronize steppers
-    while ((planner.has_blocks_queued() || stepper.cleaning_buffer_counter) && !printer.isAbortSDprinting()) {
+    while ((planner.has_blocks_queued() || stepper.cleaning_buffer_counter) && !card.isAbortSDprinting()) {
       printer.idle();
       printer.keepalive(InProcess);
     }
 
     // Handle cancel
-    if (printer.isAbortSDprinting()) return false;
+    if (card.isAbortSDprinting()) return false;
 
     // Save current position
     COPY_ARRAY(resume_position, mechanics.current_position);
@@ -140,7 +140,7 @@ bool PrintPause::PausePrint() {
     Nozzle::park(2, park_point);
 
     // Handle cancel
-    if (printer.isAbortSDprinting()) return false;
+    if (card.isAbortSDprinting()) return false;
 
     // Start the heater idle timers
     const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
@@ -255,9 +255,9 @@ void PrintPause::ResumePrint(const float& purge_length) {
    SERIAL_STR(RESUME);
    SERIAL_EOL();
 
-   #if HAS_SDSUPPORT
+   #if HAS_SD_SUPPORT
      if (SdPrintingPaused) {
-       card.startFileprint();
+       card.startFilePrint();
        SdPrintingPaused=false;
      }
    #endif

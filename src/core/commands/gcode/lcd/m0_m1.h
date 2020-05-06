@@ -84,7 +84,7 @@
     if (ms) ms += millis();
     	while (printer.isWaitForUser() && !(ms && ELAPSED(millis(), ms))) printer.idle();
 
-    IS_SD_PRINTING ? LCD_MESSAGEPGM(MSG_RESUMING) : LCD_MESSAGEPGM(WELCOME_MSG);
+    IS_SD_PRINTING() ? LCD_MESSAGEPGM(MSG_RESUMING) : LCD_MESSAGEPGM(WELCOME_MSG);
 
     printer.setWaitForUser(false);
     printer.keepalive(InHandler);
