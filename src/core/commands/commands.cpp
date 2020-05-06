@@ -523,7 +523,11 @@ void Commands::get_serial() {
         // Reset stream state, terminate the buffer, and commit a non-empty command
         if (!is_eol && sd_count) ++sd_count;    // End of file with no newline
         if (!process_line_done(sd_input_state, sd_line_buffer, sd_count)) {
-          enqueue(sd_line_buffer, false, -2);   // Port -2 for SD non answer and no send ok.
+          if (!process_without_queue(sd_line_buffer))
+          {
+            // Add the command to the buffer_ring
+          	enqueue(sd_line_buffer, false, -2);   // Port -2 for SD non answer and no send ok.
+          }
           #if HAS_SD_RESTART
             restart.cmd_sdpos = card.getIndex();
           #endif
