@@ -2004,7 +2004,7 @@
 // The ASCII buffer for receiving from the serial:
 #define MAX_CMD_SIZE 96
 // For Arduino DUE setting to 8
-#define BUFSIZE 16
+#define BUFSIZE 4
 
 /** START Function only for 8 bit proccesor */
 // Transmission to Host Buffer Size
