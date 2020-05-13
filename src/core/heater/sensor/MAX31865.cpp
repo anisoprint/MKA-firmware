@@ -1,7 +1,7 @@
 /*
  * MAX31865.cpp
  *
- *      Author: Azarov
+ *      Author: Avazar
  *
  *      Based on Adafruit PT100/P1000 RTD Sensor w/MAX31865 library and MAX31865 sensor implementation in RepRapFirmware by dc42
  */
@@ -33,11 +33,8 @@ namespace {
 void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin) {
   addr &= 0x7F; // make sure top bit is not set
 
-  HAL::spiBegin();
-
-  HAL::digitalWrite(cs_pin, LOW); // enable TT_MAX31855
-
   HAL::spiInit(MAX_31865_CHANNEL, SPI_MAX_31865_RATE);
+  HAL::digitalWrite(cs_pin, LOW); // enable MAX31865
 
   // ensure 100ns delay
   HAL::delayNanoseconds(100);
@@ -50,7 +47,7 @@ void readRegisterN(uint8_t addr, uint8_t buffer[], uint8_t n, const pin_t cs_pin
     buffer++;
   }
 
-  HAL::digitalWrite(cs_pin, HIGH); // disable TT_MAX31855
+  HAL::digitalWrite(cs_pin, HIGH); // disable MAX31865
 }
 
 uint8_t readRegister8(uint8_t addr, const pin_t cs_pin) {
@@ -74,87 +71,46 @@ uint16_t readRegister16(uint8_t addr, const pin_t cs_pin) {
 
 void writeRegister8(uint8_t addr, uint8_t data, const pin_t cs_pin) {
 
-  HAL::spiBegin();
-  HAL::digitalWrite(cs_pin, LOW); // enable TT_MAX31855
-
   HAL::spiInit(MAX_31865_CHANNEL, SPI_MAX_31865_RATE);
+  HAL::digitalWrite(cs_pin, LOW); // enable MAX31865
+
+  // ensure 100ns delay
+  HAL::delayNanoseconds(100);
 
   HAL::spiSend(MAX_31865_CHANNEL, addr | 0x80);
   HAL::spiSend(MAX_31865_CHANNEL, data);
 
-
-  // ensure 100ns delay - a bit extra is fine
-  #if ENABLED(ARDUINO_ARCH_SAM)
-    HAL::delayMicroseconds(1);
-  #else
-    asm("nop"); // 50ns on 20Mhz, 62.5ns on 16Mhz
-    asm("nop"); // 50ns on 20Mhz, 62.5ns on 16Mhz
-  #endif
-
-
-  HAL::digitalWrite(cs_pin, HIGH); // disable TT_MAX31855
+  HAL::digitalWrite(cs_pin, HIGH); // disable TT_MAX31865
 }
-
-/*void enableBias(boolean b, const pin_t cs_pin) {
-  uint8_t t = readRegister8(MAX31856_CONFIG_REG, cs_pin);
-  if (b) {
-    t |= MAX31856_CONFIG_BIAS;       // enable bias
-  } else {
-    t &= ~MAX31856_CONFIG_BIAS;       // disable bias
-  }
-  writeRegister8(MAX31856_CONFIG_REG, t, cs_pin);
-}
-
-void autoConvert(boolean b, const pin_t cs_pin) {
-  uint8_t t = readRegister8(MAX31856_CONFIG_REG, cs_pin);
-  if (b) {
-    t |= MAX31856_CONFIG_MODEAUTO;       // enable autoconvert
-  } else {
-    t &= ~MAX31856_CONFIG_MODEAUTO;       // disable autoconvert
-  }
-  writeRegister8(MAX31856_CONFIG_REG, t, cs_pin);
-}
-
-void setWires(max31865_numwires_t wires , const pin_t cs_pin) {
-  uint8_t t = readRegister8(MAX31856_CONFIG_REG, cs_pin);
-  if (wires == MAX31865_3WIRE) {
-    t |= MAX31856_CONFIG_3WIRE;
-  } else {
-    // 2 or 4 wire
-    t &= ~MAX31856_CONFIG_3WIRE;
-  }
-  writeRegister8(MAX31856_CONFIG_REG, t, cs_pin);
-}*/
 
 void clearFault(const pin_t cs_pin) {
-  uint8_t t = readRegister8(MAX31856_CONFIG_REG, cs_pin);
+  uint8_t t = readRegister8(MAX31865_CONFIG_REG, cs_pin);
   t &= ~0x2C;
-  t |= MAX31856_CONFIG_FAULTSTAT;
-  writeRegister8(MAX31856_CONFIG_REG, t, cs_pin);
+  t |= MAX31865_CONFIG_FAULTSTAT;
+  writeRegister8(MAX31865_CONFIG_REG, t, cs_pin);
 }
 
 uint8_t readFault(const pin_t cs_pin) {
-  return readRegister8(MAX31856_FAULTSTAT_REG, cs_pin);
+  return readRegister8(MAX31865_FAULTSTAT_REG, cs_pin);
 }
 
-bool readRTD (uint16_t &rtd, const pin_t cs_pin) {
+bool readRTD(uint16_t &rtd, const pin_t cs_pin) {
 
-  //uint8_t r0 = readRegister8(MAX31856_CONFIG_REG, cs_pin);
-  rtd = readRegister16(MAX31856_RTDMSB_REG, cs_pin);
+  rtd = readRegister16(MAX31865_RTDMSB_REG, cs_pin);
 
   if ((rtd & 1) != 0)										// if fault bit set
   {
 	  uint8_t f = readFault(cs_pin);
-	  /*Serial.print("R0:");
-	  Serial.println(r0, HEX);
-	  Serial.print("RTD:");
-	  Serial.println(rtd, HEX);
-	  Serial.print("F:");
-	  Serial.println(f, HEX);*/
-	  if (f & 0x04) SERIAL_LMV(WARNING, PSTR("MAX31856 warning - over/undervoltage - "), cs_pin);
-	  else if (f & 0x13) SERIAL_LMV(ER, PSTR("MAX31856 error - open circuit - "), cs_pin);
-	  else if (f & 0x40) SERIAL_LMV(ER,PSTR("MAX31856 error - RDT low resistance - "), cs_pin);
-	  else SERIAL_LMV(ER,PSTR("MAX31856 hardware error - "), cs_pin);
+	  //Serial.print("R0:");
+	  //Serial.println(r0, HEX);
+	  //Serial.print("RTD:");
+	  //Serial.println(rtd, HEX);
+	  //Serial.print("F:");
+	  //Serial.println(f, HEX);
+	  if (f & MAX31865_FAULT_OVUV) SERIAL_LMV(WARNING, PSTR("MAX31865 error - over/undervoltage - "), cs_pin);
+	  else if (f & MAX31865_FAULT_OPEN_CIRCUIT) SERIAL_LMV(ER, PSTR("MAX31865 error - open circuit - "), cs_pin);
+	  else if (f & MAX31865_FAULT_LOWTHRESH) SERIAL_LMV(ER,PSTR("MAX31865 error - RDT low resistance - "), cs_pin);
+	  else SERIAL_LMV(ER,PSTR("MAX31865 hardware error - "), cs_pin);
 	  clearFault(cs_pin);
   }
 
@@ -168,22 +124,11 @@ bool readRTD (uint16_t &rtd, const pin_t cs_pin) {
 
 bool MAX31865::Initialize(max31865_numwires_t wires, const pin_t cs_pin) {
 	HAL::pinMode(cs_pin, OUTPUT_HIGH);
-	//start hardware SPI
-	HAL::spiBegin();
 
+	//Serial.print("config to set: "); Serial.println(DefaultCr0, HEX);
+	writeRegister8(MAX31865_CONFIG_REG, DefaultCr0, cs_pin);
 
-	uint8_t r0 = DefaultCr0;
-	  if (wires == MAX31865_3WIRE) {
-		r0 |= MAX31856_CONFIG_3WIRE;
-	  } else {
-	    // 2 or 4 wire
-		r0 &= ~MAX31856_CONFIG_3WIRE;
-	  }
-
-	  //Serial.print("config to set: "); Serial.println(r0, HEX);
-	  writeRegister8(MAX31856_CONFIG_REG, r0, cs_pin);
-
-	//Serial.print("config after: "); Serial.println(readRegister8(MAX31856_CONFIG_REG, cs_pin), HEX);
+	//Serial.print("config after: "); Serial.println(readRegister8(MAX31865_CONFIG_REG, cs_pin), HEX);
 	return true;
 }
 

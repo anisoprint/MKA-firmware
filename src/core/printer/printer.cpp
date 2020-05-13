@@ -159,10 +159,11 @@ void Printer::setup() {
   #endif
 
   // Init Serial for HOST
-
   Com::setBaudrate();
 
   SERIAL_L(START);
+
+
 
   // Init TMC stepper drivers CS or Serial
   #if ENABLED(HAVE_TMC2130)
@@ -199,6 +200,9 @@ void Printer::setup() {
   #if HAS_SD_SUPPORT
     card.mount();
   #endif
+
+  //configure hardware SPI
+  HAL::spiBegin();
 
   print_job_counter.init();
 

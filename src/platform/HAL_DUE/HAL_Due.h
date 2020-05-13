@@ -416,17 +416,17 @@ class HAL {
       static void spiBegin();
       static void spiInit(uint8_t channel, uint8_t spiRate);
       // Write single byte to SPI
-      static void spiSend(byte b);
-      static void spiSend(const uint8_t* buf, size_t n);
       static void spiSend(uint32_t chan, byte b);
+      // Write bytes from buffer to SPI
       static void spiSend(uint32_t chan ,const uint8_t* buf, size_t n);
+      // Write 512 bytes from buffer to SPI
+      static void spiSendBlock(uint32_t chan, uint8_t token, const uint8_t* buf);
       // Read single byte from SPI
-      static uint8_t spiReceive(void);
       static uint8_t spiReceive(uint32_t chan);
       // Read from SPI into buffer
-      static void spiReadBlock(uint8_t* buf, uint16_t nbyte);
-      // Write from buffer to SPI
-      static void spiSendBlock(uint8_t token, const uint8_t* buf);
+      static void spiReadBlock(uint32_t chan, uint8_t* buf, uint16_t nbyte);
+      static uint8_t spiReceiveBlockByte(uint32_t chan);
+
     #endif
 
 };
