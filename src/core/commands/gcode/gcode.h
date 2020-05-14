@@ -190,6 +190,7 @@
 
 // SDCard Commands
 #include "sdcard/sdcard.h"
+#include "sdcard/m39.h"
 
 // Sensor Commands
 #include "sensor/m70.h"

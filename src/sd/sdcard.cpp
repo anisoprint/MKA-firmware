@@ -27,128 +27,53 @@
 
 #include <ArduinoJson.h>
 
-SDCard card;
-
-/** Public Parameters */
-flagcard_t  SDCard::flag;
-
-SdFat       SDCard::fat;
-SdFile      SDCard::gcode_file,
-            SDCard::root,
-            SDCard::workDir,
-            SDCard::workDirParents[SD_MAX_FOLDER_DEPTH];
-
-int SDCard::autostart_index = -1;
-
-uint32_t  SDCard::fileSize  = 0,
-          SDCard::sdpos     = 0;
-
-float SDCard::objectHeight      = 0.0,
-      SDCard::firstlayerHeight  = 0.0,
-      SDCard::layerHeight       = 0.0,
-      SDCard::filamentNeeded    = 0.0;
-
-char  SDCard::fileName[LONG_FILENAME_LENGTH*SD_MAX_FOLDER_DEPTH+SD_MAX_FOLDER_DEPTH+1],
-      SDCard::tempLongFilename[LONG_FILENAME_LENGTH+1],
-      SDCard::generatedBy[GENBY_SIZE];
-
-PrintFileInfo SDCard::fileInfo;
-
-uint16_t SDCard::fileModifiedDate = 0;
-uint16_t SDCard::fileModifiedTime = 0;
-
-/** Private Parameters */
-uint16_t SDCard::nrFile_index = 0;
-
-#if HAS_EEPROM_SD
-  SdFile SDCard::eeprom_file;
-#endif
-
-uint16_t  SDCard::workDirDepth  = 0,
-          SDCard::nrFiles       = 0;
-
-LsActionEnum SDCard::lsAction   = LS_Count;
-
-// Sort files and folders alphabetically.
-#if ENABLED(SDCARD_SORT_ALPHA)
-  uint16_t SDCard::sort_count = 0;
-  #if ENABLED(SDSORT_GCODE)
-    bool  SDCard::sort_alpha    = true;
-    int   SDCard::sort_folders  = FOLDER_SORTING;
-    //static bool sort_reverse;      // Flag to enable / disable reverse sorting
-  #endif
-
-  // By default the sort index is static
-  #if ENABLED(SDSORT_DYNAMIC_RAM)
-    uint8_t *SDCard::sort_order;
-  #else
-    uint8_t SDCard::sort_order[SDSORT_LIMIT];
-  #endif
-
-  // Cache filenames to speed up SD menus.
-  #if ENABLED(SDSORT_USES_RAM)
-
-    // If using dynamic ram for names, allocate on the heap.
-    #if ENABLED(SDSORT_CACHE_NAMES)
-      #if ENABLED(SDSORT_DYNAMIC_RAM)
-        char **SDCard::sortshort, **SDCard::sortnames;
-      #else
-        char SDCard::sortnames[SDSORT_LIMIT][SORTED_LONGNAME_MAXLEN];
-      #endif
-    #elif DISABLED(SDSORT_USES_STACK)
-      char SDCard::sortnames[SDSORT_LIMIT][SORTED_LONGNAME_MAXLEN];
-    #endif
-
-    // Folder sorting uses an isDir array when caching items.
-    #if HAS_FOLDER_SORTING
-      #if ENABLED(SDSORT_DYNAMIC_RAM)
-        uint8_t *SDCard::isDir;
-      #elif ENABLED(SDSORT_CACHE_NAMES) || DISABLED(SDSORT_USES_STACK)
-        uint8_t SDCard::isDir[(SDSORT_LIMIT + 7) >> 3];
-      #endif
-    #endif
-
-  #endif // SDSORT_USES_RAM
-
-#endif // SDCARD_SORT_ALPHA
-
-#if ENABLED(ADVANCED_SD_COMMAND)
-
-  Sd2Card   SDCard::sd;
-
-  uint32_t  SDCard::cardSizeBlocks,
-            SDCard::cardCapacityMB;
-
-  // Cache for SD block
-  cache_t   SDCard::cache;
-
-  // MBR information
-  uint8_t   SDCard::partType;
-  uint32_t  SDCard::relSector,
-            SDCard::partSize;
-
-  // Fake disk geometry
-  uint8_t   SDCard::numberOfHeads,
-            SDCard::sectorsPerTrack;
-
-  // FAT parameters
-  uint16_t  SDCard::reservedSectors;
-  uint8_t   SDCard::sectorsPerCluster;
-  uint32_t  SDCard::fatStart,
-            SDCard::fatSize,
-            SDCard::dataStart;
-
-#endif
 
 /** Public Function */
+void SDCard::init(uint8_t pin, uint8_t spi_divisor) {
+	csPin = pin;
+	spiDivisor = spi_divisor;
+
+	autostart_index = -1;
+
+	fileSize = 0;
+	sdpos = 0;
+
+	objectHeight = 0.0;
+	firstlayerHeight = 0.0;
+	layerHeight = 0.0;
+	filamentNeeded = 0.0;
+
+	fileModifiedDate = 0;
+	fileModifiedTime = 0;
+
+	nrFile_index = 0;
+
+	workDirDepth  = 0;
+	nrFiles       = 0;
+
+	lsAction   = LS_Count;
+
+	// Sort files and folders alphabetically.
+	#if ENABLED(SDCARD_SORT_ALPHA)
+	  sort_count = 0;
+	  #if ENABLED(SDSORT_GCODE)
+	    sort_alpha    = true;
+	    sort_folders  = FOLDER_SORTING;
+	  #endif
+	#endif // SDCARD_SORT_ALPHA
+
+	prev_sd_status = 2; // UNKNOWN
+}
+
+
 void SDCard::mount() {
 
   if (isMounted()) unmount();
 
   if (root.isOpen()) root.close();
 
-  if (!fat.begin(SS_PIN, SD_SPI_SPEED)
-    #if ENABLED(LCD_SDSS) && (LCD_SDSS != SS_PIN)
+  if (!fat.begin(csPin, SD_SCK_DIVISOR(spiDivisor))
+    #if ENABLED(LCD_SDSS) && (LCD_SDSS != csPin)
       && !fat.begin(LCD_SDSS, SPI_SPEED)
     #endif
   ) {
@@ -205,8 +130,6 @@ void SDCard::ls() {
 }
 
 void SDCard::manage_sd() {
-
-  static uint8_t prev_sd_status = 2; // UNKNOWN
 
   uint8_t sd_status = uint8_t(IS_SD_INSERTED());
 
@@ -937,7 +860,7 @@ void SDCard::lsRecursive(FatFile *dir, uint8_t level/*=0*/) {
         SERIAL_TXT(fileName);
         SERIAL_CHR('/');
       }
-      SERIAL_TXT(card.tempLongFilename);
+      SERIAL_TXT(tempLongFilename);
       SERIAL_CHR('/');
       SERIAL_EOL();
 
@@ -1393,6 +1316,7 @@ int16_t SDCard::getFileModifyTime(SdFile& file) {
 	}
 	return dir.lastWriteTime;
 }
+
 
 #if ENABLED(ADVANCED_SD_COMMAND)
 

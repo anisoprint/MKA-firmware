@@ -37,6 +37,7 @@ Codes marked with * are specific for Composer MKA firmware (of their meaning dif
 |  M31 | SDCARD | Output time since last M109 or SD card start to serial
 |  M32 | SDCARD | Make directory
 |  M35 | NEXTION | Upload Firmware to Nextion from SD
+|  M39* | SDCARD | Sets SD card SPI CS pin P[slot] U[pin]
 |  M42 | - | Change pin status via gcode Use M42 Px Sy to set pin x to value y, when omitting Px the onboard led will be used.
 |  M44 | - | Codes debug - report codes available (and how many of them there are) I - G-code list J - M-code list
 |  M75 | - | Start the print job timer
@@ -99,6 +100,7 @@ Codes marked with * are specific for Composer MKA firmware (of their meaning dif
 | M501 | - | Reads parameters from EEPROM (if you need reset them after you changed them temporarily).
 | M502 | - | Reverts to the hardcoded settings values.
 | M503* | - | Print the current settings (from memory not from EEPROM) S - print system settings, U - print user settings, V - print only version, R - print only CRC, C - print clean g-code
+| M524 | - | Cancel SD print
 | M530 | - | Enables explicit printing mode (S1) or disables it (S0). L can set layer count
 | M531 | - | Filename - Define filename being printed
 | M532 | - | X[percent] L[curLayer] - update current print state progress (X=0..100) and layer L

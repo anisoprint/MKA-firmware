@@ -1119,6 +1119,8 @@
  ****************************************************************************************/
 #define SDSUPPORT
 
+#define SD_SECOND_CARD
+
 // Advanced command M39
 // Info and formatting SD card
 // This requires more PROGMEM
@@ -1127,12 +1129,16 @@
 //
 // SD CARD: SPI SPEED
 //
-// Enable one of the following items for a slower SPI transfer speed.
-// This may be required to resolve "volume init" errors.
-//#define SD_HALF_SPEED
-//#define SD_QUARTER_SPEED
-#define SD_EIGHTH_SPEED
-//#define SD_SIXTEENTH_SPEED
+// Set divisor for a SPI transfer speed.
+// SPI frequency is calculated as F_CPU / DIVISOR
+// F_CPU is CPU frequency
+// For example on Due (SAM3X8E):
+// DIVISOR=16 => SPI_FREQUENCY=5.25 MHz
+// DIVISOR=21 => SPI_FREQUENCY=4.0 MHz
+// DIVISOR=32 => SPI_FREQUENCY=2.625 MHz
+// Setting larger divisor may be required to resolve "volume init" errors.
+#define SD0_SPEED_DIVISOR 16
+#define SD1_SPEED_DIVISOR 16
 
 //
 // SD CARD: ENABLE CRC

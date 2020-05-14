@@ -183,6 +183,7 @@ typedef int8_t    pin_t;
 
 // SD modules
 #include "src/sd/sdcard.h"
+#include "src/sd/sdstorage.h"
 
 // Utility modules
 #include "src/utility/utility.h"

@@ -163,7 +163,7 @@ void Printer::setup() {
 
   SERIAL_L(START);
 
-
+  sdStorage.init();
 
   // Init TMC stepper drivers CS or Serial
   #if ENABLED(HAVE_TMC2130)
@@ -199,6 +199,7 @@ void Printer::setup() {
 
   #if HAS_SD_SUPPORT
     card.mount();
+    card2.mount();
   #endif
 
   //configure hardware SPI
@@ -1037,13 +1038,25 @@ void Printer::setup_pinout() {
 
   #endif
 
+  #if PIN_EXISTS(SS)
+	OUT_WRITE(SS_PIN, HIGH);
+  #endif
+
+  #if PIN_EXISTS(SD0_SS)
+	OUT_WRITE(SD0_SS_PIN, HIGH);
+  #endif
+
+  #if PIN_EXISTS(SD1_SS)
+	OUT_WRITE(SD1_SS_PIN, HIGH);
+  #endif
+
+  #if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
+	 SET_INPUT_PULLUP(SD_DETECT_PIN);
+  #endif
+
 	#if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
 	  SET_INPUT_PULLUP(SD_DETECT_PIN);
 	#endif
-
-  #if PIN_EXISTS(SS)
-    OUT_WRITE(SS_PIN, HIGH);
-  #endif
 
   #if HAS_MAX6675_SS
     OUT_WRITE(MAX6675_SS_PIN, HIGH);
