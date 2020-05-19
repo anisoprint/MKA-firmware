@@ -28,7 +28,7 @@
 
 #if HAS_SD_SUPPORT
 
-  #define CODE_M39
+  //#define CODE_M39
 
   /**
    * M39: List SD card to serial output
@@ -39,13 +39,7 @@
    *
    */
   inline void gcode_M39(void) {
-
-	  uint8_t sd_index = 0;
-	  if (parser.seen('P'))
-      {
-		sd_index = parser.value_byte();
-
-      }
+    //Not implemented
   }
 
 
