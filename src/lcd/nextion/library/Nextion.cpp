@@ -481,9 +481,9 @@
       NexUpload(file_name.c_str(), upload_baudrate);
     }
 
-    void NexUpload::startUpload(void) {
-      if (!_checkFile()) {
-        SERIAL_LM(ER, "The file is error");
+    void NexUpload::startUpload(uint8_t sd_slot) {
+      if (!_checkFile(sd_slot)) {
+        SERIAL_LM(ER, "firmware file error");
         return;
       }
       if (_getBaudrate() == 0) {
@@ -538,10 +538,10 @@
       return _baudrate;
     }
 
-    bool NexUpload::_checkFile(void) {
+    bool NexUpload::_checkFile(uint8_t sd_slot) {
       SERIAL_EMT("Start checkFile ", _file_name);
-      card.setroot();
-      if (!nextion_file.open(&card.workDir, _file_name, O_READ)) {
+      sdStorage.cards[sd_slot].setroot();
+      if (!nextion_file.open(&sdStorage.cards[sd_slot].workDir, _file_name, O_READ)) {
         SERIAL_LM(ER, "file is not exit");
         return false;
       }

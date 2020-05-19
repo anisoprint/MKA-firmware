@@ -1121,11 +1121,38 @@
  *************************************** SDCARD *******************************************
  ****************************************************************************************/
 #define SDSUPPORT
-//#define DEBUG_SD_ERROR
-//#define SDSLOW              // Use slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
-//#define SDEXTRASLOW         // Use even slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
-//#define SD_CHECK_AND_RETRY  // Use CRC checks and retries on the SD communication
-//#define SD_EXTENDED_DIR     // Show extended directory including file length. Don't use this with Pronterface
+
+#define SD_SECOND_CARD
+
+// Advanced command M39
+// Info and formatting SD card
+// This requires more PROGMEM
+//#define ADVANCED_SD_COMMAND
+
+//
+// SD CARD: SPI SPEED
+//
+// Set divisor for a SPI transfer speed.
+// SPI frequency is calculated as F_CPU / DIVISOR
+// F_CPU is CPU frequency
+// For example on Due (SAM3X8E):
+// DIVISOR=16 => SPI_FREQUENCY=5.25 MHz
+// DIVISOR=21 => SPI_FREQUENCY=4.0 MHz
+// DIVISOR=32 => SPI_FREQUENCY=2.625 MHz
+// Setting larger divisor may be required to resolve "volume init" errors.
+#define SD0_SPEED_DIVISOR 21
+#define SD1_SPEED_DIVISOR 8
+
+//
+// SD CARD: ENABLE CRC
+//
+// Use CRC checks and retries on the SD communication.
+//#define SD_CHECK_AND_RETRY
+
+//
+// Show extended directory including file length.
+// Don't use this with Pronterface
+//#define SD_EXTENDED_DIR
 
 // Decomment this if you have external SD without DETECT_PIN
 #define SD_DISABLED_DETECT

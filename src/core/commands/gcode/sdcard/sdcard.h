@@ -46,8 +46,11 @@
    * M20: List SD card to serial output
    */
   inline void gcode_M20(void) {
+    int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+    if (!commands.get_target_sdcard(s)) return;
+
     SERIAL_EM(MSG_BEGIN_FILE_LIST);
-    card.ls();
+    sdStorage.cards[s].ls();
     SERIAL_EM(MSG_END_FILE_LIST);
   }
 
@@ -55,34 +58,42 @@
    * M21: Init SD Card
    */
   inline void gcode_M21(void) {
+    int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+    if (!commands.get_target_sdcard(s)) return;
 
-	sdStorage.cards[]
-    card.mount();
+    sdStorage.cards[s].mount();
   }
 
   /**
    * M22: Release SD Card
    */
   inline void gcode_M22(void) {
-    card.unmount();
+    int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+	  if (!commands.get_target_sdcard(s)) return;
+
+	  sdStorage.cards[s].unmount();
   }
 
   /**
    * M23: Select a file
    */
   inline void gcode_M23(void) {
-    // Simplify3D includes the size, so zero out all spaces (#7227)
-    // Questa funzione blocca il nome al primo spazio quindi file con spazio nei nomi non funziona da rivedere
-    //for (char *fn = parser.string_arg; *fn; ++fn) if (*fn == ' ') *fn = '\0';
-    card.selectFile(parser.string_arg);
+    int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+    if (!commands.get_target_sdcard(s)) return;
+
+    sdStorage.cards[s].selectFile(parser.string_arg);
   }
 
   /**
    * M24: Start or Resume SD Print
    */
   inline void gcode_M24(void) {
+
+    int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+    if (!commands.get_target_sdcard(s)) return;
+
     #if HAS_SD_RESTART
-      card.delete_restart_file();
+      sdStorage.cards[s].delete_restart_file();
     #endif
 
     #if ENABLED(PARK_HEAD_ON_PAUSE) && ENABLED(ADVANCED_PAUSE_FEATURE)
@@ -94,32 +105,13 @@
     	  PrintPause::ResumePrint();
       else if (PrintPause::Status==NotPaused)
       {
-    		Printer::currentLayer  = 0,
-    		Printer::maxLayer = -1;
-
-    	    card.startFilePrint();
-    	    print_job_counter.start();
-
-    	    StatePrinting::Activate();
+    		sdStorage.startSelectedFilePrint(s);
       }
 	#else
-      Printer::currentLayer  = 0,
-      Printer::maxLayer = -1;
-
-      card.startFileprint();
-      print_job_counter.start();
-
-		#if ENABLED(NEXTION_HMI)
-		  StatePrinting::Activate();
-		#endif
+      sdStorage.startSelectedFilePrint(s);
 	#endif
 
 
-
-
-    #if HAS_POWER_CONSUMPTION_SENSOR
-      powerManager.startpower = powerManager.consumption_hour;
-    #endif
   }
 
   /**
@@ -130,7 +122,7 @@
 	#if ENABLED(NEXTION_HMI)
 	  PrintPause::PausePrint();
 	#else
-	    card.pauseSDPrint();
+	    sdStorage.pauseSDPrint();
 	    print_job_counter.pause();
 	    SERIAL_STR(PAUSE);
 	    SERIAL_EOL();
@@ -147,8 +139,12 @@
    * M26: Set SD Card file index
    */
   inline void gcode_M26(void) {
-    if (card.isMounted() && parser.seen('S'))
-      card.setIndex(parser.value_long());
+    int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+    if (!commands.get_target_sdcard(s)) return;
+
+    if (sdStorage.cards[s].isMounted() && parser.seen('S')) {
+      sdStorage.cards[s].setIndex(parser.value_long());
+    }
   }
 
   /**
@@ -157,32 +153,45 @@
    *      OR, with 'C' get the current filename.
    */
   inline void gcode_M27() {
+    int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+    if (!commands.get_target_sdcard(s)) return;
+
     if (parser.seen('C'))
-      SERIAL_EMT("Current file: ", card.fileName);
+      SERIAL_EMT("Current file: ", sdStorage.cards[s].fileName);
     else if (parser.seenval('S'))
-      card.setAutoreport(parser.value_bool());
+      sdStorage.cards[s].setAutoreport(parser.value_bool());
     else
-      card.print_status();
+      sdStorage.cards[s].print_status();
   }
 
   /**
    * M28: Start SD Write
    */
-  inline void gcode_M28(void) { card.startWrite(parser.string_arg, false); }
+  inline void gcode_M28(void) {
+    int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+    if (!commands.get_target_sdcard(s)) return;
+
+    sdStorage.startSaving(s, parser.string_arg, false);
+  }
 
   /**
    * M29: Stop SD Write
    * Processed in write to file routine above
    */
-  inline void gcode_M29(void) { card.setSaving(false); }
+  inline void gcode_M29(void) {
+    sdStorage.finishSaving();
+  }
 
   /**
    * M30 <filename>: Delete SD Card file
    */
   inline void gcode_M30(void) {
-    if (card.isMounted()) {
-      card.closeFile();
-      card.deleteFile(parser.string_arg);
+    int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+    if (!commands.get_target_sdcard(s)) return;
+
+    if (sdStorage.cards[s].isMounted()) {
+      sdStorage.cards[s].closeFile();
+      sdStorage.cards[s].deleteFile(parser.string_arg);
     }
   }
 
@@ -190,34 +199,17 @@
    * M32: Select file and start SD print
    */
   inline void gcode_M32(void) {
-    if (IS_SD_PRINTING()) stepper.synchronize();
 
-    if (card.isMounted()) {
-      card.closeFile();
+    int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+    if (!commands.get_target_sdcard(s)) return;
 
-      char* namestartpos = parser.string_arg ; // default name position
+    int32_t index = parser.seen('S') ? parser.value_long() : -1; // selected sd card
 
-      SERIAL_MV("Open file: ", namestartpos);
-      SERIAL_EM(" and start print.");
-      card.selectFile(namestartpos);
-      if (parser.seenval('S')) card.setIndex(parser.value_long());
+    char* namestartpos = parser.string_arg ; // default name position
 
-      mechanics.feedrate_mm_s       = 20.0; // 20 units/sec
 
-      Printer::currentLayer  = 0,
-      Printer::maxLayer = -1;
+    sdStorage.openAndPrintFile(s, namestartpos, index);
 
-      card.startFilePrint();
-      print_job_counter.start();
-
-	  #if ENABLED(NEXTION_HMI)
-		StatePrinting::Activate();
-	  #endif
-
-      #if HAS_POWER_CONSUMPTION_SENSOR
-        powerManager.startpower = powerManager.consumption_hour;
-      #endif
-    }
   }
 
 
@@ -226,7 +218,9 @@
  * M524: Abort the current SD print job (started with M24)
  */
 inline void gcode_M524() {
-  if (IS_SD_PRINTING()) card.setAbortSDprinting(true);
+  if (IS_SD_PRINTING()) {
+    sdStorage.setAbortSDprinting(true);
+  }
 }
 
   #if ENABLED(SDCARD_SORT_ALPHA) && ENABLED(SDSORT_GCODE)
@@ -237,10 +231,13 @@ inline void gcode_M524() {
      * M34: Set SD Card Sorting Options
      */
     inline void gcode_M34(void) {
-      if (parser.seen('S')) card.setSortOn(parser.value_bool());
+      int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+      if (!commands.get_target_sdcard(s)) return;
+
+      if (parser.seen('S')) sdStorage.cards[s].setSortOn(parser.value_bool());
       if (parser.seenval('F')) {
         const int v = parser.value_long();
-        card.setSortFolders(v < 0 ? -1 : v > 0 ? 1 : 0);
+        sdStorage.cards[s].setSortFolders(v < 0 ? -1 : v > 0 ? 1 : 0);
       }
       //if (parser.seen('R')) card.setSortReverse(parser.value_bool());
     }

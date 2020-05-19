@@ -107,13 +107,12 @@ namespace {
 
 	void Files_PopulateFileList(uint32_t number) {
 
-	    uint16_t fileCnt = card.getnrfilenames();
+	    uint16_t fileCnt = sdStorage.cards[NextionHMI::pageData].getnrfilenames();
 	    uint32_t i = number;
-	    card.getWorkDirName();
+	    sdStorage.cards[NextionHMI::pageData].getWorkDirName();
 	    uint8_t start_row = 0;
-		  //serial_print(card.fileName);
-		  //serial_print("\n>>>>>>>>>>>>\n");
-	    if (card.fileName[0] != '/') {
+
+	    if (sdStorage.cards[NextionHMI::pageData].fileName[0] != '/') {
 	    	_tFName0.setText("..");
 	    	_tFIcon0.setPic(NEX_ICON_FILE_BACK);
 	    	_tFName0.attachPush(StateFiles::FFolderUp_Push);
@@ -128,11 +127,11 @@ namespace {
 	    for (uint8_t row = start_row; row < 7; row++) {
 	      if (i < fileCnt) {
 			#if ENABLED(SDCARD_SORT_ALPHA)
-			  card.getfilename_sorted(i);
+	        sdStorage.cards[NextionHMI::pageData].getfilename_sorted(i);
 			#else
 			  card.getfilename(i);
 			#endif
-	        Files_PopulateFileRow(row, card.isFilenameIsDir(), card.fileName);
+	        Files_PopulateFileRow(row, sdStorage.cards[NextionHMI::pageData].isFilenameIsDir(), sdStorage.cards[NextionHMI::pageData].fileName);
 
 	      }
 	      else
@@ -165,7 +164,7 @@ void StateFiles::FUp_Push(void* ptr) {
 }
 
 void StateFiles::FDown_Push(void* ptr) {
-    uint16_t fileCnt = card.getnrfilenames();
+    uint16_t fileCnt = sdStorage.cards[NextionHMI::pageData].getnrfilenames();
     if ((_listPosition + (_insideDir ? 6 : 7)) <fileCnt)
     {
     	_listPosition += _insideDir ? 6 : 7;
@@ -196,18 +195,15 @@ void StateFiles::FFile_Push(void* ptr) {
     	return;
 	}
 
-    if (card.isFileOpen()) card.closeFile();
-    card.selectFile(NextionHMI::buffer);
-    StateFileinfo::Activate();
-
-
+    if (sdStorage.cards[NextionHMI::pageData].isFileOpen()) sdStorage.cards[NextionHMI::pageData].closeFile();
+    sdStorage.cards[NextionHMI::pageData].selectFile(NextionHMI::buffer);
+    StateFileinfo::Activate(NextionHMI::pageData);
 
 }
 
 void StateFiles::FFolder_Push(void* ptr) {
     ZERO(NextionHMI::buffer);
-//	  serial_print(ptr);
-//	  serial_print("\n+++\n");
+
     if (ptr == &_tFName0)
     	_tFName0.getText(NextionHMI::buffer, sizeof(NextionHMI::buffer));
     else if (ptr == &_tFName1)
@@ -230,14 +226,14 @@ void StateFiles::FFolder_Push(void* ptr) {
 	}
 
 	_tLoading.SetVisibility(true);
-    card.chdir(NextionHMI::buffer);
+	sdStorage.cards[NextionHMI::pageData].chdir(NextionHMI::buffer);
     _listPosition = 0;
     Files_PopulateFileList(_listPosition);
 	_tLoading.SetVisibility(false);
 }
 
 void StateFiles::FFolderUp_Push(void* ptr) {
-	card.updir();
+  sdStorage.cards[NextionHMI::pageData].updir();
 	_listPosition = 0;
 	_tLoading.SetVisibility(true);
     Files_PopulateFileList(_listPosition);
@@ -254,14 +250,14 @@ void StateFiles::Init() {
 	_bFDown.attachPush(FDown_Push);
 }
 
-void StateFiles::Activate() {
+void StateFiles::Activate(uint8_t sd_slot) {
     _listPosition = 0;
     _insideDir = false;
-    //StateMessage::ActivatePGM(0, NEX_ICON_FILES, PSTR(MSG_READING_SD), PSTR(MSG_READING_SD), 0, "", 0, "", 0, 0);
     NextionHMI::ActivateState(PAGE_FILES);
     _page.show();
-    card.mount();
-    if (card.isMounted())
+    NextionHMI::pageData = sd_slot;
+    sdStorage.cards[NextionHMI::pageData].mount();
+    if (sdStorage.cards[NextionHMI::pageData].isMounted())
     {
 	  Files_PopulateFileList(_listPosition);
 	  _tLoading.SetVisibility(false);
@@ -269,13 +265,7 @@ void StateFiles::Activate() {
     else
     {
         StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_ERROR), PSTR(MSG_NO_SD), 1, PSTR(MSG_BACK), FilesCancel_Push, "", 0, 0);
-
-      //if (!card.cardOK)
-    	  //StateStatus::Activate();
-      //else
-    	//  Files_PopulateFileList(_listPosition);
     }
-	//NextionHMI::headerText.setTextPGM(PSTR(WELCOME_MSG));
 }
 
 void StateFiles::TouchUpdate() {

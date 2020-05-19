@@ -56,7 +56,7 @@ void StateStatus::Temperature_Push(void* ptr) {
 }
 
 void StateStatus::Print_Push(void* ptr) {
-	StateFiles::Activate();
+	StateFiles::Activate(0);
 }
 
 void StateStatus::Maintenance_Push(void* ptr) {

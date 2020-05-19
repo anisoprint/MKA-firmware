@@ -68,14 +68,13 @@ namespace {
 void StatePrinting::Pause_Push(void* ptr) {
     UNUSED(ptr);
 
-    if (card.isMounted() && card.isFileOpen()) {
+    if (sdStorage.isPrinting() || sdStorage.isPaused()) {
 
     	const float retract = PrintPause::RetractDistance;
 
     	switch (PrintPause::Status)
     	{
 			case NotPaused:
-				//commands.enqueue_now_P(PSTR("M125"));
 				PrintPause::PausePrint();
 				break;
 			case WaitingToPause:
@@ -153,11 +152,11 @@ void StatePrinting::Activate() {
 	NextionHMI::ActivateState(PAGE_PRINTING);
 	_page.show();
 
-	_tFileName.setText(card.fileName);
+	_tFileName.setText(sdStorage.getActivePrintSDCard()->fileName);
 	const char* auraString = PSTR("Aura");
 	_previousProgress = -1;
 	_previousLayer = -1;
-	if (strstr_P(card.generatedBy, auraString) != NULL)
+	if (strstr_P(sdStorage.getActivePrintSDCard()->generatedBy, auraString) != NULL)
 	{
 		_pFileIcon.setPic(NEX_ICON_FILE_GCODE_AURA);
 	}
@@ -288,10 +287,12 @@ void StatePrinting::Control_Push(void* ptr) {
 }
 
 void StatePrinting::DoneMessage_Again(void* ptr) {
-	String filename = String(card.fileName);
-	card.selectFile(filename.c_str());
-    commands.inject_rear_P(PSTR("M24"));
-	StatePrinting::Activate();
+  int8_t cardIndex = sdStorage.getCompletedPrintSD();
+  if (cardIndex==-1) return;
+	String filename = String(sdStorage.cards[cardIndex].fileName);
+	sdStorage.cards[cardIndex].selectFile(filename.c_str());
+	sdStorage.startSelectedFilePrint(cardIndex);
+
 }
 
 #endif

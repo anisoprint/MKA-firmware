@@ -398,7 +398,7 @@ class NexObject {
       /**
        * start upload.
        */
-      void startUpload(void);
+      void startUpload(uint8_t sd_slot);
 
       /**
        * start upload from serial.
@@ -420,7 +420,7 @@ class NexObject {
        *
        * @return true if success, false for failure.
        */
-      bool _checkFile(void);
+      bool _checkFile(uint8_t sd_slot);
 
       /**
        * search communicate baudrate.

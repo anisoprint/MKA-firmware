@@ -180,6 +180,10 @@
 
 //================================= FEATURE ==================================
 
+//###SD
+#define SD0_SS_PIN 			  SDSS
+#define SD1_SS_PIN 			  62
+
 //###SERVO
 #define SERVO0_PIN            ORIG_SERVO1_PIN
 #define SERVO1_PIN            ORIG_SERVO0_PIN

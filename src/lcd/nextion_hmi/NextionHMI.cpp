@@ -184,9 +184,9 @@ void NextionHMI::ShowState(uint8_t state_id) {
 		         break;
 		    case PAGE_TEMPERATURE : StateStatus::Activate();
 		         break;
-		    case PAGE_FILES : StateFiles::Activate();
+		    case PAGE_FILES : ShowState(_rootState);
 		         break;
-		    case PAGE_FILEINFO : StateFileinfo::Activate();
+		    case PAGE_FILEINFO : ShowState(_rootState);
 		         break;
 		    case PAGE_PRINTING : StatePrinting::Activate();
 		         break;
@@ -283,9 +283,9 @@ void NextionHMI::WaitOk_Push(void* ptr) {
     StateMessage::ReturnToLastState(ptr);
 }
 
-void NextionHMI::UploadFirmwareFromSD() {
-  if (IS_SD_INSERTED() || card.isMounted()) {
-    Firmware.startUpload();
+void NextionHMI::UploadFirmwareFromSD(uint8_t sd_slot) {
+  if (sdStorage.isSdInserted(sd_slot) && sdStorage.cards[sd_slot].isMounted()) {
+    Firmware.startUpload(sd_slot);
     nexSerial.end();
     Init();
 	SetBrightness(lcdBrightness);

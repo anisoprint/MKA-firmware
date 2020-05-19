@@ -197,9 +197,9 @@ void Printer::setup() {
   SERIAL_SMV(ECHO, MSG_FREE_MEMORY, HAL::getFreeRam());
   SERIAL_EMV(MSG_PLANNER_BUFFER_BYTES, (int)sizeof(block_t)*BLOCK_BUFFER_SIZE);
 
+
   #if HAS_SD_SUPPORT
-    card.mount();
-    card2.mount();
+    sdStorage.mountAll();
   #endif
 
   //configure hardware SPI
@@ -353,8 +353,8 @@ void Printer::loop() {
 
   #if HAS_SD_SUPPORT
 
-    if (card.isAbortSDprinting()) {
-    	card.setAbortSDprinting(false);
+    if (sdStorage.isAbortSDprinting()) {
+      sdStorage.setAbortSDprinting(false);
 
 	  #if ENABLED(NEXTION_HMI)
     	  PrintPause::Status = Resuming; //to prevent pausing
@@ -367,7 +367,7 @@ void Printer::loop() {
       #endif
 
       // Stop SD printing
-      card.endFilePrint();
+      sdStorage.endFilePrint();
 
       // Clear all command in quee
       commands.clear_queue();
@@ -445,7 +445,7 @@ void Printer::check_periodical_actions() {
         SERIAL_EOL();
       }
       #if HAS_SD_SUPPORT
-        if (card.isAutoreport()) card.print_status();
+        sdStorage.processAutoreport();
       #endif
       #if ENABLED(NEXTION)
         nextion_draw_update();

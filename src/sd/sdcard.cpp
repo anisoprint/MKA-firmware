@@ -29,9 +29,10 @@
 
 
 /** Public Function */
-void SDCard::init(uint8_t pin, uint8_t spi_divisor) {
+void SDCard::init(uint8_t pin, uint8_t spi_divisor, int8_t detect_pin) {
 	csPin = pin;
 	spiDivisor = spi_divisor;
+	detectPin = detect_pin;
 
 	autostart_index = -1;
 
@@ -108,7 +109,7 @@ void SDCard::mount() {
   fat.chdir();
   root.openRoot(fat.vol());
   setroot();
-  flag.WorkdirIsRoot = true;
+  flags.WorkdirIsRoot = true;
 
   #if HAS_EEPROM_SD
     import_eeprom();
@@ -131,7 +132,7 @@ void SDCard::ls() {
 
 void SDCard::manage_sd() {
 
-  uint8_t sd_status = uint8_t(IS_SD_INSERTED());
+  uint8_t sd_status = uint8_t(isInserted());
 
   if (sd_status != prev_sd_status && lcd_detected()) {
 
@@ -201,14 +202,6 @@ void SDCard::getAbsFilename(char * name) {
 
 }
 
-void SDCard::openAndPrintFile(const char * const path) {
-  char cmd[4 + strlen(path) + 1]; // Room for "M23 ", fileName, and null
-  sprintf_P(cmd, PSTR("M23 %s"), path);
-  for (char *c = &cmd[4]; *c; c++) *c = tolower(*c);
-  commands.enqueue_one_now(cmd);
-  commands.enqueue_now_P(PSTR("M24"));
-}
-
 void SDCard::startFilePrint() {
   if (isMounted()) {
     setPrinting(true);
@@ -255,24 +248,22 @@ void SDCard::print_status() {
     SERIAL_EM(MSG_SD_NOT_PRINTING);
 }
 
-void SDCard::startWrite(const char * const path, const bool silent/*=false*/) {
-  if (!isMounted()) return;
+bool SDCard::startWrite(const char * const path, const bool silent/*=false*/) {
+  if (!isMounted()) return false;
 
   fat.chdir();
   if (gcode_file.open(path, FILE_WRITE)) {
-    setSaving(true);
     #if ENABLED(EMERGENCY_PARSER)
       emergency_parser.disable();
     #endif
     if (!silent) {
       SERIAL_EMT(MSG_SD_WRITE_TO_FILE, path);
-	  #if ENABLED(NEXTION_HMI)
-		NextionHMI::RaiseEvent(HMIevent::SD_ERROR, 0, MSG_SD_OPEN_FILE_FAIL);
-	  #endif
       lcd_setstatus(path);
     }
+    return true;
   }
   else openFailed(path);
+  return false;
 }
 
 void SDCard::deleteFile(const char * const path) {
@@ -298,7 +289,6 @@ void SDCard::deleteFile(const char * const path) {
 void SDCard::finishWrite() {
   gcode_file.sync();
   gcode_file.close();
-  setSaving(false);
   SERIAL_EM(MSG_SD_FILE_SAVED);
 }
 
@@ -317,7 +307,7 @@ void SDCard::makeDirectory(const char * const path) {
 void SDCard::closeFile() {
   gcode_file.sync();
   gcode_file.close();
-  setSaving(false);
+
   #if ENABLED(EMERGENCY_PARSER)
     emergency_parser.enable();
   #endif
@@ -332,7 +322,7 @@ void SDCard::fileHasFinished() {
 	  ZERO(fileName);
 	  strncpy(fileName, filename.c_str(), strlen(filename.c_str()));
   #endif
-  flag.PrintComplete = true;
+  flags.PrintComplete = true;
 }
 
 void SDCard::chdir(const char * const relpath) {
@@ -344,7 +334,7 @@ void SDCard::chdir(const char * const relpath) {
   }
   else {
     workDir = newDir;
-    flag.WorkdirIsRoot = false;
+    flags.WorkdirIsRoot = false;
     if (workDirDepth < SD_MAX_FOLDER_DEPTH)
       workDirParents[workDirDepth++] = workDir;
     #if ENABLED(SDCARD_SORT_ALPHA)
@@ -388,7 +378,7 @@ void SDCard::checkautostart() {
 
 void SDCard::setroot() {
   workDir = root;
-  flag.WorkdirIsRoot = true;
+  flags.WorkdirIsRoot = true;
   #if ENABLED(SDCARD_SORT_ALPHA)
     presort();
   #endif
@@ -459,7 +449,7 @@ int8_t SDCard::updir() {
       presort();
     #endif
   }
-  if (!workDirDepth) flag.WorkdirIsRoot = true;
+  if (!workDirDepth) flags.WorkdirIsRoot = true;
   return workDirDepth;
 }
 

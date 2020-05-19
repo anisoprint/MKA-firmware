@@ -69,7 +69,7 @@ bool PrintPause::PausePrint() {
         // Pause the print job
         #if HAS_SD_SUPPORT
           if (IS_SD_PRINTING()) {
-            card.pauseSDPrint();
+            sdStorage.pauseSDPrint();
             SdPrintingPaused = true;
           }
         #endif
@@ -103,13 +103,13 @@ bool PrintPause::PausePrint() {
     if (Status!=Pausing) return false; // incorrect state
 
     // Wait for synchronize steppers
-    while ((planner.has_blocks_queued() || stepper.cleaning_buffer_counter) && !card.isAbortSDprinting()) {
+    while ((planner.has_blocks_queued() || stepper.cleaning_buffer_counter) && !sdStorage.isAbortSDprinting()) {
       printer.idle();
       printer.keepalive(InProcess);
     }
 
     // Handle cancel
-    if (card.isAbortSDprinting()) return false;
+    if (sdStorage.isAbortSDprinting()) return false;
 
     // Save current position
     COPY_ARRAY(resume_position, mechanics.current_position);
@@ -140,7 +140,7 @@ bool PrintPause::PausePrint() {
     Nozzle::park(2, park_point);
 
     // Handle cancel
-    if (card.isAbortSDprinting()) return false;
+    if (sdStorage.isAbortSDprinting()) return false;
 
     // Start the heater idle timers
     const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT) * 1000UL;
@@ -157,14 +157,6 @@ bool PrintPause::PausePrint() {
     // Indicate that the printer is paused
     Status = Paused;
     NextionHMI::RaiseEvent(PRINT_PAUSED);
-
-//    printer.keepalive(PausedforUser);
-//    printer.setWaitForUser(true);
-//    while (printer.isWaitForUser() && Status==Paused) {
-//    	printer.idle(true);
-//    }
-//
-//    printer.keepalive(InHandler);
 
     return true;
 }
@@ -256,8 +248,8 @@ void PrintPause::ResumePrint(const float& purge_length) {
    SERIAL_EOL();
 
    #if HAS_SD_SUPPORT
-     if (SdPrintingPaused) {
-       card.startFilePrint();
+     if (SdPrintingPaused && sdStorage.isPaused()) {
+       sdStorage.resumeSDPrint();
        SdPrintingPaused=false;
      }
    #endif
@@ -266,6 +258,10 @@ void PrintPause::ResumePrint(const float& purge_length) {
    printer.setWaitForUser(false);
    NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMED);
    print_job_counter.start();
+
+   #if HAS_POWER_CONSUMPTION_SENSOR
+     powerManager.startpower = powerManager.consumption_hour;
+   #endif
 
 }
 

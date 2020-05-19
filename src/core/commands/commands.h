@@ -175,6 +175,11 @@ class Commands {
      */
     static bool get_target_heater(int8_t &h);
 
+    /**
+     * Returns TRUE if the target is valid
+     */
+    static bool get_target_sdcard(int8_t s);
+
     #if HAS_FANS
       /**
        * Set target fan from the P parameter

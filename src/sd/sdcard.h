@@ -31,20 +31,14 @@
 
 #define SD_SCK_DIVISOR(divisor) SPISettings(F_CPU/divisor, MSBFIRST, SPI_MODE0)
 
-union flagcard_t {
-  uint8_t all;
-  struct {
-    bool  Mounted         : 1;
-    bool  Saving          : 1;
-    bool  Printing        : 1;
-    bool  PrintComplete   : 1;
-    bool  Autoreport      : 1;
-    bool  Abortprinting   : 1;
-    bool  FilenameIsDir   : 1;
-    bool  WorkdirIsRoot   : 1;
+  struct sdFlags{
+    bool  Mounted = false;
+    bool  Printing = false;
+    bool  PrintComplete = false;
+    bool  Autoreport = false;
+    bool  FilenameIsDir = false;
+    bool  WorkdirIsRoot = false;
   };
-  flagcard_t() { all = 0x00; }
-};
 
   struct PrintFileExtruderInfo {
 	  char PlasticMaterialName[MAT_NAME_SIZE];
@@ -61,8 +55,6 @@ union flagcard_t {
 class SDCard {
 
   public: /** Public Parameters */
-
-    flagcard_t flag;
 
     SdFat      fat;
     SdFile     gcode_file,
@@ -91,8 +83,11 @@ class SDCard {
 
   private: /** Private Parameters */
 
+    sdFlags    flags;
+
     uint8_t csPin; //CS pin
     uint8_t spiDivisor; //SPI frequency divisor
+    int8_t detectPin; //SPI frequency divisor
 
     uint16_t nrFile_index;
 
@@ -192,7 +187,7 @@ class SDCard {
 
   public: /** Public Function */
 
-    void init(uint8_t pin, uint8_t spi_divisor);
+    void init(uint8_t pin, uint8_t spi_divisor, int8_t detect_pin);
 
     void mount();
     void unmount();
@@ -202,12 +197,11 @@ class SDCard {
 
     void getfilename(uint16_t nr, PGM_P const match=nullptr);
     void getAbsFilename(char * name);
-    void openAndPrintFile(const char * const path);
     void startFilePrint();
     void endFilePrint();
     void write_command(char * buf);
     void print_status();
-    void startWrite(const char * const path, const bool silent=false);
+    bool startWrite(const char * const path, const bool silent=false);
     void deleteFile(const char * const path);
     void finishWrite();
     void makeDirectory(const char * const path);
@@ -252,32 +246,24 @@ class SDCard {
     #endif
 
     // Card flag bit 0 SD Mounted
-    FORCE_INLINE void setMounted(const bool onoff) { flag.Mounted = onoff; }
-    FORCE_INLINE bool isMounted() { return flag.Mounted; }
+    FORCE_INLINE void setMounted(const bool onoff) { flags.Mounted = onoff; }
+    FORCE_INLINE bool isMounted() { return flags.Mounted; }
 
-    // Card flag bit 1 saving
-    FORCE_INLINE void setSaving(const bool onoff) { flag.Saving = onoff; }
-    FORCE_INLINE bool isSaving() { return flag.Saving; }
+    // Card flag bit 1 printing
+    FORCE_INLINE void setPrinting(const bool onoff) { flags.Printing = onoff; }
+    FORCE_INLINE bool isPrinting() { return flags.Printing; }
 
-    // Card flag bit 2 printing
-    FORCE_INLINE void setPrinting(const bool onoff) { flag.Printing = onoff; }
-    FORCE_INLINE bool isPrinting() { return flag.Printing; }
+    // Card flag bit 2 print complete
+    FORCE_INLINE void setComplete(const bool onoff) { flags.PrintComplete = onoff; }
+    FORCE_INLINE bool isComplete() { return flags.PrintComplete; }
 
-    // Card flag bit 3 print complete
-    FORCE_INLINE void setComplete(const bool onoff) { flag.PrintComplete = onoff; }
-    FORCE_INLINE bool isComplete() { return flag.PrintComplete; }
+    // Card flag bit 3 Autoreport
+    FORCE_INLINE void setAutoreport(const bool onoff) { flags.Autoreport = onoff; }
+    FORCE_INLINE bool isAutoreport() { return flags.Autoreport; }
 
-    // Card flag bit 4 Autoreport
-    FORCE_INLINE void setAutoreport(const bool onoff) { flag.Autoreport = onoff; }
-    FORCE_INLINE bool isAutoreport() { return flag.Autoreport; }
-
-    // Card flag bit 5 Abortprinting
-    FORCE_INLINE void setAbortSDprinting(const bool onoff) { flag.Abortprinting = onoff; }
-    FORCE_INLINE bool isAbortSDprinting() { return flag.Abortprinting; }
-
-    // Card flag bit 6 Filename is dir
-    FORCE_INLINE void setFilenameIsDir(const bool onoff) { flag.FilenameIsDir = onoff; }
-    FORCE_INLINE bool isFilenameIsDir() { return flag.FilenameIsDir; }
+    // Card flag bit 4 Filename is dir
+    FORCE_INLINE void setFilenameIsDir(const bool onoff) { flags.FilenameIsDir = onoff; }
+    FORCE_INLINE bool isFilenameIsDir() { return flags.FilenameIsDir; }
 
     inline void pauseSDPrint() { setPrinting(false); }
     inline bool isFileOpen()   { return isMounted() && gcode_file.isOpen(); }
@@ -290,6 +276,19 @@ class SDCard {
     inline void getWorkDirName() { workDir.getName(fileName, LONG_FILENAME_LENGTH); }
     inline size_t read(void* buf, uint16_t nbyte) { return gcode_file.isOpen() ? gcode_file.read(buf, nbyte) : -1; }
     inline size_t write(void* buf, uint16_t nbyte) { return gcode_file.isOpen() ? gcode_file.write(buf, nbyte) : -1; }
+
+    inline bool isInserted() {
+      #if PIN_EXISTS(SD_DETECT)
+        #if ENABLED(SD_DETECT_INVERTED)
+          return detectPin!=-1 ? READ(detectPin) : true;
+        #else
+          return detectPin!=-1 ? !READ(detectPin) : true;
+        #endif
+      #else
+        //No card detect line? Assume the card is inserted.
+        return true;
+      #endif
+    }
 
     #if ENABLED(ADVANCED_SD_COMMAND)
       // Format SD Card
@@ -371,17 +370,6 @@ class SDCard {
 };
 
 
-
-#if PIN_EXISTS(SD_DETECT)
-  #if ENABLED(SD_DETECT_INVERTED)
-    #define IS_SD_INSERTED()  READ(SD_DETECT_PIN)
-  #else
-    #define IS_SD_INSERTED()  !READ(SD_DETECT_PIN)
-  #endif
-#else
-  //No card detect line? Assume the card is inserted.
-  #define IS_SD_INSERTED() true
-#endif
 
 #else
 

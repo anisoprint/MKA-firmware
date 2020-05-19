@@ -17,23 +17,51 @@ public: /** Public Parameters */
 
 private: /** Private Parameters */
 
-	int8_t activePrintSD;
+	int8_t _savingSD;
+	int8_t _activePrintSD;
+	int8_t _completedPrintSD;
+	bool _abortPrinting;
+
 
 public: /** Public Function */
 
 
 	void init();
-	void openAndPrintFile(const char * const path, uint8_t slot_index = 0);
+	void openAndPrintFile(uint8_t slot, const char * const path, int32_t index);
+	void startSelectedFilePrint(uint8_t slot = 0);
+  void printFileHasFinished();
+	void endFilePrint();
 
-	int8_t getActivePrintSD();
+	void mountAll();
+	void processAutoreport();
 
-	inline void pauseSDPrint();
-	inline bool isPaused();
-	inline bool isPrinting();
-	inline uint8_t percentDone();
+	inline SDCard* getActivePrintSDCard() { return &cards[_activePrintSD]; }
+
+	inline int8_t getActivePrintSD() { return _activePrintSD; };
+	inline int8_t getSavingSD() { return _savingSD; };
+	inline int8_t getCompletedPrintSD() { return _completedPrintSD; };
+
+	inline void pauseSDPrint() { cards[_activePrintSD].pauseSDPrint();};
+	inline void resumeSDPrint() { if (_activePrintSD!=-1) cards[_activePrintSD].startFilePrint(); };
+  inline bool isPaused() { return (_activePrintSD!=-1 && cards[_activePrintSD].isPaused()); };
+  inline bool isPrinting() { return (_activePrintSD!=-1 && cards[_activePrintSD].isPrinting()); };
+  inline uint8_t percentDone() { return _activePrintSD!=-1 ? cards[_activePrintSD].percentDone() : 0; };
+
+  inline void startSaving(uint8_t slot, const char * const path, const bool silent=false) { if (cards[slot].startWrite(path, silent)) _savingSD = slot; };
+  inline void finishSaving() {
+    if (_savingSD!=-1) {
+      cards[_savingSD].finishWrite();
+      _savingSD=-1;
+    }
+  };
+  inline bool isSaving() { return _savingSD!=-1; };
+
+	inline bool isSdInserted(uint8_t slot = 0) { return cards[slot].isInserted(); };
 
 
-
+  // Card flag bit 1 Abortprinting
+  FORCE_INLINE void setAbortSDprinting(const bool onoff) { _abortPrinting = onoff; }
+  FORCE_INLINE bool isAbortSDprinting() { return _abortPrinting; }
 
 };
 

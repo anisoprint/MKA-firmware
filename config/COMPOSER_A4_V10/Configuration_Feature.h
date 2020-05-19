@@ -1137,8 +1137,8 @@
 // DIVISOR=21 => SPI_FREQUENCY=4.0 MHz
 // DIVISOR=32 => SPI_FREQUENCY=2.625 MHz
 // Setting larger divisor may be required to resolve "volume init" errors.
-#define SD0_SPEED_DIVISOR 16
-#define SD1_SPEED_DIVISOR 16
+#define SD0_SPEED_DIVISOR 21
+#define SD1_SPEED_DIVISOR 8
 
 //
 // SD CARD: ENABLE CRC

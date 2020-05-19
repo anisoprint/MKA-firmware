@@ -46,7 +46,7 @@ namespace NextionHMI {
 	#endif
 
 	#if HAS_SD_SUPPORT
-	void UploadFirmwareFromSD();
+	void UploadFirmwareFromSD(uint8_t sd_slot);
 	#endif
 
 	void UploadFirmwareFromSerial(uint32_t tftSize, uint8_t serialPort);

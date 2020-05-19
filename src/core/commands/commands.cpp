@@ -80,11 +80,11 @@ void Commands::advance_queue() {
 
   #if HAS_SD_SUPPORT
 
-    if (card.isSaving()) {
+    if (sdStorage.isSaving()) {
       gcode_t command = buffer_ring.peek();
       if (is_M29(command.gcode)) {
         // M29 closes the file
-        card.finishWrite();
+        sdStorage.finishSaving();
 
         #if ENABLED(SERIAL_STATS_DROPPED_RX)
           SERIAL_EMV("Dropped bytes: ", MKSERIAL1.dropped());
@@ -98,7 +98,7 @@ void Commands::advance_queue() {
       }
       else {
         // Write the string from the read buffer to SD
-        card.write_command(command.gcode);
+        sdStorage.cards[sdStorage.getSavingSD()].write_command(command.gcode);
         ok_to_send();
       }
     }
@@ -296,6 +296,15 @@ bool Commands::get_target_heater(int8_t &h) {
   }
 }
 
+bool Commands::get_target_sdcard(int8_t s) {
+  if (WITHIN(s, 0 , SD_COUNT-1)) return true;
+  else {
+    SERIAL_LM(ER, MSG_INVALID_SD_CARD);
+    return false;
+  }
+}
+
+
 #if HAS_FANS
   bool Commands::get_target_fan(uint8_t &f) {
     f = parser.seen('P') ? parser.value_byte() : 0;
@@ -414,7 +423,7 @@ void Commands::get_serial() {
         }
         #if HAS_SD_SUPPORT
           // Pronterface "M29" and "M29 " has no line number
-          else if (card.isSaving() && !is_M29(command)) {
+          else if (sdStorage.isSaving() && !is_M29(command)) {
             gcode_line_error(PSTR(MSG_ERR_NO_CHECKSUM), i);
             return;
           }
@@ -498,12 +507,12 @@ void Commands::get_serial() {
     #endif
 
     uint16_t sd_count = 0;
-    bool card_eof = card.eof();
+    bool card_eof = sdStorage.getActivePrintSDCard()->eof();
 
     while (!buffer_ring.isFull() && !card_eof) {
 
-      const int16_t n = card.get();
-      card_eof = card.eof();
+      const int16_t n = sdStorage.getActivePrintSDCard()->get();
+      card_eof = sdStorage.getActivePrintSDCard()->eof();
 
       if (n < 0 && !card_eof) { 
       	  SERIAL_LM(ER, MSG_SD_ERR_READ);
@@ -535,7 +544,7 @@ void Commands::get_serial() {
 
         if (card_eof) {
         
-        	card.fileHasFinished();
+          sdStorage.printFileHasFinished();
 
         	if (IS_SD_PRINTING())
           		sd_count = 0; // If a sub-file was printing, continue from call point
@@ -554,7 +563,7 @@ void Commands::get_serial() {
 
     }
 
-    printer.progress = card.percentDone();
+    printer.progress = sdStorage.percentDone();
 
   }
 

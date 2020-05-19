@@ -64,7 +64,10 @@
       }
       else
       {
-    	  NextionHMI::UploadFirmwareFromSD();
+        int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+        if (!commands.get_target_sdcard(s)) return;
+
+    	  NextionHMI::UploadFirmwareFromSD(s);
       }
     }
   #endif

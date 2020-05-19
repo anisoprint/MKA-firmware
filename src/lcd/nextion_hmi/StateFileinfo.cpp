@@ -40,11 +40,11 @@ namespace {
 }
 
 void StateFileinfo::Print_Push(void* ptr) {
-    commands.inject_rear_P(PSTR("M24"));
+      commands.inject_rear_P(PSTR("M24"));
 }
 
 void StateFileinfo::Back_Push(void* ptr) {
-	StateFiles::Activate();
+	StateFiles::Activate(NextionHMI::pageData);
 }
 
 void StateFileinfo::Init() {
@@ -52,28 +52,29 @@ void StateFileinfo::Init() {
 	_bBack.attachPush(Back_Push);
 }
 
-void StateFileinfo::Activate() {
+void StateFileinfo::Activate(uint8_t sd_slot) {
 	NextionHMI::ActivateState(PAGE_FILEINFO);
 	_page.show();
-	_tFilename.setText(card.fileName);
+	NextionHMI::pageData = sd_slot;
+	_tFilename.setText(sdStorage.cards[sd_slot].fileName);
 	const char* auraString = PSTR("Aura");
 
-	if (strstr_P(card.generatedBy, auraString) != NULL)
+	if (strstr_P(sdStorage.cards[sd_slot].generatedBy, auraString) != NULL)
 	{
 		_pFileicon.setPic(NEX_ICON_FILE_GCODE_AURA);
 	}
 
-	if (card.fileModifiedDate!=0 && card.fileModifiedDate!=0)
+	if (sdStorage.cards[sd_slot].fileModifiedDate!=0 && sdStorage.cards[sd_slot].fileModifiedDate!=0)
 	{
 		ZERO(NextionHMI::buffer);
-		sprintf_P(NextionHMI::buffer, PSTR(MSG_FILE_MODIFIED_DATE), FAT_DAY(card.fileModifiedDate), FAT_MONTH(card.fileModifiedDate), FAT_YEAR(card.fileModifiedDate), FAT_HOUR(card.fileModifiedTime), FAT_MINUTE(card.fileModifiedTime));
+		sprintf_P(NextionHMI::buffer, PSTR(MSG_FILE_MODIFIED_DATE), FAT_DAY(sdStorage.cards[sd_slot].fileModifiedDate), FAT_MONTH(sdStorage.cards[sd_slot].fileModifiedDate), FAT_YEAR(sdStorage.cards[sd_slot].fileModifiedDate), FAT_HOUR(sdStorage.cards[sd_slot].fileModifiedTime), FAT_MINUTE(sdStorage.cards[sd_slot].fileModifiedTime));
 		_tModified.setText(NextionHMI::buffer);
 	}
 
-	if (card.fileInfo.PrintDuration!=0)
+	if (sdStorage.cards[sd_slot].fileInfo.PrintDuration!=0)
 	{
 		char bufferTime[10] = {0};
-		duration_t time = duration_t(card.fileInfo.PrintDuration);
+		duration_t time = duration_t(sdStorage.cards[sd_slot].fileInfo.PrintDuration);
 		time.toDigital(bufferTime, false);
 
 		ZERO(NextionHMI::buffer);
@@ -81,25 +82,25 @@ void StateFileinfo::Activate() {
 		_tPrintTime.setText(NextionHMI::buffer);
 	}
 
-	if (card.fileInfo.ExtruderInfo[0].PlasticConsumption!=0)
+	if (sdStorage.cards[sd_slot].fileInfo.ExtruderInfo[0].PlasticConsumption!=0)
 	{
 		_tPlastic.setTextPGM(MSG_PLASTIC ":");
 
 		ZERO(NextionHMI::buffer);
-		sprintf_P(NextionHMI::buffer, PSTR(MSG_PLASTIC_CONS), card.fileInfo.ExtruderInfo[0].PlasticMaterialName, card.fileInfo.ExtruderInfo[0].PlasticConsumption);
+		sprintf_P(NextionHMI::buffer, PSTR(MSG_PLASTIC_CONS), sdStorage.cards[sd_slot].fileInfo.ExtruderInfo[0].PlasticMaterialName, sdStorage.cards[sd_slot].fileInfo.ExtruderInfo[0].PlasticConsumption);
 		_tPlasticMat.setText(NextionHMI::buffer);
 	}
 
-	if (card.fileInfo.ExtruderInfo[1].PlasticConsumption!=0 && card.fileInfo.ExtruderInfo[1].FiberConsumption!=0)
+	if (sdStorage.cards[sd_slot].fileInfo.ExtruderInfo[1].PlasticConsumption!=0 && sdStorage.cards[sd_slot].fileInfo.ExtruderInfo[1].FiberConsumption!=0)
 	{
 		_tComposite.setTextPGM(MSG_COMPOSITE ":");
 
 		ZERO(NextionHMI::buffer);
-		sprintf_P(NextionHMI::buffer, PSTR(MSG_PLASTIC_CONS), card.fileInfo.ExtruderInfo[1].PlasticMaterialName, card.fileInfo.ExtruderInfo[1].PlasticConsumption);
+		sprintf_P(NextionHMI::buffer, PSTR(MSG_PLASTIC_CONS), sdStorage.cards[sd_slot].fileInfo.ExtruderInfo[1].PlasticMaterialName, sdStorage.cards[sd_slot].fileInfo.ExtruderInfo[1].PlasticConsumption);
 		_tCompPlasticMat.setText(NextionHMI::buffer);
 
 		ZERO(NextionHMI::buffer);
-		sprintf_P(NextionHMI::buffer, PSTR(MSG_FIBER_CONS), card.fileInfo.ExtruderInfo[1].FiberMaterialName, card.fileInfo.ExtruderInfo[1].FiberConsumption);
+		sprintf_P(NextionHMI::buffer, PSTR(MSG_FIBER_CONS), sdStorage.cards[sd_slot].fileInfo.ExtruderInfo[1].FiberMaterialName, sdStorage.cards[sd_slot].fileInfo.ExtruderInfo[1].FiberConsumption);
 		_tCompFiberMat.setText(NextionHMI::buffer);
 	}
 

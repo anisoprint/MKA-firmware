@@ -25,7 +25,7 @@ namespace StateFiles {
 	void FilesCancel_Push(void *ptr);
 
 	void Init();
-	void Activate();
+	void Activate(uint8_t sd_slot);
 	//void DrawUpdate();
 	void TouchUpdate();
 
