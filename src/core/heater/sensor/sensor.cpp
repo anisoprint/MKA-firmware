@@ -104,6 +104,7 @@
     int16_t temperature;
 
     HAL::spiBegin();
+    HAL::spiInit(MAX_31865_CHANNEL, SPI_MAX_31865_RATE);
 
     HAL::digitalWrite(cs_pin, LOW); // enable TT_MAX31855
 
