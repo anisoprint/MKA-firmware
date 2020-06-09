@@ -211,7 +211,7 @@
 #endif
 
 #ifndef MSG_DONE
-  #define MSG_DONE             						_UxGT("DONE!")
+  #define MSG_DONE             						_UxGT("DONE!\\rTotal print time: %s")
 #endif
 
 #ifndef MSG_ERROR

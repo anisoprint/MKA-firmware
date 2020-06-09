@@ -89,14 +89,20 @@ void StatePrinting::Pause_Push(void* ptr) {
 }
 
 void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {
+  duration_t totalTime;
 	switch(event) {
 	    case HMIevent::HEATING_STARTED_BUILDPLATE :
 	    case HMIevent::HEATING_STARTED_EXTRUDER :
 	    	DrawUpdate();
 	    	break;
 	    case HMIevent::SD_PRINT_FINISHED :
-	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), PSTR(MSG_DONE), 2, PSTR(MSG_OK), DoneMessage_OK, PSTR(MSG_PRINT_AGAIN), DoneMessage_Again, NEX_ICON_DONE);
-	        NextionHMI::RaiseEvent(NONE);
+	      ZERO(NextionHMI::buffer);
+	      char bufferElapsed[10];
+	      totalTime = duration_t(print_job_counter.duration());
+	      totalTime.toDigital(bufferElapsed, false);
+	      sprintf_P(NextionHMI::buffer, PSTR(MSG_DONE), bufferElapsed);
+	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), NextionHMI::buffer, 2, PSTR(MSG_OK), DoneMessage_OK, PSTR(MSG_PRINT_AGAIN), DoneMessage_Again, NEX_ICON_DONE);
+	      NextionHMI::RaiseEvent(NONE);
 	    	break;
 	    case HMIevent::PRINT_PAUSING :
 			_bPause.setTextPGM(PSTR(MSG_PAUSING));

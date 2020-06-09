@@ -74,6 +74,7 @@ void SdStorage::printFileHasFinished() {
     cards[_activePrintSD].fileHasFinished();
     _completedPrintSD = _activePrintSD;
     _activePrintSD = -1;
+    print_job_counter.stop();
   }
 
 }
