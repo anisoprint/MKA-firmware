@@ -52,6 +52,7 @@
 
 #include <SPI.h>
 
+
 /**
  * Types
  */
@@ -60,7 +61,7 @@ typedef uint16_t  millis_s;
 typedef int8_t    pin_t;
 
 
-#include "src/inc/macros.h"
+#include "src/lib/macros.h"
 #include "Boards.h"
 
 /**
@@ -123,20 +124,24 @@ typedef int8_t    pin_t;
   #include "Configuration_Motor_Driver.h"
 #endif
 
+#if ENABLED(M28_FAST_UPLOAD)
+  #include <SerialTransfer.h>
+#endif
+
 /**
  * Modules loading
  */
 
 // Include modules
-#include "src/inc/conditionals_pre.h"
-#include "src/inc/pins.h"
-#include "src/inc/conditionals_post.h"
-#include "src/inc/enum.h"
-#include "src/inc/sanitycheck.h"
-#include "src/inc/point_t.h"
-#include "src/inc/watch.h"
-#include "src/inc/timer.h"
-#include "src/inc/circular_queue.h"
+#include "src/lib/conditionals_pre.h"
+#include "src/lib/pins.h"
+#include "src/lib/conditionals_post.h"
+#include "src/lib/enum.h"
+#include "src/lib/sanitycheck.h"
+#include "src/lib/point_t.h"
+#include "src/lib/watch.h"
+#include "src/lib/timer.h"
+#include "src/lib/circular_queue.h"
 
 // Platform modules
 #include "src/platform/platform.h"
@@ -217,6 +222,7 @@ typedef int8_t    pin_t;
 /**
  * External libraries loading
  */
+
 
 #if ENABLED(HAVE_TMCDRIVER)
   #include <TMC26XStepper.h>

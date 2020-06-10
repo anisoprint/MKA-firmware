@@ -166,12 +166,34 @@
 
   /**
    * M28: Start SD Write
+   * M28 P[slot] [Filename]
+   * OR Fast file transfer
+   * M28.1 P[slot] S[size] [Filename]
    */
   inline void gcode_M28(void) {
     int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
     if (!commands.get_target_sdcard(s)) return;
 
+  #if ENABLED(M28_FAST_UPLOAD)
+    if (parser.subcode == 1)
+    {
+      if (Commands::current_command_port < 0 || Commands::current_command_port >= NUM_SERIAL)
+      {
+        SERIAL_LM(ER, MSG_ERR_M28_SERIAL);
+        return;
+      }
+      if (parser.seen('S')) {
+        uint32_t size = parser.value_ulong();
+        sdStorage.receiveFile(Commands::current_command_port, s, parser.string_arg, size);
+      }
+      else return;
+    }
+    else sdStorage.startSaving(s, parser.string_arg, false);
+
+  #else
     sdStorage.startSaving(s, parser.string_arg, false);
+  #endif
+
   }
 
   /**

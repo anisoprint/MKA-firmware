@@ -1151,6 +1151,11 @@
 // Don't use this with Pronterface
 //#define SD_EXTENDED_DIR
 
+// SD card fast serial upload using SerialTransfer
+// https://github.com/PowerBroker2/SerialTransfer
+// (M29.1 P[sd slot] S[file size] [filename])
+#define M28_FAST_UPLOAD
+
 // Decomment this if you have external SD without DETECT_PIN
 #define SD_DISABLED_DETECT
 // Some RAMPS and other boards don't detect when an SD card is inserted. You can work

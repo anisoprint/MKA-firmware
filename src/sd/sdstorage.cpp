@@ -90,5 +90,79 @@ void SdStorage::processAutoreport() {
   }
 }
 
+#if ENABLED (M28_FAST_UPLOAD)
+
+void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const path, uint32_t size) {
+
+  SERIAL_PORT(serialPort);
+
+  if (!cards[slot].startWrite(path, true))
+  {
+    SERIAL_EMV("RESULT:", "ERROR_OPEN_FILE");
+    SERIAL_PORT(-1);
+    return;
+  }
+
+  switch (serialPort) {
+    case 0:
+      fileTransfer.begin(MKSERIAL1);
+      break;
+    case 1:
+      fileTransfer.begin(MKSERIAL2);
+      break;
+    default:
+      SERIAL_PORT(-1);
+      return;
+  }
+
+  SERIAL_EM("READY");
+  uint32_t transfered = 0;
+  uint8_t retries = 0;
+
+  while (transfered<size){
+    if(fileTransfer.available())
+    {
+      size_t written = cards[slot].write(fileTransfer.rxBuff, fileTransfer.bytesRead);
+      if (written==-1 || written!=fileTransfer.bytesRead)
+      {
+        cards[slot].finishWrite();
+        cards[slot].deleteFile(path);
+        SERIAL_EMV("RESULT:", "ERROR_WRITE_FILE");
+        SERIAL_PORT(-1);
+        return;
+      }
+      transfered+=fileTransfer.bytesRead;
+      retries = 0;
+      printer.check_periodical_actions();
+      SERIAL_EMV("RESULT:", "ok");
+    }
+    else if(fileTransfer.status < 0)
+    {
+      if (retries==MAX_RETRIES) {
+        cards[slot].finishWrite();
+        cards[slot].deleteFile(path);
+        SERIAL_EMV("RESULT:", "ERROR_TRANSFER");
+        SERIAL_PORT(-1);
+        return;
+      }
+      retries++;
+      if(fileTransfer.status == -1)
+        SERIAL_EMV("RESULT:", "RESEND_CRC_ERROR");
+      else if(fileTransfer.status == -2)
+        SERIAL_EMV("RESULT:", "RESEND_PAYLOAD_ERROR");
+      else if(fileTransfer.status == -3)
+        SERIAL_EMV("RESULT:", "RESEND_STOPBYTE_ERROR");
+    }
+  }
+
+  cards[slot].finishWrite();
+  SERIAL_EMV("RESULT:", "FINISH");
+
+  SERIAL_PORT(-1);
+
+}
+
+#endif
+
 
 

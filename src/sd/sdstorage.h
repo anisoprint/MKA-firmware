@@ -22,9 +22,20 @@ private: /** Private Parameters */
 	int8_t _completedPrintSD;
 	bool _abortPrinting;
 
+#if ENABLED (M28_FAST_UPLOAD)
+	SerialTransfer fileTransfer;
+#endif
+
 
 public: /** Public Function */
 
+#if ENABLED (M28_FAST_UPLOAD)
+
+  #define MAX_RETRIES 8
+
+	void receiveFile(uint8_t serialPort, uint8_t slot, const char * const path, uint32_t size);
+
+#endif
 
 	void init();
 	void openAndPrintFile(uint8_t slot, const char * const path, int32_t index);
