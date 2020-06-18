@@ -114,8 +114,7 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
       SERIAL_PORT(-1);
       return;
   }
-
-  SERIAL_EM("READY");
+  SERIAL_EMV("RESULT:", "READY");
   uint32_t transfered = 0;
   uint8_t retries = 0;
 
