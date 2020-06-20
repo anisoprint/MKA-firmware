@@ -592,7 +592,7 @@
  ********************************** Axis feedrate ****************************************
  *****************************************************************************************/
 //                                       X,  Y,  Z,  E0...(per extruder). (mm/sec)
-#define DEFAULT_MAX_FEEDRATE          {500, 500, 30, 100, 100, 100, 100}
+#define DEFAULT_MAX_FEEDRATE          {500, 500, 30, 33, 40, 33, 100}
 // Feedrates for manual moves along        X,     Y,     Z,  E from panel
 #define MANUAL_FEEDRATE               {50*60, 50*60, 10*60, 10*60}
 // Minimum feedrate

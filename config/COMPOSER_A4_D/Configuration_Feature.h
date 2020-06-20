@@ -153,7 +153,7 @@
 // Put 9 for chamber cooling fan
 // -1 disables auto mode.
 // Default fan 1 is auto fan for Hotend 0
-#define AUTO_FAN { 0, -1, -1, -1, -1, -1 }
+#define AUTO_FAN { 8, -1, -1, 7, -1, -1 }
 // Parameters for Hotend Fan
 #define HOTEND_AUTO_FAN_TEMPERATURE  60
 #define HOTEND_AUTO_FAN_SPEED       255 // 255 = full speed
@@ -215,33 +215,33 @@
 #define CHANGE_MOVES 12
 
 //Change to T0 -          X      Y  Spd  Switch
-#define CHANGE_T0      {{  0.0,  0,   0,  true},\
-						{  0.0,  0,   0,  true},\
-						{  0.0,  0,   0,  true},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false},\
-						{  0.0,  0,   0, false}}
+#define CHANGE_T0      {{298.0,  0, 200,  true},\
+            {318.5,  0,  50,  true},\
+            {313.0,  6,  50,  true},\
+            {332.0,  6, 200, false},\
+            {332.0, 55,  34, false},\
+            {296.0, 55, 200, false},\
+            {  0.0,  0,   0, false},\
+            {  0.0,  0,   0, false},\
+            {  0.0,  0,   0, false},\
+            {  0.0,  0,   0, false},\
+            {  0.0,  0,   0, false},\
+            {  0.0,  0,   0, false},\
+            {  0.0,  0,   0, false}}
 
 //Change to T1 -          X      Y  Spd  Switch
-#define CHANGE_T1      {{  0.0, 0,  0, false},\
-						{  0.0, 0,  0, false},\
-						{  0.0, 0,  0, false},\
-						{  0.0, 0,  0,  true},\
-						{  0.0, 0,  0,  true},\
-						{  0.0, 0,  0,  true},\
-						{  0.0, 0,  0,  true},\
-						{  0.0, 0,  0,  true},\
-						{  0.0, 0,  0, false},\
-						{  0.0, 0,  0, false},\
-						{  0.0, 0,  0, false},\
-						{  0.0, 0,  0, false}}
+#define CHANGE_T1      {{296.0, 55,  200, false},\
+            {336.0, 55,  200, false},\
+            {336.0, 6.5,  34, false},\
+            {336.0, 6.0, 200,  true},\
+            {336.0,  0,  200,  true},\
+            {315.0,  0,   50,  true},\
+            {315.0,  6,  200,  true},\
+            {296.0,  6,  200,  true},\
+            {  0.0,  0,    0, false},\
+            {  0.0,  0,    0, false},\
+            {  0.0,  0,    0, false},\
+            {  0.0,  0,    0, false}}
 
 //Cut settings
 #define CUT_SERVO_ID      0
@@ -694,7 +694,7 @@
 // Change if Z babysteps should go the other way
 #define BABYSTEP_INVERT_Z false
 // Babysteps are very small. Increase for faster motion.
-#define BABYSTEP_MULTIPLICATOR 1s
+#define BABYSTEP_MULTIPLICATOR 1
 // Enable to combine M851 and Babystepping
 //#define BABYSTEP_ZPROBE_OFFSET
 // Enable to combine Home offset and Babystepping
