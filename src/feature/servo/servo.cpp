@@ -455,6 +455,10 @@
     if (!isTimerActive(timer)) finISR(timer);
   }
 
+  void Servo::reattach() {
+	this->attach(servo_info[this->servoIndex].Pin.nbr);
+  }
+
   void Servo::write(int value) {
     if (value < MIN_PULSE_WIDTH) { // treat values less than 544 as angles in degrees (valid values in microseconds are handled as microseconds)
       value = map(constrain(value, 0, 180), 0, 180, SERVO_MIN(), SERVO_MAX());

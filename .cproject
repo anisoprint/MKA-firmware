@@ -30,8 +30,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1825809653" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -48,8 +48,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.601727464" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -66,8 +66,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.829244576" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -116,6 +116,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.882047260" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -132,6 +134,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.2013894068" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -148,6 +152,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.304066484" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -194,6 +200,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V09}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.860977994" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -210,6 +218,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V09}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.1952035400" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -226,6 +236,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V09}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.1725259948" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -272,6 +284,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_T}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.26495318" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -288,6 +302,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_T}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.2050497464" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -304,6 +320,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_T}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.1206494391" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -350,6 +368,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_I}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.763045273" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -366,6 +386,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_I}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.1997848342" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -382,6 +404,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_I}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.357822333" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -428,6 +452,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_D}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1778826568" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -444,6 +470,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_D}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.812945511" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -460,6 +488,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A4_D}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.891838053" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -506,6 +536,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V10}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.638241170" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -522,6 +554,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V10}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.673230294" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -538,6 +572,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/config/COMPOSER_A3_V10}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.1337843961" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -584,6 +620,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1578674965" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -600,6 +638,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.404509883" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -616,6 +656,8 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SPI/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/Wire/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/ArduinoJson/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SdFat/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MKA/libraries/SerialTransfer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.278392460" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>

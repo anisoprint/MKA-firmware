@@ -114,6 +114,9 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
       SERIAL_PORT(-1);
       return;
   }
+
+  servo[Tools::cut_servo_id].detach();
+
   SERIAL_EMV("RESULT:", "READY");
   uint32_t transfered = 0;
   uint8_t retries = 0;
@@ -121,6 +124,7 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
   while (transfered<size){
     if(fileTransfer.available())
     {
+      SERIAL_EMV("RESULT:", "ok");
       size_t written = cards[slot].write(fileTransfer.rxBuff, fileTransfer.bytesRead);
       if (written==-1 || written!=fileTransfer.bytesRead)
       {
@@ -128,12 +132,13 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
         cards[slot].deleteFile(path);
         SERIAL_EMV("RESULT:", "ERROR_WRITE_FILE");
         SERIAL_PORT(-1);
+        servo[Tools::cut_servo_id].reattach();
         return;
       }
       transfered+=fileTransfer.bytesRead;
       retries = 0;
       printer.check_periodical_actions();
-      SERIAL_EMV("RESULT:", "ok");
+
     }
     else if(fileTransfer.status < 0)
     {
@@ -142,6 +147,7 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
         cards[slot].deleteFile(path);
         SERIAL_EMV("RESULT:", "ERROR_TRANSFER");
         SERIAL_PORT(-1);
+        servo[Tools::cut_servo_id].reattach();
         return;
       }
       retries++;
@@ -156,7 +162,7 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
 
   cards[slot].finishWrite();
   SERIAL_EMV("RESULT:", "FINISH");
-
+  servo[Tools::cut_servo_id].reattach();
   SERIAL_PORT(-1);
 
 }
