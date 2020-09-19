@@ -7,8 +7,9 @@
 ; 21.06.2019 - Andrey Azarov - Tool switch sequence updated (MKA 0.9.3)
 ; 29.11.2019 - Andrey Azarov - Added stepper directions (MKA 0.9.4a)
 ; 18.09.2020  - Andrey Azarov - Fixed stepper directions (MKA 1.0.0a)
+; 19.09.2020  - Andrey Azarov - Fixed stepper directions (MKA 1.0.0a)
 ;Stepper directions inversion
-M569 X0 Y1 Z1 E0 U1 V0
+M569 X0 Y1 Z1 E0 U0 V0
 ;Mechanics steps per unit:
 M92 X100.000 Y100.000 Z1600.000
 ;Maximum feedrates (units/s):
