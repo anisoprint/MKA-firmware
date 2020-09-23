@@ -96,6 +96,7 @@ Codes marked with * are specific for Composer MKA firmware (of their meaning dif
 | M305 | - | Set thermistor and ADC parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER, A[float] Thermistor resistance at 25°C, B[float] BetaK, C[float] Steinhart-Hart C coefficien, R[float] Pullup resistor value, L[int] ADC low offset correction, O[int] ADC high offset correction, P[int] Sensor Pin. 
 | M306 | - | Set Heaters parameters: H[heaters] H = 0-3 Hotend, H = -1 BED, H = -2 CHAMBER, H = -3 COOLER, A[int] Power Drive Min, B[int] Power Drive Max, C[int] Power Max, F[int] Frequency, L[int] Min temperature, O[int] Max temperature, U[bool] Use Pid/bang bang, I[bool] Hardware Inverted, T[bool] Thermal Protection, P[int] Pin, Q[bool] PWM Hardware
 | M400 | - | Finish all moves
+| M408* | - | Report status in JSON format. S[format 0-4] P[bool] - enable auto-report  (https://reprap.org/wiki/RepRap_Firmware_Status_responses) 
 | M500* | - | Stores paramters in EEPROM. Use "M500 S" to store system settings, without "S" only user settings will be stored
 | M501 | - | Reads parameters from EEPROM (if you need reset them after you changed them temporarily).
 | M502 | - | Reverts to the hardcoded settings values.

@@ -277,6 +277,15 @@ class SDCard {
     inline size_t read(void* buf, uint16_t nbyte) { return gcode_file.isOpen() ? gcode_file.read(buf, nbyte) : -1; }
     inline size_t write(void* buf, uint16_t nbyte) { return gcode_file.isOpen() ? gcode_file.write(buf, nbyte) : -1; }
 
+    inline float fractionDone() {
+        float fractionprinted;
+        if (fileSize < 2000000) {
+          fractionprinted = (float)sdpos / (float)fileSize;
+        }
+        else fractionprinted = (float)(sdpos >> 8) / (float)(fileSize >> 8);
+        return fractionprinted;
+    }
+
     inline bool isInserted() {
       #if PIN_EXISTS(SD_DETECT)
         #if ENABLED(SD_DETECT_INVERTED)

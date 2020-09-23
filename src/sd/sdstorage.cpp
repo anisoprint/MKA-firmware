@@ -116,6 +116,7 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
   }
 
   servo[Tools::cut_servo_id].detach();
+  printer.setSuspendAutoreport(true);
 
   SERIAL_EMV("RESULT:", "READY");
   uint32_t transfered = 0;
@@ -163,6 +164,7 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
   cards[slot].finishWrite();
   SERIAL_EMV("RESULT:", "FINISH");
   servo[Tools::cut_servo_id].reattach();
+  printer.setSuspendAutoreport(false);
   SERIAL_PORT(-1);
 
 }

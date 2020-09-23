@@ -57,6 +57,7 @@ public: /** Public Function */
   inline bool isPaused() { return (_activePrintSD!=-1 && cards[_activePrintSD].isPaused()); };
   inline bool isPrinting() { return (_activePrintSD!=-1 && cards[_activePrintSD].isPrinting()); };
   inline uint8_t percentDone() { return _activePrintSD!=-1 ? cards[_activePrintSD].percentDone() : 0; };
+  inline float fractionDone() { return _activePrintSD!=-1 ? cards[_activePrintSD].fractionDone() : 0; };
 
   inline void startSaving(uint8_t slot, const char * const path, const bool silent=false) { if (cards[slot].startWrite(path, silent)) _savingSD = slot; };
   inline void finishSaving() {

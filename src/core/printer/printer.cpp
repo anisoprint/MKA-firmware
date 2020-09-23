@@ -115,6 +115,9 @@ uint8_t   Printer::mk_debug_flag  = 0, // For debug
 
 uint16_t  Printer::mk_2_flag      = 0; // For various
 
+int8_t   Printer::json_autoreport_mode = -1;
+uint8_t   Printer::json_autoreport_interval = 2;
+
 /**
  * Public Function
  */
@@ -416,7 +419,8 @@ void Printer::loop() {
 void Printer::check_periodical_actions() {
 
   static uint8_t  cycle_1000ms = 10,  // Event 1.0 Second
-                  cycle_2500ms = 25;  // Event 2.5 Second
+                  cycle_2500ms = 25,  // Event 2.5 Second
+  	  	  	  	  cycle_json_report = 20;  // Event
 
   // Control interrupt events
   handle_interrupt_events();
@@ -440,10 +444,12 @@ void Printer::check_periodical_actions() {
     // Event 1.0 Second
     if (--cycle_1000ms == 0) {
       cycle_1000ms = 10;
-      if (!isSuspendAutoreport() && isAutoreportTemp()) {
-        thermalManager.report_temperatures();
-        SERIAL_EOL();
+      if (!isSuspendAutoreport() && isAutoreportTemp())
+      {
+         thermalManager.report_temperatures();
+         SERIAL_EOL();
       }
+
       #if HAS_SD_SUPPORT
         sdStorage.processAutoreport();
       #endif
@@ -453,6 +459,14 @@ void Printer::check_periodical_actions() {
 	  #if ENABLED(NEXTION_HMI)
 		NextionHMI::DrawUpdate();
 	  #endif
+    }
+
+    if (!isSuspendAutoreport() && isJsonAutoreportEnabled())
+    {
+        if (--cycle_json_report == 0) {
+        	cycle_json_report = json_autoreport_interval*10;
+          	reportStatusJson(getJsonAutoreportMode());
+        }
     }
 
     // Event 2.5 Second
@@ -1264,6 +1278,270 @@ void Printer::clean_tuned_parameters() {
 
       }
     }
+  }
+
+#endif
+
+#if ENABLED(JSON_OUTPUT)
+
+  char Printer::get_status_character(){
+    return  print_job_counter.isRunning() ? 'P'   // Printing
+          : print_job_counter.isPaused()  ? 'A'   // Paused / Stopped
+          :                                 'I';  // Idle
+  }
+
+  void Printer::reportStatusJson(uint8_t type) {
+
+	  bool firstOccurrence;
+	  char ch = get_status_character();
+	      SERIAL_MSG("{\"status\":\"");
+	      SERIAL_CHR(ch);
+
+	      SERIAL_MSG("\",\"coords\": {\"axesHomed\":[");
+	      SERIAL_MSG(isXHomed ? "1," : "0,");
+	      SERIAL_MSG(isYHomed ? "1," : "0,");
+	      SERIAL_MSG(isZHomed ? "1" : "0");
+
+	      SERIAL_MV("],\"extr\":[", mechanics.current_position[E_AXIS]);
+	  	#if DRIVER_EXTRUDERS > 1
+	        SERIAL_MV(",", mechanics.current_position[U_AXIS]);
+	  	#endif
+	  	#if DRIVER_EXTRUDERS > 2
+	  	  SERIAL_MV(",", mechanics.current_position[V_AXIS]);
+	  	#endif
+	  	#if DRIVER_EXTRUDERS > 3
+	  	  SERIAL_MV(",", mechanics.current_position[W_AXIS]);
+	  	#endif
+	  	#if DRIVER_EXTRUDERS > 4
+	  	  SERIAL_MV(",", mechanics.current_position[K_AXIS]);
+	  	#endif
+	  	#if DRIVER_EXTRUDERS > 5
+	  	  SERIAL_MV(",", mechanics.current_position[L_AXIS]);
+	  	#endif
+	      SERIAL_MV("],\"xyz\":[", mechanics.current_position[X_AXIS]); // X AXIS
+	      SERIAL_MV(",", mechanics.current_position[Y_AXIS]);           // Y AXIS
+	      SERIAL_MV(",", mechanics.current_position[Z_AXIS]);           // Z AXIS
+
+	      SERIAL_MV("]},\"currentTool\":", tools.active_extruder);
+
+	      #if HAS_POWER_SWITCH
+	        SERIAL_MSG(",\"params\": {\"atxPower\":");
+	        SERIAL_CHR(powerManager.lastPowerOn ? '1' : '0');
+	        SERIAL_CHR(',');
+	      #else
+	        SERIAL_MSG(",\"params\": {");
+	      #endif
+
+	      #if FAN_COUNT > 0
+	        SERIAL_MSG("\"fanPercent\":[");
+	        SERIAL_VAL(fans[0].Speed);
+	  	  #if FAN_COUNT > 1
+	        SERIAL_MSG(",");
+	        SERIAL_VAL(fans[1].Speed);
+	  	  #endif
+	  	  #if FAN_COUNT > 2
+	        SERIAL_MSG(",");
+	  	  SERIAL_VAL(fans[2].Speed);
+	  	  #endif
+	  	  #if FAN_COUNT > 3
+	  	  SERIAL_MSG(",");
+	  	  SERIAL_VAL(fans[3].Speed);
+	  	  #endif
+	      #endif
+
+	      SERIAL_MV("],\"speedFactor\":", mechanics.feedrate_percentage);
+
+	      SERIAL_MSG(",\"extrFactors\":[");
+	      firstOccurrence = true;
+	      for (uint8_t e = 0; e < DRIVER_EXTRUDERS; e++) {
+	        if (!firstOccurrence) SERIAL_CHR(',');
+	        SERIAL_VAL(tools.flow_percentage[e]);
+	        firstOccurrence = false;
+	      }
+	      SERIAL_MSG("]},");
+
+	      SERIAL_MSG("\"temps\": {");
+	      #if HAS_TEMP_BED
+	        SERIAL_MV("\"bed\": {\"current\":", heaters[BED_INDEX].current_temperature, 1);
+	        SERIAL_MV(",\"active\":", heaters[BED_INDEX].target_temperature);
+	        SERIAL_MSG(",\"state\":");
+	        SERIAL_CHR(heaters[BED_INDEX].target_temperature > 0 ? '2' : '1');
+	        SERIAL_MSG("},");
+	      #endif
+	  	#if HAS_TEMP_CHAMBER
+	  	  SERIAL_MV("\"chamber\": {\"current\":", heaters[CHAMBER_INDEX].current_temperature, 1);
+	  	  SERIAL_MV(",\"active\":", heaters[CHAMBER_INDEX].target_temperature);
+	  	  SERIAL_MSG(",\"state\":");
+	  	  SERIAL_CHR(heaters[CHAMBER_INDEX].target_temperature > 0 ? '2' : '1');
+	  	  SERIAL_MSG("},");
+	  	#endif
+	      SERIAL_MSG("\"heads\": {\"current\":[");
+	      firstOccurrence = true;
+	      for (int8_t h = 0; h < HOTENDS; h++) {
+	        if (!firstOccurrence) SERIAL_CHR(',');
+	        SERIAL_VAL(heaters[h].current_temperature, 1);
+	        firstOccurrence = false;
+	      }
+	      SERIAL_MSG("],\"active\":[");
+	      firstOccurrence = true;
+	      for (int8_t h = 0; h < HOTENDS; h++) {
+	        if (!firstOccurrence) SERIAL_CHR(',');
+	        SERIAL_VAL(heaters[h].target_temperature);
+	        firstOccurrence = false;
+	      }
+	      SERIAL_MSG("],\"state\":[");
+	      firstOccurrence = true;
+	      for (int8_t h = 0; h < HOTENDS; h++) {
+	        if (!firstOccurrence) SERIAL_CHR(',');
+	        SERIAL_CHR(heaters[h].target_temperature > HOTEND_AUTO_FAN_TEMPERATURE ? '2' : '1');
+	        firstOccurrence = false;
+	      }
+
+	      SERIAL_MV("]}},\"time\":", HAL::timeInMilliseconds());
+
+	      switch (type) {
+	        case 0:
+	        case 1:
+	          break;
+	        case 2:
+	          SERIAL_MSG(",");
+	          SERIAL_MSG("\"coldExtrudeTemp\":0,\"coldRetractTemp\":0.0,\"geometry\":\"");
+	          #if MECH(CARTESIAN)
+	            SERIAL_MSG("cartesian");
+	          #elif MECH(COREXY)
+	            SERIAL_MSG("corexy");
+	          #elif MECH(COREYX)
+	            SERIAL_MSG("coreyx");
+	          #elif MECH(COREXZ)
+	            SERIAL_MSG("corexz");
+	          #elif MECH(COREZX)
+	            SERIAL_MSG("corezx");
+	          #elif MECH(DELTA)
+	            SERIAL_MSG("delta");
+	          #endif
+	          SERIAL_MSG("\",\"name\":\"");
+	          SERIAL_MSG(CUSTOM_MACHINE_NAME);
+	          SERIAL_MSG("\",\"tools\":[");
+	          firstOccurrence = true;
+	          for (uint8_t i = 0; i < EXTRUDERS; i++) {
+	            if (!firstOccurrence) SERIAL_CHR(',');
+	            SERIAL_MV("{\"number\":", i + 1);
+	            #if HOTENDS > 1
+	              SERIAL_MV(",\"heaters\":[", i + 1);
+	              SERIAL_MSG("],");
+	            #else
+	              SERIAL_MSG(",\"heaters\":[1],");
+	            #endif
+	            #if DRIVER_EXTRUDERS > 1
+	              SERIAL_MV("\"drives\":[", i);
+	              SERIAL_MSG("]");
+	            #else
+	              SERIAL_MSG("\"drives\":[0]");
+	            #endif
+	            SERIAL_MSG("}");
+	            firstOccurrence = false;
+	          }
+	          break;
+	        case 3:
+	          SERIAL_MSG(",");
+	          SERIAL_MSG("\"currentLayer\":");
+	          #if HAS_SD_SUPPORT
+	            if (sdStorage.isPrinting()) { // ONLY CAN TELL WHEN SD IS PRINTING
+	              SERIAL_VAL((int)printer.currentLayer);
+	            }
+	            else SERIAL_VAL(0);
+	          #else
+	            SERIAL_VAL(-1);
+	          #endif
+	          #if HAS_SD_SUPPORT
+	            if (sdStorage.isPrinting()) {
+	              SERIAL_MSG(", \"fractionPrinted\":");
+	              float fractionprinted = sdStorage.fractionDone();
+	              SERIAL_VAL((float) floorf(fractionprinted * 1000) / 1000);
+	            }
+	          #endif
+	          break;
+	        case 4:
+	        case 5:
+	          SERIAL_MSG(",");
+	          SERIAL_MSG("\"axisMins\":[");
+	          SERIAL_VAL((int) X_MIN_POS);
+	          SERIAL_CHR(',');
+	          SERIAL_VAL((int) Y_MIN_POS);
+	          SERIAL_CHR(',');
+	          SERIAL_VAL((int) Z_MIN_POS);
+	          SERIAL_MSG("],\"axisMaxes\":[");
+	          SERIAL_VAL((int) X_MAX_POS);
+	          SERIAL_CHR(',');
+	          SERIAL_VAL((int) Y_MAX_POS);
+	          SERIAL_CHR(',');
+	          SERIAL_VAL((int) Z_MAX_POS);
+	          SERIAL_MSG("],\"planner.accelerations\":[");
+	          SERIAL_VAL(mechanics.max_acceleration_mm_per_s2[X_AXIS]);
+	          SERIAL_CHR(',');
+	          SERIAL_VAL(mechanics.max_acceleration_mm_per_s2[Y_AXIS]);
+	          SERIAL_CHR(',');
+	          SERIAL_VAL(mechanics.max_acceleration_mm_per_s2[Z_AXIS]);
+	          for (uint8_t i = 0; i < EXTRUDERS; i++) {
+	            SERIAL_CHR(',');
+	            SERIAL_VAL(mechanics.max_acceleration_mm_per_s2[E_AXIS + i]);
+	          }
+	          SERIAL_MSG("],");
+
+	          #if MB(ALLIGATOR) || MB(ALLIGATOR_V3)
+	            SERIAL_MSG("\"currents\":[");
+	            SERIAL_VAL(externaldac.motor_current[X_AXIS]);
+	            SERIAL_CHR(',');
+	            SERIAL_VAL(externaldac.motor_current[Y_AXIS]);
+	            SERIAL_CHR(',');
+	            SERIAL_VAL(externaldac.motor_current[Z_AXIS]);
+	            for (uint8_t i = 0; i < DRIVER_EXTRUDERS; i++) {
+	              SERIAL_CHR(',');
+	              SERIAL_VAL(externaldac.motor_current[E_AXIS + i]);
+	            }
+	            SERIAL_MSG("],");
+	          #endif
+
+	          SERIAL_MSG("\"firmwareElectronics\":\"");
+	          #if MB(RAMPS_13_HFB) || MB(RAMPS_13_HHB) || MB(RAMPS_13_HFF) || MB(RAMPS_13_HHF) || MB(RAMPS_13_HHH)
+	            SERIAL_MSG("RAMPS");
+	          #elif MB(ALLIGATOR)
+	            SERIAL_MSG("ALLIGATOR");
+	          #elif MB(ALLIGATOR_V3)
+	            SERIAL_MSG("ALLIGATOR_V3");
+	          #elif MB(RADDS) || MB(RAMPS_FD_V1) || MB(RAMPS_FD_V2) || MB(SMART_RAMPS) || MB(RAMPS4DUE)
+	            SERIAL_MSG("Arduino due");
+	          #elif MB(ULTRATRONICS)
+	            SERIAL_MSG("ULTRATRONICS");
+	          #else
+	            SERIAL_MSG("AVR");
+	          #endif
+	          SERIAL_MSG("\",\"firmwareName\":\"");
+	          SERIAL_MSG(FIRMWARE_NAME);
+	          SERIAL_MSG(",\"firmwareVersion\":\"");
+	          SERIAL_MSG(SHORT_BUILD_VERSION);
+	          SERIAL_MSG("\",\"firmwareDate\":\"");
+	          SERIAL_MSG(STRING_DISTRIBUTION_DATE);
+
+	          SERIAL_MSG("\",\"minFeedrates\":[0,0,0");
+	          for (uint8_t i = 0; i < EXTRUDERS; i++) {
+	            SERIAL_MSG(",0");
+	          }
+	          SERIAL_MSG("],\"maxFeedrates\":[");
+	          SERIAL_VAL(mechanics.max_feedrate_mm_s[X_AXIS]);
+	          SERIAL_CHR(',');
+	          SERIAL_VAL(mechanics.max_feedrate_mm_s[Y_AXIS]);
+	          SERIAL_CHR(',');
+	          SERIAL_VAL(mechanics.max_feedrate_mm_s[Z_AXIS]);
+	          for (uint8_t i = 0; i < EXTRUDERS; i++) {
+	            SERIAL_CHR(',');
+	            SERIAL_VAL(mechanics.max_feedrate_mm_s[E_AXIS + i]);
+	          }
+	          SERIAL_CHR(']');
+	          break;
+	      }
+	      SERIAL_CHR('}');
+	      SERIAL_EOL();
   }
 
 #endif

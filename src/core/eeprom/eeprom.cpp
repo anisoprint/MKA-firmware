@@ -2132,6 +2132,7 @@ void EEPROM::Factory_Settings() {
   // Reset Printer Flag
   printer.resetFlag1();
   printer.resetFlag2();
+  printer.disableJsonAutoreport();
 
   // Heaters
   #if HEATER_COUNT > 0

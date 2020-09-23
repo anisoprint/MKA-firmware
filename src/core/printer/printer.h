@@ -147,6 +147,9 @@ class Printer {
 
     static uint16_t mk_2_flag;      // For various
 
+    static int8_t   json_autoreport_mode;
+    static uint8_t   json_autoreport_interval;
+
     #if ENABLED(IDLE_OOZING_PREVENT)
       static millis_l axis_last_activity;
       static bool     IDLE_OOZING_retracted[EXTRUDERS];
@@ -174,6 +177,10 @@ class Printer {
     static void suicide();
 
     static void clean_tuned_parameters();
+
+	#if ENABLED(JSON_OUTPUT)
+	  static void reportStatusJson(uint8_t type);
+	#endif
 
     #if ENABLED(IDLE_OOZING_PREVENT)
       static void IDLE_OOZING_retract(bool retracting);
@@ -310,6 +317,15 @@ class Printer {
     FORCE_INLINE static bool resetFlag1() { mk_1_flag = 0; }
     FORCE_INLINE static bool resetFlag2() { mk_2_flag = 0; }
 
+    FORCE_INLINE static void disableJsonAutoreport() { json_autoreport_mode = -1; }
+    FORCE_INLINE static bool isJsonAutoreportEnabled() { return (json_autoreport_mode >=0); }
+    FORCE_INLINE static int8_t getJsonAutoreportMode() { return json_autoreport_mode; }
+    FORCE_INLINE static void enableJsonAutoreport(int8_t mode, uint8_t interval) {
+    	json_autoreport_interval = interval > 1 ? interval : 1;
+    	json_autoreport_mode = mode;
+    }
+
+
   private: /** Private Function */
 
     static void setup_pinout();
@@ -323,6 +339,10 @@ class Printer {
     #if ENABLED(TEMP_STAT_LEDS)
       static void handle_status_leds();
     #endif
+
+	#if ENABLED(JSON_OUTPUT)
+      static char get_status_character();
+	#endif
 
 };
 
