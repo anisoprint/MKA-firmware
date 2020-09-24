@@ -81,6 +81,7 @@ void StateWizard::TouchUpdate() {
 void StateWizard::CompZOffsetS1(void* ptr) {
 	if (!planner.movesplanned())
 	{
+		printer.setBusyIfIdle();
 		_wizardCancelled = false;
 
 		BUTTONS(2)
@@ -123,7 +124,7 @@ void StateWizard::CompZOffsetFinish(void* ptr) {
 		tools.hotend_offset[Z_AXIS][1] = tools.hotend_offset[Z_AXIS][1] - dz;
 		eeprom.Store_Settings();
 		mechanics.home(true, true, true);
-
+		printer.setIdleIfBusy();
 		StateMenu::ActivateCalibrate();
 	}
 }
@@ -137,6 +138,7 @@ void StateWizard::CompZOffsetCancel(void* ptr) {
 		HEADER(MSG_HEADER_COMP_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
 
 		mechanics.home(true, true, true);
+		printer.setIdleIfBusy();
 		StateMenu::ActivateCalibrate();
 	}
 }
@@ -145,6 +147,7 @@ void StateWizard::CompZOffsetCancel(void* ptr) {
 void StateWizard::ZAxisS1(void* ptr) {
 	if (!planner.movesplanned())
 	{
+		printer.setBusyIfIdle();
 		_wizardCancelled = false;
 		BUTTONS(2)
 		NO_PICTURE
@@ -185,6 +188,7 @@ void StateWizard::ZAxisFinish(void* ptr) {
 		eeprom.Store_Settings();
 
 		mechanics.home(true, true, true);
+		printer.setIdleIfBusy();
 		StateMenu::ActivateCalibrate();
 	}
 
@@ -198,6 +202,7 @@ void StateWizard::ZAxisCancel(void* ptr) {
 		CAPTION(MSG_PLEASE_WAIT)
 		HEADER(MSG_HEADER_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
 		mechanics.home(true, true, true);
+		printer.setIdleIfBusy();
 		StateMenu::ActivateCalibrate();
 	}
 }
@@ -208,6 +213,7 @@ void StateWizard::MaterialUnloadS1(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		_wizardCancelled = false;
+		printer.setBusyIfIdle();
 
 		BUTTONS(2)
 		NO_PICTURE
@@ -216,7 +222,7 @@ void StateWizard::MaterialUnloadS1(void* ptr) {
 
 		Init2Buttons(PSTR(MSG_CANCEL), MaterialUnloadCancel, PSTR(MSG_NEXT), MaterialUnloadS1a);
 
-		if (PrintPause::Status!=Paused)
+		if (printer.getStatus()!=Paused)
 		{
 			//Homing if not homed
 			if (mechanics.axis_unhomed_error())
@@ -346,7 +352,7 @@ void StateWizard::MaterialUnloadFinish(void* ptr) {
 
 	uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
 
-	if (PrintPause::Status==Paused)
+	if (printer.getStatus()==Paused)
 	{
 		PrintPause::RestoreTemperatures();
 
@@ -363,6 +369,7 @@ void StateWizard::MaterialUnloadFinish(void* ptr) {
     const point_t park_point = NOZZLE_PARK_POINT;
 	Nozzle::park(3, park_point);
 
+	printer.setIdleIfBusy();
 	StateMenu::ActivateLoadUnload();
 }
 
@@ -378,6 +385,7 @@ void StateWizard::MaterialUnloadCancel(void* ptr) {
 
 void StateWizard::MaterialLoadS1(void* ptr) {
 	_wizardCancelled = false;
+	printer.setBusyIfIdle();
 
 	BUTTONS(2)
 	NO_PICTURE
@@ -386,7 +394,7 @@ void StateWizard::MaterialLoadS1(void* ptr) {
 
 	Init2Buttons(PSTR(MSG_CANCEL), MaterialLoadCancel, PSTR(MSG_NEXT), MaterialLoadS1a);
 
-	if (PrintPause::Status!=Paused)
+	if (printer.getStatus()!=Paused)
 	{
 		//Homing if not homed
 		if (mechanics.axis_unhomed_error())
@@ -624,7 +632,7 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
 
 	uint8_t heater = Tools::extruder_driver_to_extruder(NextionHMI::wizardData-E_AXIS);
 
-	if (PrintPause::Status==Paused)
+	if (printer.getStatus()==Paused)
 	{
 		PrintPause::RestoreTemperatures();
 
@@ -641,6 +649,7 @@ void StateWizard::MaterialLoadFinish(void* ptr) {
     const point_t park_point = NOZZLE_PARK_POINT;
 	Nozzle::park(3, park_point);
 
+	printer.setIdleIfBusy();
 	StateMenu::ActivateLoadUnload();
 }
 
@@ -653,6 +662,8 @@ void StateWizard::MaterialLoadCancel(void* ptr) {
 void StateWizard::BuildPlateS1(void* ptr) {
 	if (!planner.movesplanned())
 	{
+		printer.setBusyIfIdle();
+
 		_wizardCancelled = false;
 		BUTTONS(2)
 		NO_PICTURE
@@ -708,6 +719,7 @@ void StateWizard::BuildPlateFinish(void* ptr) {
 		mechanics.home(true, true, true);
 		StateStatus::Activate();
 		eeprom.Store_Settings();
+		printer.setIdleIfBusy();
 	}
 }
 
@@ -720,6 +732,7 @@ void StateWizard::BuildPlateCancel(void* ptr) {
 		HEADER(MSG_HEADER_BP_CALIBR, "", NEX_ICON_MAINTENANCE);
 
 		mechanics.home(true, true, true);
+		printer.setIdleIfBusy();
 		StateStatus::Activate();
 	}
 }

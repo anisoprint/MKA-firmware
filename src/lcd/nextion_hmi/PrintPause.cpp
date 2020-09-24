@@ -27,7 +27,6 @@ float PrintPause::RetractDistance = 0,
 	  PrintPause::ExtrudeFeedrate = 0;
 
 bool PrintPause::SdPrintingPaused = false;
-PrintPauseStatus PrintPause::Status = NotPaused;
 
   // public function
 
@@ -52,12 +51,12 @@ void PrintPause::DoPauseExtruderMove(AxisEnum axis, const float &length, const f
 
 bool PrintPause::PausePrint() {
 
-	if (Status!=NotPaused && Status!=WaitingToPause) return false; // already paused
+	if (printer.getStatus()!=Printing && printer.getStatus()!=WaitingToPause) return false; // already paused
 
     //Printing with fiber, can't pause now
     if (tools.printing_with_fiber)
     {
-    	Status = WaitingToPause;
+    	printer.setStatus(WaitingToPause);
     	NextionHMI::RaiseEvent(PRINT_PAUSE_SCHEDULED);
     	return false;
     }
@@ -78,7 +77,7 @@ bool PrintPause::PausePrint() {
 
         commands.inject_rear_P(PSTR("M125")); // Must be enqueued with pauseSDPrint set to be last in the buffer
 
-        Status = Pausing;
+    	printer.setStatus(Pausing);
         NextionHMI::RaiseEvent(PRINT_PAUSING);
 
 
@@ -100,7 +99,7 @@ bool PrintPause::PausePrint() {
 
   bool PrintPause::ParkHead(const float &retract) {
 
-    if (Status!=Pausing) return false; // incorrect state
+    if (printer.getStatus()!=Pausing) return false; // incorrect state
 
     // Wait for synchronize steppers
     while ((planner.has_blocks_queued() || stepper.cleaning_buffer_counter) && !sdStorage.isAbortSDprinting()) {
@@ -155,7 +154,7 @@ bool PrintPause::PausePrint() {
 
     stepper.synchronize();
     // Indicate that the printer is paused
-    Status = Paused;
+    printer.setStatus(Paused);
     NextionHMI::RaiseEvent(PRINT_PAUSED);
 
     return true;
@@ -167,15 +166,15 @@ bool PrintPause::PausePrint() {
 
 void PrintPause::ResumePrint(const float& purge_length) {
 
-   if (Status==WaitingToPause)
+   if (printer.getStatus()==WaitingToPause)
    {
-	   Status = NotPaused;
+	   printer.setStatus(Printing);
 	   NextionHMI::RaiseEvent(PRINT_PAUSE_UNSCHEDULED);
 	   return;
    };
-   if (Status!=Paused) return; // already not paused
+   if (printer.getStatus()!=Paused) return; // already not paused
 
-   Status = Resuming;
+   printer.setStatus(Resuming);
    NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMING);
 
    stepper.synchronize();
@@ -254,7 +253,7 @@ void PrintPause::ResumePrint(const float& purge_length) {
      }
    #endif
 
-   Status = NotPaused;
+   printer.setStatus(Printing);
    printer.setWaitForUser(false);
    NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMED);
    print_job_counter.start();
@@ -266,7 +265,7 @@ void PrintPause::ResumePrint(const float& purge_length) {
 }
 
 void PrintPause::RestoreTemperatures() {
-	if (Status!=Paused && Status!=Resuming) return;
+	if (printer.getStatus()!=Paused && printer.getStatus()!=Resuming) return;
     //Restore current temperatures
 	LOOP_HEATER()
 	{

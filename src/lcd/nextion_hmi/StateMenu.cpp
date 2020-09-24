@@ -50,7 +50,7 @@ void StateMenu::ActivatePrintControl(void* ptr) {
 
 	NextionHMI::ActivateState(PAGE_MENU);
 
-	if (PrintPause::Status == Paused) //Control menu while paused
+	if (printer.getStatus() == Paused) //Control menu while paused
 	{
 		_count.setValue(6);
 		_page.show();
@@ -309,7 +309,7 @@ void StateMenu::ActivateMaterials(void* ptr) {
 	_b2.attachPush(Materials_CompPlastic);
 	_b3.attachPush(Materials_CompFiber);
 
-	if (PrintPause::Status == Paused)
+	if (printer.getStatus() == Paused)
 		_bBack.attachPush(ActivatePrintControl);
 	else
 		_bBack.attachPush(ActivateMaintenance);

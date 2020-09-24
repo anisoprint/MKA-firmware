@@ -339,6 +339,7 @@ void Temperature::PID_autotune(Heater *act, const float temp, const uint8_t ncyc
   int cycles = 0;
   bool heating = true;
 
+  printer.setBusyIfIdle();
   const bool oldReport = printer.isAutoreportTemp();
   printer.setAutoreportTemp(true);
 
@@ -568,6 +569,7 @@ void Temperature::PID_autotune(Heater *act, const float temp, const uint8_t ncyc
 
   LCD_MESSAGEPGM(WELCOME_MSG);
   printer.setAutoreportTemp(oldReport);
+  printer.setIdleIfBusy();
   disable_all_heaters();
 }
 
@@ -738,7 +740,7 @@ void Temperature::_temp_error(const uint8_t h, const char * const serial_msg, co
   #if ENABLED(NEXTION_HMI)
   	  	NextionHMI::RaiseEvent(HMIevent::TEMPERATURE_ERROR, h, lcd_msg);
 		#if HAS_SD_SUPPORT
-			if ((IS_SD_PRINTING()) && (PrintPause::Status==PrintPauseStatus::NotPaused)) {
+			if ((IS_SD_PRINTING()) && (printer.getStatus()==Printing)) {
 				PrintPause::PausePrint();
 			}
 		#endif

@@ -60,7 +60,7 @@ void StateTemperature::Set_Push(void* ptr) {
 		}
 	}
 
-	if (PrintPause::Status==Paused)
+	if (printer.getStatus()==Paused)
 	{
 	    const millis_l nozzle_timeout = (millis_l)(PAUSE_PARK_NOZZLE_TIMEOUT_MANUAL) * 1000UL;
 	    heaters[NextionHMI::pageData].start_idle_timer(nozzle_timeout);

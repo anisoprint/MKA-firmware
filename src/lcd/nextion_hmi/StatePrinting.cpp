@@ -72,9 +72,9 @@ void StatePrinting::Pause_Push(void* ptr) {
 
     	const float retract = PrintPause::RetractDistance;
 
-    	switch (PrintPause::Status)
+    	switch (printer.getStatus())
     	{
-			case NotPaused:
+			case Printing:
 				PrintPause::PausePrint();
 				break;
 			case WaitingToPause:
@@ -161,7 +161,7 @@ void StatePrinting::Activate() {
 		_pFileIcon.setPic(NEX_ICON_FILE_GCODE_AURA);
 	}
 
-	switch(PrintPause::Status)
+	switch(printer.getStatus())
 	{
 	case WaitingToPause:
 		OnEvent(HMIevent::PRINT_PAUSE_SCHEDULED, 0);
@@ -231,7 +231,7 @@ void StatePrinting::DrawUpdate() {
 			  _previousLayer = printer.currentLayer;
         }
 
-		if (PrintPause::Status!=PrintPauseStatus::WaitingToPause)
+		if (printer.getStatus()!=WaitingToPause)
 		{
 			// Estimate End Time
 			ZERO(NextionHMI::buffer);
@@ -282,7 +282,7 @@ void StatePrinting::DoneMessage_OK(void* ptr) {
 }
 
 void StatePrinting::Control_Push(void* ptr) {
-	if (PrintPause::Status!=Resuming)
+	if (printer.getStatus()!=Resuming)
 	StateMenu::ActivatePrintControl();
 }
 

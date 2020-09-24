@@ -118,6 +118,8 @@ uint16_t  Printer::mk_2_flag      = 0; // For various
 int8_t   Printer::json_autoreport_mode = -1;
 uint8_t   Printer::json_autoreport_interval = 2;
 
+PrinterStatus Printer::status = Busy;
+
 /**
  * Public Function
  */
@@ -326,6 +328,7 @@ void Printer::setup() {
 		StateStatus::Activate();
 	}
   #endif
+  setStatus(Idle);
 
   #if FAN_COUNT > 0
     LOOP_FAN() fans[f].setSpeed(0);
@@ -360,7 +363,7 @@ void Printer::loop() {
       sdStorage.setAbortSDprinting(false);
 
 	  #if ENABLED(NEXTION_HMI)
-    	  PrintPause::Status = Resuming; //to prevent pausing
+    	  printer.setStatus(Busy); //to prevent pausing
       	  NextionHMI::RaiseEvent(PRINT_CANCELLING);
 	  #endif
 
@@ -402,7 +405,7 @@ void Printer::loop() {
       print_job_counter.stop();
 	  #if ENABLED(NEXTION_HMI)
 		NextionHMI::RaiseEvent(PRINT_CANCELLED);
-		PrintPause::Status = NotPaused;
+		printer.setStatus(Idle);
 		PrintPause::SdPrintingPaused = false;
 		NextionHMI::RaiseEvent(NONE);
 	  #endif
@@ -529,6 +532,7 @@ void Printer::clean_up_after_endstop_or_probe_move()  { bracket_probe_move(false
 void Printer::kill(const char* lcd_msg) {
   SERIAL_LM(ER, MSG_ERR_KILLED);
 
+  printer.setStatus(Halted);
   thermalManager.disable_all_heaters();
   stepper.disable_all_steppers();
 
@@ -612,6 +616,7 @@ void Printer::Stop() {
   if (isRunning()) {
     setRunning(false);
     SERIAL_LM(ER, MSG_ERR_STOPPED);
+    printer.setStatus(Halted);
 
     SERIAL_STR(PAUSE);
     SERIAL_EOL();
@@ -698,7 +703,7 @@ void Printer::idle(const bool ignore_stepper_queue/*=false*/) {
     #define MOVE_AWAY_TEST !did_pause_print
   #else
 	#if ENABLED(NEXTION_HMI)
-      #define MOVE_AWAY_TEST (PrintPause::Status==NotPaused)
+      #define MOVE_AWAY_TEST (printer.getStatus()!=Paused)
 	#else
       #define MOVE_AWAY_TEST true
 	#endif
@@ -976,7 +981,7 @@ void Printer::handle_safety_watch() {
   static watch_t safety_watch(30 * 60 * 1000UL);
 
   #if ENABLED(NEXTION_HMI)
-	#define PRINT_IS_PAUSED (PrintPause::Status==Paused)
+	#define PRINT_IS_PAUSED (printer.getStatus()==Paused)
   #else
 	#define PRINT_IS_PAUSED false
   #endif
@@ -1285,9 +1290,37 @@ void Printer::clean_tuned_parameters() {
 #if ENABLED(JSON_OUTPUT)
 
   char Printer::get_status_character(){
-    return  print_job_counter.isRunning() ? 'P'   // Printing
-          : print_job_counter.isPaused()  ? 'A'   // Paused / Stopped
-          :                                 'I';  // Idle
+	char status_char = ' ';
+	switch (status) {
+		case Busy:
+			status_char = 'B';
+			break;
+		case Idle:
+			status_char = 'I';
+			break;
+		case Printing:
+			status_char = 'P';
+			break;
+		case WaitingToPause:
+			status_char = 'P';
+			break;
+		case Pausing:
+			status_char = 'D';
+			break;
+		case Paused:
+			status_char = 'S';
+			break;
+		case Resuming:
+			status_char = 'R';
+			break;
+		case Halted:
+			status_char = 'H';
+			break;
+		case PrintFinished:
+			status_char = 'W';
+			break;
+	}
+	return status_char;
   }
 
   void Printer::reportStatusJson(uint8_t type) {

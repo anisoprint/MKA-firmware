@@ -41,6 +41,7 @@ inline void gcode_M530(void) {
   {
 	  if (parser.seen('S') && parser.value_bool()) {
 		print_job_counter.start();
+		printer.setStatus(Printing);
 
 		SERIAL_MSG("Start Printing");
 		if (parser.seen('L')) printer.maxLayer = parser.longval('L');
@@ -66,6 +67,7 @@ inline void gcode_M530(void) {
 	  }
 	  else {
 		print_job_counter.stop();
+		printer.setStatus(Idle);
 		SERIAL_EM("Stop Printing");
 
 		#if ENABLED(STOP_GCODE)

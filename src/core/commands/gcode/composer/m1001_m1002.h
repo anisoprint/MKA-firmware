@@ -44,7 +44,7 @@ inline void gcode_M1001(void) {
 inline void gcode_M1002(void) {
 #if ENABLED(NEXTION_HMI)
 	tools.printing_with_fiber = false;
-	if (PrintPause::Status==WaitingToPause)
+	if (printer.getStatus()==WaitingToPause)
 	{
 		Serial.println("M1002 Pausing");
 	    PrintPause::PausePrint();

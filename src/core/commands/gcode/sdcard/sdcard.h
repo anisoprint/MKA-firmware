@@ -101,9 +101,9 @@
     #endif
 
 	#if ENABLED(NEXTION_HMI)
-      if (PrintPause::Status==WaitingToPause || PrintPause::Status==Paused)
+      if (printer.getStatus()==WaitingToPause || printer.getStatus()==Paused)
     	  PrintPause::ResumePrint();
-      else if (PrintPause::Status==NotPaused)
+      else if (printer.getStatus()==Idle)
       {
     		sdStorage.startSelectedFilePrint(s);
       }

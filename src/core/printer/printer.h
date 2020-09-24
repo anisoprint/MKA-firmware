@@ -92,6 +92,18 @@ enum MK4duoBusyState {
       
 extern const char axis_codes[NUM_AXIS];
 
+enum PrinterStatus {
+	Busy,
+	Idle,
+	Printing,
+	WaitingToPause,
+	Pausing,
+	Paused,
+	Resuming,
+	Halted,
+	PrintFinished
+};
+
 class Printer {
 
   public: /** Constructor */
@@ -149,6 +161,8 @@ class Printer {
 
     static int8_t   json_autoreport_mode;
     static uint8_t   json_autoreport_interval;
+
+    static PrinterStatus status;
 
     #if ENABLED(IDLE_OOZING_PREVENT)
       static millis_l axis_last_activity;
@@ -323,6 +337,18 @@ class Printer {
     FORCE_INLINE static void enableJsonAutoreport(int8_t mode, uint8_t interval) {
     	json_autoreport_interval = interval > 1 ? interval : 1;
     	json_autoreport_mode = mode;
+    }
+
+    FORCE_INLINE static PrinterStatus getStatus() { return status; }
+
+    FORCE_INLINE static void setBusyIfIdle() { if (status == Idle) setStatus(Busy); }
+    FORCE_INLINE static void setIdleIfBusy() { if (status == Busy) setStatus(Idle); }
+
+    FORCE_INLINE static void setStatus(PrinterStatus newStatus) {
+    	char oldStatusChar = get_status_character();
+    	status = newStatus;
+    	char newStatusChar = get_status_character();
+    	if (oldStatusChar!=newStatusChar) SERIAL_LV(STATUS,newStatusChar);
     }
 
 

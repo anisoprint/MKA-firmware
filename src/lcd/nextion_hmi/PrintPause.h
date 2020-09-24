@@ -10,9 +10,6 @@
 
 #if ENABLED(NEXTION_HMI)
 
-
-enum PrintPauseStatus {NotPaused, WaitingToPause, Pausing, Paused, Resuming };
-
 namespace PrintPause {
 
   extern float LoadDistance[DRIVER_EXTRUDERS];
@@ -23,7 +20,6 @@ namespace PrintPause {
 
   extern bool CanPauseNow;
   extern bool SdPrintingPaused;
-  extern PrintPauseStatus Status;
 
   void DoPauseExtruderMove(AxisEnum axis, const float &length, const float fr);
 
