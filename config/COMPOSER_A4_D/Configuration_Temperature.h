@@ -95,9 +95,9 @@
 #define THERMISTOR_SERIES_RS 4700.0
 
 // User Sensor
-#define T9_NAME   "User Sensor"
-#define T9_R25    100000.0  // Resistance in Ohms @ 25Â°C
-#define T9_BETA     4036.0  // Beta Value (K)
+#define T9_NAME   "NCP21WF104J03RA"
+#define T9_R25    100000.0  // Resistance in Ohms @ 25°C
+#define T9_BETA     4275.0  // Beta Value (K)
 
 // Enable this for support DHT sensor for temperature e Humidity DHT11, DHT21 or DHT22.
 //#define DHT_SENSOR

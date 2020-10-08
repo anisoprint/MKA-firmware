@@ -22,7 +22,7 @@ function PackFirmware ($modelListFile, $model, $fwVersion) {
     }
 
     $currentTime = Get-Date -Format "dd-MM-yyyy_HHmm"
-    $archiveName = ".\Output\" + $model + "_" + $fwVersion + "_" + $currentTime + ".fw2"
+    $archiveName = ".\Output\" + "MKA_" + $fwVersion + "_" + $model + "_" + $currentTime + ".fw2"
 
     Compress-Archive -Path $archive -DestinationPath $archiveName
     Remove-Item -LiteralPath $model -Force -Recurse
