@@ -155,6 +155,7 @@ class Temperature {
     static void _temp_error(const uint8_t h, const char * const serial_msg, const char * const lcd_msg);
     static void min_temp_error(const uint8_t h);
     static void max_temp_error(const uint8_t h);
+    static void sensor_temp_error(const uint8_t h);
 
     #if HAS_THERMALLY_PROTECTED_HEATER
 

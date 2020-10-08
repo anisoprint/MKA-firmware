@@ -53,7 +53,7 @@ class TemperatureSensor {
   public: /** Public Function */
 
     void CalcDerivedParameters();
-    float getTemperature();
+    float getTemperature(bool& sensor_error);
 
   private: /** Private Function */
 

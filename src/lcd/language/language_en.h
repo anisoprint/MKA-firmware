@@ -1386,6 +1386,9 @@
 #ifndef MSG_AD595
   #define MSG_AD595                           _UxGT("AD595 Offset & Gain")
 #endif
+#ifndef MSG_ERR_TEMPSENSOR
+  #define MSG_ERR_TEMPSENSOR                  _UxGT("Error: Can't read temperature")
+#endif
 #ifndef MSG_ERR_MAXTEMP
   #define MSG_ERR_MAXTEMP                     _UxGT("Error: MAXTEMP triggered")
 #endif

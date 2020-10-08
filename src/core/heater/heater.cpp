@@ -43,16 +43,17 @@
   void Heater::init() {
 
     // Reset valor
-    soft_pwm               = 0;
-    pwm_pos                = 0;
-    target_temperature     = 0;
-    target_temp_nocorr     = 0;
-    temperature_correction = 0;
-    current_temperature    = 25.0;
-    sensor.raw             = 0;
-    last_temperature       = 0.0;
-    temperature_1s         = 0.0;
-    consecutive_error_temp = 0;
+    soft_pwm                 = 0;
+    pwm_pos                  = 0;
+    target_temperature       = 0;
+    target_temp_nocorr       = 0;
+    temperature_correction   = 0;
+    current_temperature      = 25.0;
+    sensor.raw               = 0;
+    last_temperature         = 0.0;
+    temperature_1s           = 0.0;
+    consecutive_error_temp   = 0;
+    consecutive_error_sensor = 0;
 
     #if WATCH_THE_HEATER
       watch_target_temp   = 0;

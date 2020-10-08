@@ -90,7 +90,7 @@ const uint8_t Cr0ReadMask = 0b11011101;
 namespace MAX31865 {
 
 	bool Initialize(max31865_numwires_t wires, const pin_t cs_pin);
-	float ReadTemperature(const pin_t cs_pin);
+	float ReadTemperature(const pin_t cs_pin, bool& sensor_error);
 }
 
 #endif
