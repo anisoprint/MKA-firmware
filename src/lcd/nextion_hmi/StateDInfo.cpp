@@ -52,9 +52,9 @@ void StateDInfo::TouchUpdate() {
 void StateDInfo::DrawUpdate() {
 	ZERO(NextionHMI::buffer);
 
-	bool Xe = READ(X_MIN_PIN)^endstops.isLogic(X_MIN);
-	bool Ye = READ(Y_MIN_PIN)^endstops.isLogic(Y_MIN);
-	bool Ze = READ(Z_MAX_PIN)^endstops.isLogic(Z_MAX);
+	bool Xe = (X_HOME_DIR < 0) ? READ(X_MIN_PIN)^endstops.isLogic(X_MIN) : READ(X_MAX_PIN)^endstops.isLogic(X_MAX);
+	bool Ye = (Y_HOME_DIR < 0) ? READ(Y_MIN_PIN)^endstops.isLogic(Y_MIN) : READ(Y_MAX_PIN)^endstops.isLogic(Y_MAX);
+	bool Ze = (Z_HOME_DIR < 0) ? READ(Z_MIN_PIN)^endstops.isLogic(Z_MIN) : READ(Z_MAX_PIN)^endstops.isLogic(Z_MAX);
 
 	sprintf_P(NextionHMI::buffer, PSTR(MSG_DEBUG_INFO), \
 			LOGICAL_X_POSITION(mechanics.current_position[X_AXIS]), LOGICAL_Y_POSITION(mechanics.current_position[Y_AXIS]), LOGICAL_Z_POSITION(mechanics.current_position[Z_AXIS]), \
