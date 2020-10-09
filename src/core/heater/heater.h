@@ -133,7 +133,7 @@
     		  consecutive_error_temp = 0;
     	  }
     	  consecutive_error_sensor = sensor_error ? consecutive_error_sensor + 1 : 0;
-    	  if (consecutive_error_sensor>=MAX_CONSECUTIVE_ERROR_TEMP) return false;
+    	  if (consecutive_error_sensor>=MAX_CONSECUTIVE_ERROR_SENSOR) return false;
     	  return true;
       }
 
