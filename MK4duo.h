@@ -186,6 +186,9 @@ typedef int8_t    pin_t;
 #include "src/lcd/nextion_hmi/StateDInfo.h"
 #include "src/lcd/nextion_hmi/StateEditNumber.h"
 
+// Network bridge modules
+#include "src/network-bridge/NetBridgeManager.h"
+
 // SD modules
 #include "src/sd/sdcard.h"
 #include "src/sd/sdstorage.h"

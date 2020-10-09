@@ -79,6 +79,7 @@
 
 #include "../lcd/sanitycheck.h"
 #include "../sd/sanitycheck.h"
+#include "../network-bridge/sanitycheck.h"
 
 #include "../feature/laser/sanitycheck.h"
 #include "../feature/cncrouter/sanitycheck.h"

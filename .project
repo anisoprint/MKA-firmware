@@ -59,7 +59,7 @@
 		<link>
 			<name>libraries/SdFat</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/SdFat/1.1.2</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/SdFat/1.1.4</locationURI>
 		</link>
 		<link>
 			<name>libraries/SerialTransfer</name>
