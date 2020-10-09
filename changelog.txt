@@ -1,3 +1,8 @@
+v1.0.1
+[Added] Error in now displayed in case of temperature sensor converter failure
+[Fixed] Incorrect endstop states on the Debug info screen for Composer A3 
+[Fixed] Issues with print pause after cancellation of print during fiber layup
+
 v1.0.0a
 [Added] Printhead and buildplate temperatures can now be adjusted during printing through Control-Tune menu
 [Added] Nozzle cooling fan speed can now be adjusted during printing through Control-Tune menu

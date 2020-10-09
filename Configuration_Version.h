@@ -24,7 +24,7 @@
 #define _CONFIGURATION_VERSION_H_
 
 #define FIRMWARE_NAME "MKA"
-#define SHORT_BUILD_VERSION "1.0.0a"
+#define SHORT_BUILD_VERSION "1.0.1"
 #define BUILD_VERSION FIRMWARE_NAME "_" SHORT_BUILD_VERSION
 #define STRING_DISTRIBUTION_DATE __DATE__ " " __TIME__    // build date and time
 // It might also be appropriate to define a location where additional information can be found
