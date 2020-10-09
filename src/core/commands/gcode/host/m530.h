@@ -68,6 +68,7 @@ inline void gcode_M530(void) {
 	  else {
 		print_job_counter.stop();
 		printer.setStatus(Idle);
+		printer.clean_after_print();
 		SERIAL_EM("Stop Printing");
 
 		#if ENABLED(STOP_GCODE)

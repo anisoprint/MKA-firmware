@@ -112,6 +112,8 @@ bool readRTD(uint16_t &rtd, const pin_t cs_pin) {
 	  else if (f & MAX31865_FAULT_LOWTHRESH) SERIAL_LMV(ER,PSTR("MAX31865 error - RDT low resistance - "), cs_pin);
 	  else SERIAL_LMV(ER,PSTR("MAX31865 hardware error - "), cs_pin);
 	  clearFault(cs_pin);
+	  rtd >>= 1;
+	  return false;
   }
 
   // remove fault
@@ -132,8 +134,10 @@ bool MAX31865::Initialize(max31865_numwires_t wires, const pin_t cs_pin) {
 	return true;
 }
 
-float MAX31865::ReadTemperature(const pin_t cs_pin) {
+float MAX31865::ReadTemperature(const pin_t cs_pin, bool& sensor_error) {
 	  // http://www.analog.com/media/en/technical-documentation/application-notes/AN709_0.pdf
+
+      sensor_error = false;
 
 	  float RTDnominal = RTD_RNOMINAL;
 	  float refResistor = RTD_RREF;
@@ -141,7 +145,7 @@ float MAX31865::ReadTemperature(const pin_t cs_pin) {
 	  float Z1, Z2, Z3, Z4, Rt, temp;
 
 	  uint16_t rtd;
-	  if (!readRTD(rtd, cs_pin)) return 1000;
+	  if (!readRTD(rtd, cs_pin)) sensor_error = true;
 
 	  Rt = rtd;
 	  Rt /= 32768;

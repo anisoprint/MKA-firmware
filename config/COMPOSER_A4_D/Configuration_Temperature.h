@@ -120,7 +120,8 @@
  ******************************************************************************************************/
 // The number of consecutive low temperature errors that can occur
 // before a min/max temp error is triggered. (Shouldn't be more than 10.)
-#define MAX_CONSECUTIVE_ERROR_TEMP 6
+#define MAX_CONSECUTIVE_ERROR_TEMP    6
+#define MAX_CONSECUTIVE_ERROR_SENSOR  10
 
 // Temperature must be close to target for this long before M109-M190-M191-M192 returns success
 #define TEMP_RESIDENCY_TIME 10  // (seconds)

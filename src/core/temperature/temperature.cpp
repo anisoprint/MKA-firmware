@@ -227,7 +227,10 @@ void Temperature::spin() {
     Heater *act = &heaters[h];
 
     // Update Current Temperature
-    act->updateCurrentTemperature();
+    if (!act->updateCurrentTemperature() && act->isON())
+    {
+      sensor_temp_error(act->ID);
+    }
 
 	#ifdef COMPOSER_TEST
     if (act->current_temperature > act->maxtemp) max_temp_error(act->ID);
@@ -786,6 +789,10 @@ void Temperature::max_temp_error(const uint8_t h) {
     #endif
     default: break;
   }
+}
+
+void Temperature::sensor_temp_error(const uint8_t h) {
+  _temp_error(h, PSTR(MSG_T_TEMPSENSORERROR), PSTR(MSG_ERR_TEMPSENSOR));
 }
 
 #if HAS_THERMALLY_PROTECTED_HEATER

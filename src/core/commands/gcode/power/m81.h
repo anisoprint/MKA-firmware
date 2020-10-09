@@ -35,6 +35,7 @@
  */
 inline void gcode_M81(void) {
   thermalManager.disable_all_heaters();
+  printer.clean_after_print();
   stepper.finish_and_disable();
   printer.setStatus(Halted);
 

@@ -386,7 +386,7 @@ void Printer::loop() {
       if(needCut) tools.cut_fiber();
 
       //Reset parameters that were tuned during the print
-      clean_tuned_parameters();
+      clean_after_print();
 
       // Auto home
       #if Z_HOME_DIR > 0
@@ -535,6 +535,7 @@ void Printer::kill(const char* lcd_msg) {
   printer.setStatus(Halted);
   thermalManager.disable_all_heaters();
   stepper.disable_all_steppers();
+  printer.clean_after_print();
 
   #if ENABLED(KILL_METHOD) && (KILL_METHOD == 1)
     HAL::resetHardware();
@@ -594,6 +595,7 @@ void Printer::Stop() {
   #endif
 
   thermalManager.disable_all_heaters();
+  printer.clean_after_print();
 
   #if ENABLED(PROBING_FANS_OFF)
     LOOP_FAN() {
@@ -1189,7 +1191,7 @@ void Printer::setDebugLevel(const uint8_t newLevel) {
 /**
  * Clean parameters, that were tuned during print after print was finished/cancelled
  */
-void Printer::clean_tuned_parameters() {
+void Printer::clean_after_print() {
 
     mechanics.feedrate_percentage = 100;  // 100% mechanics.feedrate_mm_s
     tools.flow_percentage[E_AXIS-XYZ] = 100;
@@ -1218,6 +1220,8 @@ void Printer::clean_tuned_parameters() {
 	#if HAS_FAN2
 		fans[FAN2_INDEX].speed_correction = 0;
 	#endif
+
+	tools.printing_with_fiber = false;
 }
 
 #if ENABLED(HOST_KEEPALIVE_FEATURE)

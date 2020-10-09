@@ -553,7 +553,7 @@ void Commands::get_serial() {
 				#if ENABLED(NEXTION_HMI)
 					NextionHMI::RaiseEvent(HMIevent::SD_PRINT_FINISHED);
 				#endif
-				printer.clean_tuned_parameters();
+				printer.clean_after_print();
         	}
         }
 

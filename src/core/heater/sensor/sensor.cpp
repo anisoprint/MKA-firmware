@@ -140,17 +140,18 @@
 
 #endif
 
-float TemperatureSensor::getTemperature() {
+float TemperatureSensor::getTemperature(bool& sensor_error) {
 
   const int16_t s_type      = type,
                 adcReading  = raw;
 
+  sensor_error = false;
   #if ENABLED(SUPPORT_MAX31865)
 	if (s_type == -4)
-	  return MAX31865::ReadTemperature(pin);
+	  return MAX31865::ReadTemperature(pin, sensor_error);
   #endif
   #if ENABLED(SUPPORT_MAX31855)
-    if (s_type == -3)
+    if (s_type == -3)/
       return 0.25 * read_max31855(pin);
   #endif
   #if ENABLED(SUPPORT_MAX6675)

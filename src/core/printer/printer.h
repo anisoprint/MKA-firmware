@@ -190,7 +190,7 @@ class Printer {
 
     static void suicide();
 
-    static void clean_tuned_parameters();
+    static void clean_after_print();
 
 	#if ENABLED(JSON_OUTPUT)
 	  static void reportStatusJson(uint8_t type);
