@@ -19,8 +19,8 @@ namespace {
 	NexObject _page = NexObject(PAGE_WIZARDZ,  0,  "wizardz");
 
 	//Variables
-	NexObject  _gcode = NexObject(PAGE_WIZARDZ,  29,  "$gc");
-	NexObject  _smallStep = NexObject(PAGE_WIZARDZ,  29,  "wizardz.$small_step");
+	NexObject  _gcode = NexObject(PAGE_WIZARDZ,  29,  "gc");
+	NexObject  _smallStep = NexObject(PAGE_WIZARDZ,  29,  "wizardz.small_step");
 
 	NexObject  _txtHeader = NexObject(PAGE_WIZARDZ,  3,  "tT");
 	NexObject  _txtCaption = NexObject(PAGE_WIZARDZ,  2,  "tC");

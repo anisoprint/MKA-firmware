@@ -19,9 +19,9 @@ namespace {
 	NexObject _page = NexObject(PAGE_TEMPERATURE,  0,  "temperature");
 
 	//Variables
-	NexObject _vMaxTemp=NexObject(PAGE_TEMPERATURE,  21,  "$maxTemp");
-	NexObject _vAutoTemp=NexObject(PAGE_TEMPERATURE,  23,  "$autoTemp");
-	NexObject _vTargetTemp=NexObject(PAGE_TEMPERATURE,  17,  "$targetTemp");
+	NexObject _vMaxTemp=NexObject(PAGE_TEMPERATURE,  21,  "maxTemp");
+	NexObject _vAutoTemp=NexObject(PAGE_TEMPERATURE,  23,  "autoTemp");
+	NexObject _vTargetTemp=NexObject(PAGE_TEMPERATURE,  17,  "targetTemp");
 
 	//Current Temperature
 	NexObject _tCurrentTemperatureValue= NexObject(PAGE_TEMPERATURE,  9,  "tCTvalue");

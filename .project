@@ -44,7 +44,7 @@
 		<link>
 			<name>libraries/ArduinoJson</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/ArduinoJson/6.15.1</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/ArduinoJson/6.16.1</locationURI>
 		</link>
 		<link>
 			<name>libraries/LiquidCrystal</name>
@@ -59,7 +59,7 @@
 		<link>
 			<name>libraries/SdFat</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/SdFat/1.1.2</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/SdFat/1.1.4</locationURI>
 		</link>
 		<link>
 			<name>libraries/SerialTransfer</name>

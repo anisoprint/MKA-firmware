@@ -17,7 +17,7 @@ namespace {
 	NexObject _page = NexObject(PAGE_MENU,  0,  "menu");
 
 	//Variables
-	NexObject _count = NexObject(PAGE_MENU,  23,   "menu.$c");
+	NexObject _count = NexObject(PAGE_MENU,  23,   "menu.c");
 
 	//Buttons
 	NexObject _b1 = NexObject(PAGE_MENU,  1,   "b1");

@@ -20,9 +20,9 @@ namespace {
 	NexObject _page = NexObject(PAGE_MOVEMENT,  0,  "movement");
 
 	//Variables
-	NexObject  _gcode = NexObject(PAGE_MOVEMENT,  29,  "$gc");
-	NexObject  _mode = NexObject(PAGE_MOVEMENT,  29,  "movement.$md");
-	NexObject  _fan = NexObject(PAGE_MOVEMENT,  35,  "movement.$fan");
+	NexObject  _gcode = NexObject(PAGE_MOVEMENT,  29,  "gc");
+	NexObject  _mode = NexObject(PAGE_MOVEMENT,  29,  "movement.md");
+	NexObject  _fan = NexObject(PAGE_MOVEMENT,  35,  "movement.fan");
 
 	//Control
 	NexObject _bMovementAplus  = NexObject(PAGE_MOVEMENT,  15,  "bAp");

@@ -6914,7 +6914,7 @@ environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.MCU/oper
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.MCU/value=cortex-m3
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.PATH/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.PATH/operation=replace
-environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.PATH/value=C\:\\Users\\Avazar\\git\\MKA\\COMPOSER_A4_v1.0
+environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.PATH/value=C\:\\Users\\Avazar\\source\\repos\\MKA\\COMPOSER_A4_v1.0
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.PID/delimiter=;
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.PID/operation=replace
 environment/project/io.sloeber.core.toolChain.release.918675551/A.BUILD.PID/value=0x003e

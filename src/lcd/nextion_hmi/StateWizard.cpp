@@ -36,10 +36,10 @@ namespace {
 	NexObject _page = NexObject(PAGE_WIZARD,  0,  "wizard");
 
 	//Variables
-	NexObject _head = NexObject(PAGE_WIZARD,  14,  "wizard.$h");
-	NexObject _pic  = NexObject(PAGE_WIZARD,  23,   "wizard.$pic");
-	NexObject _text = NexObject(PAGE_WIZARD,  12,  "wizard.$text");
-	NexObject _buttonsNum = NexObject(PAGE_WIZARD,  15,  "wizard.$bn");
+	NexObject _head = NexObject(PAGE_WIZARD,  14,  "wizard.h");
+	NexObject _pic  = NexObject(PAGE_WIZARD,  23,   "wizard.pic");
+	NexObject _text = NexObject(PAGE_WIZARD,  12,  "wizard.text");
+	NexObject _buttonsNum = NexObject(PAGE_WIZARD,  15,  "wizard.bn");
 
 	//Buttons
 	NexObject _bL = NexObject(PAGE_WIZARD,  10,   "bL");
