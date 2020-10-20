@@ -185,6 +185,13 @@ class NexObject {
     void setValue(const uint16_t number, const char *pname=NULL);
 
     /**
+     * Set value of global variable
+     *
+     * @param number - To set up the data
+     */
+    void setGlobalValue(const uint16_t number);
+
+    /**
      * Add value to show.
      *
      * @param ch - channel of waveform(0-3).

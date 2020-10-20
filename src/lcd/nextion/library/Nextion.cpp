@@ -182,6 +182,19 @@
     recvRetCommandFinished();
   }
 
+  void NexObject::setGlobalValue(const uint16_t number) {
+    char buf[10] = {0};
+    String cmd;
+    utoa(number, buf, 10);
+
+    cmd += this->__name;
+    cmd += "=";
+    cmd += buf;
+
+    sendCommand(cmd.c_str());
+    recvRetCommandFinished();
+  }
+
   void NexObject::addValue(const uint8_t ch, const uint8_t number) {
     char buf[15] = {0};
     if (ch > 3) return;

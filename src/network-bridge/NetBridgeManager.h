@@ -11,6 +11,10 @@ class NetBridgeManager {
 private:
   bool _netBridgeConnected;
 
+  bool _wifiEnabled;
+  bool _wifiConnected;
+  bool _ethernetConnected;
+  bool _acConnected;
 
 public:
 	NetBridgeManager();

@@ -16,8 +16,16 @@ namespace NextionHMI {
 
 	extern NexObject headerText;
 	extern NexObject headerIcon;
-	extern NexObject sdText;
-	extern NexObject sdIcon;
+
+	extern NexObject wifiStatus;
+	extern NexObject ethernetStatus;
+	extern NexObject acStatus;
+
+	extern NexObject statusIcon0;
+	extern NexObject statusIcon1;
+	extern NexObject statusIcon2;
+
+	extern NexObject* statusIcons[];
 
 	extern uint8_t wizardData;
 	extern uint8_t pageData;
@@ -48,6 +56,8 @@ namespace NextionHMI {
 	#if HAS_SD_SUPPORT
 	void UploadFirmwareFromSD(uint8_t sd_slot);
 	#endif
+
+	void SetNetworkStatus(bool _wifiEnabled, bool _wifiConnected, bool _ethernetConnected, bool _acConnected);
 
 	void UploadFirmwareFromSerial(uint32_t tftSize, uint8_t serialPort);
 

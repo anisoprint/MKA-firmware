@@ -38,8 +38,17 @@ uint8_t  NextionHMI::lastEventArg = 0;
 
 NexObject NextionHMI::headerText = NexObject(0,  0,  "tH");
 NexObject NextionHMI::headerIcon = NexObject(0,  0,  "iH");
-NexObject NextionHMI::sdText = NexObject(0,  0,  "tSD");
-NexObject NextionHMI::sdIcon = NexObject(0,  0,  "iSD");
+
+NexObject NextionHMI::wifiStatus = NexObject(0,  0,  "wifi");
+NexObject NextionHMI::ethernetStatus = NexObject(0,  0,  "eth");
+NexObject NextionHMI::acStatus = NexObject(0,  0,  "ac");
+
+NexObject NextionHMI::statusIcon0 = NexObject(0,  0,  "iS0");
+NexObject NextionHMI::statusIcon1 = NexObject(0,  0,  "iS1");
+NexObject NextionHMI::statusIcon2 = NexObject(0,  0,  "iS2");
+
+NexObject* NextionHMI::statusIcons[] = {&NextionHMI::statusIcon0, &NextionHMI::statusIcon1, &NextionHMI::statusIcon2, nullptr};
+
 
 char NextionHMI::buffer[256] = {0};
 
@@ -311,6 +320,51 @@ void NextionHMI::ShowStartScreen(const char* header, const char* message) {
 
 void NextionHMI::SetBrightness(uint8_t brightness) {
 	setCurrentBrightness(brightness);
+}
+
+
+bool _wifiEnabled;
+bool _wifiConnected;
+bool _ethernetConnected;
+bool _acConnected;
+
+void NextionHMI::SetNetworkStatus(bool wifiEnabled, bool wifiConnected, bool ethernetConnected, bool acConnected) {
+
+	wifiStatus.setGlobalValue(wifiEnabled ? (wifiConnected ? NEX_WIFI_CONNECTED : NEX_WIFI_DISCONNECTED) : 0);
+	ethernetStatus.setGlobalValue(ethernetConnected ? 1 : 0);
+	acStatus.setGlobalValue(acConnected ? 1 : 0);
+	uint8_t statusIconsCount = 0;
+
+	if (wifiEnabled)
+	{
+		if (wifiConnected)
+		{
+			statusIcons[statusIconsCount]->setPic(NEX_ICON_WIFI_CONNECTED);
+		}
+		else
+		{
+			statusIcons[statusIconsCount]->setPic(NEX_ICON_WIFI_DISCONNECTED);
+		}
+		statusIconsCount++;
+	}
+
+	if (ethernetConnected)
+	{
+		statusIcons[statusIconsCount]->setPic(NEX_ICON_ETH_CONNECTED);
+		statusIconsCount++;
+	}
+
+	if (acConnected)
+	{
+		statusIcons[statusIconsCount]->setPic(NEX_ICON_AC_CONNECTED);
+		statusIconsCount++;
+	}
+
+	for (int i = statusIconsCount; statusIcons[i] != nullptr; i++)
+	{
+		statusIcons[i]->setPic(NEX_ICON_BLANK_HEADER);
+	}
+
 }
 
 #if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
