@@ -39,14 +39,18 @@ bool NetBridgeManager::SendCommand(const char *command,
 }
 
 NetBridgeManager::NetBridgeManager() {
-  _netBridgeConnected = false;
+  _netBridgeStatus = NotConnected;
+  _wifiEnabled = false;
+  _wifiConnected = false;
+  _ethernetConnected = false;
+  _acConnected = false;
 }
 
 bool NetBridgeManager::CheckBridgeSerialConnection() {
 	char buffer[8];
 	bool res = SendCommand("@ping", buffer, sizeof(buffer));
 	bool connected = (res && strncmp(buffer, "ok", 2)==0);
-	_netBridgeConnected = connected;
+	_netBridgeStatus = Connected;
   return connected;
 }
 
@@ -77,7 +81,7 @@ bool NetBridgeManager::GetWifiNetworks(char *responseBuffer,
 
 }
 
-bool NetBridgeManager::IsWifiConnected(bool &connected, char *responseBuffer,
+bool NetBridgeManager::GetWifiConnected(bool &connected, char *responseBuffer,
 		const uint16_t responseBufferSize) {
   bool res = SendCommand("@wifi_status", responseBuffer, responseBufferSize);
 
@@ -85,7 +89,7 @@ bool NetBridgeManager::IsWifiConnected(bool &connected, char *responseBuffer,
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
-bool NetBridgeManager::IsEthernetConnected(bool &connected,
+bool NetBridgeManager::GetEthernetConnected(bool &connected,
 		char *responseBuffer, const uint16_t responseBufferSize) {
   bool res = SendCommand("@ethernet_status", responseBuffer, responseBufferSize);
 
@@ -167,8 +171,73 @@ bool NetBridgeManager::RebootBridge() {
   return (res && strncmp(responseBuffer, "ok", 2)==0);
 }
 
-bool NetBridgeManager::IsNetBridgeConnected() {
-  return _netBridgeConnected;
+NetBridgeStatus NetBridgeManager::GetNetBridgeStatus() {
+	return _netBridgeStatus;
 }
 
+void NetBridgeManager::UpdateNetBridgeStatus(NetBridgeStatus status) {
+	_netBridgeStatus = status;
+	if (status != Connected)
+	{
+		_wifiEnabled = false;
+		_wifiConnected = false;
+		_ethernetConnected = false;
+		_acConnected = false;
+	#if ENABLED(NEXTION_HMI)
+		UpdateNextionStatusIcons();
+	#endif
+	}
 
+}
+
+bool NetBridgeManager::IsWifiEnabled() {
+	return _wifiEnabled;
+}
+
+bool NetBridgeManager::IsWifiConnected() {
+	return _wifiConnected;
+}
+
+bool NetBridgeManager::IsEthernetConnected() {
+	return _ethernetConnected;
+}
+
+bool NetBridgeManager::IsAcConnected() {
+	return _acConnected;
+}
+
+void NetBridgeManager::UpdateWifiEnabled(bool wifiEnabled) {
+	_wifiEnabled = wifiEnabled;
+#if ENABLED(NEXTION_HMI)
+	UpdateNextionStatusIcons();
+#endif
+}
+
+void NetBridgeManager::UpdateWifiConnected(bool wifiConnected) {
+	_wifiConnected = wifiConnected;
+#if ENABLED(NEXTION_HMI)
+	UpdateNextionStatusIcons();
+#endif
+}
+
+void NetBridgeManager::UpdateEthernetConnected(bool ethernetConnected) {
+	_ethernetConnected = ethernetConnected;
+#if ENABLED(NEXTION_HMI)
+	UpdateNextionStatusIcons();
+#endif
+}
+
+void NetBridgeManager::UpdateAcConnected(bool acConnected) {
+	_acConnected = acConnected;
+#if ENABLED(NEXTION_HMI)
+	UpdateNextionStatusIcons();
+#endif
+}
+
+#if ENABLED(NEXTION_HMI)
+
+void NetBridgeManager::UpdateNextionStatusIcons() {
+	NextionHMI::SetNetworkStatus(_wifiEnabled, _wifiConnected, _ethernetConnected, _acConnected);
+}
+
+#endif

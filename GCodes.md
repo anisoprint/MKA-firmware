@@ -119,4 +119,7 @@ Codes marked with * are specific for Composer MKA firmware (of their meaning dif
 | M1010* | - | Cut fiber (uses parameters set by M1011)
 | M1011* | - | Fiber cut Parameters S[servo-id] A[cut-angle] B[neutral-angle]
 | M1013* | - | Park/Unpark nozzle for heating near wipe station. R - Return from park
+| M1014* | - | Set SBC status S1 - connected, S0 - temporarily disconnected
+| M1015* | - | Set network status E[0/1] - ethernet, I[0/1] - wifi enabled, W[0/1] wifi connected, A[0/1] - Aura connect
+
 

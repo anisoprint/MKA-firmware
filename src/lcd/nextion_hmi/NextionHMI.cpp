@@ -87,6 +87,10 @@ void NextionHMI::Init() {
 	StateMovement::Init();
 	StateAbout::Init();
 	StateSettings::Init();
+
+	wifiStatus.setGlobalValue(0);
+	ethernetStatus.setGlobalValue(0);
+	acStatus.setGlobalValue(0);
 }
 
 void NextionHMI::DrawUpdate() {

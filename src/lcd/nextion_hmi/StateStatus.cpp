@@ -56,7 +56,6 @@ void StateStatus::Temperature_Push(void* ptr) {
 }
 
 void StateStatus::Print_Push(void* ptr) {
-	NextionHMI::SetNetworkStatus(true, true, true, true);
 	StateFiles::Activate(0);
 }
 
