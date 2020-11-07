@@ -4,6 +4,7 @@
 ; Firmware: MKA 1.0.0a
 ; 03.09.2020 - Andrey Azarov - Clone of 1.0.1
 ; 03.09.2020 - Andrey Azarov - Changed steps per unit for XY
+; 07.11.2020 - Andrey Azarov - Updated Load/Unload length (MKA 1.0.1)
 ;Stepper directions inversion
 M569 X0 Y1 Z1 E1 U1 V1
 ;Mechanics steps per unit:
@@ -40,9 +41,9 @@ M106 P3 U38 L1 F0 H7 I0
 ; Linear Advance:
 M900 K0.000000
 ;Filament load/unload parameters: E<Extruder> L<Load length> U<Unload length>
-M704 E0 L660.0 U990.0
-M704 E1 L1050.0 U1150.0
-M704 E2 L740.0 U1150.0
+M704 E0 L800.0 U990.0
+M704 E1 L880.0 U1150.0
+M704 E2 L1000.0 U1150.0
 ;Filament load/unload parameters: A<RetrDist> B<RetrFR> C<LoadFR> D<UnloadFR> K<ExtrudeFR>
 M704 A5.0 B10.0 C30.0 D30.0 K5.0
 ;Fiber cut parameters: S<ServoId> A<CutAngle> B<NeutralAngle>
