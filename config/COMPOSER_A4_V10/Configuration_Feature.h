@@ -180,7 +180,7 @@
 //Serial port index (0 or 1)
 #define NETWORK_BRIDGE_SERIAL 1
 //Timeout for command response, ms
-#define NETWORK_BRIDGE_TIMEOUT 1000
+#define NETWORK_BRIDGE_TIMEOUT 1500
 
 /***********************************************************************
  ************************ Volumetric extrusion *************************

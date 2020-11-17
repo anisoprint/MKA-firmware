@@ -225,12 +225,9 @@
     int8_t s = parser.seen('P') ? parser.value_int() : 0; // selected sd card
     if (!commands.get_target_sdcard(s)) return;
 
-    int32_t index = parser.seen('S') ? parser.value_long() : -1; // selected sd card
-
     char* namestartpos = parser.string_arg ; // default name position
 
-
-    sdStorage.openAndPrintFile(s, namestartpos, index);
+    sdStorage.openAndPrintFile(s, namestartpos, s);
 
   }
 

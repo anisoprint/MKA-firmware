@@ -27,6 +27,7 @@
 
   #define CODE_M1014
   #define CODE_M1015
+  #define CODE_M1016
   
  /*
   * M1014: Set SBC status S1 - connected, S0 - temporarily disconnected
@@ -50,5 +51,23 @@ inline void gcode_M1015() {
 	  if (parser.seen('I')) netBridgeManager.UpdateWifiEnabled(parser.value_bool());
 	  if (parser.seen('W')) netBridgeManager.UpdateWifiConnected(parser.value_bool());
 	  if (parser.seen('A')) netBridgeManager.UpdateAcConnected(parser.value_bool());
+}
+
+/*
+ * M1016: Send command to network bridge
+ *
+ */
+inline void gcode_M1016() {
+	char buffer[512] = {0};
+	if (netBridgeManager.SendCommand(parser.string_arg, buffer, 512))
+	{
+		SERIAL_ET(buffer);
+	}
+	else
+	{
+		SERIAL_LM(ER, "Can't send command");
+	}
+
+
 }
 

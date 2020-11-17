@@ -3080,7 +3080,10 @@ constexpr MCode_t MCode_Table [] = {
 		{1014, gcode_M1014},
 	#endif
 	#if ENABLED(CODE_M1015)
-		{1015, gcode_M1015}
+		{1015, gcode_M1015},
+	#endif
+	#if ENABLED(CODE_M1016)
+		{1016, gcode_M1016}
 	#endif
 
 };

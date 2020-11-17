@@ -12,6 +12,7 @@ NetBridgeManager netBridgeManager;
 bool NetBridgeManager::SendCommand(const char *command,
 		char *responseBuffer, uint16_t responseBufferSize) {
 
+  int8_t oldSerial = Com::serial_port_index;
   SERIAL_PORT(NETWORK_BRIDGE_SERIAL);
   SERIAL_FLUSH();
   SERIAL_ET(command);
@@ -26,7 +27,8 @@ bool NetBridgeManager::SendCommand(const char *command,
       const char serial_char = c;
       if (serial_char == '\n' || serial_char == '\r' || responseSize == responseBufferSize - 1) {
         responseBuffer[responseSize] = '\0';
-    	  return true;
+        SERIAL_PORT(oldSerial);
+    	return true;
       }
       else
       {
@@ -34,6 +36,7 @@ bool NetBridgeManager::SendCommand(const char *command,
     	  responseSize++;
       }
   }
+  SERIAL_PORT(oldSerial);
   return false;
 
 }
