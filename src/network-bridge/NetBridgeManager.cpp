@@ -243,4 +243,12 @@ void NetBridgeManager::UpdateNextionStatusIcons() {
 	NextionHMI::SetNetworkStatus(_wifiEnabled, _wifiConnected, _ethernetConnected, _acConnected);
 }
 
+bool NetBridgeManager::IsJobAwaiting() {
+	return _jobAwaiting;
+}
+
+void NetBridgeManager::UpdateJobAwaiting(bool jobAwaiting) {
+	_jobAwaiting = jobAwaiting;
+}
+
 #endif

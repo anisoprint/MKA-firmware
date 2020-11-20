@@ -351,7 +351,6 @@ class Printer {
     	if (oldStatusChar!=newStatusChar) SERIAL_LV(STATUS,newStatusChar);
     }
 
-
   private: /** Private Function */
 
     static void setup_pinout();

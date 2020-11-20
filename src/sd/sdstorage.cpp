@@ -53,6 +53,7 @@ void SdStorage::startSelectedFilePrint(uint8_t slot) {
   _completedPrintSD = -1;
   print_job_counter.start();
   printer.setStatus(Printing);
+  SERIAL_LMT(JOB, MSG_JOB_START, getActivePrintSDCard()->fileName);
 
   #if ENABLED(NEXTION_HMI)
     StatePrinting::Activate();

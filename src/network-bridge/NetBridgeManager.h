@@ -22,6 +22,8 @@ private:
     bool _ethernetConnected;
     bool _acConnected;
 
+    bool _jobAwaiting;
+
 #if ENABLED(NEXTION_HMI)
     void UpdateNextionStatusIcons();
 #endif
@@ -60,6 +62,9 @@ public:
 	void UpdateWifiConnected(bool wifiConnected);
 	void UpdateEthernetConnected(bool ethernetConnected);
 	void UpdateAcConnected(bool acConnected);
+
+	bool IsJobAwaiting();
+	void UpdateJobAwaiting(bool jobAwaiting);
 
 
 };

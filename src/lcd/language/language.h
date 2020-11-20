@@ -203,6 +203,12 @@
 #define MSG_MICROSTEP_E0                    "E0:"
 #define MSG_MICROSTEP_E1                    "E1:"
 
+#define MSG_JOB_START                  		"start:"
+#define MSG_JOB_CANCEL                  	"cancel:"
+#define MSG_JOB_FINISH                 		"finish:"
+#define MSG_JOB_PAUSE                		"pause:"
+#define MSG_JOB_RESUME                 		"resume:"
+
 // temperature.cpp strings
 #define MSG_PID_AUTOTUNE                    "PID Autotune"
 #define MSG_PID_AUTOTUNE_START              MSG_PID_AUTOTUNE " start"

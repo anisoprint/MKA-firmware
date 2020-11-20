@@ -155,6 +155,11 @@ bool PrintPause::PausePrint() {
     stepper.synchronize();
     // Indicate that the printer is paused
     printer.setStatus(Paused);
+
+    if ((SdPrintingPaused && sdStorage.isPaused())) {
+    	SERIAL_LMT(JOB, MSG_JOB_PAUSE, sdStorage.getActivePrintSDCard()->fileName);
+    }
+
     NextionHMI::RaiseEvent(PRINT_PAUSED);
 
     return true;
@@ -257,6 +262,10 @@ void PrintPause::ResumePrint(const float& purge_length) {
    printer.setWaitForUser(false);
    NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMED);
    print_job_counter.start();
+
+   if (IS_SD_PRINTING()) {
+   	SERIAL_LMT(JOB, MSG_JOB_RESUME, sdStorage.getActivePrintSDCard()->fileName);
+   }
 
    #if HAS_POWER_CONSUMPTION_SENSOR
      powerManager.startpower = powerManager.consumption_hour;

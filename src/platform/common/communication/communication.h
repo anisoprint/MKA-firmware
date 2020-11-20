@@ -35,6 +35,7 @@ class Com {
     FSTRINGVAR(tOkSpace)                  // ok space answer for host
     FSTRINGVAR(tError)                    // error for host
     FSTRINGVAR(tStatus)                   // status for host
+    FSTRINGVAR(tJob)                   // job state for host
     FSTRINGVAR(tWait)                     // wait for host
     FSTRINGVAR(tEcho)                     // message for user
     FSTRINGVAR(tConfig)                   // config for host
@@ -94,6 +95,7 @@ class Com {
 #define OKSPACE         Com::tOkSpace
 #define ER              Com::tError
 #define STATUS          Com::tStatus
+#define JOB          	Com::tJob
 #define WT              Com::tWait
 #define ECHO            Com::tEcho
 #define CFG             Com::tConfig

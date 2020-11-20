@@ -373,6 +373,7 @@ void Printer::loop() {
       #endif
 
       // Stop SD printing
+	  SERIAL_LMT(JOB, MSG_JOB_CANCEL, sdStorage.getActivePrintSDCard()->fileName);
       sdStorage.endFilePrint();
 
       // Clear all command in quee
@@ -619,6 +620,7 @@ void Printer::Stop() {
     setRunning(false);
     SERIAL_LM(ER, MSG_ERR_STOPPED);
     printer.setStatus(Halted);
+
 
     SERIAL_STR(PAUSE);
     SERIAL_EOL();

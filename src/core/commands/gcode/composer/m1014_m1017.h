@@ -28,6 +28,7 @@
   #define CODE_M1014
   #define CODE_M1015
   #define CODE_M1016
+  #define CODE_M1017
   
  /*
   * M1014: Set SBC status S1 - connected, S0 - temporarily disconnected
@@ -67,7 +68,13 @@ inline void gcode_M1016() {
 	{
 		SERIAL_LM(ER, "Can't send command");
 	}
+}
 
-
+/*
+ * M1017: Set job awaiting flag
+ *
+ */
+inline void gcode_M1017() {
+	  if (parser.seen('S')) netBridgeManager.UpdateEthernetConnected(parser.value_bool());
 }
 
