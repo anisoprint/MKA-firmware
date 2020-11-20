@@ -34,6 +34,8 @@ void SDCard::init(uint8_t pin, uint8_t spi_divisor, int8_t detect_pin) {
 	spiDivisor = spi_divisor;
 	detectPin = detect_pin;
 
+	OUT_WRITE(pin, HIGH);
+
 	autostart_index = -1;
 
 	fileSize = 0;

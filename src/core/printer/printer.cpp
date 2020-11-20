@@ -168,8 +168,6 @@ void Printer::setup() {
 
   SERIAL_L(START);
 
-  sdStorage.init();
-
   // Init TMC stepper drivers CS or Serial
   #if ENABLED(HAVE_TMC2130)
     tmc_init_cs_pins();
@@ -203,9 +201,6 @@ void Printer::setup() {
   SERIAL_EMV(MSG_PLANNER_BUFFER_BYTES, (int)sizeof(block_t)*BLOCK_BUFFER_SIZE);
 
 
-  #if HAS_SD_SUPPORT
-    sdStorage.mountAll();
-  #endif
 
   //configure hardware SPI
   HAL::spiBegin();
@@ -225,6 +220,11 @@ void Printer::setup() {
   // This also updates variables in the planner, elsewhere
 
   const bool eeprom_loaded = eeprom.Load_Settings();
+
+  #if HAS_SD_SUPPORT
+    sdStorage.init();
+	sdStorage.mountAll();
+  #endif
 
   #if ENABLED(WORKSPACE_OFFSETS)
     // Initialize current position based on home_offset
@@ -1061,25 +1061,9 @@ void Printer::setup_pinout() {
 
   #endif
 
-  #if PIN_EXISTS(SS)
-	OUT_WRITE(SS_PIN, HIGH);
-  #endif
-
-  #if PIN_EXISTS(SD0_SS)
-	OUT_WRITE(SD0_SS_PIN, HIGH);
-  #endif
-
-  #if PIN_EXISTS(SD1_SS)
-	OUT_WRITE(SD1_SS_PIN, HIGH);
-  #endif
-
   #if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
 	 SET_INPUT_PULLUP(SD_DETECT_PIN);
   #endif
-
-	#if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
-	  SET_INPUT_PULLUP(SD_DETECT_PIN);
-	#endif
 
   #if HAS_MAX6675_SS
     OUT_WRITE(MAX6675_SS_PIN, HIGH);
