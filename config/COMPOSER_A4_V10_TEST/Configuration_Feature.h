@@ -174,6 +174,13 @@
 #define CHAMBERFAN_MIN_SPEED          0
 /**************************************************************************/
 
+/**************************************************************************
+ ************************ Network bridge configuration ********************
+ **************************************************************************/
+//Serial port index (0 or 1)
+#define NETWORK_BRIDGE_SERIAL 1
+//Timeout for command response, ms
+#define NETWORK_BRIDGE_TIMEOUT 1500
 
 /***********************************************************************
  ************************ Volumetric extrusion *************************
@@ -1149,6 +1156,11 @@
 // Show extended directory including file length.
 // Don't use this with Pronterface
 //#define SD_EXTENDED_DIR
+
+// SD card fast serial upload using SerialTransfer
+// https://github.com/PowerBroker2/SerialTransfer
+// (M29.1 P[sd slot] S[file size] [filename])
+#define M28_FAST_UPLOAD
 
 // Decomment this if you have external SD without DETECT_PIN
 #define SD_DISABLED_DETECT
@@ -2254,7 +2266,7 @@
  * Type 5 reports the current machine configuration.                                     *
  *                                                                                       *
  *****************************************************************************************/
-//#define JSON_OUTPUT
+#define JSON_OUTPUT
 /*****************************************************************************************/
 
 

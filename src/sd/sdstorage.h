@@ -13,6 +13,10 @@ class SdStorage {
 
 public: /** Public Parameters */
 
+	pin_t pins[SD_COUNT];
+	pin_t detect_pins[SD_COUNT];
+	uint8_t spi_speed_divisors[SD_COUNT];
+
 	SDCard cards[SD_COUNT];
 
 private: /** Private Parameters */

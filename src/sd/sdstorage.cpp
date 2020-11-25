@@ -10,9 +10,9 @@
 SdStorage sdStorage;
 
 void SdStorage::init() {
-	cards[0].init(SD0_SS_PIN, SD0_SPEED_DIVISOR, SD_DETECT_PIN);
+	cards[0].init(pins[0], spi_speed_divisors[0], detect_pins[0]);
 	#if SD_COUNT>1
-	cards[1].init(SD1_SS_PIN, SD1_SPEED_DIVISOR, SD_DETECT_PIN_1);
+	cards[1].init(pins[1], spi_speed_divisors[1], detect_pins[1]);
 	#endif
 	_activePrintSD = -1;
 	_completedPrintSD = -1;

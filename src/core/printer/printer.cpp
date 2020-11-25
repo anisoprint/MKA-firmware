@@ -1061,10 +1061,6 @@ void Printer::setup_pinout() {
 
   #endif
 
-  #if HAS_SD_SUPPORT && PIN_EXISTS(SD_DETECT)
-	 SET_INPUT_PULLUP(SD_DETECT_PIN);
-  #endif
-
   #if HAS_MAX6675_SS
     OUT_WRITE(MAX6675_SS_PIN, HIGH);
   #endif

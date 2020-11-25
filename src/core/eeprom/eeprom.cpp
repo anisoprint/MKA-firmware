@@ -51,7 +51,7 @@
 
 /**
  *
- * MKA12 EEPROM Layout:
+ * MKA13 EEPROM Layout:
  *
  * ****************************** CONST *********************************
  *  Serial Number												(char x10)
@@ -147,6 +147,10 @@
  *
  *  TOOL_CHANGE:
  *  M217         		  tools.switch_tool_path			 (24*(3*float+bool))
+ *
+ *  SD_CARDS:
+ *  M39 UDC				  SD card parameters			     (int8_t, int8_t, uint8_t) x2
+ *
  */
 
  char    EEPROM::printerSN[17] = "";   // max. 16 chars + 0
@@ -637,6 +641,20 @@ void EEPROM::Postprocess() {
     	EEPROM_WRITE(tools.hotend_switch_path);
     #endif
 
+    // SD cards
+
+	#if HAS_SD_SUPPORT
+      EEPROM_WRITE(sdStorage.pins[0]);
+      EEPROM_WRITE(sdStorage.detect_pins[0]);
+      EEPROM_WRITE(sdStorage.spi_speed_divisors[0]);
+	#if SD_COUNT>1
+      EEPROM_WRITE(sdStorage.pins[1]);
+      EEPROM_WRITE(sdStorage.detect_pins[1]);
+      EEPROM_WRITE(sdStorage.spi_speed_divisors[1]);
+	#endif
+	#endif
+
+
         if (!eeprom_error) {
           const int eeprom_size = eeprom_index;
 
@@ -813,6 +831,19 @@ void EEPROM::Postprocess() {
 
 			#if ENABLED(EG6_EXTRUDER)
 				EEPROM_READ(tools.hotend_switch_path);
+			#endif
+
+			// SD cards
+
+		    #if HAS_SD_SUPPORT
+				EEPROM_READ(sdStorage.pins[0]);
+				EEPROM_READ(sdStorage.detect_pins[0]);
+				EEPROM_READ(sdStorage.spi_speed_divisors[0]);
+			#if SD_COUNT>1
+				EEPROM_READ(sdStorage.pins[1]);
+				EEPROM_READ(sdStorage.detect_pins[1]);
+				EEPROM_READ(sdStorage.spi_speed_divisors[1]);
+			#endif
 			#endif
 
 			#if HAS_EEPROM_SD
@@ -2518,6 +2549,19 @@ void EEPROM::Factory_Settings() {
   PrintPause::LoadFeedrate = PAUSE_PARK_LOAD_FEEDRATE;
   PrintPause::UnloadFeedrate = PAUSE_PARK_UNLOAD_FEEDRATE;
   PrintPause::ExtrudeFeedrate = PAUSE_PARK_EXTRUDE_FEEDRATE;
+
+#endif
+
+#if HAS_SD_SUPPORT
+  sdStorage.pins[0] = SD0_SS_PIN;
+  sdStorage.detect_pins[0] = SD_DETECT_PIN;
+  sdStorage.spi_speed_divisors[0] = SD0_SPEED_DIVISOR;
+
+#if SD_COUNT>1
+  sdStorage.pins[1] = SD1_SS_PIN;
+  sdStorage.detect_pins[1] = SD_DETECT_PIN;
+  sdStorage.spi_speed_divisors[1] = SD1_SPEED_DIVISOR;
+#endif
 
 #endif
 

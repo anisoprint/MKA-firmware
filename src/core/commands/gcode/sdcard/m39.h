@@ -31,15 +31,46 @@
   //#define CODE_M39
 
   /**
-   * M39: List SD card to serial output
+   * M39: Set SD card parameters
    *
    *   P<index>  SD card slot index, if more than one card
-   *   U<int>    Fan Pin
+   *   U<int>    SPI SS Pin
    *   D<int>    SPI frequency divisor
+   *   C<int>	 SD Detect Pin
    *
    */
   inline void gcode_M39(void) {
-    //Not implemented
+	  int8_t slot = parser.seen('P') ? parser.value_int() : 0; // selected sd card
+	  if (!commands.get_target_sdcard(slot)) return;
+
+	  if (parser.seen('U')) {
+	     pin_t new_ss_pin = parser.value_pin();
+	     if (new_ss_pin != sdStorage.pins[slot])
+	     {
+	     	sdStorage.pins[slot] = new_ss_pin;
+            SERIAL_LM(ECHO, MSG_CHANGE_PIN);
+	     }
+	  }
+
+	  if (parser.seen('D')) {
+	     pin_t new_ss_div = parser.value_byte();
+	     if (new_ss_div != sdStorage.spi_speed_divisors[slot])
+	     {
+	     	sdStorage.spi_speed_divisors[slot] = new_ss_div;
+	     }
+	  }
+
+	  if (parser.seen('C')) {
+	     pin_t new_detect_pin = parser.value_pin();
+	     if (new_detect_pin != sdStorage.detect_pins[slot])
+	     {
+	     	sdStorage.detect_pins[slot] = new_detect_pin;
+            SERIAL_LM(ECHO, MSG_CHANGE_PIN);
+	     }
+	  }
+
+
+
   }
 
 
