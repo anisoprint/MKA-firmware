@@ -219,7 +219,7 @@ void Printer::setup() {
   // Load data from EEPROM if available (or use defaults)
   // This also updates variables in the planner, elsewhere
 
-  const bool eeprom_loaded = eeprom.Load_Settings();
+  const bool sys_eeprom_loaded = eeprom.Load_Settings();
 
   #if HAS_SD_SUPPORT
     sdStorage.init();
@@ -316,10 +316,13 @@ void Printer::setup() {
   setRunning(true);
 
   #if ENABLED(DELTA_HOME_ON_POWER) || ENABLED(HOME_ON_POWER)
+  if (sys_eeprom_loaded)
+  {
     mechanics.home();
 	#if ENABLED(EG6_EXTRUDER)
     	tools.change(0, 0, false, true);
 	#endif
+  }
   #endif
 
   #if ENABLED(NEXTION_HMI)
@@ -334,7 +337,7 @@ void Printer::setup() {
     LOOP_FAN() fans[f].setSpeed(0);
   #endif
 
-  if (!eeprom_loaded) lcd_eeprom_allert();
+  if (!sys_eeprom_loaded) lcd_eeprom_allert();
 
   #if HAS_SD_RESTART
     restart.do_print_job();

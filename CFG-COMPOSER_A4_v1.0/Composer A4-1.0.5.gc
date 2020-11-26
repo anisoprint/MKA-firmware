@@ -1,4 +1,4 @@
-;SC11
+;SC12
 ;00000
 ; Anisoprint Composer A4 version 1.0.4 system configuration
 ; Firmware: MKA 0.9.4a
@@ -7,6 +7,7 @@
 ; 29.11.2019 - Andrey Azarov - Added stepper directions (MKA 0.9.4a)
 ; 03.03.2019 - Andrey Azarov - Changed max. extruder temperature to 270°C (MKA 1.0.0)
 ; 04.10.2020 - Andrey Azarov - Cloned from 1.0.4, changed max feedrates, toolchange feedrates
+; 26.11.2020  - Andrey Azarov - Added SD card settings (MKA 1.1.0)
 ;Stepper directions inversion
 M569 X0 Y0 Z1 E1 U1 V1
 ;Mechanics steps per unit:
@@ -73,4 +74,7 @@ M217 T1 S8 X0.00 Y0.00 V0.00 K0
 M217 T1 S9 X0.00 Y0.00 V0.00 K0
 M217 T1 S10 X0.00 Y0.00 V0.00 K0
 M217 T1 S11 X0.00 Y0.00 V0.00 K0
+;SD cardreader parameters: P<slot> U<pin> D<spi speed div> C<detect pin>
+M39 P0 U59 D21 C-1
+M39 P1 U62 D8 C-1
  

@@ -28,7 +28,7 @@
 
 #if HAS_SD_SUPPORT
 
-  //#define CODE_M39
+  #define CODE_M39
 
   /**
    * M39: Set SD card parameters

@@ -43,7 +43,7 @@
 
 #if ENABLED(EEPROM_MULTIPART)
 	#define USRCFG_VERSION "MKA12"
-	#define SYSCFG_VERSION "SC11"
+	#define SYSCFG_VERSION "SC12"
 
 	#define USRCFG_OFFSET 	0
 	#define SYSCFG_OFFSET   4096
@@ -51,14 +51,13 @@
 
 /**
  *
- * MKA13 EEPROM Layout:
- *
  * ****************************** CONST *********************************
  *  Serial Number												(char x10)
  *  Printer version												(char x6)
  *
  *
  * ****************************** CONFIG *********************************
+ * MKA12 EEPROM Layout:
  *
  *  Version                                                     (char x6)
  *  EEPROM Checksum                                             (uint16_t)
@@ -84,7 +83,9 @@
  *  M301  H-2 PID         Kp, Ki, Kd                            (float x3)
  *  M301  H-3 PID         Kp, Ki, Kd                            (float x3)
  *
+ *
  * *************************** SYSTEM CONFIG *****************************
+ * SC12 EEPROM Layout:
  *
  *  Version                                                     (char x6)
  *  EEPROM Checksum                                             (uint16_t)
@@ -454,7 +455,6 @@ void EEPROM::Postprocess() {
      * M501 - Load Configuration
      */
     bool EEPROM::Load_Settings() {
-    	eeprom_error = false;
     	Factory_Settings();
     	auto sysLoaded=false, userLoaded=false;
 
@@ -480,6 +480,7 @@ void EEPROM::Postprocess() {
 		#if ENABLED(EEPROM_CHITCHAT)
 		  Print_Settings();
 		#endif
+		return sysLoaded;
     }
 
     bool EEPROM::Store_Const() {
@@ -2879,6 +2880,25 @@ void EEPROM::Factory_Settings() {
 					}
 				}
 			#endif
+
+			    // SD cards
+
+			#if HAS_SD_SUPPORT
+			   CONFIG_MSG_HEADER("SD cardreader parameters: P<slot> U<pin> D<spi speed div> C<detect pin>");
+			   CONFIG_MSG();
+			   SERIAL_MSG("M39 P0");
+			   SERIAL_MV(" U", sdStorage.pins[0]);
+			   SERIAL_MV(" D", sdStorage.detect_pins[0]);
+			   SERIAL_EMV(" C", sdStorage.spi_speed_divisors[0]);
+			#if SD_COUNT>1
+			   CONFIG_MSG();
+			   SERIAL_MSG("M39 P1");
+			   SERIAL_MV(" U", sdStorage.pins[1]);
+			   SERIAL_MV(" D", sdStorage.detect_pins[1]);
+			   SERIAL_EMV(" C", sdStorage.spi_speed_divisors[1]);
+			#endif
+			#endif
+
 		}
 
 	}

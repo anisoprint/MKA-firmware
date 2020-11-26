@@ -1,12 +1,9 @@
 ;SC12
 ;00000
-; Anisoprint Composer A3 version 1.0.1 system configuration
-; Firmware: MKA 1.0.0a
-; 03.09.2020 - Andrey Azarov - Clone of 1.0.1
-; 03.09.2020 - Andrey Azarov - Changed steps per unit for XY
-; 04.10.2020 - Andrey Azarov - Cloned from 1.0.2, changed max feedrates, toolchange feedrates
-; 07.11.2020 - Andrey Azarov - Updated Load/Unload length (MKA 1.0.1)
-; 26.11.2020  - Andrey Azarov - Added SD card settings (MKA 1.1.0)
+; Anisoprint Composer A3 version 1.0.4 system configuration
+; Firmware: MKA 1.1.0
+; 26.11.2020 - Andrey Azarov - Clone of 1.0.3
+; 26.11.2020 - Andrey Azarov - Updated SD card settings (MKA 1.1.0)
 ;Stepper directions inversion
 M569 X0 Y1 Z1 E1 U1 V1
 ;Mechanics steps per unit:
@@ -76,5 +73,5 @@ M217 T1 S9 X0.00 Y0.00 V0.00 K0
 M217 T1 S10 X0.00 Y0.00 V0.00 K0
 M217 T1 S11 X0.00 Y0.00 V0.00 K0
 ;SD cardreader parameters: P<slot> U<pin> D<spi speed div> C<detect pin>
-M39 P0 U59 D21 C-1
-M39 P1 U62 D8 C-1
+M39 P0 U62 D21 C-1
+M39 P1 U59 D8 C-1
