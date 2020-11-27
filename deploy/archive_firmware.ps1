@@ -60,4 +60,3 @@ foreach ($result in $packResults)
 
 Pop-Location
 
-Read-Host -Prompt "Press Enter to exit"

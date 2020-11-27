@@ -1,3 +1,15 @@
+v1.1.0
+[Added] Basic support of network bridge (full support of network features will be available in the next release)
+[Added] Support of second Serial port (through the native USB port on mainboard)
+[Added] Support of second SD card as a printer internal storage
+[Added] SD card configuration M-code (M39)
+[Added] New M-code (M28.1) for fast file transfer to sd card
+[Added] New M-code (M408) to report the state of the printer in JSON format
+[Added] Output of changes in the printer and print job statuses to serial ports
+[Changed] New icons in UI
+[Fixed] Minor problems with pausing during composite printing
+[Fixed] M524 abort SD printing M-code
+
 v1.0.1
 [Added] Error in now displayed in case of temperature sensor converter failure
 [Fixed] Incorrect endstop states on the Debug info screen for Composer A3 
