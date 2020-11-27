@@ -1,7 +1,7 @@
 ;SC12
 ;00000
 ; Anisoprint Composer A4 version 1.0.4 system configuration
-; Firmware: MKA 0.9.4a
+; Firmware: MKA 1.1.0
 ; 07.11.2019 - Andrey Azarov - Clone of 1.0.3
 ; 07.11.2019 - Andrey Azarov - Added controller fan (MKA 0.9.4a)
 ; 29.11.2019 - Andrey Azarov - Added stepper directions (MKA 0.9.4a)

@@ -1,7 +1,7 @@
 ;SC12
 ;00000
 ; Anisoprint Composer A4 version 1.0.3 system configuration
-; Firmware: MKA 0.9.4a
+; Firmware: MKA 1.1.0
 ; 18.07.2019 - Andrey Azarov - Clone of 1.0.2
 ; 29.11.2019 - Andrey Azarov - Added stepper directions (MKA 0.9.4a)
 ; 03.03.2019 - Andrey Azarov - Changed max. extruder temperature to 270°C (MKA 1.0.0)

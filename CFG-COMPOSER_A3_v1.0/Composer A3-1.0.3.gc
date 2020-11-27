@@ -1,7 +1,7 @@
 ;SC12
 ;00000
 ; Anisoprint Composer A3 version 1.0.1 system configuration
-; Firmware: MKA 1.0.0a
+; Firmware: MKA 1.1.0
 ; 03.09.2020 - Andrey Azarov - Clone of 1.0.1
 ; 03.09.2020 - Andrey Azarov - Changed steps per unit for XY
 ; 04.10.2020 - Andrey Azarov - Cloned from 1.0.2, changed max feedrates, toolchange feedrates

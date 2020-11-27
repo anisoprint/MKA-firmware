@@ -1,7 +1,7 @@
 ;SC12
 ;00000
 ; Anisoprint Composer A3 version 1.0.0 system configuration
-; Firmware: MKA 0.9.4a
+; Firmware: MKA 1.1.0
 ; 10.07.2019 - Andrey Azarov - Configuration created from 0.9.0 (MKA 0.9.3a)
 ; 20.07.2019 - Andrey Azarov - Changed steps per mm for X, Y, Z. Updated tool change
 ; 29.11.2019 - Andrey Azarov - Added stepper directions (MKA 0.9.4a)
