@@ -44,7 +44,7 @@ public: /** Public Function */
 	void init();
 	void openAndPrintFile(uint8_t slot, const char * const path, int32_t index);
 	void startSelectedFilePrint(uint8_t slot = 0);
-  void printFileHasFinished();
+	void printFileHasFinished();
 	void endFilePrint();
 
 	void mountAll();
@@ -58,19 +58,19 @@ public: /** Public Function */
 
 	inline void pauseSDPrint() { cards[_activePrintSD].pauseSDPrint();};
 	inline void resumeSDPrint() { if (_activePrintSD!=-1) cards[_activePrintSD].startFilePrint(); };
-  inline bool isPaused() { return (_activePrintSD!=-1 && cards[_activePrintSD].isPaused()); };
-  inline bool isPrinting() { return (_activePrintSD!=-1 && cards[_activePrintSD].isPrinting()); };
-  inline uint8_t percentDone() { return _activePrintSD!=-1 ? cards[_activePrintSD].percentDone() : 0; };
-  inline float fractionDone() { return _activePrintSD!=-1 ? cards[_activePrintSD].fractionDone() : 0; };
+	inline bool isPaused() { return (_activePrintSD!=-1 && cards[_activePrintSD].isPaused()); };
+	inline bool isPrinting() { return (_activePrintSD!=-1 && cards[_activePrintSD].isPrinting()); };
+	inline uint8_t percentDone() { return _activePrintSD!=-1 ? cards[_activePrintSD].percentDone() : 0; };
+	inline float fractionDone() { return _activePrintSD!=-1 ? cards[_activePrintSD].fractionDone() : 0; };
 
-  inline void startSaving(uint8_t slot, const char * const path, const bool silent=false) { if (cards[slot].startWrite(path, silent)) _savingSD = slot; };
-  inline void finishSaving() {
-    if (_savingSD!=-1) {
-      cards[_savingSD].finishWrite();
-      _savingSD=-1;
-    }
-  };
-  inline bool isSaving() { return _savingSD!=-1; };
+	inline void startSaving(uint8_t slot, const char * const path, const bool silent=false) { if (cards[slot].startWrite(path, silent)) _savingSD = slot; };
+	inline void finishSaving() {
+		if (_savingSD!=-1) {
+			cards[_savingSD].finishWrite();
+			_savingSD=-1;
+		}
+	};
+	inline bool isSaving() { return _savingSD!=-1; };
 
 	inline bool isSdInserted(uint8_t slot = 0) { return cards[slot].isInserted(); };
 

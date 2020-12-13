@@ -205,6 +205,8 @@ class SDCard {
     void deleteFile(const char * const path);
     void finishWrite();
     void makeDirectory(const char * const path);
+    void clearWorkDirectory();
+    bool exists(const char * const path);
     void closeFile();
     void fileHasFinished();
     void chdir(const char * const relpath);

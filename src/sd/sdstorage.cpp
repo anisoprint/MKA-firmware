@@ -84,6 +84,21 @@ void SdStorage::mountAll() {
   for(int i=0; i<SD_COUNT; i++) {
     cards[i].mount();
   }
+
+  //create system directories
+  if (cards[INTERNAL_SD_STORAGE_INDEX].isMounted())
+  {
+	  if (!cards[INTERNAL_SD_STORAGE_INDEX].exists(".ac"))
+	  {
+		  cards[INTERNAL_SD_STORAGE_INDEX].makeDirectory(".ac");
+	  }
+	  else
+	  {
+		  cards[INTERNAL_SD_STORAGE_INDEX].chdir(".ac");
+		  cards[INTERNAL_SD_STORAGE_INDEX].clearWorkDirectory();
+		  cards[INTERNAL_SD_STORAGE_INDEX].setroot();
+	  }
+  }
 }
 
 void SdStorage::processAutoreport() {

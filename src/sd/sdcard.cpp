@@ -312,6 +312,25 @@ void SDCard::makeDirectory(const char * const path) {
   }
 }
 
+bool SDCard::exists(const char * const path) {
+  return fat.exists(path);
+}
+
+void SDCard::clearWorkDirectory() {
+  if (!isMounted()) return;
+  endFilePrint();
+  gcode_file.close();
+
+  while (getnrfilenames()>0)
+  {
+	Serial.println(getnrfilenames());
+	getfilename(0);
+	Serial.println(fileName);
+	deleteFile(fileName);
+  }
+
+}
+
 void SDCard::closeFile() {
   gcode_file.sync();
   gcode_file.close();
@@ -477,6 +496,8 @@ uint16_t SDCard::get_num_Files() {
     #endif
   ;
 }
+
+
 
 #if HAS_SD_RESTART
 

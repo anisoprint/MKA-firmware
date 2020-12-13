@@ -38,6 +38,11 @@
 	 NetBridgeStatus status = Connected;
 	 if (parser.seen('S')) status = parser.value_byte() == 0 ? TempDisconnected : Connected;
 	 netBridgeManager.UpdateNetBridgeStatus(status);
+	 if (status == Connected)
+	 {
+		 char buffer[64] = {0};
+		 netBridgeManager.SetSdSlotIndex(INTERNAL_SD_STORAGE_INDEX, buffer, 64);
+	 }
  }
 
 
