@@ -545,6 +545,7 @@ void Commands::get_serial() {
         if (card_eof) {
 
           SERIAL_LMT(JOB, MSG_JOB_FINISH, sdStorage.getActivePrintSDCard()->fileName);
+          printer.setStatus(PrintFinished);
         
           sdStorage.printFileHasFinished();
 

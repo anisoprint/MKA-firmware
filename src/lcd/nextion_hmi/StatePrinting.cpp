@@ -278,6 +278,7 @@ void StatePrinting::TouchUpdate() {
 }
 
 void StatePrinting::DoneMessage_OK(void* ptr) {
+	printer.setStatus(Idle);
 	StateStatus::Activate();
 }
 
