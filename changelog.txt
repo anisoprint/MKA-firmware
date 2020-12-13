@@ -1,3 +1,7 @@
+v1.1.1
+[Fixed] Starting print after finishing previous print
+
+
 v1.1.0
 [Added] Basic support of network bridge (full support of network features will be available in the next release)
 [Added] Support of second Serial port (through the native USB port on mainboard)
