@@ -47,6 +47,7 @@ NetBridgeManager::NetBridgeManager() {
   _wifiConnected = false;
   _ethernetConnected = false;
   _acConnected = false;
+  _jobAwaiting = false;
 }
 
 bool NetBridgeManager::CheckBridgeSerialConnection() {
@@ -163,7 +164,7 @@ bool NetBridgeManager::SetSdSlotIndex(uint8_t index, char *responseBuffer,
 
 bool NetBridgeManager::GetSdSlotIndex(uint8_t &index, char *responseBuffer,
 		const uint16_t responseBufferSize) {
-  bool res = SendCommand("@ac_server_id", responseBuffer, responseBufferSize);
+  bool res = SendCommand("@sd_slot_index", responseBuffer, responseBufferSize);
   index = atoi(responseBuffer);
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
