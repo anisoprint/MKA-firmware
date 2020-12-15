@@ -29,6 +29,8 @@
   #define CODE_M1015
   #define CODE_M1016
   #define CODE_M1017
+  #define CODE_M1018
+
   
  /*
   * M1014: Set SBC status S1 - connected, S0 - temporarily disconnected
@@ -38,6 +40,11 @@
 	 NetBridgeStatus status = Connected;
 	 if (parser.seen('S')) status = parser.value_byte() == 0 ? TempDisconnected : Connected;
 	 netBridgeManager.UpdateNetBridgeStatus(status);
+	 if (status == Connected)
+	 {
+		 char buffer[64] = {0};
+		 netBridgeManager.SetSdSlotIndex(INTERNAL_SD_STORAGE_INDEX, buffer, 64);
+	 }
  }
 
 
@@ -76,5 +83,13 @@ inline void gcode_M1016() {
  */
 inline void gcode_M1017() {
 	  if (parser.seen('S')) netBridgeManager.UpdateEthernetConnected(parser.value_bool());
+}
+
+/*
+ * M1018: Clear AC dir in internal SD storage
+ *
+ */
+inline void gcode_M1018() {
+	  sdStorage.clearInternalStorageAc();
 }
 

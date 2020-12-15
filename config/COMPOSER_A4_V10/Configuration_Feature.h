@@ -180,7 +180,9 @@
 //Serial port index (0 or 1)
 #define NETWORK_BRIDGE_SERIAL 1
 //Timeout for command response, ms
-#define NETWORK_BRIDGE_TIMEOUT 1500
+#define NETWORK_BRIDGE_TIMEOUT 1600
+//Internal SD storage index (0 or 1)
+#define INTERNAL_SD_STORAGE_INDEX 0
 
 /***********************************************************************
  ************************ Volumetric extrusion *************************

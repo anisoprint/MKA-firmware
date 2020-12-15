@@ -85,7 +85,7 @@ class SDCard {
 
     sdFlags    flags;
 
-    uint8_t csPin; //CS pin
+    int8_t csPin; //CS pin
     uint8_t spiDivisor; //SPI frequency divisor
     int8_t detectPin; //SPI frequency divisor
 
@@ -187,7 +187,7 @@ class SDCard {
 
   public: /** Public Function */
 
-    void init(uint8_t pin, uint8_t spi_divisor, int8_t detect_pin);
+    void init(int8_t pin, uint8_t spi_divisor, int8_t detect_pin);
 
     void mount();
     void unmount();
@@ -203,8 +203,11 @@ class SDCard {
     void print_status();
     bool startWrite(const char * const path, const bool silent=false);
     void deleteFile(const char * const path);
+    void deleteFileOrDir(const char * const path);
     void finishWrite();
     void makeDirectory(const char * const path);
+    void deleteAllFilesInWorkDirectory();
+    bool exists(const char * const path);
     void closeFile();
     void fileHasFinished();
     void chdir(const char * const relpath);
