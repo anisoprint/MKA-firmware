@@ -588,6 +588,9 @@
   #define MSG_EEPROM_FAIL_WRITE_USER          "Failed to save User Config to EEPROM.\\rPlease reset the printer and try again.\\rIf the error persists, please contact\\rSupport"
 #endif
 
+#ifndef MSG_INTERNAL_SD_MOUNT_FAIL
+  #define MSG_INTERNAL_SD_MOUNT_FAIL          "Internal file storage can't be mounted.\\rSome features will be unavailable."
+#endif
 
 
 

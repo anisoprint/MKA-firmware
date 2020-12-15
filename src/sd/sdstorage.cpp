@@ -85,20 +85,33 @@ void SdStorage::mountAll() {
     cards[i].mount();
   }
 
-  //create system directories
-  if (cards[INTERNAL_SD_STORAGE_INDEX].isMounted())
+  if (pins[INTERNAL_SD_STORAGE_INDEX] > NoPin)
   {
-	  if (!cards[INTERNAL_SD_STORAGE_INDEX].exists(".ac"))
+	  //create system directories
+	  if (cards[INTERNAL_SD_STORAGE_INDEX].isMounted())
 	  {
-		  cards[INTERNAL_SD_STORAGE_INDEX].makeDirectory(".ac");
+		  if (!cards[INTERNAL_SD_STORAGE_INDEX].exists(".ac"))
+		  {
+			  cards[INTERNAL_SD_STORAGE_INDEX].makeDirectory(".ac");
+		  }
 	  }
 	  else
 	  {
-		  cards[INTERNAL_SD_STORAGE_INDEX].chdir(".ac");
-		  cards[INTERNAL_SD_STORAGE_INDEX].clearWorkDirectory();
-		  cards[INTERNAL_SD_STORAGE_INDEX].setroot();
+			#if ENABLED(NEXTION_HMI)
+			  NextionHMI::RaiseEvent(HMIevent::INTERNAL_SD_WARNING, 0, MSG_INTERNAL_SD_MOUNT_FAIL);
+			#endif
 	  }
   }
+
+}
+
+void SdStorage::clearInternalStorageAc() {
+	if (cards[INTERNAL_SD_STORAGE_INDEX].isMounted())
+	{
+		cards[INTERNAL_SD_STORAGE_INDEX].chdir(".ac");
+		cards[INTERNAL_SD_STORAGE_INDEX].deleteAllFilesInWorkDirectory();
+		cards[INTERNAL_SD_STORAGE_INDEX].setroot();
+	}
 }
 
 void SdStorage::processAutoreport() {

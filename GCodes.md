@@ -123,5 +123,6 @@ Codes marked with * are specific for Composer MKA firmware (of their meaning dif
 | M1015* | - | Set network status E[0/1] - ethernet, I[0/1] - wifi enabled, W[0/1] wifi connected, A[0/1] - Aura connect
 | M1016* | - | Send command to network bridge
 | M1017* | - | S[0/1] Set job awaiting flag  
+| M1018* | - | Clear AC dir in internal SD storage 
 
 

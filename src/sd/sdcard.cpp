@@ -29,12 +29,15 @@
 
 
 /** Public Function */
-void SDCard::init(uint8_t pin, uint8_t spi_divisor, int8_t detect_pin) {
+void SDCard::init(int8_t pin, uint8_t spi_divisor, int8_t detect_pin) {
 	csPin = pin;
 	spiDivisor = spi_divisor;
 	detectPin = detect_pin;
 
-	OUT_WRITE(pin, HIGH);
+	if (csPin > NoPin)
+	{
+		OUT_WRITE(pin, HIGH);
+	}
 
 	if (detectPin > NoPin)
 	{
@@ -77,6 +80,11 @@ void SDCard::init(uint8_t pin, uint8_t spi_divisor, int8_t detect_pin) {
 
 void SDCard::mount() {
 
+  if (csPin == NoPin)
+  {
+	  setMounted(false);
+	  return;
+  }
   if (isMounted()) unmount();
 
   if (root.isOpen()) root.close();
@@ -274,7 +282,7 @@ bool SDCard::startWrite(const char * const path, const bool silent/*=false*/) {
   return false;
 }
 
-void SDCard::deleteFile(const char * const path) {
+void SDCard::deleteFileOrDir(const char * const path) {
   if (!isMounted()) return;
   endFilePrint();
   gcode_file.close();
@@ -292,6 +300,22 @@ void SDCard::deleteFile(const char * const path) {
     else
       SERIAL_EM(MSG_SD_FILE_DELETION_ERR);
   }
+}
+
+void SDCard::deleteFile(const char * const path) {
+  if (!isMounted()) return;
+  endFilePrint();
+  gcode_file.close();
+
+  if (gcode_file.open(&workDir, path, O_WRITE)) {
+	  if (gcode_file.remove())
+	  {
+		    SERIAL_EMT(MSG_SD_FILE_DELETED, path);
+		    return;
+	  }
+  }
+  SERIAL_EM(MSG_SD_FILE_DELETION_ERR);
+  return;
 }
 
 void SDCard::finishWrite() {
@@ -316,17 +340,17 @@ bool SDCard::exists(const char * const path) {
   return fat.exists(path);
 }
 
-void SDCard::clearWorkDirectory() {
+void SDCard::deleteAllFilesInWorkDirectory() {
   if (!isMounted()) return;
   endFilePrint();
   gcode_file.close();
 
-  while (getnrfilenames()>0)
+  uint16_t numFiles = getnrfilenames();
+  for (int i = numFiles-1; i>=0; i--)
   {
-	Serial.println(getnrfilenames());
-	getfilename(0);
-	Serial.println(fileName);
-	deleteFile(fileName);
+	  getfilename(i);
+	  if (isFilenameIsDir()) continue;
+	  deleteFile(fileName);
   }
 
 }

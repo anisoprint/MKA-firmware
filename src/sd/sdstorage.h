@@ -50,6 +50,8 @@ public: /** Public Function */
 	void mountAll();
 	void processAutoreport();
 
+	void clearInternalStorageAc();
+
 	inline SDCard* getActivePrintSDCard() { return &cards[_activePrintSD]; }
 
 	inline int8_t getActivePrintSD() { return _activePrintSD; };
