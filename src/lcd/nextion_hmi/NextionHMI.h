@@ -10,6 +10,8 @@
 
 #if ENABLED(NEXTION_HMI)
 
+#define NEXHMI_BUFFER_SIZE 256
+
 #include "../nextion/library/Nextion.h"
 
 namespace NextionHMI {

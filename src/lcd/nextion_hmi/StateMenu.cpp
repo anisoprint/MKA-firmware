@@ -194,7 +194,9 @@ void StateMenu::PrintTemperature_Buildplate(void* ptr) {
 
 void StateMenu::ActivateMaintenance(void* ptr) {
 	NextionHMI::ActivateState(PAGE_MENU);
-	_count.setValue(6);
+
+	_count.setValue(netBridgeManager.GetNetBridgeStatus()==Connected ? 7 : 6);
+
 	_page.show();
 	NextionHMI::headerText.setTextPGM(PSTR(MSG_MAINTENANCE));
 	NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
@@ -203,15 +205,31 @@ void StateMenu::ActivateMaintenance(void* ptr) {
 	_b2.setTextPGM(PSTR(MSG_MOVE));
 	_b3.setTextPGM(PSTR(MSG_CALIBRATE));
 	_b4.setTextPGM(PSTR(MSG_SETTINGS));
-	_b5.setTextPGM(PSTR(MSG_DINFO));
-	_b6.setTextPGM(PSTR(MSG_ABOUT_PRINTER));
 
 	_b1.attachPush(ActivateMaterials);
 	_b2.attachPush(Maintenance_Move);
 	_b3.attachPush(ActivateCalibrate);
 	_b4.attachPush(Maintenance_Settings);
-	_b5.attachPush(Maintenance_DInfo);
-	_b6.attachPush(Maintenance_About);
+
+	if (netBridgeManager.GetNetBridgeStatus()==Connected)
+	{
+		_b5.setTextPGM(PSTR(MSG_NETWORK));
+		_b6.setTextPGM(PSTR(MSG_DINFO));
+		_b7.setTextPGM(PSTR(MSG_ABOUT_PRINTER));
+
+		_b5.attachPush(Maintenance_About);
+		_b6.attachPush(Maintenance_DInfo);
+		_b7.attachPush(Maintenance_About);
+	}
+	else
+	{
+		_b5.setTextPGM(PSTR(MSG_DINFO));
+		_b6.setTextPGM(PSTR(MSG_ABOUT_PRINTER));
+
+		_b5.attachPush(Maintenance_DInfo);
+		_b6.attachPush(Maintenance_About);
+	}
+
 
 	_bBack.attachPush(MaintenanceBack);
 }
@@ -359,7 +377,63 @@ void StateMenu::ActivateLoadUnload(void* ptr) {
 	_bBack.attachPush(ActivateMaterials);
 }
 
+/*********************************************************************************
+*
+* Network
+*
+*********************************************************************************/
 
+void StateMenu::ActivateNetwork(void* ptr) {
+	NextionHMI::ActivateState(PAGE_MENU);
+	_count.setValue(4);
+	_page.show();
+	NextionHMI::headerText.setTextPGM(PSTR(MSG_NETWORK));
+	NextionHMI::headerIcon.setPic(NEX_ICON_NETWORK);
+
+	_b1.setTextPGM(PSTR(MSG_CONNECTIONS));
+	_b2.setTextPGM(PSTR(MSG_AURA_CONNECT));
+	if (netBridgeManager.IsWifiEnabled())
+	{
+		_b3.setTextPGM(PSTR(MSG_DISABLE MSG_WIFI));
+	}
+	else
+	{
+		_b3.setTextPGM(PSTR(MSG_ENABLE MSG_WIFI));
+	}
+	if (netBridgeManager.IsTcpEnabled())
+	{
+		_b4.setTextPGM(PSTR(MSG_DISABLE MSG_TCP_BRIDGE));
+	}
+	else
+	{
+		_b4.setTextPGM(PSTR(MSG_ENABLE MSG_TCP_BRIDGE));
+	}
+
+
+
+	_b1.attachPush(Network_Connections);
+	_b2.attachPush(Materials_AuraConnect);
+	_b3.attachPush(Materials_WifiOnOff);
+	_b4.attachPush(Materials_TcpOnOff);
+
+	_bBack.attachPush(ActivateMaintenance);
+}
+
+void StateMenu::Network_Connections(void *ptr) {
+
+}
+
+void StateMenu::Materials_AuraConnect(void *ptr) {
+
+}
+
+void StateMenu::Materials_WifiOnOff(void *ptr) {
+
+}
+
+void StateMenu::Materials_TcpOnOff(void *ptr) {
+
+}
 
 #endif
 

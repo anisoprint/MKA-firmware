@@ -20,6 +20,7 @@ namespace {
 	NexObject _tSerial  = NexObject(PAGE_ABOUT,  14,  "tSN");
 	NexObject _tFirmware  = NexObject(PAGE_ABOUT,  11,  "tFW");
 	NexObject _tBuild  = NexObject(PAGE_ABOUT,  12,  "tB");
+	NexObject _tNetworkVer  = NexObject(PAGE_ABOUT,  19,  "tNW");
 
 	//Buttons
 	NexObject _bBack = NexObject(PAGE_ABOUT,  6,  "bB");
@@ -46,6 +47,17 @@ void StateAbout::Activate() {
 	_tSerial.setText(eeprom.printerSN);
 	_tFirmware.setText(FIRMWARE_NAME " " SHORT_BUILD_VERSION);
 	_tBuild.setText(__DATE__);
+
+	ZERO(NextionHMI::buffer);
+	if (netBridgeManager.GetNetBridgeStatus()!=Connected || !netBridgeManager.GetNetBridgeInfo(NextionHMI::buffer, NEXHMI_BUFFER_SIZE))
+	{
+		_tNetworkVer.setText("n/a");
+	}
+	else
+	{
+		_tNetworkVer.setText(NextionHMI::buffer);
+	}
+
 
 
 }

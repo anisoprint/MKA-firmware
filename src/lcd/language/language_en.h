@@ -314,6 +314,34 @@
   #define MSG_SETTINGS                     			_UxGT("Settings")
 #endif
 
+#ifndef MSG_NETWORK
+  #define MSG_NETWORK                     			_UxGT("Network")
+#endif
+
+#ifndef MSG_CONNECTIONS
+  #define MSG_CONNECTIONS                     		_UxGT("Connections")
+#endif
+
+#ifndef MSG_AURA_CONNECT
+  #define MSG_AURA_CONNECT                     		_UxGT("Aura.Connect")
+#endif
+
+#ifndef MSG_WIFI
+  #define MSG_WIFI                     				_UxGT("Wi-Fi")
+#endif
+
+#ifndef MSG_TCP_BRIDGE
+  #define MSG_TCP_BRIDGE                     		_UxGT("TCP bridge")
+#endif
+
+#ifndef MSG_ENABLE
+  #define MSG_ENABLE                     			_UxGT("Enable")
+#endif
+
+#ifndef MSG_DISABLE
+  #define MSG_DISABLE                     			_UxGT("Disable")
+#endif
+
 #ifndef MSG_DINFO
   #define MSG_DINFO                     			_UxGT("Debug info")
 #endif

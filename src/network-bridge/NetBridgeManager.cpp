@@ -48,6 +48,7 @@ NetBridgeManager::NetBridgeManager() {
   _ethernetConnected = false;
   _acConnected = false;
   _jobAwaiting = false;
+  _tcpEnabled = false;
 }
 
 bool NetBridgeManager::CheckBridgeSerialConnection() {
@@ -101,13 +102,13 @@ bool NetBridgeManager::GetEthernetConnected(bool &connected,
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
-bool NetBridgeManager::AcBridgeVersion(char *responseBuffer,
+bool NetBridgeManager::GetNetBridgeVersion(char *responseBuffer,
 		const uint16_t responseBufferSize) {
   bool res = SendCommand("@ver", responseBuffer, responseBufferSize);
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
-bool NetBridgeManager::AcBridgeInfo(char *responseBuffer,
+bool NetBridgeManager::GetNetBridgeInfo(char *responseBuffer,
 		const uint16_t responseBufferSize) {
   bool res = SendCommand("@info", responseBuffer, responseBufferSize);
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
@@ -250,6 +251,66 @@ bool NetBridgeManager::IsJobAwaiting() {
 
 void NetBridgeManager::UpdateJobAwaiting(bool jobAwaiting) {
 	_jobAwaiting = jobAwaiting;
+}
+
+bool NetBridgeManager::GetTcpEnabled(bool &enabled, char *responseBuffer,
+		const uint16_t responseBufferSize) {
+	  bool res = SendCommand("@tcp_enabled", responseBuffer, responseBufferSize);
+
+	  enabled = responseBuffer[0] == '1';
+	  return (res && strncmp(responseBuffer, "Error", 5)!=0);
+}
+
+bool NetBridgeManager::SetTcpEnabled(bool enabled, char *responseBuffer,
+		const uint16_t responseBufferSize) {
+    char commandBuffer[20];
+    snprintf(commandBuffer, sizeof(commandBuffer), "@tcp_enabled %u", enabled ? 1 : 0);
+    bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize);
+    bool ok = (res && strncmp(responseBuffer, "ok", 2)==0);
+    if (ok)
+    {
+    	_tcpEnabled = enabled;
+    }
+    return (ok);
+}
+
+bool NetBridgeManager::GetWlanMac(char *responseBuffer,
+		const uint16_t responseBufferSize) {
+	  bool res = SendCommand("@wlan_mac", responseBuffer, responseBufferSize);
+	  return (res && strncmp(responseBuffer, "Error", 5)!=0);
+}
+
+bool NetBridgeManager::GetEthMac(char *responseBuffer,
+		const uint16_t responseBufferSize) {
+	  bool res = SendCommand("@eth_mac", responseBuffer, responseBufferSize);
+	  return (res && strncmp(responseBuffer, "Error", 5)!=0);
+}
+
+bool NetBridgeManager::GetWlanIp4(char *responseBuffer,
+		const uint16_t responseBufferSize) {
+	  bool res = SendCommand("@wlan_ip4", responseBuffer, responseBufferSize);
+	  return (res && strncmp(responseBuffer, "Error", 5)!=0);
+}
+
+bool NetBridgeManager::GetEthIp4(char *responseBuffer,
+		const uint16_t responseBufferSize) {
+	  bool res = SendCommand("@eth_ip4", responseBuffer, responseBufferSize);
+	  return (res && strncmp(responseBuffer, "Error", 5)!=0);
+}
+
+void NetBridgeManager::SyncWithNetworkBridge() {
+	char buffer[32] = {0};
+	GetTcpEnabled(_tcpEnabled, buffer, 32);
+
+}
+
+bool NetBridgeManager::IsTcpEnabled() {
+	return _tcpEnabled;
+}
+
+bool NetBridgeManager::ListWifiNetworks(uint8_t startIndex, uint8_t endIndex) {
+    char commandBuffer[20];
+
 }
 
 #endif

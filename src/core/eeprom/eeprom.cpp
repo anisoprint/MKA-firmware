@@ -683,7 +683,7 @@ void EEPROM::Postprocess() {
         else
         {
 			#if ENABLED(NEXTION_HMI)
-			  NextionHMI::RaiseEvent(HMIevent::EEPROM_ERROR, 0, MSG_EEPROM_FAIL_WRITE_USER);
+			  NextionHMI::RaiseEvent(HMIevent::EEPROM_ERROR, 0, MSG_EEPROM_FAIL_WRITE_SYSTEM);
 			#endif
         }
 

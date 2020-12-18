@@ -49,8 +49,7 @@ NexObject NextionHMI::statusIcon2 = NexObject(0,  0,  "iS2");
 
 NexObject* NextionHMI::statusIcons[] = {&NextionHMI::statusIcon0, &NextionHMI::statusIcon1, &NextionHMI::statusIcon2, nullptr};
 
-
-char NextionHMI::buffer[256] = {0};
+char NextionHMI::buffer[NEXHMI_BUFFER_SIZE] = {0};
 
 void NextionHMI::Init() {
 
@@ -145,6 +144,14 @@ void NextionHMI::DrawUpdate() {
 	         break;
 	    case PAGE_C_NUMBER :
 	         break;
+	    case PAGE_C_KEY :
+	         break;
+	    case PAGE_CONNECTIONS :
+	         break;
+	    case PAGE_WIFILIST :
+	         break;
+	    case PAGE_ACCONFIG :
+	         break;
 	}
 }
 
@@ -177,6 +184,14 @@ void NextionHMI::TouchUpdate() {
 	    case PAGE_WIZARDZ : StateWizardZ::TouchUpdate();
 	         break;
 	    case PAGE_C_NUMBER : StateEditNumber::TouchUpdate();
+	         break;
+	    case PAGE_C_KEY :
+	         break;
+	    case PAGE_CONNECTIONS :
+	         break;
+	    case PAGE_WIFILIST :
+	         break;
+	    case PAGE_ACCONFIG :
 	         break;
 	}
 }
@@ -218,6 +233,14 @@ void NextionHMI::ShowState(uint8_t state_id) {
 		    case PAGE_WIZARDZ : ShowState(_rootState);
 		         break;
 		    case PAGE_C_NUMBER : ShowState(_rootState);
+		         break;
+		    case PAGE_C_KEY :
+		         break;
+		    case PAGE_CONNECTIONS :
+		         break;
+		    case PAGE_WIFILIST :
+		         break;
+		    case PAGE_ACCONFIG :
 		         break;
 		}
 }
@@ -286,6 +309,14 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventM
 	    case PAGE_WIZARDZ :
 	         break;
 	    case PAGE_C_NUMBER :
+	         break;
+	    case PAGE_C_KEY :
+	         break;
+	    case PAGE_CONNECTIONS :
+	         break;
+	    case PAGE_WIFILIST :
+	         break;
+	    case PAGE_ACCONFIG :
 	         break;
 	}
 }
