@@ -76,6 +76,11 @@
 
 #define NEX_ICON_NETWORK 56
 
+#define NEX_ICON_WIFI_L 57
+#define NEX_ICON_WIFI_SEC_L 58
+#define NEX_ICON_WIFI_S 60
+#define NEX_ICON_WIFI_SEC_S 61
+
 
 
 /*	      char UBL_LCD_GCODE[20];

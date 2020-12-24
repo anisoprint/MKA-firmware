@@ -185,6 +185,10 @@ typedef int8_t    pin_t;
 #include "src/lcd/nextion_hmi/StateAbout.h"
 #include "src/lcd/nextion_hmi/StateDInfo.h"
 #include "src/lcd/nextion_hmi/StateEditNumber.h"
+#include "src/lcd/nextion_hmi/StateConnections.h"
+#include "src/lcd/nextion_hmi/StateWifiList.h"
+#include "src/lcd/nextion_hmi/StateKeyboard.h"
+#include "src/lcd/nextion_hmi/StateAuraConnect.h"
 
 // Network bridge modules
 #include "src/network-bridge/NetBridgeManager.h"

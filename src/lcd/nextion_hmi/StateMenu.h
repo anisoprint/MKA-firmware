@@ -58,9 +58,9 @@ namespace StateMenu {
 	//Network menu
 	void ActivateNetwork(void *ptr=0);
 	void Network_Connections(void *ptr=0);
-	void Materials_AuraConnect(void *ptr=0);
-	void Materials_WifiOnOff(void *ptr=0);
-	void Materials_TcpOnOff(void *ptr=0);
+	void Network_AuraConnect(void *ptr=0);
+	void Network_WifiOnOff(void *ptr=0);
+	void Network_TcpOnOff(void *ptr=0);
 
 };
 

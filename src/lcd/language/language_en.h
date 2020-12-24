@@ -326,12 +326,60 @@
   #define MSG_AURA_CONNECT                     		_UxGT("Aura.Connect")
 #endif
 
+#ifndef MSG_SIGNAL_LOW
+  #define MSG_SIGNAL_LOW                     		_UxGT("Signal: Low [%d%%]")
+#endif
+
+#ifndef MSG_SIGNAL_NORMAL
+  #define MSG_SIGNAL_NORMAL                     	_UxGT("Signal: Normal [%d%%]")
+#endif
+
+#ifndef MSG_SIGNAL_HIGH
+  #define MSG_SIGNAL_HIGH                     		_UxGT("Signal: High [%d%%]")
+#endif
+
 #ifndef MSG_WIFI
   #define MSG_WIFI                     				_UxGT("Wi-Fi")
 #endif
 
 #ifndef MSG_TCP_BRIDGE
   #define MSG_TCP_BRIDGE                     		_UxGT("TCP bridge")
+#endif
+
+#ifndef MSG_NO_CONNECTION
+  #define MSG_NO_CONNECTION                     	_UxGT("No connection")
+#endif
+
+#ifndef MSG_CONNECTED
+  #define MSG_CONNECTED                     		_UxGT("Connected")
+#endif
+
+#ifndef MSG_CONNECTING
+  #define MSG_CONNECTING                     		_UxGT("Connecting...")
+#endif
+
+#ifndef MSG_WIFI_DISABLED
+  #define MSG_WIFI_DISABLED                     	_UxGT("Wifi disabled")
+#endif
+
+#ifndef MSG_WIFI_SECURITY_KEY
+  #define MSG_WIFI_SECURITY_KEY                     _UxGT("Enter the network security key:")
+#endif
+
+#ifndef MSG_WIFILISTNAME
+  #define MSG_WIFILISTNAME                     		_UxGT("%s [%d%%]")
+#endif
+
+#ifndef MSG_MACADDR
+  #define MSG_MACADDR                     			_UxGT("Mac: %s")
+#endif
+
+#ifndef MSG_IPADDR
+  #define MSG_IPADDR                     			_UxGT("IP: %s")
+#endif
+
+#ifndef MSG_NETWORK_ID
+  #define MSG_NETWORK_ID                     		_UxGT("Network ID: %s")
 #endif
 
 #ifndef MSG_ENABLE

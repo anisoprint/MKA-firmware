@@ -6,11 +6,12 @@
  */
 
 #include "../../MK4duo.h"
+#include <ArduinoJson.h>
 
 NetBridgeManager netBridgeManager;
 
 bool NetBridgeManager::SendCommand(const char *command,
-		char *responseBuffer, uint16_t responseBufferSize) {
+		char *responseBuffer, uint16_t responseBufferSize, millis_l timeout) {
 
   int8_t oldSerial = Com::serial_port_index;
   SERIAL_PORT(NETWORK_BRIDGE_SERIAL);
@@ -19,9 +20,10 @@ bool NetBridgeManager::SendCommand(const char *command,
 
   uint16_t responseSize = 0;
 
-  watch_t responseWatch = watch_t(NETWORK_BRIDGE_TIMEOUT);
+  watch_t responseWatch = watch_t(timeout);
   while (!responseWatch.elapsed())
   {
+      printer.check_periodical_actions();
       const int c = Com::serialRead(NETWORK_BRIDGE_SERIAL);
       if (c < 0) continue;
       const char serial_char = c;
@@ -49,11 +51,13 @@ NetBridgeManager::NetBridgeManager() {
   _acConnected = false;
   _jobAwaiting = false;
   _tcpEnabled = false;
+  startNetworkIndex = 0;
+  networksCount = 0;
 }
 
 bool NetBridgeManager::CheckBridgeSerialConnection() {
 	char buffer[8];
-	bool res = SendCommand("@ping", buffer, sizeof(buffer));
+	bool res = SendCommand("@ping", buffer, sizeof(buffer), NETWORK_BRIDGE_TIMEOUT);
 	bool connected = (res && strncmp(buffer, "ok", 2)==0);
 	_netBridgeStatus = Connected;
   return connected;
@@ -64,7 +68,7 @@ bool NetBridgeManager::ConnectWifi(const char *ssid, const char *password,
 
 	char commandBuffer[128];
 	snprintf(commandBuffer, sizeof(commandBuffer), "@wifi_connect %s %s", ssid, password);
-	bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize);
+	bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, 25000);
 
   return (res && strncmp(responseBuffer, "ok", 2)==0);
 }
@@ -73,22 +77,29 @@ bool NetBridgeManager::SwitchWifi(bool enabled, char *responseBuffer,
 		const uint16_t responseBufferSize) {
   char commandBuffer[8];
   snprintf(commandBuffer, sizeof(commandBuffer), "@wifi %u", enabled);
-  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize);
+  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 
   return (res && strncmp(responseBuffer, "ok", 2)==0);
 }
 
 bool NetBridgeManager::GetWifiNetworks(char *responseBuffer,
-		const uint16_t responseBufferSize) {
-
-  bool res = SendCommand("@wifi_list", responseBuffer, responseBufferSize);
+		const uint16_t responseBufferSize, const uint8_t beginIndex, const uint8_t networksNumber) {
+  char commandBuffer[16];
+  snprintf(commandBuffer, sizeof(commandBuffer), "@wifi_list %u %u", beginIndex, networksNumber);
+  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 
 }
 
+bool NetBridgeManager::ScanWifiNetworks() {
+  char responseBuffer[8];
+  bool res = SendCommand("@wifi_scan", responseBuffer, sizeof(responseBuffer), NETWORK_BRIDGE_TIMEOUT);
+  return (res && strncmp(responseBuffer, "ok", 2)==0);
+}
+
 bool NetBridgeManager::GetWifiConnected(bool &connected, char *responseBuffer,
 		const uint16_t responseBufferSize) {
-  bool res = SendCommand("@wifi_status", responseBuffer, responseBufferSize);
+  bool res = SendCommand("@wifi_status", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 
   connected = responseBuffer[0] == '1';
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
@@ -96,7 +107,7 @@ bool NetBridgeManager::GetWifiConnected(bool &connected, char *responseBuffer,
 
 bool NetBridgeManager::GetEthernetConnected(bool &connected,
 		char *responseBuffer, const uint16_t responseBufferSize) {
-  bool res = SendCommand("@ethernet_status", responseBuffer, responseBufferSize);
+  bool res = SendCommand("@ethernet_status", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 
   connected = responseBuffer[0] == '1';
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
@@ -104,13 +115,13 @@ bool NetBridgeManager::GetEthernetConnected(bool &connected,
 
 bool NetBridgeManager::GetNetBridgeVersion(char *responseBuffer,
 		const uint16_t responseBufferSize) {
-  bool res = SendCommand("@ver", responseBuffer, responseBufferSize);
+  bool res = SendCommand("@ver", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
 bool NetBridgeManager::GetNetBridgeInfo(char *responseBuffer,
 		const uint16_t responseBufferSize) {
-  bool res = SendCommand("@info", responseBuffer, responseBufferSize);
+  bool res = SendCommand("@info", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
@@ -118,7 +129,7 @@ bool NetBridgeManager::SetAcServerUri(const char *uri, char *responseBuffer,
 		const uint16_t responseBufferSize) {
   char commandBuffer[128];
   snprintf(commandBuffer, sizeof(commandBuffer), "@ac_server_uri %s", uri);
-  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize);
+  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 
   return (res && strncmp(responseBuffer, "ok", 2)==0);
 }
@@ -127,20 +138,20 @@ bool NetBridgeManager::SetAcServerId(const char *id, char *responseBuffer,
 		const uint16_t responseBufferSize) {
   char commandBuffer[128];
   snprintf(commandBuffer, sizeof(commandBuffer), "@ac_server_id %s", id);
-  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize);
+  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 
   return (res && strncmp(responseBuffer, "ok", 2)==0);
 }
 
-bool NetBridgeManager::GetAcServerUri(char *responseBuffer,
+bool NetBridgeManager::GetAcServerUrl(char *responseBuffer,
 		const uint16_t responseBufferSize) {
-  bool res = SendCommand("@ac_server_uri", responseBuffer, responseBufferSize);
+  bool res = SendCommand("@ac_server_uri", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
 bool NetBridgeManager::GetAcServerId(char *responseBuffer,
 		const uint16_t responseBufferSize) {
-  bool res = SendCommand("@ac_server_id", responseBuffer, responseBufferSize);
+  bool res = SendCommand("@ac_server_id", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
@@ -149,7 +160,7 @@ bool NetBridgeManager::ConnectAcServer(const char *uri, const char *id,
 		const uint16_t responseBufferSize) {
   char commandBuffer[256];
   snprintf(commandBuffer, sizeof(commandBuffer), "@ac_server_connect %s %s %s", uri, id, code);
-  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize);
+  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 
   return (res && strncmp(responseBuffer, "ok", 2)==0);
 }
@@ -158,21 +169,21 @@ bool NetBridgeManager::SetSdSlotIndex(uint8_t index, char *responseBuffer,
 		const uint16_t responseBufferSize) {
     char commandBuffer[20];
     snprintf(commandBuffer, sizeof(commandBuffer), "@sd_slot_index %u", index);
-    bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize);
+    bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 
     return (res && strncmp(responseBuffer, "ok", 2)==0);
 }
 
 bool NetBridgeManager::GetSdSlotIndex(uint8_t &index, char *responseBuffer,
 		const uint16_t responseBufferSize) {
-  bool res = SendCommand("@sd_slot_index", responseBuffer, responseBufferSize);
+  bool res = SendCommand("@sd_slot_index", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
   index = atoi(responseBuffer);
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
 bool NetBridgeManager::RebootBridge() {
   char responseBuffer[8];
-  bool res = SendCommand("@reboot", responseBuffer, sizeof(responseBuffer));
+  bool res = SendCommand("@reboot", responseBuffer, sizeof(responseBuffer), NETWORK_BRIDGE_TIMEOUT);
   return (res && strncmp(responseBuffer, "ok", 2)==0);
 }
 
@@ -255,7 +266,7 @@ void NetBridgeManager::UpdateJobAwaiting(bool jobAwaiting) {
 
 bool NetBridgeManager::GetTcpEnabled(bool &enabled, char *responseBuffer,
 		const uint16_t responseBufferSize) {
-	  bool res = SendCommand("@tcp_enabled", responseBuffer, responseBufferSize);
+	  bool res = SendCommand("@tcp_enabled", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 
 	  enabled = responseBuffer[0] == '1';
 	  return (res && strncmp(responseBuffer, "Error", 5)!=0);
@@ -265,7 +276,7 @@ bool NetBridgeManager::SetTcpEnabled(bool enabled, char *responseBuffer,
 		const uint16_t responseBufferSize) {
     char commandBuffer[20];
     snprintf(commandBuffer, sizeof(commandBuffer), "@tcp_enabled %u", enabled ? 1 : 0);
-    bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize);
+    bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
     bool ok = (res && strncmp(responseBuffer, "ok", 2)==0);
     if (ok)
     {
@@ -276,41 +287,83 @@ bool NetBridgeManager::SetTcpEnabled(bool enabled, char *responseBuffer,
 
 bool NetBridgeManager::GetWlanMac(char *responseBuffer,
 		const uint16_t responseBufferSize) {
-	  bool res = SendCommand("@wlan_mac", responseBuffer, responseBufferSize);
+	  bool res = SendCommand("@wifi_mac", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 	  return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
 bool NetBridgeManager::GetEthMac(char *responseBuffer,
 		const uint16_t responseBufferSize) {
-	  bool res = SendCommand("@eth_mac", responseBuffer, responseBufferSize);
+	  bool res = SendCommand("@eth_mac", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 	  return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
 bool NetBridgeManager::GetWlanIp4(char *responseBuffer,
 		const uint16_t responseBufferSize) {
-	  bool res = SendCommand("@wlan_ip4", responseBuffer, responseBufferSize);
+	  bool res = SendCommand("@wifi_ip4", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 	  return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
 bool NetBridgeManager::GetEthIp4(char *responseBuffer,
 		const uint16_t responseBufferSize) {
-	  bool res = SendCommand("@eth_ip4", responseBuffer, responseBufferSize);
+	  bool res = SendCommand("@eth_ip4", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
 	  return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
 void NetBridgeManager::SyncWithNetworkBridge() {
 	char buffer[32] = {0};
 	GetTcpEnabled(_tcpEnabled, buffer, 32);
-
 }
 
 bool NetBridgeManager::IsTcpEnabled() {
 	return _tcpEnabled;
 }
 
-bool NetBridgeManager::ListWifiNetworks(uint8_t startIndex, uint8_t endIndex) {
+bool NetBridgeManager::ListWifiNetworks(uint8_t startIndex) {
     char commandBuffer[20];
+    char responseBuffer[700];
+    ZERO(responseBuffer);
 
+    bool success = GetWifiNetworks(responseBuffer, sizeof(responseBuffer), startIndex, wifiListSize);
+    if (!success) return false;
+
+	const size_t capacity = 768;
+	StaticJsonDocument<capacity> jsonDoc;
+	DeserializationError err = deserializeJson(jsonDoc, responseBuffer, sizeof(responseBuffer));
+	if (err!=DeserializationError::Ok)
+	{
+		return false;
+	}
+
+    startNetworkIndex = startIndex;
+    networksCount = jsonDoc["Count"] | 0;
+
+    JsonArray networks = jsonDoc["Networks"];
+    for (int i = 0; i < networksCount; i++)
+    {
+    	JsonObject network = networks[i];
+    	wifiNetworks[i].connected = network["con"];
+    	wifiNetworks[i].secure = network["sec"];
+    	wifiNetworks[i].signal = network["sig"];
+    	strncpy(wifiNetworks[i].ssid, (const char*)(network["id"]), sizeof(wifiNetworks[i].ssid));
+    }
+    return true;
+
+}
+
+void NetBridgeManager::SelectWifiNetwork(const char *ssid) {
+	ZERO(_selectedWifiSsid);
+	strncpy(_selectedWifiSsid, ssid, sizeof(_selectedWifiSsid));
+}
+
+char* NetBridgeManager::GetSelectedWifiNetwork() {
+	return _selectedWifiSsid;
+}
+
+void NetBridgeManager::UpdateConnectedNetwork() {
+    for (int i = 0; i < networksCount; i++)
+    {
+    	wifiNetworks[i].connected = (strcmp(wifiNetworks[i].ssid,_selectedWifiSsid)==0) ? true : false;
+    }
 }
 
 #endif

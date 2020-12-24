@@ -214,6 +214,14 @@ class NexObject {
     void Set_cursor_height_hig(const uint16_t number);
 
     /**
+     * Set pw attribute of component
+     *
+     * @param pw - To set up the data
+     */
+    void setPw(bool pw);
+
+
+    /**
      * Get maxval attribute of component
      *
      * @param number - buffer storing data return

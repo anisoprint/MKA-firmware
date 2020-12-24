@@ -33,14 +33,16 @@ private:
 
     bool _jobAwaiting;
 
+    char _selectedWifiSsid[32];
+
 #if ENABLED(NEXTION_HMI)
     void UpdateNextionStatusIcons();
 #endif
 
 public:
-    WifiNetworkInfo wifiNetworks[7];
+    static const uint8_t wifiListSize = 7;
+    WifiNetworkInfo wifiNetworks[wifiListSize];
     uint8_t startNetworkIndex;
-    uint8_t endNetworkIndex;
     uint8_t networksCount;
 
 	NetBridgeManager();
@@ -50,14 +52,15 @@ public:
 	bool CheckBridgeSerialConnection();
 	bool ConnectWifi(const char* ssid, const char* password, char* responseBuffer, const uint16_t responseBufferSize);
 	bool SwitchWifi(bool enabled, char* responseBuffer, const uint16_t responseBufferSize);
-	bool GetWifiNetworks(char* responseBuffer, const uint16_t responseBufferSize);
+	bool ScanWifiNetworks();
+	bool GetWifiNetworks(char* responseBuffer, const uint16_t responseBufferSize, const uint8_t beginIndex, const uint8_t networksNumber);
 	bool GetWifiConnected(bool &connected, char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetEthernetConnected(bool &connected, char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetNetBridgeVersion(char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetNetBridgeInfo(char* responseBuffer, const uint16_t responseBufferSize);
 	bool SetAcServerUri(const char* uri, char* responseBuffer, const uint16_t responseBufferSize);
 	bool SetAcServerId(const char* id, char* responseBuffer, const uint16_t responseBufferSize);
-	bool GetAcServerUri(char* responseBuffer, const uint16_t responseBufferSize);
+	bool GetAcServerUrl(char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetAcServerId(char* responseBuffer, const uint16_t responseBufferSize);
 	bool ConnectAcServer(const char* uri, const char* id, const char* code, char* responseBuffer, const uint16_t responseBufferSize);
 	bool SetSdSlotIndex(uint8_t index, char* responseBuffer, const uint16_t responseBufferSize);
@@ -72,9 +75,9 @@ public:
 
 	bool RebootBridge();
 
-	bool ListWifiNetworks(uint8_t startIndex, uint8_t endIndex);
+	bool ListWifiNetworks(uint8_t startIndex);
 
-	bool SendCommand(const char* command, char* responseBuffer, uint16_t responseBufferSize);
+	bool SendCommand(const char* command, char* responseBuffer, uint16_t responseBufferSize, millis_l timeout);
 
 	NetBridgeStatus GetNetBridgeStatus();
 	void UpdateNetBridgeStatus(NetBridgeStatus status);
@@ -83,6 +86,12 @@ public:
 	bool IsWifiConnected();
 	bool IsEthernetConnected();
 	bool IsAcConnected();
+
+	void SelectWifiNetwork(const char* ssid);
+
+	//TODO: For backward compatibility, remove in a while
+	void UpdateConnectedNetwork();
+	char* GetSelectedWifiNetwork();
 
 	bool IsTcpEnabled();
 

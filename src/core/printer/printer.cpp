@@ -500,6 +500,14 @@ void Printer::safe_delay(millis_l ms) {
   check_periodical_actions();
 }
 
+void Printer::safe_idle(millis_l ms) {
+	ms += millis();
+	while (PENDING(millis(), ms)) {
+	  printer.keepalive(InProcess);
+	  printer.idle();
+	}
+}
+
 /**
  * Prepare to do endstop or probe moves
  * with custom feedrates.

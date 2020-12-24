@@ -217,7 +217,7 @@ void StateMenu::ActivateMaintenance(void* ptr) {
 		_b6.setTextPGM(PSTR(MSG_DINFO));
 		_b7.setTextPGM(PSTR(MSG_ABOUT_PRINTER));
 
-		_b5.attachPush(Maintenance_About);
+		_b5.attachPush(ActivateNetwork);
 		_b6.attachPush(Maintenance_DInfo);
 		_b7.attachPush(Maintenance_About);
 	}
@@ -394,45 +394,61 @@ void StateMenu::ActivateNetwork(void* ptr) {
 	_b2.setTextPGM(PSTR(MSG_AURA_CONNECT));
 	if (netBridgeManager.IsWifiEnabled())
 	{
-		_b3.setTextPGM(PSTR(MSG_DISABLE MSG_WIFI));
+		_b3.setTextPGM(PSTR(MSG_DISABLE " " MSG_WIFI));
 	}
 	else
 	{
-		_b3.setTextPGM(PSTR(MSG_ENABLE MSG_WIFI));
+		_b3.setTextPGM(PSTR(MSG_ENABLE " " MSG_WIFI));
 	}
 	if (netBridgeManager.IsTcpEnabled())
 	{
-		_b4.setTextPGM(PSTR(MSG_DISABLE MSG_TCP_BRIDGE));
+		_b4.setTextPGM(PSTR(MSG_DISABLE " " MSG_TCP_BRIDGE));
 	}
 	else
 	{
-		_b4.setTextPGM(PSTR(MSG_ENABLE MSG_TCP_BRIDGE));
+		_b4.setTextPGM(PSTR(MSG_ENABLE " " MSG_TCP_BRIDGE));
 	}
 
 
-
 	_b1.attachPush(Network_Connections);
-	_b2.attachPush(Materials_AuraConnect);
-	_b3.attachPush(Materials_WifiOnOff);
-	_b4.attachPush(Materials_TcpOnOff);
+	_b2.attachPush(Network_AuraConnect);
+	_b3.attachPush(Network_WifiOnOff);
+	_b4.attachPush(Network_TcpOnOff);
 
 	_bBack.attachPush(ActivateMaintenance);
 }
 
 void StateMenu::Network_Connections(void *ptr) {
-
+	StateConnections::Activate();
 }
 
-void StateMenu::Materials_AuraConnect(void *ptr) {
-
+void StateMenu::Network_AuraConnect(void *ptr) {
+	StateAuraConnect::Activate();
 }
 
-void StateMenu::Materials_WifiOnOff(void *ptr) {
-
+void StateMenu::Network_WifiOnOff(void *ptr) {
+	bool newStatus = !netBridgeManager.IsWifiEnabled();
+	bool res = netBridgeManager.SwitchWifi(newStatus, NextionHMI::buffer, NEXHMI_BUFFER_SIZE);
+	if (res) {
+		netBridgeManager.UpdateWifiEnabled(newStatus);
+		ActivateNetwork();
+	}
+	else
+	{
+		StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, NextionHMI::buffer, 1, PSTR(MSG_OK), ActivateNetwork, 0, 0);
+	}
 }
 
-void StateMenu::Materials_TcpOnOff(void *ptr) {
-
+void StateMenu::Network_TcpOnOff(void *ptr) {
+	bool newStatus = !netBridgeManager.IsTcpEnabled();
+	bool res = netBridgeManager.SetTcpEnabled(newStatus, NextionHMI::buffer, NEXHMI_BUFFER_SIZE);
+	if (res) {
+		ActivateNetwork();
+	}
+	else
+	{
+		StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, NextionHMI::buffer, 1, PSTR(MSG_OK), ActivateNetwork, 0, 0);
+	}
 }
 
 #endif

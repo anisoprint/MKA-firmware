@@ -67,7 +67,7 @@ inline void gcode_M1015() {
  */
 inline void gcode_M1016() {
 	char buffer[512] = {0};
-	if (netBridgeManager.SendCommand(parser.string_arg, buffer, 512))
+	if (netBridgeManager.SendCommand(parser.string_arg, buffer, 512, NETWORK_BRIDGE_TIMEOUT))
 	{
 		SERIAL_ET(buffer);
 	}

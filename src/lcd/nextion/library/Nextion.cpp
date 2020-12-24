@@ -138,6 +138,29 @@
     recvRetCommandFinished();
   }
 
+  void NexObject::setPw(bool pw) {
+	 char buf[10] = {0};
+	 String cmd;
+
+	 utoa(pw, buf, 10);
+	 cmd += this->__name;
+	 if (pw)
+	 {
+		 cmd += ".pw=1";
+	 }
+	 else
+	 {
+		 cmd += ".pw=0";
+	 }
+	 sendCommand(cmd.c_str());
+
+	 cmd = "";
+	 cmd += "ref ";
+	 cmd += this->__name;
+	 sendCommand(cmd.c_str());
+	 recvRetCommandFinished();
+  }
+
   void NexObject::setTextPGM(const char *buffer, const char *pname) {
     String cmd;
     if (pname) {

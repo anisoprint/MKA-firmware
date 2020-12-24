@@ -86,6 +86,9 @@ void NextionHMI::Init() {
 	StateMovement::Init();
 	StateAbout::Init();
 	StateSettings::Init();
+	StateConnections::Init();
+	StateWifiList::Init();
+	StateAuraConnect::Init();
 
 	wifiStatus.setGlobalValue(0);
 	ethernetStatus.setGlobalValue(0);
@@ -185,13 +188,13 @@ void NextionHMI::TouchUpdate() {
 	         break;
 	    case PAGE_C_NUMBER : StateEditNumber::TouchUpdate();
 	         break;
-	    case PAGE_C_KEY :
+	    case PAGE_C_KEY : StateKeyboard::TouchUpdate();
 	         break;
-	    case PAGE_CONNECTIONS :
+	    case PAGE_CONNECTIONS : StateConnections::TouchUpdate();
 	         break;
-	    case PAGE_WIFILIST :
+	    case PAGE_WIFILIST : StateWifiList::TouchUpdate();
 	         break;
-	    case PAGE_ACCONFIG :
+	    case PAGE_ACCONFIG : StateAuraConnect::TouchUpdate();
 	         break;
 	}
 }
@@ -234,13 +237,13 @@ void NextionHMI::ShowState(uint8_t state_id) {
 		         break;
 		    case PAGE_C_NUMBER : ShowState(_rootState);
 		         break;
-		    case PAGE_C_KEY :
+		    case PAGE_C_KEY : ShowState(_rootState);
 		         break;
-		    case PAGE_CONNECTIONS :
+		    case PAGE_CONNECTIONS : StateConnections::Activate();
 		         break;
-		    case PAGE_WIFILIST :
+		    case PAGE_WIFILIST : StateWifiList::Activate();
 		         break;
-		    case PAGE_ACCONFIG :
+		    case PAGE_ACCONFIG : StateAuraConnect::Activate();
 		         break;
 		}
 }

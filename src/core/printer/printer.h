@@ -176,6 +176,7 @@ class Printer {
 
     static void check_periodical_actions();
     static void safe_delay(millis_l ms);
+    static void safe_idle(millis_l ms);
 
     static void setup_for_endstop_or_probe_move();
     static void clean_up_after_endstop_or_probe_move();

@@ -13,10 +13,13 @@
 #include "NextionConstants.h"
 
 
-namespace StateConnections {
+namespace StateAuraConnect {
 
-  	void Back_Push(void *ptr);
-  	void Wifi_Push(void *ptr);
+  	void Cancel_Push(void *ptr);
+  	void OK_Push(void *ptr);
+
+  	void ServerUrl_Push(void *ptr);
+  	void ServerSecurityCode_Push(void *ptr);
 
 	void Init();
 	void Activate();
