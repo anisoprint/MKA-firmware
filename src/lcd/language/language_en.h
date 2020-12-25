@@ -382,6 +382,30 @@
   #define MSG_NETWORK_ID                     		_UxGT("Network ID: %s")
 #endif
 
+#ifndef MSG_AC_SERVER_URL
+  #define MSG_AC_SERVER_URL                     	_UxGT("Aura.Connect server URL:")
+#endif
+
+#ifndef MSG_AC_SERVER_URL_EMPTY
+  #define MSG_AC_SERVER_URL_EMPTY                   _UxGT("Server URL can't be empty")
+#endif
+
+#ifndef MSG_AC_SERVER_CODE
+  #define MSG_AC_SERVER_CODE                     	_UxGT("Aura.Connect server security code:")
+#endif
+
+#ifndef MSG_AC_SERVER_CODE_EMPTY
+  #define MSG_AC_SERVER_CODE_EMPTY                  _UxGT("Security code can't be empty")
+#endif
+
+#ifndef MSG_AC_SERVER_UPDATING
+  #define MSG_AC_SERVER_UPDATING                    _UxGT("Updating Aura.Connect server settings...")
+#endif
+
+#ifndef MSG_AC_SERVER_UPDATED
+  #define MSG_AC_SERVER_UPDATED                     _UxGT("Aura.Connect server settings updated")
+#endif
+
 #ifndef MSG_ENABLE
   #define MSG_ENABLE                     			_UxGT("Enable")
 #endif

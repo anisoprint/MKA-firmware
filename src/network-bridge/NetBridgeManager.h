@@ -62,7 +62,7 @@ public:
 	bool SetAcServerId(const char* id, char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetAcServerUrl(char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetAcServerId(char* responseBuffer, const uint16_t responseBufferSize);
-	bool ConnectAcServer(const char* uri, const char* id, const char* code, char* responseBuffer, const uint16_t responseBufferSize);
+	bool ConnectAcServer(const char* uri, const char* code, char* responseBuffer, const uint16_t responseBufferSize);
 	bool SetSdSlotIndex(uint8_t index, char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetSdSlotIndex(uint8_t &index, char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetTcpEnabled(bool &enabled, char* responseBuffer, const uint16_t responseBufferSize);

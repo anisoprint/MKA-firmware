@@ -15,11 +15,15 @@
 
 namespace StateAuraConnect {
 
-  	void Cancel_Push(void *ptr);
+  	void Close_Push(void *ptr);
   	void OK_Push(void *ptr);
 
   	void ServerUrl_Push(void *ptr);
   	void ServerSecurityCode_Push(void *ptr);
+
+  	void ServerUrl_OkPush(void *ptr);
+  	void ServerSecurityCode_OkPush(void *ptr);
+  	void Dialog_CancelPush(void *ptr);
 
 	void Init();
 	void Activate();

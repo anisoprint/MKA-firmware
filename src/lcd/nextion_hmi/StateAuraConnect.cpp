@@ -18,9 +18,9 @@ namespace {
 	//Network ID
 	NexObject _tId = NexObject(PAGE_ACCONFIG,  15,  "tID");
 	//Server URL
-	NexObject _tSU = NexObject(PAGE_ACCONFIG,  10,  "tSU");
+	NexObject _tSU = NexObject(PAGE_ACCONFIG,  14,  "tSU");
 	//Security Code
-	NexObject _tSC = NexObject(PAGE_ACCONFIG,  13,  "tSC");
+	NexObject _tSC = NexObject(PAGE_ACCONFIG,  15,  "tSC");
 
 
 	//Buttons
@@ -35,14 +35,16 @@ namespace {
 };
 
 void StateAuraConnect::Init() {
-	_bCancel.attachPush(Cancel_Push, &_bCancel);
+	_bCancel.attachPush(Close_Push, &_bCancel);
 	_bOk.attachPush(OK_Push, &_bOk);
+	_tSU.attachPush(ServerUrl_Push, &_tSU);
+	_tSC.attachPush(ServerSecurityCode_Push, &_tSC);
 
 }
 
 
 void StateAuraConnect::Activate() {
-	NextionHMI::ActivateState(PAGE_CONNECTIONS);
+	NextionHMI::ActivateState(PAGE_ACCONFIG);
 	_page.show();
 
 	char databuffer[64] = {0};
@@ -60,8 +62,9 @@ void StateAuraConnect::Activate() {
 	else
 	{
 		ZERO(NextionHMI::buffer);
-		if (netBridgeManager.GetAcServerUrl(NextionHMI::buffer, sizeof(NEXHMI_BUFFER_SIZE)))
+		if (netBridgeManager.GetAcServerUrl(NextionHMI::buffer, NEXHMI_BUFFER_SIZE))
 		{
+			strncpy(serverURL, NextionHMI::buffer, sizeof(serverURL));
 			_tSU.setText(NextionHMI::buffer);
 		}
 	}
@@ -74,22 +77,68 @@ void StateAuraConnect::Activate() {
 }
 
 void StateAuraConnect::ServerUrl_Push(void *ptr) {
-}
-
-void StateAuraConnect::ServerSecurityCode_Push(void *ptr) {
+	StateKeyboard::Activate(false, PSTR(MSG_AC_SERVER_URL), serverURL, ServerUrl_OkPush, Dialog_CancelPush);
 }
 
 void StateAuraConnect::TouchUpdate() {
 	nexLoop(_listenList);
 }
 
-void StateAuraConnect::Cancel_Push(void *ptr) {
+void StateAuraConnect::Close_Push(void *ptr) {
+	ZERO(serverURL);
+	ZERO(serverSecurityCode);
 	StateMenu::ActivateNetwork();
 }
 
 void StateAuraConnect::OK_Push(void *ptr) {
+	if (strlen(serverURL) == 0)
+	{
+		StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_AC_SERVER_URL_EMPTY, 1, MSG_OK, Dialog_CancelPush, 0, 0);
+		return;
+	}
+	if (strlen(serverSecurityCode) == 0)
+	{
+		StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_AC_SERVER_CODE_EMPTY, 1, MSG_OK, Dialog_CancelPush, 0, 0);
+		return;
+	}
+
+	StateMessage::ActivatePGM_M(MESSAGE_DIALOG, NEX_ICON_INFO, MSG_AURA_CONNECT, PSTR(MSG_AC_SERVER_UPDATING), 1, PSTR(MSG_PLEASE_WAIT), 0, 0, 0);
+	ZERO(NextionHMI::buffer);
+	bool result = netBridgeManager.ConnectAcServer(serverURL, serverSecurityCode, NextionHMI::buffer, NEXHMI_BUFFER_SIZE);
+	if (result)
+	{
+		StateMessage::ActivatePGM_M(MESSAGE_DIALOG_OVER, NEX_ICON_INFO, MSG_AURA_CONNECT, PSTR(MSG_AC_SERVER_UPDATED), 1, PSTR(MSG_OK), Close_Push, 0, 0);
+		ZERO(serverURL);
+		ZERO(serverSecurityCode);
+	}
+	else
+	{
+		StateMessage::ActivatePGM_M(MESSAGE_DIALOG_OVER, NEX_ICON_ERROR, MSG_ERROR, NextionHMI::buffer, 1, PSTR(MSG_OK), Dialog_CancelPush, 0, 0);
+	}
+
 
 }
+
+void StateAuraConnect::ServerSecurityCode_Push(void *ptr) {
+	StateKeyboard::Activate(true, PSTR(MSG_AC_SERVER_CODE), serverSecurityCode, ServerSecurityCode_OkPush, Dialog_CancelPush);
+}
+
+void StateAuraConnect::ServerUrl_OkPush(void *ptr) {
+	ZERO(serverURL);
+	StateKeyboard::GetInputToBuffer(serverURL, sizeof(serverURL));
+	Activate();
+}
+
+void StateAuraConnect::Dialog_CancelPush(void *ptr) {
+	Activate();
+}
+
+void StateAuraConnect::ServerSecurityCode_OkPush(void *ptr) {
+	ZERO(serverSecurityCode);
+	StateKeyboard::GetInputToBuffer(serverSecurityCode, sizeof(serverSecurityCode));
+	Activate();
+}
+
 
 
 

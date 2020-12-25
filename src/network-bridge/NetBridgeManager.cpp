@@ -155,12 +155,11 @@ bool NetBridgeManager::GetAcServerId(char *responseBuffer,
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 
-bool NetBridgeManager::ConnectAcServer(const char *uri, const char *id,
-		const char *code, char *responseBuffer,
+bool NetBridgeManager::ConnectAcServer(const char *uri, const char *code, char *responseBuffer,
 		const uint16_t responseBufferSize) {
   char commandBuffer[256];
-  snprintf(commandBuffer, sizeof(commandBuffer), "@ac_server_connect %s %s %s", uri, id, code);
-  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
+  snprintf(commandBuffer, sizeof(commandBuffer), "@ac_server_connect %s %s", uri, code);
+  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT*2);
 
   return (res && strncmp(responseBuffer, "ok", 2)==0);
 }
