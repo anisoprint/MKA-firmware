@@ -30,8 +30,15 @@ namespace {
 	//Buttons
 	NexObject _bPrint = NexObject(PAGE_STATUS,  15,  "bPrint");
 	NexObject _bMaintenance = NexObject(PAGE_STATUS,  16,  "bMaintenance");
+	//AC
+	NexObject _tAC = NexObject(PAGE_STATUS,  28,  "tAC1");
+	NexObject _tACcaption = NexObject(PAGE_STATUS,  27,  "tAC");
+	NexObject _pACicon = NexObject(PAGE_STATUS,  29,  "pAC");
+	NexObject _bACbutton = NexObject(PAGE_STATUS,  30,  "mAC");
 
-	NexObject *_listenList[] = {&_bH0, &_bH1, &_bBuildPlate, &_bPrint, &_bMaintenance, NULL};
+	NexObject *_listenList[] = {&_bH0, &_bH1, &_bBuildPlate, &_bPrint, &_bMaintenance, &_bACbutton, NULL};
+
+	bool _jobAwaiting = false;
 };
 
 void StateStatus::Temperature_Push(void* ptr) {
@@ -69,6 +76,7 @@ void StateStatus::Init() {
 	_bBuildPlate.attachPush(Temperature_Push, &_bBuildPlate);
 	_bPrint.attachPush(Print_Push);
 	_bMaintenance.attachPush(Maintenance_Push);
+	_bACbutton.attachPush(AC_Push, &_bACbutton);
 }
 
 void StateStatus::Activate() {
@@ -76,6 +84,7 @@ void StateStatus::Activate() {
 	_page.show();
 	//SERIAL_MSG("SHOW \n");
 	NextionHMI::headerText.setTextPGM(PSTR(WELCOME_MSG));
+	_jobAwaiting = false;
 	DrawUpdate();
 }
 
@@ -152,12 +161,35 @@ void StateStatus::DrawUpdate() {
 	}
 #endif
 
+	if (_jobAwaiting!=netBridgeManager.IsJobAwaiting())
+	{
+		_jobAwaiting = netBridgeManager.IsJobAwaiting();
+		_bACbutton.SetVisibility(_jobAwaiting);
+		_tAC.SetVisibility(_jobAwaiting);
+		_tACcaption.SetVisibility(_jobAwaiting);
+		_pACicon.SetVisibility(_jobAwaiting);
+	}
 
+
+}
+
+void StateStatus::AC_Push(void *ptr) {
+	if (netBridgeManager.IsJobAwaiting())
+	{
+		if (!netBridgeManager.GetJobInfo())
+		{
+			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, PSTR(MSG_ERROR_GET_JOB_INFO), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+			return;
+		}
+		StateFileinfo::Activate(-1);
+	}
 }
 
 void StateStatus::TouchUpdate() {
 	nexLoop(_listenList);
 }
+
+
 
 #endif
 

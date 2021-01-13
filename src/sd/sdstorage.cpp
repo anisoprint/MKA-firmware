@@ -126,10 +126,15 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
 
   SERIAL_PORT(serialPort);
 
+  ZERO(NextionHMI::buffer);
+  sprintf_P(NextionHMI::buffer, PSTR(MSG_RECEIVING_FILE), 0, size/1024);
+  StateMessage::ActivatePGM_M(MESSAGE_DIALOG_OVER, NEX_ICON_INFO, MSG_AURA_CONNECT, NextionHMI::buffer, 1, PSTR(MSG_PLEASE_WAIT), 0, 0, 0);
+
   if (!cards[slot].startWrite(path, true))
   {
     SERIAL_EMV("RESULT:", "ERROR_OPEN_FILE");
     SERIAL_PORT(-1);
+    StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, PSTR(MSG_ERROR), PSTR(MSG_ERROR_FILE_WRITE_OPEN), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
     return;
   }
 
@@ -142,6 +147,8 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
       break;
     default:
       SERIAL_PORT(-1);
+      StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, PSTR(MSG_ERROR), PSTR(MSG_ERROR), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+
       return;
   }
 
@@ -149,6 +156,7 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
   printer.setSuspendAutoreport(true);
 
   SERIAL_EMV("RESULT:", "READY");
+  uint32_t old_transfered = 0;
   uint32_t transfered = 0;
   uint8_t retries = 0;
 
@@ -164,9 +172,19 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
         SERIAL_EMV("RESULT:", "ERROR_WRITE_FILE");
         SERIAL_PORT(-1);
         servo[Tools::cut_servo_id].reattach();
+        StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, PSTR(MSG_ERROR), PSTR(MSG_ERROR_FILE_WRITE), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
         return;
       }
       transfered+=fileTransfer.bytesRead;
+
+      if (old_transfered - transfered > 10000)
+      {
+          old_transfered = transfered;
+          ZERO(NextionHMI::buffer);
+          sprintf_P(NextionHMI::buffer, PSTR(MSG_RECEIVING_FILE), transfered/1024, size/1024);
+          StateMessage::UpdateMessage(NextionHMI::buffer);
+      }
+
       retries = 0;
       printer.check_periodical_actions();
 
@@ -179,6 +197,8 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
         SERIAL_EMV("RESULT:", "ERROR_TRANSFER");
         SERIAL_PORT(-1);
         servo[Tools::cut_servo_id].reattach();
+        StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, PSTR(MSG_ERROR), PSTR(MSG_ERROR_FILE_TRANSFER), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+
         return;
       }
       retries++;
@@ -194,6 +214,10 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
   cards[slot].finishWrite();
   SERIAL_EMV("RESULT:", "FINISH");
   servo[Tools::cut_servo_id].reattach();
+
+  ZERO(NextionHMI::buffer);
+  sprintf_P(NextionHMI::buffer, PSTR(MSG_RECEIVING_FILE), 0, size/1024);
+  StateMessage::UpdateMessage(NextionHMI::buffer);
   printer.setSuspendAutoreport(false);
   SERIAL_PORT(-1);
 

@@ -249,7 +249,7 @@ void StateWifiList::Activate() {
     _page.show();
     if (netBridgeManager.ScanWifiNetworks())
     {
-    	printer.safe_delay(3500);
+    	printer.safe_delay(4000);
     }
     WifiList_PopulateList(_listPosition);
 	_tLoading.SetVisibility(false);

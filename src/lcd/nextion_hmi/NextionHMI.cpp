@@ -31,7 +31,7 @@ uint16_t NextionHMI::autoPreheatTempBed = PREHEAT_1_TEMP_BED;
 uint8_t  NextionHMI::lcdBrightness = 90;
 
 uint8_t NextionHMI::wizardData = 0;
-uint8_t NextionHMI::pageData = 0;
+int16_t NextionHMI::pageData = 0;
 
 HMIevent NextionHMI::lastEvent = HMIevent::NONE;
 uint8_t  NextionHMI::lastEventArg = 0;

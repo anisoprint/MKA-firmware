@@ -441,9 +441,21 @@ void StateMenu::Network_WifiOnOff(void *ptr) {
 
 void StateMenu::Network_TcpOnOff(void *ptr) {
 	bool newStatus = !netBridgeManager.IsTcpEnabled();
+	  StateMessage::ActivatePGM_M(MESSAGE_DIALOG, NEX_ICON_INFO, MSG_NETWORK, PSTR(MSG_APPLYING_SETTINGS), 1, PSTR(MSG_PLEASE_WAIT), 0, 0, 0);
 	bool res = netBridgeManager.SetTcpEnabled(newStatus, NextionHMI::buffer, NEXHMI_BUFFER_SIZE);
 	if (res) {
-		ActivateNetwork();
+		if (newStatus)
+		{
+			char buffer[32] = {0};
+			netBridgeManager.GetTcpPort(buffer, sizeof(buffer));
+			  sprintf_P(NextionHMI::buffer, PSTR(MSG_TCP_BRIDGE_ACTIVE), buffer);
+			StateMessage::ActivatePGM_M(MESSAGE_DIALOG_OVER, NEX_ICON_INFO, MSG_NETWORK, NextionHMI::buffer, 1, PSTR(MSG_OK), ActivateNetwork, 0, 0);
+		}
+		else
+		{
+			StateMessage::ActivatePGM_M(MESSAGE_DIALOG_OVER, NEX_ICON_INFO, MSG_NETWORK, PSTR(MSG_TCP_BRIDGE_DISABLED), 1, PSTR(MSG_OK), ActivateNetwork, 0, 0);
+		}
+
 	}
 	else
 	{

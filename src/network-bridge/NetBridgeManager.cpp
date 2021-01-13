@@ -198,10 +198,17 @@ void NetBridgeManager::UpdateNetBridgeStatus(NetBridgeStatus status) {
 		_wifiConnected = false;
 		_ethernetConnected = false;
 		_acConnected = false;
+		_jobAwaiting = false;
+		_tcpEnabled = false;
 	#if ENABLED(NEXTION_HMI)
 		UpdateNextionStatusIcons();
 	#endif
 	}
+	else
+	{
+		SyncWithNetworkBridge();
+	}
+
 
 }
 
@@ -244,6 +251,10 @@ void NetBridgeManager::UpdateEthernetConnected(bool ethernetConnected) {
 
 void NetBridgeManager::UpdateAcConnected(bool acConnected) {
 	_acConnected = acConnected;
+	if (!_acConnected)
+	{
+		UpdateJobAwaiting(false);
+	}
 #if ENABLED(NEXTION_HMI)
 	UpdateNextionStatusIcons();
 #endif
@@ -309,8 +320,10 @@ bool NetBridgeManager::GetEthIp4(char *responseBuffer,
 }
 
 void NetBridgeManager::SyncWithNetworkBridge() {
-	char buffer[32] = {0};
+	char buffer[64] = {0};
 	GetTcpEnabled(_tcpEnabled, buffer, 32);
+	ZERO(buffer);
+	SetSdSlotIndex(INTERNAL_SD_STORAGE_INDEX, buffer, 64);
 }
 
 bool NetBridgeManager::IsTcpEnabled() {
@@ -318,7 +331,6 @@ bool NetBridgeManager::IsTcpEnabled() {
 }
 
 bool NetBridgeManager::ListWifiNetworks(uint8_t startIndex) {
-    char commandBuffer[20];
     char responseBuffer[700];
     ZERO(responseBuffer);
 
@@ -363,6 +375,65 @@ void NetBridgeManager::UpdateConnectedNetwork() {
     {
     	wifiNetworks[i].connected = (strcmp(wifiNetworks[i].ssid,_selectedWifiSsid)==0) ? true : false;
     }
+}
+
+bool NetBridgeManager::GetJobInfo() {
+    char responseBuffer[700];
+    ZERO(responseBuffer);
+
+    bool success = SendCommand("@get_job_info", responseBuffer, sizeof(responseBuffer), NETWORK_BRIDGE_TIMEOUT);
+    if (!success) return false;
+
+	const size_t capacity = 7*JSON_OBJECT_SIZE(2) + 240;
+	StaticJsonDocument<capacity> jsonDoc;
+	DeserializationError err = deserializeJson(jsonDoc, responseBuffer, sizeof(responseBuffer));
+	if (err!=DeserializationError::Ok)
+	{
+		return false;
+	}
+
+	strncpy(serverJobName, (const char*)(jsonDoc["name"]), sizeof(serverJobName));
+
+	serverJobInfo.PrintDuration = jsonDoc["time"] | 0;
+
+	JsonObject extruder0 = jsonDoc["extruders"]["0"];
+	if (!extruder0.isNull())
+    {
+    	strncpy(serverJobInfo.ExtruderInfo[0].PlasticMaterialName, (const char*)(extruder0["p"]["name"]), sizeof(serverJobInfo.ExtruderInfo[0].PlasticMaterialName));
+    	serverJobInfo.ExtruderInfo[0].PlasticConsumption = extruder0["p"]["cons"];
+    	strncpy(serverJobInfo.ExtruderInfo[0].FiberMaterialName, (const char*)(extruder0["f"]["name"]), sizeof(serverJobInfo.ExtruderInfo[0].FiberMaterialName));
+    	serverJobInfo.ExtruderInfo[0].FiberConsumption = extruder0["f"]["cons"];
+    }
+
+	#if HOTENDS>1
+
+	JsonObject extruder1 = jsonDoc["extruders"]["1"];
+	if (!extruder1.isNull())
+    {
+    	strncpy(serverJobInfo.ExtruderInfo[1].PlasticMaterialName, (const char*)(extruder1["p"]["name"]), sizeof(serverJobInfo.ExtruderInfo[1].PlasticMaterialName));
+    	serverJobInfo.ExtruderInfo[1].PlasticConsumption = extruder1["p"]["cons"];
+    	strncpy(serverJobInfo.ExtruderInfo[1].FiberMaterialName, (const char*)(extruder1["f"]["name"]), sizeof(serverJobInfo.ExtruderInfo[1].FiberMaterialName));
+    	serverJobInfo.ExtruderInfo[1].FiberConsumption = extruder1["f"]["cons"];
+    }
+
+	#endif
+    return true;
+}
+
+bool NetBridgeManager::SendJobInvoke(bool accept, char *responseBuffer,
+		const uint16_t responseBufferSize) {
+    char commandBuffer[20];
+    snprintf(commandBuffer, sizeof(commandBuffer), "@job_invoke %u", accept ? 1 : 2);
+    bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
+    bool ok = (res && strncmp(responseBuffer, "ok", 2)==0);
+    return (ok);
+}
+
+bool NetBridgeManager::GetTcpPort(char *responseBuffer,
+		const uint16_t responseBufferSize) {
+	bool res = SendCommand("@tcp_port", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
+	bool ok = (res && strncmp(responseBuffer, "ok", 2)==0);
+	return (ok);
 }
 
 #endif

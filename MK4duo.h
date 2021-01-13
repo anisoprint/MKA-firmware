@@ -142,6 +142,7 @@ typedef int8_t    pin_t;
 #include "src/lib/watch.h"
 #include "src/lib/timer.h"
 #include "src/lib/circular_queue.h"
+#include "src/lib/print_file_info.h"
 
 // Platform modules
 #include "src/platform/platform.h"

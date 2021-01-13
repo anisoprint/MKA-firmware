@@ -19,6 +19,7 @@ namespace StateStatus {
   	void Temperature_Push(void *ptr);
   	void Print_Push(void *ptr);
   	void Maintenance_Push(void *ptr);
+  	void AC_Push(void *ptr);
 
 	void Init();
 	void Activate();

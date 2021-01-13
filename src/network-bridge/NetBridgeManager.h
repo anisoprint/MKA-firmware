@@ -40,6 +40,10 @@ private:
 #endif
 
 public:
+
+    char serverJobName[64]= {0};
+    PrintFileInfo serverJobInfo;
+
     static const uint8_t wifiListSize = 7;
     WifiNetworkInfo wifiNetworks[wifiListSize];
     uint8_t startNetworkIndex;
@@ -67,6 +71,8 @@ public:
 	bool GetSdSlotIndex(uint8_t &index, char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetTcpEnabled(bool &enabled, char* responseBuffer, const uint16_t responseBufferSize);
 	bool SetTcpEnabled(bool enabled, char* responseBuffer, const uint16_t responseBufferSize);
+	bool GetTcpPort(char* responseBuffer, const uint16_t responseBufferSize);
+	bool SendJobInvoke(bool accept, char* responseBuffer, const uint16_t responseBufferSize);
 
 	bool GetWlanMac(char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetEthMac(char* responseBuffer, const uint16_t responseBufferSize);
@@ -76,6 +82,7 @@ public:
 	bool RebootBridge();
 
 	bool ListWifiNetworks(uint8_t startIndex);
+	bool GetJobInfo();
 
 	bool SendCommand(const char* command, char* responseBuffer, uint16_t responseBufferSize, millis_l timeout);
 

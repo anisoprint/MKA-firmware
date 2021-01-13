@@ -30,7 +30,7 @@ namespace NextionHMI {
 	extern NexObject* statusIcons[];
 
 	extern uint8_t wizardData;
-	extern uint8_t pageData;
+	extern int16_t pageData;
 
     extern uint16_t autoPreheatTempHotend;
     extern uint16_t autoPreheatTempBed;

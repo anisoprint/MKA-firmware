@@ -40,11 +40,6 @@
 	 NetBridgeStatus status = Connected;
 	 if (parser.seen('S')) status = parser.value_byte() == 0 ? TempDisconnected : Connected;
 	 netBridgeManager.UpdateNetBridgeStatus(status);
-	 if (status == Connected)
-	 {
-		 char buffer[64] = {0};
-		 netBridgeManager.SetSdSlotIndex(INTERNAL_SD_STORAGE_INDEX, buffer, 64);
-	 }
  }
 
 
@@ -82,7 +77,7 @@ inline void gcode_M1016() {
  *
  */
 inline void gcode_M1017() {
-	  if (parser.seen('S')) netBridgeManager.UpdateEthernetConnected(parser.value_bool());
+	  if (parser.seen('S')) netBridgeManager.UpdateJobAwaiting(parser.value_bool());
 }
 
 /*

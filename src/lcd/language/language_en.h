@@ -93,10 +93,13 @@
   #define MSG_PLASTIC                             _UxGT("Plastic")
 #endif
 
+#ifndef MSG_APPLYING_SETTINGS
+  #define MSG_APPLYING_SETTINGS                   _UxGT("Applying settings...")
+#endif
+
 #ifndef MSG_PLEASE_WAIT
   #define MSG_PLEASE_WAIT                         _UxGT("Please wait...")
 #endif
-
 
 #ifndef MSG_COMPOSITE_EXTRUDER_TEMP
   #define MSG_COMPOSITE_EXTRUDER_TEMP             _UxGT("Composite extruder temperature")
@@ -406,6 +409,26 @@
   #define MSG_AC_SERVER_UPDATED                     _UxGT("Aura.Connect server settings updated")
 #endif
 
+#ifndef MSG_ERROR_GET_JOB_INFO
+  #define MSG_ERROR_GET_JOB_INFO                    _UxGT("Can't load information about the job")
+#endif
+
+#ifndef MSG_STARTING_JOB
+  #define MSG_STARTING_JOB                    		_UxGT("Job is starting...")
+#endif
+
+#ifndef MSG_TCP_BRIDGE_ACTIVE
+  #define MSG_TCP_BRIDGE_ACTIVE                    	_UxGT("TCP/IP to USB bridge is active at port %s")
+#endif
+
+#ifndef MSG_TCP_BRIDGE_DISABLED
+  #define MSG_TCP_BRIDGE_DISABLED                   _UxGT("TCP/IP to USB bridge is disabled")
+#endif
+
+#ifndef MSG_RECEIVING_FILE
+  #define MSG_RECEIVING_FILE                    	_UxGT("Receiving file (%u kb / %u kb)")
+#endif
+
 #ifndef MSG_ENABLE
   #define MSG_ENABLE                     			_UxGT("Enable")
 #endif
@@ -692,8 +715,17 @@
   #define MSG_INTERNAL_SD_MOUNT_FAIL          "Internal file storage can't be mounted.\\rSome features will be unavailable."
 #endif
 
+#ifndef MSG_ERROR_FILE_WRITE_OPEN
+  #define MSG_ERROR_FILE_WRITE_OPEN           _UxGT("Can't open file to write")
+#endif
 
+#ifndef MSG_ERROR_FILE_WRITE
+  #define MSG_ERROR_FILE_WRITE           	  _UxGT("Error writing to file")
+#endif
 
+#ifndef MSG_ERROR_FILE_TRANSFER
+  #define MSG_ERROR_FILE_TRANSFER             _UxGT("File transfer error")
+#endif
 
 #ifndef WELCOME_MSG
   #define WELCOME_MSG                         MACHINE_NAME _UxGT(" ready")

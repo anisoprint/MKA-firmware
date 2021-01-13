@@ -21,7 +21,7 @@ namespace StateFileinfo {
 	void Back_Push(void *ptr);
 
 	void Init();
-	void Activate(uint8_t sd_slot);
+	void Activate(int8_t sd_slot);
 	void DrawUpdate();
 	void TouchUpdate();
 
