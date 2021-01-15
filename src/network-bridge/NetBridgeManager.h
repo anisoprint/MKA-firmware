@@ -95,6 +95,7 @@ public:
 	bool IsAcConnected();
 
 	void SelectWifiNetwork(const char* ssid);
+	bool SendReconnect();
 
 	//TODO: For backward compatibility, remove in a while
 	void UpdateConnectedNetwork();

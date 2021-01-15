@@ -436,4 +436,11 @@ bool NetBridgeManager::GetTcpPort(char *responseBuffer,
 	return (ok);
 }
 
+bool NetBridgeManager::SendReconnect() {
+	char buffer[64] = {0};
+    SendCommand("@serial_reconnect", buffer, sizeof(buffer), 0);
+    return true;
+
+}
+
 #endif

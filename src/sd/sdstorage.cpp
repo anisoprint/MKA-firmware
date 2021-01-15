@@ -125,7 +125,6 @@ void SdStorage::processAutoreport() {
 void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const path, uint32_t size) {
 
   SERIAL_PORT(serialPort);
-
   ZERO(NextionHMI::buffer);
   sprintf_P(NextionHMI::buffer, PSTR(MSG_RECEIVING_FILE), 0, size/1024);
   StateMessage::ActivatePGM_M(MESSAGE_DIALOG_OVER, NEX_ICON_INFO, MSG_AURA_CONNECT, NextionHMI::buffer, 1, PSTR(MSG_PLEASE_WAIT), 0, 0, 0);
@@ -153,17 +152,22 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
   }
 
   servo[Tools::cut_servo_id].detach();
+  bool wasReportSuspended = printer.isSuspendAutoreport();
   printer.setSuspendAutoreport(true);
+
 
   SERIAL_EMV("RESULT:", "READY");
   uint32_t old_transfered = 0;
   uint32_t transfered = 0;
   uint8_t retries = 0;
 
+  watch_t timeoutWatch = watch_t(10000);
+
   while (transfered<size){
     if(fileTransfer.available())
     {
       SERIAL_EMV("RESULT:", "ok");
+      timeoutWatch.start();
       size_t written = cards[slot].write(fileTransfer.rxBuff, fileTransfer.bytesRead);
       if (written==-1 || written!=fileTransfer.bytesRead)
       {
@@ -172,6 +176,7 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
         SERIAL_EMV("RESULT:", "ERROR_WRITE_FILE");
         SERIAL_PORT(-1);
         servo[Tools::cut_servo_id].reattach();
+        printer.setSuspendAutoreport(wasReportSuspended);
         StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, PSTR(MSG_ERROR), PSTR(MSG_ERROR_FILE_WRITE), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
         return;
       }
@@ -189,25 +194,45 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
       printer.check_periodical_actions();
 
     }
-    else if(fileTransfer.status < 0)
+    else
     {
-      if (retries==MAX_RETRIES) {
-        cards[slot].finishWrite();
-        cards[slot].deleteFile(path);
-        SERIAL_EMV("RESULT:", "ERROR_TRANSFER");
-        SERIAL_PORT(-1);
-        servo[Tools::cut_servo_id].reattach();
-        StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, PSTR(MSG_ERROR), PSTR(MSG_ERROR_FILE_TRANSFER), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+    	if(fileTransfer.status < 0)
+		{
+		  if (retries==MAX_RETRIES) {
+			cards[slot].finishWrite();
+			cards[slot].deleteFile(path);
+			SERIAL_EMV("RESULT:", "ERROR_TRANSFER");
+			SERIAL_PORT(-1);
+			servo[Tools::cut_servo_id].reattach();
+	        printer.setSuspendAutoreport(wasReportSuspended);
+			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, PSTR(MSG_ERROR), PSTR(MSG_ERROR_FILE_TRANSFER), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+			return;
+		  }
+		  retries++;
+		  if(fileTransfer.status == -1)
+			SERIAL_EMV("RESULT:", "RESEND_CRC_ERROR");
+		  else if(fileTransfer.status == -2)
+			SERIAL_EMV("RESULT:", "RESEND_PAYLOAD_ERROR");
+		  else if(fileTransfer.status == -3)
+			SERIAL_EMV("RESULT:", "RESEND_STOPBYTE_ERROR");
+		}
+    	else
+    	{
+    		if (timeoutWatch.elapsed())
+    		{
+    			cards[slot].finishWrite();
+    			cards[slot].deleteFile(path);
+    			SERIAL_EMV("RESULT:", "ERROR_TRANSFER");
+    			SERIAL_PORT(-1);
+    			servo[Tools::cut_servo_id].reattach();
+    	        printer.setSuspendAutoreport(wasReportSuspended);
+    			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, PSTR(MSG_ERROR), PSTR(MSG_ERROR_FILE_TIMEOUT), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+    			SERIAL_FLUSH();
+    			netBridgeManager.SendReconnect();
+    			return;
 
-        return;
-      }
-      retries++;
-      if(fileTransfer.status == -1)
-        SERIAL_EMV("RESULT:", "RESEND_CRC_ERROR");
-      else if(fileTransfer.status == -2)
-        SERIAL_EMV("RESULT:", "RESEND_PAYLOAD_ERROR");
-      else if(fileTransfer.status == -3)
-        SERIAL_EMV("RESULT:", "RESEND_STOPBYTE_ERROR");
+    		}
+    	}
     }
   }
 
@@ -217,8 +242,7 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
 
   ZERO(NextionHMI::buffer);
   sprintf_P(NextionHMI::buffer, PSTR(MSG_RECEIVING_FILE), 0, size/1024);
-  StateMessage::UpdateMessage(NextionHMI::buffer);
-  printer.setSuspendAutoreport(false);
+  printer.setSuspendAutoreport(wasReportSuspended);
   SERIAL_PORT(-1);
 
 }

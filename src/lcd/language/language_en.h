@@ -731,6 +731,10 @@
   #define MSG_ERROR_FILE_TRANSFER             _UxGT("File transfer error")
 #endif
 
+#ifndef MSG_ERROR_FILE_TIMEOUT
+  #define MSG_ERROR_FILE_TIMEOUT              _UxGT("File transfer timeout")
+#endif
+
 #ifndef WELCOME_MSG
   #define WELCOME_MSG                         MACHINE_NAME _UxGT(" ready")
 #endif
