@@ -107,7 +107,6 @@ Codes marked with * are specific for Composer MKA firmware (of their meaning dif
 | M532 | - | X[percent] L[curLayer] - update current print state progress (X=0..100) and layer L
 | M569* | - | Stepper driver direction control M569. Use X, Y, Z, E, U, V letters for axes, e.g. “M569 X0 Y1” to turn off X-axis inversion and turn on Y-axis inversion)
 | M704* | - | Load/unload filament config. E[extruder] - Extruder driver number. L[distance] - Load distance. U[distance] - Unload distance.
-| M900 | LIN ADVANCE | K[factor] Set Linear Advance K-factor. LIN Advance is supported only for plastic extruder (E)
 | M999 | - | Restart after being stopped by error
 | M1001* | - | Start fiber reinforced polygon L[fiber polygon length]
 | M1002* | - | End fiber reinforced polygon

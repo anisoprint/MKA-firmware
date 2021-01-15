@@ -425,6 +425,10 @@
   #define MSG_TCP_BRIDGE_DISABLED                   _UxGT("TCP/IP to USB bridge is disabled")
 #endif
 
+#ifndef MSG_NET_BRIDGE_TEMP_DISCONNECTED
+  #define MSG_NET_BRIDGE_TEMP_DISCONNECTED          _UxGT("Network bridge is temporarily not available.\\rPlease try again later.")
+#endif
+
 #ifndef MSG_RECEIVING_FILE
   #define MSG_RECEIVING_FILE                    	_UxGT("Receiving file (%u kb / %u kb)")
 #endif

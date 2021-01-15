@@ -211,7 +211,7 @@ void StateMenu::ActivateMaintenance(void* ptr) {
 	_b3.attachPush(ActivateCalibrate);
 	_b4.attachPush(Maintenance_Settings);
 
-	if (netBridgeManager.GetNetBridgeStatus()==Connected)
+	if (netBridgeManager.GetNetBridgeStatus()==Connected || netBridgeManager.GetNetBridgeStatus()==TempDisconnected)
 	{
 		_b5.setTextPGM(PSTR(MSG_NETWORK));
 		_b6.setTextPGM(PSTR(MSG_DINFO));
@@ -384,6 +384,13 @@ void StateMenu::ActivateLoadUnload(void* ptr) {
 *********************************************************************************/
 
 void StateMenu::ActivateNetwork(void* ptr) {
+	if (netBridgeManager.GetNetBridgeStatus()==TempDisconnected)
+	{
+		StateMessage::ActivatePGM_M(MESSAGE_DIALOG, NEX_ICON_INFO, PSTR(MSG_NETWORK), PSTR(MSG_NET_BRIDGE_TEMP_DISCONNECTED), 1, PSTR(MSG_OK), ActivateMaintenance, 0, 0);
+		return;
+	}
+
+
 	NextionHMI::ActivateState(PAGE_MENU);
 	_count.setValue(4);
 	_page.show();
