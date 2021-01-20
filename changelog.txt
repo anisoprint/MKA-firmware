@@ -1,6 +1,11 @@
+v1.2.0
+[Added] Full support of network bridge
+[Added] Network status page in UI
+[Added] Wi-Fi connection pages in UI
+[Added] Support for TCP/IP connections, commands can be streamed to printer through TCP/IP  
+
 v1.1.1
 [Fixed] Starting print after finishing previous print
-
 
 v1.1.0
 [Added] Basic support of network bridge (full support of network features will be available in the next release)
