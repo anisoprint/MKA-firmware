@@ -458,15 +458,6 @@ void EEPROM::Postprocess() {
     	Factory_Settings();
     	auto sysLoaded=false, userLoaded=false;
 
-    	if (Load_Usr())
-    	{
-    		userLoaded = true;
-    	}
-    	else
-    	{
-    		Factory_Settings();
-    	}
-
     	if (Load_Sys())
     	{
     		sysLoaded = true;
@@ -474,6 +465,16 @@ void EEPROM::Postprocess() {
     	else
     	{
     		Factory_Settings();
+    	}
+
+    	if (Load_Usr())
+    	{
+    		userLoaded = true;
+    	}
+    	else
+    	{
+    		Factory_Settings();
+    		if (sysLoaded) Load_Sys();
     	}
 
     	if (sysLoaded || userLoaded) Postprocess();
