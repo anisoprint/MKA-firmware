@@ -115,6 +115,7 @@ class GCodeParser {
       static void set(const char c, char * const ptr) {
         const uint8_t ind = LETTER_BIT(c);
         if (ind >= COUNT(param)) return;           // Only A-Z
+        if (TEST32(codebits, ind)) return;         // parameter already exists
         SBI32(codebits, ind);                      // parameter exists
         param[ind] = ptr ? ptr - command_ptr : 0;  // parameter offset or 0
         #if ENABLED(DEBUG_GCODE_PARSER)
