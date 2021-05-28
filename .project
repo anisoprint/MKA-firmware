@@ -47,11 +47,6 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/ArduinoJson/6.16.1</locationURI>
 		</link>
 		<link>
-			<name>libraries/LiquidCrystal</name>
-			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/LiquidCrystal/1.0.7</locationURI>
-		</link>
-		<link>
 			<name>libraries/SPI</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/Avazar/hardware/sam/1.6.12-2/libraries/SPI</locationURI>
@@ -65,11 +60,6 @@
 			<name>libraries/SerialTransfer</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/SerialTransfer/1.4.1</locationURI>
-		</link>
-		<link>
-			<name>libraries/U8glib</name>
-			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/U8glib/1.19.1</locationURI>
 		</link>
 		<link>
 			<name>libraries/Wire</name>

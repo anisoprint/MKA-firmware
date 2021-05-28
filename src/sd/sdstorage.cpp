@@ -33,6 +33,11 @@ void SdStorage::openAndPrintFile(uint8_t slot, const char * const path, int32_t 
   SERIAL_MV("Open file: ", path);
   SERIAL_EM(" and start print.");
 
+  if (strstr(path, ".ac") != nullptr)
+  {
+	  cards[slot].setroot();
+  }
+
   if (!cards[slot].selectFile(path)) return;
   if (index!=-1) cards[slot].setIndex(index);
 

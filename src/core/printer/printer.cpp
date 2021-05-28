@@ -1484,7 +1484,7 @@ void Printer::clean_after_print() {
 	            SERIAL_VAL(-1);
 	          #endif
 	          #if HAS_SD_SUPPORT
-	            if (sdStorage.isPrinting()) {
+	            if (sdStorage.isPrinting() | sdStorage.isPaused()) {
 	              SERIAL_MSG(", \"fractionPrinted\":");
 	              float fractionprinted = sdStorage.fractionDone();
 	              SERIAL_VAL((float) floorf(fractionprinted * 1000) / 1000);

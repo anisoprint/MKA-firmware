@@ -459,6 +459,7 @@ bool SDCard::selectFile(const char * const path, const bool silent/*=false*/) {
   if (!isMounted()) return false;
 
   gcode_file.close();
+
   if (gcode_file.open(&workDir, path, O_READ)) {
     if ((fname = strrchr(path, '/')) != NULL)
       fname++;

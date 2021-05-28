@@ -176,6 +176,15 @@ void GCodeParser::parse(char *p) {
       return;
     }
 
+    // Special handling for quoted strings e.g. "/path/to/file.g"
+    // The path must be the last parameter
+    if (code == '"') {
+      string_arg = p;                           // Name starts after '"'
+      char * const lb = strchr(p, '"');         // Find end of string
+      if (lb) *lb = '\0';                       // Safe to mark the end of the filename
+      return;
+    }
+
     // Arguments MUST be uppercase for fast GCode parsing
     #if ENABLED(FASTER_GCODE_PARSER)
       #define PARAM_TEST WITHIN(code, 'A', 'Z')

@@ -227,7 +227,7 @@
 
     char* namestartpos = parser.string_arg ; // default name position
 
-    sdStorage.openAndPrintFile(s, namestartpos, s);
+    sdStorage.openAndPrintFile(s, namestartpos, 0);
 
   }
 
@@ -237,7 +237,7 @@
  * M524: Abort the current SD print job (started with M24)
  */
 inline void gcode_M524() {
-  if (IS_SD_PRINTING()) {
+  if (IS_SD_PRINTING() || IS_SD_PAUSED()) {
     sdStorage.setAbortSDprinting(true);
   }
 }
