@@ -430,7 +430,7 @@ void StateMenu::Network_Connections(void *ptr) {
 }
 
 void StateMenu::Network_AuraConnect(void *ptr) {
-	StateAuraConnect::Activate();
+	StateAuraConnectStatus::Activate();
 }
 
 void StateMenu::Network_WifiOnOff(void *ptr) {

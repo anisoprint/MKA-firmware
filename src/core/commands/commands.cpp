@@ -53,8 +53,8 @@ void Commands::flush_and_request_resend() {
   if (ACTIVE_SERIAL_PORT!=-1)
   {
 	  SERIAL_LV(RESEND, gcode_last_N[ACTIVE_SERIAL_PORT] + 1);
+	  SERIAL_L(OK);
   }
-  ok_to_send();
 }
 
 
@@ -323,6 +323,8 @@ void Commands::ok_to_send() {
 
   if (tmp.s_port < 0 || !tmp.send_ok) return;
 
+  //SERIAL_EMT("CONFIRM ", tmp.gcode);
+
   SERIAL_PORT(tmp.s_port);
   SERIAL_STR(OK);
 
@@ -334,7 +336,7 @@ void Commands::ok_to_send() {
       while (NUMERIC_SIGNED(*p))
         SERIAL_CHR(*p++);
     }
-    SERIAL_MV(" P", BLOCK_BUFFER_SIZE - planner.moves_planned() - 1);
+    SERIAL_MV(" P", BLOCK_BUFFER_SIZE - planner.movesplanned() - 1);
     SERIAL_MV(" B", BUFSIZE - buffer_ring.count());
   #endif
 
@@ -388,6 +390,9 @@ void Commands::get_serial() {
         while (*command == ' ') command++;                  // Skip leading spaces
         char *npos = (*command == 'N') ? command : nullptr; // Require the N parameter to start the line
 
+
+        //SERIAL_EMT("Received ", command);
+
         if (npos) {
 
           bool M110 = strstr_P(command, PSTR("M110")) != nullptr;
@@ -401,7 +406,7 @@ void Commands::get_serial() {
           gcode_N = strtol(npos + 1, nullptr, 10);
 
           if (gcode_N != gcode_last_N[i] + 1 && !M110) {
-            gcode_line_error(PSTR(MSG_ERR_LINE_NO), i);
+            gcode_line_error(PSTR(MSG_ERR_LINE_NO), i, false);
             return;
           }
 
@@ -601,11 +606,14 @@ void Commands::unknown_warning() {
   SERIAL_PORT(-1);
 }
 
-void Commands::gcode_line_error(PGM_P const err, const uint8_t port) {
+void Commands::gcode_line_error(PGM_P const err, const uint8_t port, bool send_error_message/*=true*/) {
   SERIAL_PORT(port);
-  SERIAL_STR(ER);
-  SERIAL_STR(err);
-  SERIAL_EV(gcode_last_N[port]);
+  if (send_error_message)
+  {
+	  SERIAL_STR(ER);
+	  SERIAL_STR(err);
+	  SERIAL_EV(gcode_last_N[port]);
+  }
   while (Com::serialRead(port) != -1);
   flush_and_request_resend();
   serial_count[port] = 0;

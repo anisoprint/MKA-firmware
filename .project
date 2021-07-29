@@ -34,12 +34,12 @@
 		<link>
 			<name>core/core</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/Avazar/hardware/sam/1.6.12-2/cores/arduino</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/Avazar/hardware/sam/1.6.12-3/cores/arduino</locationURI>
 		</link>
 		<link>
 			<name>core/variant</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/Avazar/hardware/sam/1.6.12-2/variants/arduino_due_x</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/Avazar/hardware/sam/1.6.12-3/variants/arduino_due_x</locationURI>
 		</link>
 		<link>
 			<name>libraries/ArduinoJson</name>
@@ -49,7 +49,7 @@
 		<link>
 			<name>libraries/SPI</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/Avazar/hardware/sam/1.6.12-2/libraries/SPI</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/Avazar/hardware/sam/1.6.12-3/libraries/SPI</locationURI>
 		</link>
 		<link>
 			<name>libraries/SdFat</name>
@@ -64,7 +64,7 @@
 		<link>
 			<name>libraries/Wire</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/Avazar/hardware/sam/1.6.12-2/libraries/Wire</locationURI>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/Avazar/hardware/sam/1.6.12-3/libraries/Wire</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

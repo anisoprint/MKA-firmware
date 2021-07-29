@@ -16,6 +16,9 @@ bool NetBridgeManager::SendCommand(const char *command,
   int8_t oldSerial = Com::serial_port_index;
   SERIAL_PORT(NETWORK_BRIDGE_SERIAL);
   SERIAL_FLUSH();
+  //Clear rx buffer
+  printer.safe_delay(10);
+  while (Com::serialRead(NETWORK_BRIDGE_SERIAL) != -1);
   SERIAL_ET(command);
 
   uint16_t responseSize = 0;
@@ -29,6 +32,8 @@ bool NetBridgeManager::SendCommand(const char *command,
       const char serial_char = c;
       if (serial_char == '\n' || serial_char == '\r' || responseSize == responseBufferSize - 1) {
         responseBuffer[responseSize] = '\0';
+        //SERIAL_EMT("Received ", responseBuffer);
+        //SERIAL_ET("received response");
         SERIAL_PORT(oldSerial);
     	return true;
       }
@@ -152,6 +157,12 @@ bool NetBridgeManager::GetAcServerUrl(char *responseBuffer,
 bool NetBridgeManager::GetAcServerId(char *responseBuffer,
 		const uint16_t responseBufferSize) {
   bool res = SendCommand("@ac_server_id", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
+  return (res && strncmp(responseBuffer, "Error", 5)!=0);
+}
+
+bool NetBridgeManager::GetAcServerStatus(char *responseBuffer,
+		const uint16_t responseBufferSize) {
+  bool res = SendCommand("@ac_status_string", responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT);
   return (res && strncmp(responseBuffer, "Error", 5)!=0);
 }
 

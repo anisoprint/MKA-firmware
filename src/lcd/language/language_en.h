@@ -382,7 +382,7 @@
 #endif
 
 #ifndef MSG_NETWORK_ID
-  #define MSG_NETWORK_ID                     		_UxGT("Network ID: %s")
+  #define MSG_NETWORK_ID                     		_UxGT("Printer network ID: %s")
 #endif
 
 #ifndef MSG_AC_SERVER_URL

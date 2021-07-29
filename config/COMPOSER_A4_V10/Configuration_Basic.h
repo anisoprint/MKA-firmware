@@ -108,7 +108,7 @@
  */
 #define NO_TIMEOUTS 1000
 // Uncomment to include more info in ok command
-//#define ADVANCED_OK
+#define ADVANCED_OK
 
 /**
  * Enable an emergency-command parser to intercept certain commands as they

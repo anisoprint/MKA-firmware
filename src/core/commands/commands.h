@@ -226,7 +226,7 @@ class Commands {
 
     static void unknown_warning();
 
-    static void gcode_line_error(PGM_P err, const uint8_t tmp_port);
+    static void gcode_line_error(PGM_P err, const uint8_t tmp_port, bool send_error_message=true);
 
     /**
      * Enqueue with Serial Echo

@@ -29,6 +29,7 @@
 #define PAGE_CONNECTIONS 16
 #define PAGE_WIFILIST 17
 #define PAGE_ACCONFIG 18
+#define PAGE_ACSTATUS 19
 
 //Icons
 #define NEX_ICON_READY 1
