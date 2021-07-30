@@ -170,7 +170,7 @@ bool NetBridgeManager::ConnectAcServer(const char *uri, const char *code, char *
 		const uint16_t responseBufferSize) {
   char commandBuffer[256];
   snprintf(commandBuffer, sizeof(commandBuffer), "@ac_server_connect %s %s", uri, code);
-  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT*2);
+  bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, NETWORK_BRIDGE_TIMEOUT*3);
 
   return (res && strncmp(responseBuffer, "ok", 2)==0);
 }

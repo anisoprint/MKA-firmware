@@ -187,7 +187,7 @@ void SdStorage::receiveFile(uint8_t serialPort, uint8_t slot, const char * const
       }
       transfered+=fileTransfer.bytesRead;
 
-      if (old_transfered - transfered > 10000)
+      if (transfered - old_transfered > 300000)
       {
           old_transfered = transfered;
           ZERO(NextionHMI::buffer);
