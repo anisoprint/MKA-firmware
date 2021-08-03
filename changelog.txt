@@ -1,8 +1,12 @@
-v1.2.0
+v1.2.2
 [Added] Full support of network bridge
 [Added] Network status page in UI
 [Added] Wi-Fi connection pages in UI
-[Added] Support for TCP/IP connections, commands can be streamed to printer through TCP/IP  
+[Added] Aura.Connect connection page in UI
+[Added] Support for TCP/IP connections, commands can be streamed to the printer through TCP/IP  
+[Fixed] Max temperature threshold on setting temperature using the LCD screen
+[Fixed] Minor issues in G-code parser
+[Fixed] Default steps per mm values for feeders
 
 v1.1.1
 [Fixed] Starting print after finishing previous print
