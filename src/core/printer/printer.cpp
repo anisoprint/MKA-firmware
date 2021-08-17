@@ -1490,6 +1490,14 @@ void Printer::clean_after_print() {
 	              SERIAL_VAL((float) floorf(fractionprinted * 1000) / 1000);
 	            }
 	          #endif
+	  	      SERIAL_MSG(",\"used\":[");
+	  	      firstOccurrence = true;
+	  	      for (uint8_t e = 0; e < DRIVER_EXTRUDERS; e++) {
+	  	        if (!firstOccurrence) SERIAL_CHR(',');
+	  	        SERIAL_VAL(print_job_counter.currentFilamentUsed[e]);
+	  	        firstOccurrence = false;
+	  	      }
+	  	      SERIAL_MSG("]");
 	          break;
 	        case 4:
 	        case 5:

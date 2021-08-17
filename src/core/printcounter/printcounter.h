@@ -42,6 +42,8 @@ class PrintCounter: public Stopwatch {
 
     static printStatistics data;
 
+    static double currentFilamentUsed[DRIVER_EXTRUDERS];   // Accumulated filament consumed in mm in current print
+
     /**
      * @brief Stats were loaded from SDCARD
      * @details If set to true it indicates if the statistical data was already

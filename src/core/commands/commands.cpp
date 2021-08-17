@@ -210,7 +210,7 @@ void Commands::get_destination() {
 
 	LOOP_EXTRUDERS(ie)
 	{
-	    print_job_counter.data.filamentUsed[ie] += mechanics.destination[ie+XYZ] - mechanics.current_position[ie+XYZ];
+		print_job_counter.currentFilamentUsed[ie] += mechanics.destination[ie+XYZ] - mechanics.current_position[ie+XYZ];
 	}
 
     #if ENABLED(RFID_MODULE)

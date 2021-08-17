@@ -26,6 +26,8 @@ PrintCounter print_job_counter;
 
 printStatistics PrintCounter::data;
 
+double PrintCounter::currentFilamentUsed[DRIVER_EXTRUDERS] = { 0 };
+
 const uint16_t  PrintCounter::updateInterval  = 10,
                 PrintCounter::saveInterval    = (SD_CFG_SECONDS);
 
@@ -148,6 +150,11 @@ bool PrintCounter::start() {
     if (!paused) {
       data.totalPrints++;
       lastDuration = 0;
+	  LOOP_EXTRUDERS(ie)
+	  {
+		currentFilamentUsed[ie] = 0;
+	  }
+
     }
     return true;
   }
@@ -162,6 +169,10 @@ bool PrintCounter::stop() {
   if (super::stop()) {
     data.finishedPrints++;
     data.printTime += deltaDuration();
+	LOOP_EXTRUDERS(ie)
+	{
+		data.filamentUsed[ie] += currentFilamentUsed[ie];
+	}
     saveStats();
     return true;
   }
