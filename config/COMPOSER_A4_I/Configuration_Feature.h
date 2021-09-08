@@ -43,7 +43,7 @@
  * - Extruder Advance Linear Pressure Control
  * MOTION FEATURES:
  * - Workspace offsets
- * - Bézier Jerk Control
+ * - BÃ©zier Jerk Control
  * - Software endstops
  * - Endstops only for homing
  * - Abort on endstop hit feature
@@ -230,8 +230,8 @@
 #define CHANGE_T0      {{284.0, 20, 150,  true},\
 						{284.0,  1, 150,  true},\
 						{299.9,  1,  50,  true},\
-						{299.9, 20, 150,  true},\
-						{  0.0,  0,   0, false},\
+						{300.9,  1,  50, false},\
+						{300.9, 20, 150,  true},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
 						{  0.0,  0,   0, false},\
@@ -434,7 +434,7 @@
  * when the target temperature is less than IDLE_OOZING_MINTEMP and    *
  * the actual temperature is greater than IDLE_OOZING_MINTEMP.         *
  *                                                                     *
- * PS: Always remember to set your extruder target temperature to 0°C  *
+ * PS: Always remember to set your extruder target temperature to 0Â°C  *
  * before shutdown the printer if you enable this feature.             *
  *                                                                     *
  * Uncomment IDLE OOZING PREVENT to enable this feature                *
@@ -521,10 +521,10 @@
 
 
 /**************************************************************************
- ************************ Bézier Jerk Control *****************************
+ ************************ BÃ©zier Jerk Control *****************************
  **************************************************************************
  *                                                                        *
- * This option eliminates vibration during printing by fitting a Bézier   *
+ * This option eliminates vibration during printing by fitting a BÃ©zier   *
  * curve to move acceleration, producing much smoother direction changes. *
  * A 32-bit processor is required.                                        *
  *                                                                        *
@@ -1318,7 +1318,7 @@
 //#define USE_SMALL_INFOFONT
 
 // Enable this option and reduce the value to optimize screen updates.
-// The normal delay is 10µs. Use the lowest value that still gives a reliable display.
+// The normal delay is 10Âµs. Use the lowest value that still gives a reliable display.
 //#define DOGM_SPI_DELAY_US 5
 
 // Swap the CW/CCW indicators in the graphics overlay
@@ -1858,7 +1858,7 @@
  * or if using a very fast CPU.                                        *
  *                                                                     *
  ***********************************************************************/
-// (µs) The smallest stepper pulse allowed
+// (Âµs) The smallest stepper pulse allowed
 #define MINIMUM_STEPPER_PULSE 1
 /***********************************************************************/
 
@@ -1867,7 +1867,7 @@
  ***********************************************************************
  *                                                                     *
  * Minimum delay after setting the stepper DIR (in ns)                 *
- *      0 : No delay at all - But, at least 10�s are expected          *
+ *      0 : No delay at all - But, at least 10µs are expected          *
  *     50 : Minimum for TMC2xxx drivers                                *
  *    200 : Minimum for A4988 drivers                                  *
  *    400 : Minimum for A5984 drivers                                  *
