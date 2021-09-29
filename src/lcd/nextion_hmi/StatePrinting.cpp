@@ -86,6 +86,21 @@ void StatePrinting::Pause_Push(void* ptr) {
     	}
 
     }
+    else //Host printing
+	{
+    	switch (printer.getStatus())
+    	{
+			case Printing:
+				PrintPause::PauseHostPrint();
+				break;
+			case WaitingToPause:
+				PrintPause::ResumePrint();
+				break;
+			case Paused:
+				PrintPause::ResumePrint(retract);
+				break;
+    	}
+	}
 }
 
 void StatePrinting::OnEvent(HMIevent event, uint8_t eventArg) {

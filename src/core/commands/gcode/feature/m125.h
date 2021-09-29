@@ -38,7 +38,7 @@
    */
   inline void gcode_M125(void) {
 
-    // Initial retract before move to pause park position
+    // Move to pause park position
 	PrintPause::ParkHead(PrintPause::RetractDistance);
 
   }

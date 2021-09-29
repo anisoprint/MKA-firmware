@@ -75,6 +75,10 @@ public:
 	bool GetTcpPort(char* responseBuffer, const uint16_t responseBufferSize);
 	bool SendJobInvoke(bool accept, char* responseBuffer, const uint16_t responseBufferSize);
 
+	bool PausePrintJob();
+	bool ResumePrintJob();
+	bool CancelPrintJob();
+
 	bool GetWlanMac(char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetEthMac(char* responseBuffer, const uint16_t responseBufferSize);
 	bool GetWlanIp4(char* responseBuffer, const uint16_t responseBufferSize);

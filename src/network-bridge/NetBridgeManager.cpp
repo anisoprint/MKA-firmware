@@ -454,4 +454,22 @@ bool NetBridgeManager::SendReconnect() {
 
 }
 
+bool NetBridgeManager::PausePrintJob() {
+	  char responseBuffer[8];
+	  bool res = SendCommand("@pause", responseBuffer, sizeof(responseBuffer), NETWORK_BRIDGE_TIMEOUT);
+	  return (res && strncmp(responseBuffer, "ok", 2)==0);
+}
+
+bool NetBridgeManager::ResumePrintJob() {
+	  char responseBuffer[8];
+	  bool res = SendCommand("@resume", responseBuffer, sizeof(responseBuffer), NETWORK_BRIDGE_TIMEOUT);
+	  return (res && strncmp(responseBuffer, "ok", 2)==0);
+}
+
+bool NetBridgeManager::CancelPrintJob() {
+	  char responseBuffer[8];
+	  bool res = SendCommand("@cancel", responseBuffer, sizeof(responseBuffer), NETWORK_BRIDGE_TIMEOUT);
+	  return (res && strncmp(responseBuffer, "ok", 2)==0);
+}
+
 #endif
