@@ -364,55 +364,7 @@ void Printer::loop() {
 
     if (sdStorage.isAbortSDprinting()) {
       sdStorage.setAbortSDprinting(false);
-
-	  #if ENABLED(NEXTION_HMI)
-    	  printer.setStatus(Busy); //to prevent pausing
-      	  NextionHMI::RaiseEvent(PRINT_CANCELLING);
-	  #endif
-
-      #if HAS_SD_RESTART
-        // Save Job for restart
-        if (card.cardOK && IS_SD_PRINTING) restart.save_data(true);
-      #endif
-
-      // Stop SD printing
-	  SERIAL_LMT(JOB, MSG_JOB_CANCEL, sdStorage.getActivePrintSDCard()->fileName);
-      sdStorage.endFilePrint();
-
-      // Clear all command in quee
-      commands.clear_queue();
-
-      // Stop all stepper
-      stepper.quickstop_stepper();
-
-      // Fiber cutting is needed?
-      bool needCut = !tools.fiber_is_cut;
-      if(needCut) tools.cut_fiber();
-
-      //Reset parameters that were tuned during the print
-      clean_after_print();
-
-      // Auto home
-      #if Z_HOME_DIR > 0
-        mechanics.home();
-      #else
-        mechanics.home(true, true, false);
-      #endif
-
-      // Disabled Heaters and Fan
-      thermalManager.disable_all_heaters();
-      #if FAN_COUNT > 0
-        LOOP_FAN() fans[f].setSpeed(0);
-      #endif
-
-      // Stop printer job timer
-      print_job_counter.stop();
-	  #if ENABLED(NEXTION_HMI)
-		NextionHMI::RaiseEvent(PRINT_CANCELLED);
-		printer.setStatus(Idle);
-		PrintPause::SdPrintingPaused = false;
-		NextionHMI::RaiseEvent(NONE);
-	  #endif
+      cancel_print();
     }
 
   #endif // HAS_SD_SUPPORT
@@ -421,6 +373,62 @@ void Printer::loop() {
   commands.advance_queue();
   endstops.report_state();
   idle();
+}
+
+void Printer::cancel_print()
+{
+	#if ENABLED(NEXTION_HMI)
+	  printer.setStatus(Busy); //to prevent pausing
+	  NextionHMI::RaiseEvent(PRINT_CANCELLING);
+	#endif
+
+	#if HAS_SD_RESTART
+	// Save Job for restart
+	if (card.cardOK && IS_SD_PRINTING) restart.save_data(true);
+	#endif
+
+	if (sdStorage.isPrinting() || sdStorage.isPaused())
+	{
+		// Stop SD printing
+		SERIAL_LMT(JOB, MSG_JOB_CANCEL, sdStorage.getActivePrintSDCard()->fileName);
+		sdStorage.endFilePrint();
+	}
+
+	// Clear all command in quee
+	commands.clear_queue();
+
+	// Stop all stepper
+	stepper.quickstop_stepper();
+
+	// Fiber cutting is needed?
+	bool needCut = !tools.fiber_is_cut;
+	if(needCut) tools.cut_fiber();
+
+	//Reset parameters that were tuned during the print
+	clean_after_print();
+
+	// Auto home
+	#if Z_HOME_DIR > 0
+	mechanics.home();
+	#else
+	mechanics.home(true, true, false);
+	#endif
+
+	// Disabled Heaters and Fan
+	thermalManager.disable_all_heaters();
+	#if FAN_COUNT > 0
+	LOOP_FAN() fans[f].setSpeed(0);
+	#endif
+
+	// Stop printer job timer
+	print_job_counter.stop();
+
+	#if ENABLED(NEXTION_HMI)
+		NextionHMI::RaiseEvent(PRINT_CANCELLED);
+		printer.setStatus(Idle);
+		PrintPause::SdPrintingPaused = false;
+		NextionHMI::RaiseEvent(NONE);
+	#endif
 }
 
 void Printer::check_periodical_actions() {

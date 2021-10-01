@@ -145,7 +145,12 @@ void StateMenu::Control_CancelPrint_Yes(void* ptr) {
 	  heaters[h].reset_idle_timer();
 	}
 	printer.setWaitForUser(false);
-	sdStorage.setAbortSDprinting(true);
+
+	if (sdStorage.isPrinting() || sdStorage.isPaused())
+	{
+		sdStorage.setAbortSDprinting(true);
+	}
+
 	printer.setWaitForHeatUp(false);
 }
 

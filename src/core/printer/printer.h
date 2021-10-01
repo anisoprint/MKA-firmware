@@ -174,6 +174,8 @@ class Printer {
     static void setup();  // Main setup
     static void loop();   // Main loop
 
+    static void cancel_print();   // Main loop
+
     static void check_periodical_actions();
     static void safe_delay(millis_l ms);
     static void safe_idle(millis_l ms);

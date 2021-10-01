@@ -240,6 +240,10 @@ inline void gcode_M524() {
   if (IS_SD_PRINTING() || IS_SD_PAUSED()) {
     sdStorage.setAbortSDprinting(true);
   }
+  else if (printer.getStatus())
+  {
+	printer.cancel_print();
+  }
 }
 
   #if ENABLED(SDCARD_SORT_ALPHA) && ENABLED(SDSORT_GCODE)

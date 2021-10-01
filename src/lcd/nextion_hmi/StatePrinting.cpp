@@ -97,7 +97,7 @@ void StatePrinting::Pause_Push(void* ptr) {
 				PrintPause::ResumePrint();
 				break;
 			case Paused:
-				PrintPause::ResumePrint(retract);
+				PrintPause::ResumeHostPrint();
 				break;
     	}
 	}

@@ -100,7 +100,7 @@ bool PrintPause::PauseHostPrint() {
     {
     	if (netBridgeManager.GetNetBridgeStatus() == Connected)
     	{
-
+    		netBridgeManager.PausePrintJob();
     	}
     	else
     	{
@@ -310,98 +310,15 @@ void PrintPause::ResumeHostPrint() {
    };
    if (printer.getStatus()!=Paused) return; // already not paused
 
-   printer.setStatus(Resuming);
-   NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMING);
-
-   stepper.synchronize();
-
-   //Switching to previously active extruder
-	if (resume_tool!=tools.active_extruder) tools.change(resume_tool, 0, false, false, true);
-
-   //Check if heaters are timed out or temperature restoration is needed
-   #if HAS_TEMP_BED
-     heaters[BED_INDEX].reset_idle_timer();
-   #endif
-
-   LOOP_HOTEND() {
-     heaters[h].reset_idle_timer();
-   }
-
-   RestoreTemperatures();
-
-   if (heaters[BED_INDEX].wait_for_heating() && heaters[BED_INDEX].target_temperature>30)
+   if (netBridgeManager.GetNetBridgeStatus() == Connected)
    {
-	   NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_BUILDPLATE, BED_INDEX);
-	   Temperature::wait_heater(&heaters[BED_INDEX], false);
-	   NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
+	   netBridgeManager.ResumePrintJob();
    }
-
-   LOOP_HOTEND()
-   {
-	   if (heaters[h].wait_for_heating() && heaters[h].target_temperature>30)
-	   {
-		   NextionHMI::RaiseEvent(HMIevent::HEATING_STARTED_EXTRUDER, h);
-		   Temperature::wait_heater(&heaters[h], false);
-		   NextionHMI::RaiseEvent(HMIevent::HEATING_FINISHED);
-		}
-   }
-
-   // Restore fan speed
-   LOOP_FAN()
-   {
-   	 if (fans[f].autoMonitored==-1) fans[f].setSpeed(resume_fan_speed[f]);
-   }
-
-   printer.setWaitForHeatUp(false);
-
-   // Move XY to starting position, then Z
-   mechanics.do_blocking_move_to_xy(resume_position[X_AXIS], resume_position[Y_AXIS], NOZZLE_PARK_XY_FEEDRATE);
-
-   // Set Z_AXIS to saved position
-   mechanics.do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
-
-   // Purging plastic
-   if (purge_length && !thermalManager.tooColdToExtrude(tools.active_extruder))
-   {
-   	//get plastic driver of current extruder
-   	int8_t drv = Tools::plastic_driver_of_extruder(tools.active_extruder);
-   	if (drv>=0) PrintPause::DoPauseExtruderMove((AxisEnum)(E_AXIS+drv), purge_length, PrintPause::LoadFeedrate);
-   }
-
-   // Now all positions are resumed and ready to be confirmed
-   // Set all to saved position
-   COPY_ARRAY(mechanics.current_position, resume_position);
-   COPY_ARRAY(mechanics.destination, resume_position);
-
-   // Now all extrusion positions are resumed and ready to be confirmed
-   // Set extruder to saved position
-   planner.set_only_e_position_mm(mechanics.current_position);
-
-   printer.setFilamentOut(false);
-
-   SERIAL_STR(RESUME);
-   SERIAL_EOL();
-
-   #if HAS_SD_SUPPORT
-     if (SdPrintingPaused && sdStorage.isPaused()) {
-       sdStorage.resumeSDPrint();
-       SdPrintingPaused=false;
-     }
-   #endif
-
-   printer.setStatus(Printing);
-   printer.setWaitForUser(false);
-   NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMED);
-   print_job_counter.start();
-
-   if (IS_SD_PRINTING()) {
-   	SERIAL_LMT(JOB, MSG_JOB_RESUME, sdStorage.getActivePrintSDCard()->fileName);
-   }
-
-   #if HAS_POWER_CONSUMPTION_SENSOR
-     powerManager.startpower = powerManager.consumption_hour;
-   #endif
-
+	else
+	{
+       SERIAL_STR("// action:resume");
+       SERIAL_EOL();
+	}
 }
 
 void PrintPause::RestoreTemperatures() {
