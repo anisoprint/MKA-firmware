@@ -362,8 +362,8 @@ void Printer::loop() {
 
   #if HAS_SD_SUPPORT
 
-    if (sdStorage.isAbortSDprinting()) {
-      sdStorage.setAbortSDprinting(false);
+    if (printer.isCancelPrint()) {
+    	printer.setCancelPrint(false);
       cancel_print();
     }
 
@@ -429,6 +429,7 @@ void Printer::cancel_print()
 		PrintPause::SdPrintingPaused = false;
 		NextionHMI::RaiseEvent(NONE);
 	#endif
+
 }
 
 void Printer::check_periodical_actions() {

@@ -76,11 +76,6 @@ public: /** Public Function */
 
 	inline bool isSdInserted(uint8_t slot = 0) { return cards[slot].isInserted(); };
 
-
-  // Card flag bit 1 Abortprinting
-  FORCE_INLINE void setAbortSDprinting(const bool onoff) { _abortPrinting = onoff; }
-  FORCE_INLINE bool isAbortSDprinting() { return _abortPrinting; }
-
 };
 
 extern SdStorage sdStorage;

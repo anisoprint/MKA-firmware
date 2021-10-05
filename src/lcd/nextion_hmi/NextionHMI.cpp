@@ -291,6 +291,14 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventM
 		case HMIevent::WAIT_FOR_INPUT :
 			StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_INFO, eventMsg, PSTR(MSG_USERWAIT), 1, PSTR(MSG_OK), WaitOk_Push, 0, 0);
 			return;
+	    case HMIevent::SD_PRINT_FINISHED :
+	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), PSTR(MSG_DONE), 2, PSTR(MSG_OK), StatePrinting::DoneMessage_OK, PSTR(MSG_PRINT_AGAIN),StatePrinting::DoneMessage_Again, NEX_ICON_DONE);
+	        NextionHMI::RaiseEvent(NONE);
+	        return;
+	    case HMIevent::HOST_PRINT_FINISHED :
+	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), PSTR(MSG_DONE), 1, PSTR(MSG_OK), StatePrinting::DoneMessage_OK, nullptr, nullptr, NEX_ICON_DONE);
+	        NextionHMI::RaiseEvent(NONE);
+	        return;
 	}
 
 	switch(_pageID) {

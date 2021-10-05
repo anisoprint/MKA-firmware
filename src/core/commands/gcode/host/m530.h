@@ -29,7 +29,7 @@
 #define CODE_M530
 
 /**
- * M530: S<printing> L<layer> - Enables explicit printing mode (S1) or disables it (S0). L can set layer count
+ * M530: S<printing> L<layer> - Enables explicit printing mode (S1) or disables it (S0). L can set layer count. F sets that the print was succesfully finished
  */
 inline void gcode_M530(void) {
 
@@ -55,6 +55,10 @@ inline void gcode_M530(void) {
 
 		printer.setFilamentOut(false);
 
+		#if ENABLED(NEXTION_HMI)
+		  StatePrinting::Activate();
+		#endif
+
 		#if HAS_FIL_RUNOUT
 		  SERIAL_EM("Filament runout activated.");
 		  SERIAL_STR(RESUME);
@@ -67,7 +71,7 @@ inline void gcode_M530(void) {
 	  }
 	  else {
 		print_job_counter.stop();
-		printer.setStatus(Idle);
+
 		printer.clean_after_print();
 		SERIAL_EM("Stop Printing");
 
@@ -76,6 +80,18 @@ inline void gcode_M530(void) {
 		#endif
 
 		printer.setFilamentOut(false);
+
+		if (parser.seen('F')) //Success, display "done" message
+		{
+			printer.setStatus(PrintFinished);
+			#if ENABLED(NEXTION_HMI)
+				NextionHMI::RaiseEvent(HOST_PRINT_FINISHED);
+			#endif
+		}
+		else
+		{
+			printer.setStatus(Idle);
+		}
 
 		#if HAS_FIL_RUNOUT
 		  SERIAL_EM("Filament runout deactivated.");

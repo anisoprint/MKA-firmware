@@ -57,7 +57,8 @@ enum Flag2VariousEnum {
   flag2_autoreport_temp,
   flag2_suspend_autoreport,
   flag2_filament_out,
-  flag2_g38_move
+  flag2_g38_move,
+  flag2_cancel_print
 };
 
 enum PrinterMode {
@@ -330,6 +331,11 @@ class Printer {
       mk_2_flag = (onoff ? mk_2_flag | flag2_g38_move : mk_2_flag & ~flag2_g38_move);
     }
     FORCE_INLINE static bool IsG38Move() { return mk_2_flag & flag2_g38_move; }
+
+    FORCE_INLINE static void setCancelPrint(const bool cancel) {
+      SET_BIT(mk_2_flag, flag2_cancel_print, cancel);
+    }
+    FORCE_INLINE static bool isCancelPrint() { return TEST(mk_2_flag, flag2_cancel_print); }
 
     FORCE_INLINE static bool resetFlag1() { mk_1_flag = 0; }
     FORCE_INLINE static bool resetFlag2() { mk_2_flag = 0; }

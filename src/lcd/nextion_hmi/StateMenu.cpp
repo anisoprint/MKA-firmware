@@ -148,7 +148,19 @@ void StateMenu::Control_CancelPrint_Yes(void* ptr) {
 
 	if (sdStorage.isPrinting() || sdStorage.isPaused())
 	{
-		sdStorage.setAbortSDprinting(true);
+		printer.setCancelPrint(true);
+	}
+	else //Host Printing
+	{
+    	if (netBridgeManager.GetNetBridgeStatus() == Connected)
+    	{
+    		netBridgeManager.CancelPrintJob();
+    	}
+    	else
+    	{
+            SERIAL_STR("// action:cancel");
+            SERIAL_EOL();
+    	}
 	}
 
 	printer.setWaitForHeatUp(false);

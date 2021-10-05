@@ -27,7 +27,7 @@ namespace PrintPause {
   bool PauseHostPrint();
   bool ParkHead(const float &retract);
   void ResumePrint(const float& purge_length=0);
-  bool ResumeHostPrint();
+  void ResumeHostPrint();
   void RestoreTemperatures();
 
 

@@ -237,12 +237,13 @@
  * M524: Abort the current SD print job (started with M24)
  */
 inline void gcode_M524() {
-  if (IS_SD_PRINTING() || IS_SD_PAUSED()) {
-    sdStorage.setAbortSDprinting(true);
-  }
-  else if (printer.getStatus())
-  {
-	printer.cancel_print();
+  if (IS_SD_PRINTING() || IS_SD_PAUSED()
+		  || printer.getStatus() == Printing
+		  || printer.getStatus() == WaitingToPause
+		  || printer.getStatus() == Pausing
+		  || printer.getStatus() == Paused
+		  || printer.getStatus() == Resuming ) {
+    printer.setCancelPrint(true);
   }
 }
 
