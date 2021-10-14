@@ -87,9 +87,9 @@ void StateWizard::CompZOffsetS1(void* ptr) {
 		BUTTONS(2)
 		NO_PICTURE
 		CAPTION(MSG_COMP_Z_OFFSET_ST1)
-		HEADER(MSG_HEADER_COMP_Z_OFFSET, "1/2", NEX_ICON_MAINTENANCE);
+		HEADER(MSG_HEADER_COMP_Z_OFFSET, "1/4", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), CompZOffsetCancel, PSTR(MSG_NEXT), StateWizardZ::CompZOffsetS2);
+		Init2Buttons(PSTR(MSG_CANCEL), CompZOffsetCancel, PSTR(MSG_NEXT), CompZOffsetS2);
 
 
 		//Homing if not homed
@@ -111,6 +111,59 @@ void StateWizard::CompZOffsetS1(void* ptr) {
 
 }
 
+void StateWizard::CompZOffsetS2(void* ptr) {
+	if (!planner.movesplanned())
+	{
+		printer.setBusyIfIdle();
+
+		_wizardCancelled = false;
+		BUTTONS(2)
+		NO_PICTURE
+		CAPTION(MSG_COMP_Z_OFFSET_ST2)
+		HEADER(MSG_HEADER_COMP_Z_OFFSET, "2/4", NEX_ICON_MAINTENANCE);
+
+		Init2Buttons(PSTR(MSG_CANCEL), CompZOffsetCancel, PSTR(MSG_NEXT), StateWizard::CompZOffsetS2a);
+
+	}
+}
+
+//Calibration 2a - display set temperature screen
+void StateWizard::CompZOffsetS2a(void* ptr) {
+	if (!planner.movesplanned())
+	{
+		StateTemperature::Activate(BED_INDEX, CompZOffsetS3, CompZOffsetCancel);
+	}
+}
+
+//Calibration 3 - Wait for temperature to reach target
+void StateWizard::CompZOffsetS3(void* ptr) {
+	BUTTONS(1)
+	NO_PICTURE
+	HEADER(MSG_HEADER_COMP_Z_OFFSET, "3/4", NEX_ICON_MAINTENANCE);
+	CompZOffsetS3DrawUpdate();
+	Init1Button(PSTR(MSG_CANCEL), CompZOffsetCancel);
+
+    heaters[BED_INDEX].reset_idle_timer();
+
+	//to update temperature value
+	DrawUpdateCallback = CompZOffsetS3DrawUpdate;
+
+	Temperature::wait_heater(&heaters[BED_INDEX]);
+
+    DrawUpdateCallback = NULL;
+
+    if (!_wizardCancelled) {
+    	StateWizardZ::CompZOffsetS4();
+    }
+
+}
+
+void StateWizard::CompZOffsetS3DrawUpdate(void *ptr) {
+	ZERO(NextionHMI::buffer);
+	sprintf_P(NextionHMI::buffer, PSTR(MSG_BP_CALIBR_ST3), (int)heaters[BED_INDEX].current_temperature, (int)heaters[BED_INDEX].target_temperature);
+	_text.setText(NextionHMI::buffer);
+}
+
 void StateWizard::CompZOffsetFinish(void* ptr) {
 	if (!planner.movesplanned())
 	{
@@ -123,6 +176,10 @@ void StateWizard::CompZOffsetFinish(void* ptr) {
 		float dz = mechanics.current_position[Z_AXIS]-LEVELING_OFFSET;
 		tools.hotend_offset[Z_AXIS][1] = tools.hotend_offset[Z_AXIS][1] - dz;
 		eeprom.Store_Settings();
+
+		heaters[BED_INDEX].setTarget(0);
+		heaters[BED_INDEX].reset_idle_timer();
+
 		mechanics.home(true, true, true);
 		printer.setIdleIfBusy();
 		StateMenu::ActivateCalibrate();
@@ -132,10 +189,17 @@ void StateWizard::CompZOffsetFinish(void* ptr) {
 void StateWizard::CompZOffsetCancel(void* ptr) {
 	if (!planner.movesplanned())
 	{
+	    DrawUpdateCallback = NULL;
+
 		BUTTONS(0)
 		NO_PICTURE
 		CAPTION(MSG_PLEASE_WAIT)
 		HEADER(MSG_HEADER_COMP_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
+
+		_wizardCancelled = true;
+		printer.setWaitForHeatUp(false);
+		heaters[BED_INDEX].setTarget(0);
+		heaters[BED_INDEX].reset_idle_timer();
 
 		mechanics.home(true, true, true);
 		printer.setIdleIfBusy();
@@ -152,9 +216,9 @@ void StateWizard::ZAxisS1(void* ptr) {
 		BUTTONS(2)
 		NO_PICTURE
 		CAPTION(MSG_Z_OFFSET_ST1)
-		HEADER(MSG_HEADER_Z_OFFSET, "1/2", NEX_ICON_MAINTENANCE);
+		HEADER(MSG_HEADER_Z_OFFSET, "1/4", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), ZAxisCancel, PSTR(MSG_NEXT), StateWizardZ::ZOffsetS2);
+		Init2Buttons(PSTR(MSG_CANCEL), ZAxisCancel, PSTR(MSG_NEXT), ZAxisS2);
 
 		//Homing if not homed
 		if (mechanics.axis_unhomed_error())
@@ -175,6 +239,60 @@ void StateWizard::ZAxisS1(void* ptr) {
 	}
 }
 
+
+void StateWizard::ZAxisS2(void* ptr) {
+	if (!planner.movesplanned())
+	{
+		printer.setBusyIfIdle();
+
+		_wizardCancelled = false;
+		BUTTONS(2)
+		NO_PICTURE
+		CAPTION(MSG_Z_OFFSET_ST2)
+		HEADER(MSG_HEADER_Z_OFFSET, "2/4", NEX_ICON_MAINTENANCE);
+
+		Init2Buttons(PSTR(MSG_CANCEL), ZAxisCancel, PSTR(MSG_NEXT), StateWizard::ZAxisS2a);
+
+	}
+}
+
+//Calibration 2a - display set temperature screen
+void StateWizard::ZAxisS2a(void* ptr) {
+	if (!planner.movesplanned())
+	{
+		StateTemperature::Activate(BED_INDEX, ZAxisS3, ZAxisCancel);
+	}
+}
+
+//Calibration 3 - Wait for temperature to reach target
+void StateWizard::ZAxisS3(void* ptr) {
+	BUTTONS(1)
+	NO_PICTURE
+	HEADER(MSG_HEADER_Z_OFFSET, "3/4", NEX_ICON_MAINTENANCE);
+	ZAxisS3DrawUpdate();
+	Init1Button(PSTR(MSG_CANCEL), ZAxisCancel);
+
+    heaters[BED_INDEX].reset_idle_timer();
+
+	//to update temperature value
+	DrawUpdateCallback = ZAxisS3DrawUpdate;
+
+	Temperature::wait_heater(&heaters[BED_INDEX]);
+
+    DrawUpdateCallback = NULL;
+
+    if (!_wizardCancelled) {
+    	StateWizardZ::ZOffsetS4();
+    }
+
+}
+
+void StateWizard::ZAxisS3DrawUpdate(void *ptr) {
+	ZERO(NextionHMI::buffer);
+	sprintf_P(NextionHMI::buffer, PSTR(MSG_BP_CALIBR_ST3), (int)heaters[BED_INDEX].current_temperature, (int)heaters[BED_INDEX].target_temperature);
+	_text.setText(NextionHMI::buffer);
+}
+
 void StateWizard::ZAxisFinish(void* ptr) {
 	if (!planner.movesplanned())
 	{
@@ -187,6 +305,9 @@ void StateWizard::ZAxisFinish(void* ptr) {
 		mechanics.set_home_offset(Z_AXIS, mechanics.home_offset[Z_AXIS] - dz);
 		eeprom.Store_Settings();
 
+		heaters[BED_INDEX].setTarget(0);
+		heaters[BED_INDEX].reset_idle_timer();
+
 		mechanics.home(true, true, true);
 		printer.setIdleIfBusy();
 		StateMenu::ActivateCalibrate();
@@ -197,10 +318,18 @@ void StateWizard::ZAxisFinish(void* ptr) {
 void StateWizard::ZAxisCancel(void* ptr) {
 	if (!planner.movesplanned())
 	{
+	    DrawUpdateCallback = NULL;
+
 		BUTTONS(0)
 		NO_PICTURE
 		CAPTION(MSG_PLEASE_WAIT)
 		HEADER(MSG_HEADER_Z_OFFSET, "", NEX_ICON_MAINTENANCE);
+
+		_wizardCancelled = true;
+		printer.setWaitForHeatUp(false);
+		heaters[BED_INDEX].setTarget(0);
+		heaters[BED_INDEX].reset_idle_timer();
+
 		mechanics.home(true, true, true);
 		printer.setIdleIfBusy();
 		StateMenu::ActivateCalibrate();
@@ -668,7 +797,7 @@ void StateWizard::BuildPlateS1(void* ptr) {
 		BUTTONS(2)
 		NO_PICTURE
 		CAPTION(MSG_BP_CALIBR_ST1)
-		HEADER(MSG_HEADER_BP_CALIBR, "1/9", NEX_ICON_MAINTENANCE);
+		HEADER(MSG_HEADER_BP_CALIBR, "1/11", NEX_ICON_MAINTENANCE);
 
 		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS2);
 
@@ -691,6 +820,59 @@ void StateWizard::BuildPlateS1(void* ptr) {
 void StateWizard::BuildPlateS2(void* ptr) {
 	if (!planner.movesplanned())
 	{
+		printer.setBusyIfIdle();
+
+		_wizardCancelled = false;
+		BUTTONS(2)
+		NO_PICTURE
+		CAPTION(MSG_BP_CALIBR_ST2)
+		HEADER(MSG_HEADER_BP_CALIBR, "2/11", NEX_ICON_MAINTENANCE);
+
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS2a);
+
+	}
+}
+
+//Calibration 2a - display set temperature screen
+void StateWizard::BuildPlateS2a(void* ptr) {
+	if (!planner.movesplanned())
+	{
+		StateTemperature::Activate(BED_INDEX, BuildPlateS3, BuildPlateCancel);
+	}
+}
+
+//Calibration 3 - Wait for temperature to reach target
+void StateWizard::BuildPlateS3(void* ptr) {
+	BUTTONS(1)
+	NO_PICTURE
+	HEADER(MSG_HEADER_BP_CALIBR, "3/11", NEX_ICON_MAINTENANCE);
+	BuildPlateS3DrawUpdate();
+	Init1Button(PSTR(MSG_CANCEL), BuildPlateCancel);
+
+    heaters[BED_INDEX].reset_idle_timer();
+
+	//to update temperature value
+	DrawUpdateCallback = BuildPlateS3DrawUpdate;
+
+	Temperature::wait_heater(&heaters[BED_INDEX]);
+
+    DrawUpdateCallback = NULL;
+
+    if (!_wizardCancelled) {
+    	BuildPlateS4();
+    }
+
+}
+
+void StateWizard::BuildPlateS3DrawUpdate(void *ptr) {
+	ZERO(NextionHMI::buffer);
+	sprintf_P(NextionHMI::buffer, PSTR(MSG_BP_CALIBR_ST3), (int)heaters[BED_INDEX].current_temperature, (int)heaters[BED_INDEX].target_temperature);
+	_text.setText(NextionHMI::buffer);
+}
+
+void StateWizard::BuildPlateS4(void* ptr) {
+	if (!planner.movesplanned())
+	{
 		//Going to center adjust position
 		mechanics.do_blocking_move_to_xy(int(BED_CENTER_ADJUST_X), int(BED_CENTER_ADJUST_Y), NOZZLE_PARK_XY_FEEDRATE);
 
@@ -699,10 +881,10 @@ void StateWizard::BuildPlateS2(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST2)
-		HEADER(MSG_HEADER_BP_CALIBR, "2/9", NEX_ICON_MAINTENANCE);
+		CAPTION(MSG_BP_CALIBR_ST4)
+		HEADER(MSG_HEADER_BP_CALIBR, "4/11", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS3);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS5);
 
 	}
 }
@@ -716,6 +898,10 @@ void StateWizard::BuildPlateFinish(void* ptr) {
 		HEADER(MSG_HEADER_BP_CALIBR, "", NEX_ICON_MAINTENANCE);
 		float dz = mechanics.current_position[Z_AXIS]-LEVELING_OFFSET;
 		mechanics.set_home_offset(Z_AXIS, mechanics.home_offset[Z_AXIS]-dz);
+
+		heaters[BED_INDEX].setTarget(0);
+		heaters[BED_INDEX].reset_idle_timer();
+
 		mechanics.home(true, true, true);
 		StateStatus::Activate();
 		eeprom.Store_Settings();
@@ -726,10 +912,17 @@ void StateWizard::BuildPlateFinish(void* ptr) {
 void StateWizard::BuildPlateCancel(void* ptr) {
 	if (!planner.movesplanned())
 	{
+	    DrawUpdateCallback = NULL;
+
 		BUTTONS(0)
 		NO_PICTURE
 		CAPTION(MSG_PLEASE_WAIT)
 		HEADER(MSG_HEADER_BP_CALIBR, "", NEX_ICON_MAINTENANCE);
+
+		_wizardCancelled = true;
+		printer.setWaitForHeatUp(false);
+		heaters[BED_INDEX].setTarget(0);
+		heaters[BED_INDEX].reset_idle_timer();
 
 		mechanics.home(true, true, true);
 		printer.setIdleIfBusy();
@@ -737,7 +930,7 @@ void StateWizard::BuildPlateCancel(void* ptr) {
 	}
 }
 
-void StateWizard::BuildPlateS4(void* ptr) {
+void StateWizard::BuildPlateS6(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to left position
@@ -751,14 +944,14 @@ void StateWizard::BuildPlateS4(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST4)
-		HEADER(MSG_HEADER_BP_CALIBR, "4/9", NEX_ICON_MAINTENANCE);
+		CAPTION(MSG_BP_CALIBR_ST6)
+		HEADER(MSG_HEADER_BP_CALIBR, "6/11", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS5);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS7);
 	}
 }
 
-void StateWizard::BuildPlateS5(void* ptr) {
+void StateWizard::BuildPlateS7(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to right position
@@ -772,14 +965,14 @@ void StateWizard::BuildPlateS5(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST5)
-		HEADER(MSG_HEADER_BP_CALIBR, "5/9", NEX_ICON_MAINTENANCE);
+		CAPTION(MSG_BP_CALIBR_ST7)
+		HEADER(MSG_HEADER_BP_CALIBR, "7/11", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS6);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS8);
 	}
 }
 
-void StateWizard::BuildPlateS6(void* ptr) {
+void StateWizard::BuildPlateS8(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to center position
@@ -793,14 +986,14 @@ void StateWizard::BuildPlateS6(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST6)
-		HEADER(MSG_HEADER_BP_CALIBR, "6/9", NEX_ICON_MAINTENANCE);
+		CAPTION(MSG_BP_CALIBR_ST8)
+		HEADER(MSG_HEADER_BP_CALIBR, "8/11", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS7);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizardZ::BuildPlateS9);
 	}
 }
 
-void StateWizard::BuildPlateS8(void* ptr) {
+void StateWizard::BuildPlateS10(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to left position
@@ -814,14 +1007,14 @@ void StateWizard::BuildPlateS8(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST8)
-		HEADER(MSG_HEADER_BP_CALIBR, "8/9", NEX_ICON_MAINTENANCE);
+		CAPTION(MSG_BP_CALIBR_ST10)
+		HEADER(MSG_HEADER_BP_CALIBR, "10/11", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS9);
+		Init2Buttons(PSTR(MSG_CANCEL), BuildPlateCancel, PSTR(MSG_NEXT), StateWizard::BuildPlateS11);
 	}
 }
 
-void StateWizard::BuildPlateS9(void* ptr) {
+void StateWizard::BuildPlateS11(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to right position
@@ -835,10 +1028,10 @@ void StateWizard::BuildPlateS9(void* ptr) {
 
 		BUTTONS(2)
 		NO_PICTURE
-		CAPTION(MSG_BP_CALIBR_ST9)
-		HEADER(MSG_HEADER_BP_CALIBR, "9/9", NEX_ICON_MAINTENANCE);
+		CAPTION(MSG_BP_CALIBR_ST11)
+		HEADER(MSG_HEADER_BP_CALIBR, "11/11", NEX_ICON_MAINTENANCE);
 
-		Init2Buttons(PSTR(MSG_REPEAT), StateWizard::BuildPlateS6, PSTR(MSG_FINISH), StateWizard::BuildPlateFinish);
+		Init2Buttons(PSTR(MSG_REPEAT), StateWizard::BuildPlateS8, PSTR(MSG_FINISH), StateWizard::BuildPlateFinish);
 	}
 }
 

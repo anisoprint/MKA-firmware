@@ -25,10 +25,10 @@ namespace StateWizardZ {
   	void InitMovement();
   	void InitBabystep();
   	void DrawUpdate();
-	void ZOffsetS2(void *ptr=0);
-	void CompZOffsetS2(void *ptr=0);
-	void BuildPlateS3(void *ptr=0);
-	void BuildPlateS7(void *ptr=0);
+	void ZOffsetS4(void *ptr=0);
+	void CompZOffsetS4(void *ptr=0);
+	void BuildPlateS5(void *ptr=0);
+	void BuildPlateS9(void *ptr=0);
 
 	void BabystepZ(void *ptr=0);
 	void BabystepZ_Save(void *ptr=0);

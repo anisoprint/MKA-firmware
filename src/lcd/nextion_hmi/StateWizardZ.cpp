@@ -93,7 +93,7 @@ void StateWizardZ::TouchUpdate() {
 	nexLoop(_listenList);
 }
 
-void StateWizardZ::ZOffsetS2(void* ptr) {
+void StateWizardZ::ZOffsetS4(void* ptr) {
 
 	if (!planner.movesplanned())
 	{
@@ -112,8 +112,8 @@ void StateWizardZ::ZOffsetS2(void* ptr) {
 		_page.show();
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_Z_OFFSET));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
-		_txtHeader.setTextPGM(PSTR(MSG_HEADER_Z_OFFSET ": 2/2"));
-		_txtCaption.setTextPGM(PSTR(MSG_Z_OFFSET_ST2));
+		_txtHeader.setTextPGM(PSTR(MSG_HEADER_Z_OFFSET ": 4/4"));
+		_txtCaption.setTextPGM(PSTR(MSG_Z_OFFSET_ST4));
 
 		_bLeft.setTextPGM(PSTR(MSG_CANCEL));
 		_bRight.setTextPGM(PSTR(MSG_FINISH));
@@ -127,7 +127,7 @@ void StateWizardZ::ZOffsetS2(void* ptr) {
 
 }
 
-void StateWizardZ::BuildPlateS3(void* ptr) {
+void StateWizardZ::BuildPlateS5(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		_babystepMode = false;
@@ -138,14 +138,14 @@ void StateWizardZ::BuildPlateS3(void* ptr) {
 		_page.show();
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
-		_txtHeader.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR ": 3/9"));
-		_txtCaption.setTextPGM(PSTR(MSG_BP_CALIBR_ST3));
+		_txtHeader.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR ": 5/11"));
+		_txtCaption.setTextPGM(PSTR(MSG_BP_CALIBR_ST5));
 
 		_bLeft.setTextPGM(PSTR(MSG_CANCEL));
 		_bRight.setTextPGM(PSTR(MSG_NEXT));
 
 		_bLeft.attachPush(StateWizard::BuildPlateCancel);
-		_bRight.attachPush(StateWizard::BuildPlateS4);
+		_bRight.attachPush(StateWizard::BuildPlateS6);
 
 		DrawUpdate();
 
@@ -169,7 +169,7 @@ void StateWizardZ::DrawUpdate() {
 	_txtZ.setText(NextionHMI::buffer);
 }
 
-void StateWizardZ::BuildPlateS7(void* ptr) {
+void StateWizardZ::BuildPlateS9(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		_babystepMode = false;
@@ -180,21 +180,21 @@ void StateWizardZ::BuildPlateS7(void* ptr) {
 		_page.show();
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
-		_txtHeader.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR ": 7/9"));
-		_txtCaption.setTextPGM(PSTR(MSG_BP_CALIBR_ST7));
+		_txtHeader.setTextPGM(PSTR(MSG_HEADER_BP_CALIBR ": 9/11"));
+		_txtCaption.setTextPGM(PSTR(MSG_BP_CALIBR_ST9));
 
 		_bLeft.setTextPGM(PSTR(MSG_CANCEL));
 		_bRight.setTextPGM(PSTR(MSG_NEXT));
 
 		_bLeft.attachPush(StateWizard::BuildPlateCancel);
-		_bRight.attachPush(StateWizard::BuildPlateS8);
+		_bRight.attachPush(StateWizard::BuildPlateS10);
 
 		DrawUpdate();
 
 	}
 }
 
-void StateWizardZ::CompZOffsetS2(void* ptr) {
+void StateWizardZ::CompZOffsetS4(void* ptr) {
 	if (!planner.movesplanned())
 	{
 		//Going to center adjust position
@@ -211,8 +211,8 @@ void StateWizardZ::CompZOffsetS2(void* ptr) {
 		_page.show();
 		NextionHMI::headerText.setTextPGM(PSTR(MSG_HEADER_COMP_Z_OFFSET));
 		NextionHMI::headerIcon.setPic(NEX_ICON_MAINTENANCE);
-		_txtHeader.setTextPGM(PSTR(MSG_HEADER_COMP_Z_OFFSET ": 2/2"));
-		_txtCaption.setTextPGM(PSTR(MSG_Z_OFFSET_ST2));
+		_txtHeader.setTextPGM(PSTR(MSG_HEADER_COMP_Z_OFFSET ": 4/4"));
+		_txtCaption.setTextPGM(PSTR(MSG_Z_OFFSET_ST4));
 
 		_bLeft.setTextPGM(PSTR(MSG_CANCEL));
 		_bRight.setTextPGM(PSTR(MSG_FINISH));

@@ -37,11 +37,15 @@ namespace StateWizard {
 	//Build plate calibration
 	void BuildPlateS1(void *ptr=0);
 	void BuildPlateS2(void *ptr=0);
+	void BuildPlateS2a(void *ptr=0);
+	void BuildPlateS3(void *ptr=0);
+	void BuildPlateS3DrawUpdate(void *ptr=0);
 	void BuildPlateS4(void *ptr=0);
-	void BuildPlateS5(void *ptr=0);
 	void BuildPlateS6(void *ptr=0);
+	void BuildPlateS7(void *ptr=0);
 	void BuildPlateS8(void *ptr=0);
-	void BuildPlateS9(void *ptr=0);
+	void BuildPlateS10(void *ptr=0);
+	void BuildPlateS11(void *ptr=0);
 	void BuildPlateFinish(void *ptr=0);
 	void BuildPlateCancel(void *ptr=0);
 
@@ -73,11 +77,19 @@ namespace StateWizard {
 
 	//Z offset calibration
 	void ZAxisS1(void *ptr=0);
+	void ZAxisS2(void *ptr=0);
+	void ZAxisS2a(void *ptr=0);
+	void ZAxisS3(void *ptr=0);
+	void ZAxisS3DrawUpdate(void *ptr=0);
 	void ZAxisFinish(void *ptr=0);
 	void ZAxisCancel(void *ptr=0);
 
 	//Z offset calibration
 	void CompZOffsetS1(void *ptr=0);
+	void CompZOffsetS2(void *ptr=0);
+	void CompZOffsetS2a(void *ptr=0);
+	void CompZOffsetS3(void *ptr=0);
+	void CompZOffsetS3DrawUpdate(void *ptr=0);
 	void CompZOffsetFinish(void *ptr=0);
 	void CompZOffsetCancel(void *ptr=0);
 
