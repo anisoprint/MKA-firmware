@@ -93,12 +93,12 @@ void StateAuraConnect::Close_Push(void *ptr) {
 void StateAuraConnect::OK_Push(void *ptr) {
 	if (strlen(serverURL) == 0)
 	{
-		StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_AC_SERVER_URL_EMPTY, 1, MSG_OK, Dialog_CancelPush, 0, 0);
+		StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_AC_SERVER_URL_EMPTY, 1, MSG_OK, Dialog_CancelPush, 0, 0, NEX_ICON_DIALOG_WARNING);
 		return;
 	}
 	if (strlen(serverSecurityCode) == 0)
 	{
-		StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_AC_SERVER_CODE_EMPTY, 1, MSG_OK, Dialog_CancelPush, 0, 0);
+		StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_AC_SERVER_CODE_EMPTY, 1, MSG_OK, Dialog_CancelPush, 0, 0, NEX_ICON_DIALOG_WARNING);
 		return;
 	}
 
@@ -113,14 +113,14 @@ void StateAuraConnect::OK_Push(void *ptr) {
 	}
 	else
 	{
-		StateMessage::ActivatePGM_M(MESSAGE_DIALOG_OVER, NEX_ICON_ERROR, MSG_ERROR, NextionHMI::buffer, 1, PSTR(MSG_OK), Dialog_CancelPush, 0, 0);
+		StateMessage::ActivatePGM_M(MESSAGE_DIALOG_OVER, NEX_ICON_ERROR, MSG_ERROR, NextionHMI::buffer, 1, PSTR(MSG_OK), Dialog_CancelPush, 0, 0, NEX_ICON_DIALOG_ERROR);
 	}
 
 
 }
 
 void StateAuraConnect::ServerSecurityCode_Push(void *ptr) {
-	StateKeyboard::Activate(true, PSTR(MSG_AC_SERVER_CODE), serverSecurityCode, ServerSecurityCode_OkPush, Dialog_CancelPush);
+	StateEditNumber::Activate(true, serverSecurityCode, ServerSecurityCode_OkPush, Dialog_CancelPush);
 }
 
 void StateAuraConnect::ServerUrl_OkPush(void *ptr) {
@@ -135,7 +135,7 @@ void StateAuraConnect::Dialog_CancelPush(void *ptr) {
 
 void StateAuraConnect::ServerSecurityCode_OkPush(void *ptr) {
 	ZERO(serverSecurityCode);
-	StateKeyboard::GetInputToBuffer(serverSecurityCode, sizeof(serverSecurityCode));
+	StateEditNumber::GetInputToBuffer(serverSecurityCode, sizeof(serverSecurityCode));
 	Activate();
 }
 

@@ -38,7 +38,7 @@ namespace {
 
 	NexObject *_listenList[] = { &_bPrint, &_bBack, NULL };
 
-	void FillFileInfo(PrintFileInfo fileInfo)
+	void ProcessFileInfo(PrintFileInfo fileInfo)
 	{
 		if (fileInfo.PrintDuration!=0)
 		{
@@ -72,30 +72,22 @@ namespace {
 			sprintf_P(NextionHMI::buffer, PSTR(MSG_FIBER_CONS), fileInfo.ExtruderInfo[1].FiberMaterialName, fileInfo.ExtruderInfo[1].FiberConsumption);
 			_tCompFiberMat.setText(NextionHMI::buffer);
 		}
+
+		if (fileInfo.ExtruderInfo[1].FiberConsumption!=0 || fileInfo.ExtruderInfo[0].PlasticConsumption==0)
+		{
+			_bPrint.attachPush(StateFileinfo::Print_Push);
+		}
+		else
+		{
+			_bPrint.attachPush(StateFileinfo::Print_Clean_Continue_Push);
+		}
 	}
 }
 
 void StateFileinfo::Print_Push(void* ptr) {
-	if (NextionHMI::pageData>=0) //SD
-	{
-	    commands.inject_rear_P(PSTR("M24"));
-	}
-	else //AC
-	{
-		if (netBridgeManager.SendJobInvoke(true, NextionHMI::buffer, NEXHMI_BUFFER_SIZE))
-		{
-			netBridgeManager.UpdateJobAwaiting(false);
-			StateMessage::ActivatePGM_M(MESSAGE_DIALOG, NEX_ICON_INFO, MSG_AURA_CONNECT, PSTR(MSG_STARTING_JOB), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
-			return;
-		}
-		else
-		{
-			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, NextionHMI::buffer, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
-			return;
-		}
-	}
-
+	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_REMINDER), PSTR(MSG_REMINDER_CLEAN_FIBER), 2, PSTR(MSG_CONTINUE), Print_Clean_Continue_Push, PSTR(MSG_CANCEL), Print_Clean_Cancel_Push, NEX_ICON_DIALOG_WARNING);
 }
+
 
 void StateFileinfo::Back_Push(void* ptr) {
 	if (NextionHMI::pageData>=0) //SD
@@ -109,7 +101,7 @@ void StateFileinfo::Back_Push(void* ptr) {
 }
 
 void StateFileinfo::Init() {
-	_bPrint.attachPush(Print_Push);
+
 	_bBack.attachPush(Back_Push);
 }
 
@@ -136,14 +128,14 @@ void StateFileinfo::Activate(int8_t sd_slot) {
 			_tModified.setText(NextionHMI::buffer);
 		}
 
-		FillFileInfo(sdStorage.cards[sd_slot].fileInfo);
+		ProcessFileInfo(sdStorage.cards[sd_slot].fileInfo);
 	}
 	else //AC Job
 	{
 		_tFilename.setText(netBridgeManager.serverJobName);
 		_pFileicon.setPic(NEX_ICON_FILE_GCODE_AURA);
 
-		FillFileInfo(netBridgeManager.serverJobInfo);
+		ProcessFileInfo(netBridgeManager.serverJobInfo);
 	}
 
 
@@ -155,6 +147,32 @@ void StateFileinfo::DrawUpdate() {
 
 void StateFileinfo::TouchUpdate() {
 	nexLoop(_listenList);
+}
+
+void StateFileinfo::Print_Clean_Continue_Push(void *ptr) {
+	if (NextionHMI::pageData>=0) //SD
+	{
+	    commands.inject_rear_P(PSTR("M24"));
+	}
+	else //AC
+	{
+		if (netBridgeManager.SendJobInvoke(true, NextionHMI::buffer, NEXHMI_BUFFER_SIZE))
+		{
+			netBridgeManager.UpdateJobAwaiting(false);
+			StateMessage::ActivatePGM_M(MESSAGE_DIALOG, NEX_ICON_INFO, MSG_AURA_CONNECT, PSTR(MSG_STARTING_JOB), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+			return;
+		}
+		else
+		{
+			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, NextionHMI::buffer, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_ERROR);
+			return;
+		}
+	}
+
+}
+
+void StateFileinfo::Print_Clean_Cancel_Push(void *ptr) {
+	StateStatus::Activate();
 }
 
 #endif

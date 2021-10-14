@@ -191,7 +191,7 @@ void StateFiles::FFile_Push(void* ptr) {
 
     if (strlen(NextionHMI::buffer)>50)
 	{
-    	StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_LONG_FILENAME, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+    	StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_LONG_FILENAME, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_WARNING);
     	return;
 	}
 
@@ -221,7 +221,7 @@ void StateFiles::FFolder_Push(void* ptr) {
 
     if (strlen(NextionHMI::buffer)>50)
 	{
-    	StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_LONG_FILENAME, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+    	StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, MSG_LONG_FILENAME, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_WARNING);
     	return;
 	}
 
@@ -264,7 +264,7 @@ void StateFiles::Activate(uint8_t sd_slot) {
     }
     else
     {
-        StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_ERROR), PSTR(MSG_NO_SD), 1, PSTR(MSG_BACK), FilesCancel_Push, "", 0, 0);
+        StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_ERROR), PSTR(MSG_NO_SD), 1, PSTR(MSG_BACK), FilesCancel_Push, "", 0, NEX_ICON_DIALOG_WARNING);
     }
 }
 

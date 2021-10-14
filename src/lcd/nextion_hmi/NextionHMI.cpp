@@ -260,43 +260,43 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventM
 	lastEventArg = eventArg;
 	//Error handling and common events
 	switch(event) {
-		case HMIevent::PRINTER_KILLED : StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_ERROR, eventMsg, PSTR(MSG_ERR_KILLED), 1, PSTR(RESTART_TO_CONTINUE), 0, 0, 0);
+		case HMIevent::PRINTER_KILLED : StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_ERROR, eventMsg, PSTR(MSG_ERR_KILLED), 1, PSTR(RESTART_TO_CONTINUE), 0, 0, 0, NEX_ICON_DIALOG_ERROR);
 			return;
-		case HMIevent::SWITCHED_OFF : StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_ERROR, eventMsg, PSTR(MSG_OFF), 1, PSTR(RESTART_TO_CONTINUE), 0, 0, 0);
+		case HMIevent::SWITCHED_OFF : StateMessage::ActivatePGM(MESSAGE_CRITICAL_ERROR, NEX_ICON_ERROR, eventMsg, PSTR(MSG_OFF), 1, PSTR(RESTART_TO_CONTINUE), 0, 0, 0, NEX_ICON_DIALOG_ERROR);
 			return;
 		case HMIevent::TEMPERATURE_ERROR :
 			ZERO(NextionHMI::buffer);
 			sprintf_P(NextionHMI::buffer, PSTR("%s\\r%s %d"), eventMsg, MSG_STOPPED_HEATER, eventArg);
-			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_HEATER_ERROR, NextionHMI::buffer, 2, PSTR(MSG_OK), StateMessage::ReturnToLastState, PSTR(MSG_RETRY), StateMessage::RetryHeaterAndReturnToLastState);
+			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_HEATER_ERROR, NextionHMI::buffer, 2, PSTR(MSG_OK), StateMessage::ReturnToLastState, PSTR(MSG_RETRY), StateMessage::RetryHeaterAndReturnToLastState, NEX_ICON_DIALOG_ERROR);
 			return;
 		case HMIevent::INTERNAL_SD_WARNING :
-			StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+			StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_WARNING);
 			return;
 		case HMIevent::EEPROM_ERROR :
-			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_ERROR);
 			return;
 		case HMIevent::SD_ERROR :
 			if (eventArg!=0)
 			{
 				ZERO(NextionHMI::buffer);
 				sprintf_P(NextionHMI::buffer, PSTR("%s %d"), eventMsg, eventArg);
-				StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, NextionHMI::buffer, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+				StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, NextionHMI::buffer, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_ERROR);
 			}
 			else
-				StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+				StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_ERROR);
 			return;
 		case HMIevent::ERROR :
-			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_ERROR);
 			return;
 		case HMIevent::WAIT_FOR_INPUT :
 			StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_INFO, eventMsg, PSTR(MSG_USERWAIT), 1, PSTR(MSG_OK), WaitOk_Push, 0, 0);
 			return;
 	    case HMIevent::SD_PRINT_FINISHED :
-	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), PSTR(MSG_DONE), 2, PSTR(MSG_OK), StatePrinting::DoneMessage_OK, PSTR(MSG_PRINT_AGAIN),StatePrinting::DoneMessage_Again, NEX_ICON_DONE);
+	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), PSTR(MSG_DONE), 2, PSTR(MSG_OK), StatePrinting::DoneMessage_OK, PSTR(MSG_PRINT_AGAIN),StatePrinting::DoneMessage_Again, NEX_ICON_DIALOG_DONE);
 	        NextionHMI::RaiseEvent(NONE);
 	        return;
 	    case HMIevent::HOST_PRINT_FINISHED :
-	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), PSTR(MSG_DONE), 1, PSTR(MSG_OK), StatePrinting::DoneMessage_OK, nullptr, nullptr, NEX_ICON_DONE);
+	    	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_FINISHED, PSTR(MSG_FINISHED), PSTR(MSG_DONE), 1, PSTR(MSG_OK), StatePrinting::DoneMessage_OK, nullptr, nullptr, NEX_ICON_DIALOG_DONE);
 	        NextionHMI::RaiseEvent(NONE);
 	        return;
 	}

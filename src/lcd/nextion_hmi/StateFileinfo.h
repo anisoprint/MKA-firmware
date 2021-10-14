@@ -18,6 +18,8 @@
 namespace StateFileinfo {
 
 	void Print_Push(void *ptr);
+	void Print_Clean_Continue_Push(void *ptr);
+	void Print_Clean_Cancel_Push(void *ptr);
 	void Back_Push(void *ptr);
 
 	void Init();

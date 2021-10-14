@@ -15,9 +15,10 @@
 #include "NextionConstants.h"
 
 namespace StateEditNumber {
-	void Activate(const char* input, NexTouchEventCb cbOK, NexTouchEventCb cbCancel);
+	void Activate(bool password, const char* input, NexTouchEventCb cbOK, NexTouchEventCb cbCancel);
 	void TouchUpdate();
 	void GetInputToBuffer();
+	void GetInputToBuffer(char *buffer, const uint16_t bufferSize);
 
 
 

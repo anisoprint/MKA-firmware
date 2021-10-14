@@ -197,7 +197,7 @@ void StateWifiList::Network_Push(void* ptr) {
     	}
     	else
     	{
-    		StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, NextionHMI::buffer, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+    		StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, NextionHMI::buffer, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_ERROR);
     	}
     }
 
@@ -229,7 +229,7 @@ void StateWifiList::NetKey_OkPush(void* ptr) {
 	}
 	else
 	{
-		StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, NextionHMI::buffer, 1, PSTR(MSG_OK), Cancel_Push, 0, 0);
+		StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, NextionHMI::buffer, 1, PSTR(MSG_OK), Cancel_Push, 0, 0, NEX_ICON_DIALOG_ERROR);
 	}
 }
 

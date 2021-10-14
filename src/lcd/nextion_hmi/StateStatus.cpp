@@ -178,7 +178,7 @@ void StateStatus::AC_Push(void *ptr) {
 	{
 		if (!netBridgeManager.GetJobInfo())
 		{
-			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, PSTR(MSG_ERROR_GET_JOB_INFO), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, PSTR(MSG_ERROR_GET_JOB_INFO), 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_ERROR);
 			return;
 		}
 		StateFileinfo::Activate(-1);

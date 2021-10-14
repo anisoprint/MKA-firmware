@@ -1,9 +1,13 @@
-v1.2.2
+v1.2.4
+[Added] Buildplate heating in the buildplate, z-axis and z-offset calibration wizards
 [Added] Full support of network bridge
 [Added] Network status page in UI
 [Added] Wi-Fi connection pages in UI
 [Added] Aura.Connect connection page in UI
 [Added] Support for TCP/IP connections, commands can be streamed to the printer through TCP/IP  
+[Added] Reminders about composite extruder cleaning
+[Changed] Minor UI fixes and improvements
+[Changed] Minor UI fixes and improvements
 [Fixed] Max temperature threshold on setting temperature using the LCD screen
 [Fixed] Minor issues in G-code parser
 [Fixed] Default steps per mm values for feeders

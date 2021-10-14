@@ -638,7 +638,7 @@ void StateWizard::MaterialLoadS3(void* ptr) {
 	if (heaters[heater].isIdle())
 	{
 		heaters[heater].setTarget(0);
-		StateMessage::ActivatePGM(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_HEADER_LOAD_MATERIAL, PSTR(MSG_LOAD_MATERIAL_ST3_TIMEOUT), 2, PSTR(MSG_REPEAT), MaterialLoadS2, PSTR(MSG_CANCEL), MaterialLoadCancel, 0);
+		StateMessage::ActivatePGM(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_HEADER_LOAD_MATERIAL, PSTR(MSG_LOAD_MATERIAL_ST3_TIMEOUT), 2, PSTR(MSG_REPEAT), MaterialLoadS2, PSTR(MSG_CANCEL), MaterialLoadCancel, NEX_ICON_DIALOG_WARNING);
 	}
 	else
 	{
@@ -714,7 +714,7 @@ void StateWizard::MaterialLoadS5(void* ptr) {
 	{
 		_wizardCancelled = true;
 		heaters[heater].setTarget(0);
-		StateMessage::ActivatePGM(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_HEADER_LOAD_MATERIAL, PSTR(MSG_LOAD_MATERIAL_ST5_TIMEOUT), 1, PSTR(MSG_OK), MaterialLoadCancel, 0, 0, 0);
+		StateMessage::ActivatePGM(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_HEADER_LOAD_MATERIAL, PSTR(MSG_LOAD_MATERIAL_ST5_TIMEOUT), 1, PSTR(MSG_OK), MaterialLoadCancel, 0, 0, NEX_ICON_DIALOG_WARNING);
 	}
 	else
 	{

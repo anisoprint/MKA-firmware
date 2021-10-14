@@ -81,6 +81,10 @@
   #define MSG_NEXT                                _UxGT("Next")
 #endif
 
+#ifndef MSG_CONTINUE
+  #define MSG_CONTINUE                            _UxGT("Continue")
+#endif
+
 #ifndef MSG_FINISH
   #define MSG_FINISH                              _UxGT("Finish")
 #endif
@@ -183,6 +187,14 @@
 
 #ifndef MSG_CANCEL_PRINTING
   #define MSG_CANCEL_PRINTING              			_UxGT("Cancel printing")
+#endif
+
+#ifndef MSG_REMINDER
+  #define MSG_REMINDER              				_UxGT("Reminder")
+#endif
+
+#ifndef MSG_REMINDER_CLEAN_FIBER
+  #define MSG_REMINDER_CLEAN_FIBER              	_UxGT("To prevent fiber clogging the composite\\rextruder channel cleaning is recommended\\rbefore each print.\\r\\rPlease press Continue if it has been\\rcleaned, otherwise, press Cancel and\\rclean the channel.")
 #endif
 
 #ifndef MSG_READING_SD

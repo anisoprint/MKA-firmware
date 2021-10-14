@@ -131,7 +131,7 @@ void StateMenu::Control_Tune_OK(void* ptr) {
 }
 
 void StateMenu::Control_CancelPrint(void* ptr) {
-	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_CANCEL_PRINTING), PSTR(MSG_CONFIRM_CANCEL_PRINTING), 2, PSTR(MSG_NO), ActivatePrintControl, PSTR(MSG_YES), Control_CancelPrint_Yes);
+	StateMessage::ActivatePGM(MESSAGE_DIALOG, NEX_ICON_WARNING, PSTR(MSG_CANCEL_PRINTING), PSTR(MSG_CONFIRM_CANCEL_PRINTING), 2, PSTR(MSG_NO), ActivatePrintControl, PSTR(MSG_YES), Control_CancelPrint_Yes, NEX_ICON_DIALOG_WARNING);
 }
 
 void StateMenu::Control_CancelPrint_Yes(void* ptr) {
