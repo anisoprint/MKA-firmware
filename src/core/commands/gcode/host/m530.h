@@ -90,6 +90,9 @@ inline void gcode_M530(void) {
 		}
 		else
 		{
+			#if ENABLED(NEXTION_HMI)
+			  StateStatus::Activate();
+			#endif
 			printer.setStatus(Idle);
 		}
 

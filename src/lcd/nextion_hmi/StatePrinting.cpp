@@ -94,7 +94,7 @@ void StatePrinting::Pause_Push(void* ptr) {
 				PrintPause::PauseHostPrint();
 				break;
 			case WaitingToPause:
-				PrintPause::ResumePrint();
+				PrintPause::ResumeHostPrint();
 				break;
 			case Paused:
 				PrintPause::ResumeHostPrint();
@@ -163,14 +163,24 @@ void StatePrinting::Activate() {
 	NextionHMI::ActivateState(PAGE_PRINTING);
 	_page.show();
 
-	_tFileName.setText(sdStorage.getActivePrintSDCard()->fileName);
-	const char* auraString = PSTR("Aura");
+    if (sdStorage.isPrinting() || sdStorage.isPaused()) //SD printing
+    {
+    	_tFileName.setText(sdStorage.getActivePrintSDCard()->fileName);
+    	const char* auraString = PSTR("Aura");
+    	if (strstr_P(sdStorage.getActivePrintSDCard()->generatedBy, auraString) != NULL)
+    	{
+    		_pFileIcon.setPic(NEX_ICON_FILE_GCODE_AURA);
+    	}
+    }
+    else //Host Printing
+    {
+    	_tFileName.setText(printer.printName);
+    	_pFileIcon.setPic(NEX_ICON_FILE_GCODE_REMOTE);
+    }
+
+
 	_previousProgress = -1;
 	_previousLayer = -1;
-	if (strstr_P(sdStorage.getActivePrintSDCard()->generatedBy, auraString) != NULL)
-	{
-		_pFileIcon.setPic(NEX_ICON_FILE_GCODE_AURA);
-	}
 
 	switch(printer.getStatus())
 	{

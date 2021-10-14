@@ -76,6 +76,7 @@ public:
 	bool SendJobInvoke(bool accept, char* responseBuffer, const uint16_t responseBufferSize);
 
 	bool PausePrintJob();
+	bool UnschedulePausePrintJob();
 	bool ResumePrintJob();
 	bool CancelPrintJob();
 
@@ -115,7 +116,7 @@ public:
 
 	bool IsJobAwaiting();
 	void UpdateJobAwaiting(bool jobAwaiting);
-
+	void ShowFileReceiveProgress(const char* filename, float progress);
 
 };
 

@@ -32,6 +32,6 @@
  * M531: filename - Define filename being printed
  */
 inline void gcode_M531(void) {
-  strncpy(printer.printName, parser.string_arg, 20);
-  printer.printName[20] = 0;
+  strncpy(printer.printName, parser.string_arg, 31);
+  printer.printName[31] = 0;
 }

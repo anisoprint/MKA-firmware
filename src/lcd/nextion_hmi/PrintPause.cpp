@@ -62,9 +62,6 @@ bool PrintPause::PausePrint() {
     }
     else
     {
-        SERIAL_STR(PAUSE);
-        SERIAL_EOL();
-
         // Pause the print job
         #if HAS_SD_SUPPORT
           if (IS_SD_PRINTING()) {
@@ -89,27 +86,17 @@ bool PrintPause::PauseHostPrint() {
 
 	if (printer.getStatus()!=Printing && printer.getStatus()!=WaitingToPause) return false; // already paused
 
-    //Printing with fiber, can't pause now
-    if (tools.printing_with_fiber)
-    {
-    	printer.setStatus(WaitingToPause);
-    	NextionHMI::RaiseEvent(PRINT_PAUSE_SCHEDULED);
-    	return false;
-    }
-    else
-    {
-    	if (netBridgeManager.GetNetBridgeStatus() == Connected)
-    	{
-    		netBridgeManager.PausePrintJob();
-    	}
-    	else
-    	{
-            SERIAL_STR("// action:pause");
-            SERIAL_EOL();
-    	}
+	if (netBridgeManager.GetNetBridgeStatus() == Connected)
+	{
+		netBridgeManager.PausePrintJob();
+	}
+	else
+	{
+        SERIAL_STR(PAUSE);
+        SERIAL_EOL();
+	}
 
-        return true;
-    }
+    return true;
 }
 
 
@@ -275,9 +262,6 @@ void PrintPause::ResumePrint(const float& purge_length) {
 
    printer.setFilamentOut(false);
 
-   SERIAL_STR(RESUME);
-   SERIAL_EOL();
-
    #if HAS_SD_SUPPORT
      if (SdPrintingPaused && sdStorage.isPaused()) {
        sdStorage.resumeSDPrint();
@@ -304,8 +288,10 @@ void PrintPause::ResumeHostPrint() {
 
    if (printer.getStatus()==WaitingToPause)
    {
-	   printer.setStatus(Printing);
-	   NextionHMI::RaiseEvent(PRINT_PAUSE_UNSCHEDULED);
+	   if (netBridgeManager.GetNetBridgeStatus() == Connected)
+	   {
+		   netBridgeManager.ResumePrintJob();
+	   }
 	   return;
    };
    if (printer.getStatus()!=Paused) return; // already not paused
@@ -314,11 +300,12 @@ void PrintPause::ResumeHostPrint() {
    {
 	   netBridgeManager.ResumePrintJob();
    }
-	else
-	{
-       SERIAL_STR("// action:resume");
-       SERIAL_EOL();
-	}
+   else
+   {
+	   SERIAL_STR(RESUME);
+	   SERIAL_EOL();
+   }
+   NextionHMI::RaiseEvent(PRINT_PAUSE_RESUMING);
 }
 
 void PrintPause::RestoreTemperatures() {

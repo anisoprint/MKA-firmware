@@ -16,8 +16,9 @@ bool NetBridgeManager::SendCommand(const char *command,
   int8_t oldSerial = Com::serial_port_index;
   SERIAL_PORT(NETWORK_BRIDGE_SERIAL);
   SERIAL_FLUSH();
+  //Trying to getting pending commands from buffer
+  printer.safe_idle(10);
   //Clear rx buffer
-  printer.safe_delay(10);
   while (Com::serialRead(NETWORK_BRIDGE_SERIAL) != -1);
   SERIAL_ET(command);
 
@@ -460,6 +461,12 @@ bool NetBridgeManager::PausePrintJob() {
 	  return (res && strncmp(responseBuffer, "ok", 2)==0);
 }
 
+bool NetBridgeManager::UnschedulePausePrintJob() {
+	  char responseBuffer[8];
+	  bool res = SendCommand("@unschedule_pause", responseBuffer, sizeof(responseBuffer), NETWORK_BRIDGE_TIMEOUT);
+	  return (res && strncmp(responseBuffer, "ok", 2)==0);
+}
+
 bool NetBridgeManager::ResumePrintJob() {
 	  char responseBuffer[8];
 	  bool res = SendCommand("@resume", responseBuffer, sizeof(responseBuffer), NETWORK_BRIDGE_TIMEOUT);
@@ -470,6 +477,21 @@ bool NetBridgeManager::CancelPrintJob() {
 	  char responseBuffer[8];
 	  bool res = SendCommand("@cancel", responseBuffer, sizeof(responseBuffer), NETWORK_BRIDGE_TIMEOUT);
 	  return (res && strncmp(responseBuffer, "ok", 2)==0);
+}
+
+void NetBridgeManager::ShowFileReceiveProgress(const char *filename, float progress) {
+
+	ZERO(NextionHMI::buffer);
+	sprintf_P(NextionHMI::buffer, PSTR(MSG_RECEIVING_FILE_SERVER), filename, progress);
+	if (progress < 0.01)
+	{
+		StateMessage::ActivatePGM_M(MESSAGE_DIALOG_OVER, NEX_ICON_INFO, MSG_AURA_CONNECT, NextionHMI::buffer, 1, PSTR(MSG_PLEASE_WAIT), 0, 0, 0);
+	}
+	else
+	{
+        StateMessage::UpdateMessage(NextionHMI::buffer);
+	}
+
 }
 
 #endif

@@ -30,7 +30,7 @@
   #define CODE_M1016
   #define CODE_M1017
   #define CODE_M1018
-
+  #define CODE_M1019
   
  /*
   * M1014: Set SBC status S1 - connected, S0 - temporarily disconnected
@@ -87,4 +87,21 @@ inline void gcode_M1017() {
 inline void gcode_M1018() {
 	  sdStorage.clearInternalStorageAc();
 }
+
+/*
+ * M1019: Show progress while receiving file from server
+ * M1019 P<progress> <filename>
+ *
+ */
+inline void gcode_M1019() {
+	if (parser.seen('P'))
+	{
+		float percent = parser.value_float();
+		netBridgeManager.ShowFileReceiveProgress(parser.string_arg, percent);
+	}
+
+
+}
+
+
 

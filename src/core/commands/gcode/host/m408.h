@@ -33,7 +33,7 @@
   /**
    * M408: JSON STATUS OUTPUT
    * S[uint] - report type
-   * P[bool] - autoreport on/off
+   * P[byte] - autoreport interval (0=off)
    */
   inline void gcode_M408(void) {
 	uint8_t type = 0;

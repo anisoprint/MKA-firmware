@@ -30,5 +30,12 @@
 
 /**
  * M117: Set LCD Status Message
+ *
  */
-inline void gcode_M117() { lcd_setstatus(parser.string_arg); }
+inline void gcode_M117() {
+	#ifdef NEXTION_HMI
+	  StateMessage::ActivatePGM_M(MESSAGE_EXTERNAL, NEX_ICON_INFO, PSTR(MSG_INFO), parser.string_arg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0);
+	#else
+	  lcd_setstatus(parser.string_arg);
+	#endif
+}

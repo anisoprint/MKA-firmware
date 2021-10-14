@@ -116,23 +116,46 @@
 
   /**
    * M25: Pause SD Print
+   * M25.1 P<bool> Schedule or unschedule print pause (pause after end of fiber polygon)
    */
   void gcode_M25(void) {
+	if (parser.subcode == 1) // Schedule or unschedule print pause (pause after end of fiber polygon)
+	{
+		#if ENABLED(NEXTION_HMI)
+			if (parser.seen('P'))
+			{
+				bool pauseScheduled = parser.value_bool();
+				if (printer.getStatus()==Printing && pauseScheduled)
+				{
+					printer.setStatus(WaitingToPause);
+					NextionHMI::RaiseEvent(PRINT_PAUSE_SCHEDULED);
+					return;
+				}
+				if (printer.getStatus()==WaitingToPause && !pauseScheduled)
+				{
+					printer.setStatus(Printing);
+					NextionHMI::RaiseEvent(PRINT_PAUSE_UNSCHEDULED);
+					return;
+				}
+			}
+		#endif
+	}
+	else
+	{
+		#if ENABLED(NEXTION_HMI)
+		  PrintPause::PausePrint();
+		#else
+			sdStorage.pauseSDPrint();
+			print_job_counter.pause();
+			SERIAL_STR(PAUSE);
+			SERIAL_EOL();
 
-	#if ENABLED(NEXTION_HMI)
-	  PrintPause::PausePrint();
-	#else
-	    sdStorage.pauseSDPrint();
-	    print_job_counter.pause();
-	    SERIAL_STR(PAUSE);
-	    SERIAL_EOL();
+			#if ENABLED(PARK_HEAD_ON_PAUSE)
+			  commands.enqueue_and_echo_P(PSTR("M125")); // Must be enqueued with pauseSDPrint set to be last in the buffer
+			#endif
+		#endif
 
-	    #if ENABLED(PARK_HEAD_ON_PAUSE)
-	      commands.enqueue_and_echo_P(PSTR("M125")); // Must be enqueued with pauseSDPrint set to be last in the buffer
-	    #endif
-	#endif
-
-
+	}
   }
 
   /**

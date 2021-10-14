@@ -225,6 +225,10 @@
   #define MSG_WARNING             					_UxGT("Warning")
 #endif
 
+#ifndef MSG_INFO
+  #define MSG_INFO            						_UxGT("Information")
+#endif
+
 #ifndef MSG_FINISHED
   #define MSG_FINISHED             					_UxGT("Finished")
 #endif
@@ -431,6 +435,10 @@
 
 #ifndef MSG_RECEIVING_FILE
   #define MSG_RECEIVING_FILE                    	_UxGT("Receiving file (%u kb / %u kb)")
+#endif
+
+#ifndef MSG_RECEIVING_FILE_SERVER
+  #define MSG_RECEIVING_FILE_SERVER                  _UxGT("Receiving file from server:\\r%s (%.1f %%)")
 #endif
 
 #ifndef MSG_ENABLE
