@@ -707,6 +707,14 @@ bool Commands::process_without_queue(const char * cmd) {
     	gcode_M1002();
     	return true;
     }
+    if (strcmp(cmd, "M524") == 0) {
+    	gcode_M524();
+    	return true;
+    }
+    if (strcmp(cmd, "M25") == 0) {
+    	gcode_M25();
+    	return true;
+    }
     return false;
 
 }
