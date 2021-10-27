@@ -44,9 +44,10 @@ namespace {
 	NexObject _bFDownIcon = NexObject(PAGE_FILES,  18,  "pDN");
 
 	NexObject _bFilesCancel = NexObject(PAGE_FILES,  9,  "cc");
+	NexObject _bFilesSort = NexObject(PAGE_FILES,  36,  "bs");
 
 	NexObject *_listenList[] = { &_tFName0, &_tFName1, &_tFName2, &_tFName3, &_tFName4, &_tFName5, &_tFName6,
-			&_bFUp, &_bFDown, &_bFilesCancel, NULL };
+			&_bFUp, &_bFDown, &_bFilesCancel, &_bFilesSort, NULL };
 
 	uint32_t _listPosition = 0;
 	bool _insideDir = false;
@@ -127,7 +128,8 @@ namespace {
 	    for (uint8_t row = start_row; row < 7; row++) {
 	      if (i < fileCnt) {
 			#if ENABLED(SDCARD_SORT_ALPHA)
-	        sdStorage.cards[NextionHMI::pageData].getfilename_sorted(i);
+	    	  uint32_t index = sdStorage.cards[NextionHMI::pageData].getSortOn() ? i : fileCnt - i - 1;
+	          sdStorage.cards[NextionHMI::pageData].getfilename_sorted(index);
 			#else
 			  card.getfilename(i);
 			#endif
@@ -248,6 +250,7 @@ void StateFiles::Init() {
 	_bFilesCancel.attachPush(FilesCancel_Push);
 	_bFUp.attachPush(FUp_Push);
 	_bFDown.attachPush(FDown_Push);
+	_bFilesSort.attachPush(FilesSort_Push);
 }
 
 void StateFiles::Activate(uint8_t sd_slot) {
@@ -256,6 +259,14 @@ void StateFiles::Activate(uint8_t sd_slot) {
     NextionHMI::ActivateState(PAGE_FILES);
     _page.show();
     NextionHMI::pageData = sd_slot;
+    if (sdStorage.cards[NextionHMI::pageData].getSortOn())
+    {
+    	_bFilesSort.setTextPGM(MSG_SORT_BY_NAME);
+    }
+    else
+    {
+    	_bFilesSort.setTextPGM(MSG_SORT_BY_DATE);
+    }
     sdStorage.cards[NextionHMI::pageData].mount();
     if (sdStorage.cards[NextionHMI::pageData].isMounted())
     {
@@ -270,6 +281,11 @@ void StateFiles::Activate(uint8_t sd_slot) {
 
 void StateFiles::TouchUpdate() {
 	nexLoop(_listenList);
+}
+
+void StateFiles::FilesSort_Push(void *ptr) {
+	sdStorage.cards[NextionHMI::pageData].setSortOn(!sdStorage.cards[NextionHMI::pageData].getSortOn(), false);
+	StateFiles::Activate(NextionHMI::pageData);
 }
 
 #endif

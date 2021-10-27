@@ -44,8 +44,7 @@ enum SettingType {HEADER, FLOAT, INT16, INT8};
   	void EditNumber_MsgOk_Push(void *ptr);
 
 	void Init();
-	void Activate(StateSettings::SettingDefinition* settings, uint32_t settingsLength, NexTouchEventCb cbOK);
-	void Activate(uint32_t setting_index);
+	void Activate(StateSettings::SettingDefinition* settings, uint32_t settingsLength, NexTouchEventCb cbOK, NexTouchEventCb cbReset = nullptr);
 	//void DrawUpdate();
 	void TouchUpdate();
 

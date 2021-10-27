@@ -69,11 +69,14 @@ namespace {
 	NexObject _bFUpIcon = NexObject(PAGE_SETTINGS,  14,  "pUP");
 	NexObject _bFDownIcon = NexObject(PAGE_SETTINGS,  15,  "pDN");
 
-	NexObject _bOK = NexObject(PAGE_SETTINGS, 9, "ok");
+	NexObject _bOkHalf = NexObject(PAGE_SETTINGS, 9, "okh");
+	NexObject _bResetHalf = NexObject(PAGE_SETTINGS, 35, "bR");
+
+	NexObject _bOkFull = NexObject(PAGE_SETTINGS, 36, "ok");
 
 	NexObject *_listenList[] = { &_rRows[0],&_rRows[1],&_rRows[2],&_rRows[3],&_rRows[4],&_rRows[5],&_rRows[6],
 								 &_rValues[0],&_rValues[1],&_rValues[2],&_rValues[3],&_rValues[4],&_rValues[5],&_rValues[6],
-								 &_bFUp, &_bFDown, &_bOK, NULL };
+								 &_bFUp, &_bFDown, &_bOkHalf, &_bResetHalf, &_bOkFull, NULL };
 
 
 
@@ -146,6 +149,24 @@ namespace {
 	    	_bFDownIcon.setPic(NEX_ICON_FILES_DOWN);
 	    else
 	    	_bFDownIcon.setPic(NEX_ICON_FILES_DOWN_GREY);
+	}
+
+	void ReActivate(uint32_t setting_index) {
+	    _listPosition = (setting_index / 7) * 7;
+	    NextionHMI::ActivateState(PAGE_SETTINGS);
+	    _page.show();
+
+	    if (_bResetHalf.isPushAttached()) //Placeholder for settings reset
+	    {
+	        _bOkHalf.SetVisibility(true);
+	        _bResetHalf.SetVisibility(true);
+	    }
+	    else
+	    {
+	        _bOkFull.SetVisibility(true);
+	    }
+
+	    PopulateSettingsList(_listPosition);
 	}
 
 }
@@ -229,22 +250,33 @@ void StateSettings::Init() {
 }
 
 
-void StateSettings::Activate(StateSettings::SettingDefinition* settings, uint32_t settingsLength, NexTouchEventCb cbOK) {
+void StateSettings::Activate(StateSettings::SettingDefinition* settings, uint32_t settingsLength, NexTouchEventCb cbOK, NexTouchEventCb cbReset) {
 	_settingsLength = settingsLength;
 	_settings = settings;
     _listPosition = 0;
     NextionHMI::ActivateState(PAGE_SETTINGS);
     _page.show();
+
+    if (cbReset != nullptr) //Placeholder for settings reset
+    {
+        _bOkHalf.SetVisibility(true);
+        _bResetHalf.SetVisibility(true);
+        _bOkHalf.attachPush(cbOK);
+        _bOkFull.detachPush();
+        _bResetHalf.attachPush(cbReset);
+    }
+    else
+    {
+        _bOkFull.SetVisibility(true);
+        _bOkFull.attachPush(cbOK);
+        _bOkHalf.detachPush();
+        _bResetHalf.detachPush();
+    }
+
     PopulateSettingsList(_listPosition);
-	_bOK.attachPush(cbOK);
+
 }
 
-void StateSettings::Activate(uint32_t setting_index) {
-    _listPosition = (setting_index / 7) * 7;
-    NextionHMI::ActivateState(PAGE_SETTINGS);
-    _page.show();
-    PopulateSettingsList(_listPosition);
-}
 
 void StateSettings::TouchUpdate() {
 	nexLoop(_listenList);
@@ -266,7 +298,7 @@ void StateSettings::EditNumber_OK_Push(void* ptr) {
 			if (val >= _settings[_editedSetting].minValue && val <= _settings[_editedSetting].maxValue)
 			{
 				*float_val = val;
-				StateSettings::Activate(_editedSetting);
+				ReActivate(_editedSetting);
 				eeprom.Store_Settings();
 			}
 			else
@@ -283,7 +315,7 @@ void StateSettings::EditNumber_OK_Push(void* ptr) {
 			if (val >= _settings[_editedSetting].minValue && val <= _settings[_editedSetting].maxValue)
 			{
 				*int16_val = val;
-				StateSettings::Activate(_editedSetting);
+				ReActivate(_editedSetting);
 				eeprom.Store_Settings();
 			}
 			else
@@ -301,7 +333,7 @@ void StateSettings::EditNumber_OK_Push(void* ptr) {
 			{
 				*int8_val = val;
 				eeprom.Store_Settings();
-				StateSettings::Activate(_editedSetting);
+				ReActivate(_editedSetting);
 			}
 			else
 			{
@@ -316,7 +348,7 @@ void StateSettings::EditNumber_OK_Push(void* ptr) {
 }
 
 void StateSettings::EditNumber_Cancel_Push(void* ptr) {
-	StateSettings::Activate(_editedSetting);
+	ReActivate(_editedSetting);
 }
 
 

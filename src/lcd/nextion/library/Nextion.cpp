@@ -39,6 +39,14 @@
 
   bool NexObject::getObjVis(void) { return __vis; }
 
+  bool NexObject::isPushAttached() {
+    return this->__cb_push != nullptr;
+  }
+
+  bool NexObject::isPopAttached() {
+    return this->__cb_pop != nullptr;
+  }
+
   void NexObject::attachPush(NexTouchEventCb push, void *ptr) {
     this->__cb_push = push;
     this->__cbpush_ptr = ptr;

@@ -117,6 +117,13 @@ class NexObject {
     void detachPush(void);
 
     /**
+     * Check if callback function is present.
+     *
+     * @return bool - true if the callback is not null.
+     */
+    bool isPushAttached(void);
+
+    /**
      * Attach an callback function of pop touch event.
      *
      * @param pop - callback called with ptr when a pop touch event occurs.
@@ -133,6 +140,13 @@ class NexObject {
      * @return none.
      */
     void detachPop(void);
+
+    /**
+     * Check if callback function is present.
+     *
+     * @return bool - true if the callback is not null.
+     */
+    bool isPopAttached(void);
 
   public:
 

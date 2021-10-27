@@ -23,6 +23,7 @@ namespace StateFiles {
 	void FFolder_Push(void *ptr);
 	void FFolderUp_Push(void *ptr);
 	void FilesCancel_Push(void *ptr);
+	void FilesSort_Push(void *ptr);
 
 	void Init();
 	void Activate(uint8_t sd_slot);

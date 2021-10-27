@@ -209,6 +209,14 @@
   #define MSG_LONG_FILENAME              			_UxGT("File name is too long. Please use name which is shorter than 50 characters.")
 #endif
 
+#ifndef MSG_SORT_BY_NAME
+  #define MSG_SORT_BY_NAME             				_UxGT("Sort by: name")
+#endif
+
+#ifndef MSG_SORT_BY_DATE
+  #define MSG_SORT_BY_DATE             				_UxGT("Sort by: date")
+#endif
+
 #ifndef MSG_FILE_MODIFIED_DATE
   #define MSG_FILE_MODIFIED_DATE              		_UxGT("Modified: %.2i.%.2i.%.4i %.2i:%.2i")
 #endif
