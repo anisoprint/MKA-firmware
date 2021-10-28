@@ -1,11 +1,11 @@
 v1.2.5
 [Added] Buildplate heating in the buildplate, z-axis and z-offset calibration wizards
 [Added] Files on SD can now be sorted by name or by date 
-[Added] Full support of network bridge (for “nw” versions of Composer)
-[Added] Network status page in UI (for “nw” versions of Composer)
-[Added] Wi-Fi connection pages in UI (for “nw” versions of Composer)
-[Added] Aura.Connect connection page in UI (for “nw” versions of Composer)
-[Added] Support for TCP/IP connections, commands can be streamed to the printer through TCP/IP (for “nw” versions of Composer)
+[Added] Full support of network bridge (for вЂњnwвЂќ versions of Composer)
+[Added] Network status page in UI (for вЂњnwвЂќ versions of Composer)
+[Added] Wi-Fi connection pages in UI (for вЂњnwвЂќ versions of Composer)
+[Added] Aura.Connect connection page in UI (for вЂњnwвЂќ versions of Composer)
+[Added] Support for TCP/IP connections, commands can be streamed to the printer through TCP/IP (for вЂњnwвЂќ versions of Composer)
 [Added] Reminders about composite extruder cleaning
 [Changed] Minor UI fixes and improvements
 [Fixed] Max temperature threshold on setting temperature using the LCD screen
@@ -41,30 +41,13 @@ v1.0.0a
 [Added] Added optional "R" parameter to tool-change command (T[tool index] R). It can be used to force tool-change movements. 
 [Changed] Chamber exhaust fan is now activated on a higher temperature, and work in one of three modes depending on the temperature inside the chamber (30%, 50%, and 100%)
 [Changed] Maximum possible filename length on SD increased to 50 symbols
-[Changed] The maximum target extruder temperature is changed to 270°C. The MAXTEMP error will now appear if the heater temperature is larger than the maximum target temperature by 6°C
+[Changed] The maximum target extruder temperature is changed to 270В°C. The MAXTEMP error will now appear if the heater temperature is larger than the maximum target temperature by 6В°C
 [Changed] Minor load/unload wizard improvements 
 [Changed] Increased U feedrate for movements from LCD Movement screen
 [Fixed] Incorrect print start point after previous print was canceled while changing tool
 [Fixed] Incorrect behavior when homing from LCD Movement screen
 [Fixed] Canceling material loading wizard on steps 3 and 4
 [Fixed] Returning to previous LCD screen after an error message
-
-v1.0.0a
-[Added] Температуры экструдеров и стола теперь могут быть откорректированы в процессе печати (Control-Tune)
-[Added] Скорость вентилятора обдува сопел теперь может быть откорректирована в процессе печати (Control-Tune)
-[Added] Положение оси Z теперь может быть откорректировано в процессе печати, чтобы исправить погрешности в калибровке во время печати первого слоя детали (Control - Correct Z)
-[Added] При выборе файла для печати отображается расширенная информация о нем (дата и время изменения файла, расчетное время печати, расход материалов). Информация отображается для файлов сгенерированный при помощи Aura v0.9.24 и выше.
-[Added] Добавлены сообщения об ошибках при проблемах с чтением/записью настроек в EEPROM
-[Added] В команду смены инструмента добавлен необязательный параметр "R" (T[tool index] R). Он может быть использован для принудительного совершения всех движений по смене инструмента (например, в начале печати, чтобы гарантированно сменить инструмент на нужный). 
-[Changed] Вентилятор вытяжки теперь активируется при более высокой температуре в камере и может работать в трех режимах, в зависимости от температуры (30%, 50% и 100%)
-[Changed] Максимальная допустимая длина имени файла на SD-карте увеличена до 50 символов
-[Changed] Максимальная допустимая температура экструдеров изменена на 270°C. Ошибка MAXTEMP теперь выводится, если температура нагревателя превышает максимально допустимую на 6°C
-[Changed] Во время загрузки/выгрузки материала теперь отображается, какой именно материал загружается/выгружается
-[Changed] Увеличена скорость подачи волокна с экрана 
-[Fixed] Некорректная точка начала печати после отмены предыдущей печати во время смены инструмента 
-[Fixed] Некорректное поведение при нажатии кнопок перемещения на экране Movement после нажатия Home
-[Fixed] Отмена загрузки материала на шагах 3 и 4
-[Fixed] Возвращение на предыдущий экран после вывода сообщения об ошибке
 
 v0.9.4a
 [Added] M569 code to turn on or off stepper motor direction inversion (use X, Y, Z, E, U, V letters for axes, e.g. "M569 X0 Y1" to turn off X-axis iversion and turn on Y-axis inversion)
@@ -112,8 +95,8 @@ v.0.9.2
 - Linear advance 1.5 added. The deafault k coefficient is set to zero, but can be set before the print with M900 command.
 See http://marlinfw.org/docs/features/lin_advance.html for more details.
 - Information about current printhead, buildplate and chamber temperatures is now displayed during printing
-- Exhaust fan now turns on automatically if the chamber temperature sensor is present on printer and the chamber temperature is high (50°C)
-- Print head throat cooling fans are now turned on only if extruder temperature is above 60°C
+- Exhaust fan now turns on automatically if the chamber temperature sensor is present on printer and the chamber temperature is high (50В°C)
+- Print head throat cooling fans are now turned on only if extruder temperature is above 60В°C
 - Fixed bug with layer number not displaying after pause
 - Other minor fixes and improvements
 
