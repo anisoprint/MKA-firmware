@@ -100,12 +100,6 @@ void SdStorage::mountAll() {
 			  cards[INTERNAL_SD_STORAGE_INDEX].makeDirectory(".ac");
 		  }
 	  }
-	  else
-	  {
-			#if ENABLED(NEXTION_HMI)
-			  NextionHMI::RaiseEvent(HMIevent::INTERNAL_SD_WARNING, 0, MSG_INTERNAL_SD_MOUNT_FAIL);
-			#endif
-	  }
   }
 
 }

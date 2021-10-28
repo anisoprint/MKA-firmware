@@ -405,8 +405,8 @@
   #define MSG_IPADDR                     			_UxGT("IP: %s")
 #endif
 
-#ifndef MSG_NETWORK_ID
-  #define MSG_NETWORK_ID                     		_UxGT("Printer network ID: %s")
+#ifndef MSG_MACHINE_ID
+  #define MSG_MACHINE_ID                     		_UxGT("Machine ID: %s")
 #endif
 
 #ifndef MSG_AC_SERVER_URL

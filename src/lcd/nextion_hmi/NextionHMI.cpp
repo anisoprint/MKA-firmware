@@ -269,9 +269,6 @@ void NextionHMI::RaiseEvent(HMIevent event, uint8_t eventArg, const char *eventM
 			sprintf_P(NextionHMI::buffer, PSTR("%s\\r%s %d"), eventMsg, MSG_STOPPED_HEATER, eventArg);
 			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_HEATER_ERROR, NextionHMI::buffer, 2, PSTR(MSG_OK), StateMessage::ReturnToLastState, PSTR(MSG_RETRY), StateMessage::RetryHeaterAndReturnToLastState, NEX_ICON_DIALOG_ERROR);
 			return;
-		case HMIevent::INTERNAL_SD_WARNING :
-			StateMessage::ActivatePGM_M(MESSAGE_WARNING, NEX_ICON_WARNING, MSG_WARNING, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_WARNING);
-			return;
 		case HMIevent::EEPROM_ERROR :
 			StateMessage::ActivatePGM_M(MESSAGE_ERROR, NEX_ICON_ERROR, MSG_ERROR, eventMsg, 1, PSTR(MSG_OK), StateMessage::ReturnToLastState, 0, 0, NEX_ICON_DIALOG_ERROR);
 			return;

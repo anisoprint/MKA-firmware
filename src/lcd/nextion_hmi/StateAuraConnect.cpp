@@ -52,7 +52,7 @@ void StateAuraConnect::Activate() {
 	{
 		databuffer[6] = '\0';
 		ZERO(NextionHMI::buffer);
-		sprintf_P(NextionHMI::buffer, PSTR(MSG_NETWORK_ID), databuffer);
+		sprintf_P(NextionHMI::buffer, PSTR(MSG_MACHINE_ID), databuffer);
 		_tId.setText(NextionHMI::buffer);
 	}
 	if (strlen(serverURL)>0)
