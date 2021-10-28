@@ -94,8 +94,8 @@ class SDCard {
     #if ENABLED(SDCARD_SORT_ALPHA)
       uint16_t sort_count;         // Count of sorted items in the current directory
       #if ENABLED(SDSORT_GCODE)
-        bool sort_alpha = true;           // Flag to enable / disable the feature
-        int sort_folders = FOLDER_SORTING;    // Flag to enable / disable folder sorting
+        bool sort_alpha;           // Flag to enable / disable the feature
+        int sort_folders ;    // Flag to enable / disable folder sorting
         //bool sort_reverse;       // Flag to enable / disable reverse sorting
       #endif
 
