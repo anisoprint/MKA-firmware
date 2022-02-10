@@ -409,7 +409,7 @@ class NexObject {
        * @param file_name - tft file name.
        * @upload_baudrate - set upload baudrate.
        */
-      NexUpload(const char *file_name, uint32_t upload_baudrate);
+      NexUpload(const char *file_name);
 
       /**
        * Constructor.
@@ -417,7 +417,7 @@ class NexObject {
        * @param file_name - tft file name.
        * @upload_baudrate - set upload baudrate.
        */
-      NexUpload(const String file_name, uint32_t upload_baudrate); 
+      NexUpload(const String file_name);
 
       /**
        * destructor.
@@ -498,10 +498,8 @@ class NexObject {
 
     private:
 
-      uint32_t _baudrate; /*nextion serail baudrate*/
       const char *_file_name; /*nextion tft file name*/
       uint32_t _unuploadByte; /*unupload byte of tft file*/
-      uint32_t _upload_baudrate; /*upload baudrate*/
     };
 
 #endif // SDSUPPORT

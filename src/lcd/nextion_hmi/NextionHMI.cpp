@@ -21,7 +21,7 @@ namespace {
 	uint8_t _rootState = 0;
 
 #if HAS_SD_SUPPORT
-  NexUpload Firmware(NEXTION_FIRMWARE_FILE, 57600);
+  NexUpload Firmware(NEXTION_FIRMWARE_FILE);
 #endif
 
 }

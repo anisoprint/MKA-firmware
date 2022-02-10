@@ -516,13 +516,12 @@
 
     SdFile nextion_file;
 
-    NexUpload::NexUpload(const char *file_name, uint32_t upload_baudrate) {
+    NexUpload::NexUpload(const char *file_name) {
       _file_name = file_name;
-      _upload_baudrate = upload_baudrate;
     }
 
-    NexUpload::NexUpload(const String file_name, uint32_t upload_baudrate) {
-      NexUpload(file_name.c_str(), upload_baudrate);
+    NexUpload::NexUpload(const String file_name) {
+      NexUpload(file_name.c_str());
     }
 
     void NexUpload::startUpload(uint8_t sd_slot) {
@@ -530,11 +529,12 @@
         SERIAL_LM(ER, "firmware file error");
         return;
       }
-      if (_getBaudrate() == 0) {
+      uint32_t upload_baudrate = _getBaudrate();
+      if (upload_baudrate == 0) {
         SERIAL_LM(ER, "baudrate error");
         return;
       }
-      if (!_setUploadBaudrate(_upload_baudrate)) {
+      if (!_setUploadBaudrate(upload_baudrate)) {
         SERIAL_LM(ER, "modify baudrate error");
         return;
       }
@@ -550,11 +550,12 @@
     void NexUpload::uploadFromSerial(uint32_t tftSize, uint8_t serialPort) {
       _unuploadByte = tftSize;
       SERIAL_PORT(serialPort);
-      if (_getBaudrate() == 0) {
+      uint32_t upload_baudrate = _getBaudrate();
+      if (upload_baudrate == 0) {
         SERIAL_LM(ER, "baudrate error");
         return;
       }
-      if (!_setUploadBaudrate(_upload_baudrate)) {
+      if (!_setUploadBaudrate(upload_baudrate)) {
         SERIAL_LM(ER, "modify baudrate error");
         return;
       }
@@ -572,14 +573,15 @@
     }
 
     uint16_t NexUpload::_getBaudrate(void) {
-      const uint32_t baudrate_array[7] = { 115200, 57600, 38400, 19200, 9600, 4800, 2400 };
+      uint32_t baudrate = 0;
+      const uint32_t baudrate_array[7] = { 57600, 38400, 19200, 9600, 4800, 2400, 115200 };
       for (uint8_t i = 0; i < 7; i++) {
         if (_searchBaudrate(baudrate_array[i])) {
-          _baudrate = baudrate_array[i];
+        	baudrate = baudrate_array[i];
           break;
         }
       }
-      return _baudrate;
+      return baudrate;
     }
 
     bool NexUpload::_checkFile(uint8_t sd_slot) {
@@ -596,10 +598,12 @@
     bool NexUpload::_searchBaudrate(uint32_t baudrate) {
       String string = String("");
       nexSerial.end();
-      HAL::delayMilliseconds(100);
+      HAL::delayMilliseconds((1000000/baudrate)+30);
       nexSerial.begin(baudrate);
       sendCommand("");
+      sendCommand("DRAKJHSUYDGBNCJHGJKSHBDN");
       sendCommand("connect");
+      sendCommand("\xFF\xFFconnect");
       this->recvRetString(string);
 
       if(string.indexOf("comok") != -1)
@@ -641,8 +645,10 @@
       cmd = "whmi-wri " + filesize_str + "," + baudrate_str + ",0";
 
       sendCommand("");
+      sendCommand("dim=100");
+      sendCommand("");
       sendCommand(cmd.c_str());
-      HAL::delayMilliseconds(50);
+      HAL::delayMilliseconds((1000000/baudrate)+30);
       nexSerial.begin(baudrate);
       this->recvRetString(string, 500);
       if (string.indexOf(0x05) != -1)
