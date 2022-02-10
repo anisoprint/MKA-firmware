@@ -1373,18 +1373,18 @@ void Printer::clean_after_print() {
 
 	      #if FAN_COUNT > 0
 	        SERIAL_MSG("\"fanPercent\":[");
-	        SERIAL_VAL(fans[0].Speed);
+	        SERIAL_VAL(100 * fans[0].Speed / 255);
 	  	  #if FAN_COUNT > 1
 	        SERIAL_MSG(",");
-	        SERIAL_VAL(fans[1].Speed);
+	        SERIAL_VAL(100 * fans[1].Speed / 255);
 	  	  #endif
 	  	  #if FAN_COUNT > 2
 	        SERIAL_MSG(",");
-	  	  SERIAL_VAL(fans[2].Speed);
+	  	  SERIAL_VAL(100 * fans[2].Speed / 255);
 	  	  #endif
 	  	  #if FAN_COUNT > 3
 	  	  SERIAL_MSG(",");
-	  	  SERIAL_VAL(fans[3].Speed);
+	  	  SERIAL_VAL(100 * fans[3].Speed / 255);
 	  	  #endif
 	      #endif
 

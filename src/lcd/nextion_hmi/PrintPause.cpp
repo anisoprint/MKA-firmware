@@ -290,7 +290,7 @@ void PrintPause::ResumeHostPrint() {
    {
 	   if (netBridgeManager.GetNetBridgeStatus() == Connected)
 	   {
-		   netBridgeManager.ResumePrintJob();
+		   netBridgeManager.UnschedulePausePrintJob();
 	   }
 	   return;
    };

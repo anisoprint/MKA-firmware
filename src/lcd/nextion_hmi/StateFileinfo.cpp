@@ -133,7 +133,7 @@ void StateFileinfo::Activate(int8_t sd_slot) {
 	else //AC Job
 	{
 		_tFilename.setText(netBridgeManager.serverJobName);
-		_pFileicon.setPic(NEX_ICON_FILE_GCODE_AURA);
+		_pFileicon.setPic(NEX_ICON_FILE_GCODE_REMOTE);
 
 		ProcessFileInfo(netBridgeManager.serverJobInfo);
 	}
