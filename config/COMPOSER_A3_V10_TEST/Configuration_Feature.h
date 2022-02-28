@@ -2324,7 +2324,7 @@
  * Uncomment USE_WATCHDOG to enable this feature                                         *
  *                                                                                       *
  *****************************************************************************************/
-//#define USE_WATCHDOG
+#define USE_WATCHDOG
 
 // If you have a watchdog reboot in an ArduinoMega2560 then the device will hang forever,
 // as a watchdog reset will leave the watchdog on.

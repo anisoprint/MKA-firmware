@@ -237,6 +237,7 @@
 #include "composer/m1014_m1019.h"
 #include "composer/m704.h"
 #include "composer/m217.h"
+#include "composer/m990.h"
 
 #include "table_gcode.h"
 #include "table_mcode.h"
