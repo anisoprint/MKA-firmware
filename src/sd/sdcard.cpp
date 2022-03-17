@@ -688,6 +688,7 @@ uint16_t SDCard::get_num_Files() {
               if (isFilenameIsDir()) isDir[ind] |= _BV(bit);
             #endif
           #endif
+          printer.check_periodical_actions();
         }
 
         // Bubble Sort
@@ -747,6 +748,7 @@ uint16_t SDCard::get_num_Files() {
             }
           }
           if (!didSwap) break;
+          printer.check_periodical_actions();
         }
         // Using RAM but not keeping names around
         #if ENABLED(SDSORT_USES_RAM) && DISABLED(SDSORT_CACHE_NAMES)
