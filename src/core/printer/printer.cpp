@@ -393,6 +393,10 @@ void Printer::cancel_print()
 		SERIAL_LMT(JOB, MSG_JOB_CANCEL, sdStorage.getActivePrintSDCard()->fileName);
 		sdStorage.endFilePrint();
 	}
+	else //Host
+	{
+		SERIAL_LMT(JOB, MSG_JOB_CANCEL, printName);
+	}
 
 	// Clear all command in quee
 	commands.clear_queue();
