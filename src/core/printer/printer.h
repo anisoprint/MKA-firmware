@@ -118,7 +118,7 @@ class Printer {
     static long     currentLayer,
                     maxLayer;       // -1 = unknown
 
-    static char     printName[32];  // max. 31 chars +
+    static char     printName[64];  // max. 63 chars +
 
     static uint8_t  progress;
 

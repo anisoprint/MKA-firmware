@@ -85,7 +85,20 @@ inline void gcode_M1017() {
  *
  */
 inline void gcode_M1018() {
-	  sdStorage.clearInternalStorageAc();
+      auto type = parser.intval('S', 0);
+      switch (type)
+      {
+      	  case 0:
+      		  SERIAL_EMT(INFO, PSTR("Test info"));
+      		  break;
+      	  case 1:
+      		  SERIAL_EMT(WARNING, PSTR("Test warning"));
+      		  break;
+      	  case 2:
+      		  SERIAL_EMT(ER, PSTR("Test error"));
+      		  break;
+      }
+
 }
 
 /*

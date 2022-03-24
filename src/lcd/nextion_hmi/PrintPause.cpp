@@ -173,6 +173,9 @@ bool PrintPause::PauseHostPrint() {
     if ((SdPrintingPaused && sdStorage.isPaused())) {
     	SERIAL_LMT(JOB, MSG_JOB_PAUSE, sdStorage.getActivePrintSDCard()->fileName);
     }
+    else { //Host printing
+    	SERIAL_LMT(JOB, MSG_JOB_PAUSE, printer.printName);
+    }
 
     NextionHMI::RaiseEvent(PRINT_PAUSED);
 
@@ -276,6 +279,9 @@ void PrintPause::ResumePrint(const float& purge_length) {
 
    if (IS_SD_PRINTING()) {
    	SERIAL_LMT(JOB, MSG_JOB_RESUME, sdStorage.getActivePrintSDCard()->fileName);
+   }
+   else { //Host printing
+	SERIAL_LMT(JOB, MSG_JOB_RESUME, printer.printName);
    }
 
    #if HAS_POWER_CONSUMPTION_SENSOR

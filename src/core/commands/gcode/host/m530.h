@@ -43,7 +43,7 @@ inline void gcode_M530(void) {
 		print_job_counter.start();
 		printer.setStatus(Printing);
 
-		SERIAL_MSG("Start Printing");
+		SERIAL_EM("Start Printing");
 		if (parser.seen('L')) printer.maxLayer = parser.longval('L');
 
 		if (!sdStorage.isPrinting()) //Host printing
