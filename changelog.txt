@@ -1,3 +1,7 @@
+v1.2.6
+[Critical fix] Fixed issue that could in rare cases lead to uncontrolled heating of the printer.
+[Changed] Connectivity improvements for better integration with Aura.Connect  
+
 v1.2.5
 [Added] Buildplate heating in the buildplate, z-axis and z-offset calibration wizards
 [Added] Files on SD can now be sorted by name or by date 
