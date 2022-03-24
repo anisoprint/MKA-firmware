@@ -54,7 +54,7 @@ bool Printer::axis_relative_modes[] = AXIS_RELATIVE_MODES;
 long    Printer::currentLayer  = 0,
         Printer::maxLayer      = -1;   // -1 = unknown
 
-char    Printer::printName[32] = "";   // max. 31 chars + 0
+char    Printer::printName[64] = "";   // max. 63 chars + 0
 
 uint8_t Printer::progress = 0;
 
@@ -392,6 +392,10 @@ void Printer::cancel_print()
 		// Stop SD printing
 		SERIAL_LMT(JOB, MSG_JOB_CANCEL, sdStorage.getActivePrintSDCard()->fileName);
 		sdStorage.endFilePrint();
+	}
+	else //Host
+	{
+		SERIAL_LMT(JOB, MSG_JOB_CANCEL, printName);
 	}
 
 	// Clear all command in quee

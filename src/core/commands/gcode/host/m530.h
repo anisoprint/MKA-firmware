@@ -43,8 +43,13 @@ inline void gcode_M530(void) {
 		print_job_counter.start();
 		printer.setStatus(Printing);
 
-		SERIAL_MSG("Start Printing");
+		SERIAL_EM("Start Printing");
 		if (parser.seen('L')) printer.maxLayer = parser.longval('L');
+
+		if (!sdStorage.isPrinting()) //Host printing
+		{
+			SERIAL_LMT(JOB, MSG_JOB_START, printer.printName);
+		}
 
 		if (printer.maxLayer > 0) SERIAL_EMV(" - MaxLayer:", printer.maxLayer);
 		else SERIAL_EOL();
@@ -87,6 +92,11 @@ inline void gcode_M530(void) {
 			#if ENABLED(NEXTION_HMI)
 				NextionHMI::RaiseEvent(HOST_PRINT_FINISHED);
 			#endif
+
+			if (!sdStorage.isPrinting()) //Host printing
+			{
+				SERIAL_LMT(JOB, MSG_JOB_FINISH, printer.printName);
+			}
 		}
 		else
 		{
