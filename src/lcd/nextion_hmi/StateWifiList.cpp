@@ -188,7 +188,7 @@ void StateWifiList::Network_Push(void* ptr) {
     {
     	StateMessage::ActivatePGM_M(MESSAGE_DIALOG, NEX_ICON_INFO, MSG_WIFI, MSG_CONNECTING, 1, MSG_PLEASE_WAIT, 0, 0, 0);
 
-    	bool result = netBridgeManager.ConnectWifi(netBridgeManager.GetSelectedWifiNetwork(), "\"\"", NextionHMI::buffer, NEXHMI_BUFFER_SIZE);
+    	bool result = netBridgeManager.ConnectWifi(netBridgeManager.GetSelectedWifiNetwork(), "", NextionHMI::buffer, NEXHMI_BUFFER_SIZE);
     	if (result)
     	{
     		netBridgeManager.UpdateWifiConnected(true);

@@ -73,7 +73,7 @@ bool NetBridgeManager::ConnectWifi(const char *ssid, const char *password,
 		char *responseBuffer, const uint16_t responseBufferSize) {
 
 	char commandBuffer[128];
-	snprintf(commandBuffer, sizeof(commandBuffer), "@wifi_connect %s %s", ssid, password);
+	snprintf(commandBuffer, sizeof(commandBuffer), "@wifi_connect \"%s\" \"%s\"", ssid, password);
 	bool res = SendCommand(commandBuffer, responseBuffer, responseBufferSize, 25000);
 
   return (res && strncmp(responseBuffer, "ok", 2)==0);
