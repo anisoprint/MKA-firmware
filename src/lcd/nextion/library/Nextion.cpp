@@ -744,6 +744,7 @@
 			if (current_byte != 0 && current_byte % 128 == 0)
 			{
 				SERIAL_EMV("RESULT:", "ok");
+				watchdog.reset();
 			}
     	 }
       }
